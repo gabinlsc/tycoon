@@ -5,6 +5,7 @@ import type { TraitId } from '../content/traits';
 import type { CareerPhase } from '../artists';
 import type { TalentLevel } from '../balance/artists';
 import type { Origin } from '../naming';
+import type { ExpenseCategory, RevenueCategory } from '../content/finance';
 
 /**
  * Toutes les chaînes affichées du jeu, en français. Aucune chaîne n'est écrite en dur dans les
@@ -86,6 +87,29 @@ export const fr = {
     'europe-sud': 'Europe du Sud',
     latine: 'Amérique latine',
   } satisfies Record<Origin, string>,
+
+  categoriesRevenus: {
+    streaming: 'Streaming',
+    physique: 'Ventes physiques',
+    concerts: 'Concerts',
+    merch: 'Merchandising',
+    synchro: 'Synchronisation',
+    cessions: 'Cessions de contrats',
+    autres: 'Autres revenus',
+  } satisfies Record<RevenueCategory, string>,
+
+  categoriesDepenses: {
+    salaires: 'Salaires',
+    entretien: 'Loyers et entretien',
+    production: 'Production',
+    marketing: 'Marketing',
+    avances: 'Avances aux artistes',
+    royalties: 'Royalties versées',
+    tournees: 'Tournées',
+    interets: 'Intérêts et remboursements',
+    impots: 'Impôts',
+    autres: 'Autres dépenses',
+  } satisfies Record<ExpenseCategory, string>,
 
   modes: {
     carriere: 'Carrière',

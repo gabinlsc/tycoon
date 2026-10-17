@@ -62,3 +62,22 @@ export {
 } from './artists';
 export { TRAITS, TRAIT_IDS, type TraitDef, type TraitId } from './content/traits';
 export { type World, generateWorld } from './world';
+export {
+  EXPENSE_CATEGORIES,
+  type ExpenseCategory,
+  REVENUE_CATEGORIES,
+  type RevenueCategory,
+} from './content/finance';
+export {
+  type FinanceState,
+  type Ledger,
+  type Report,
+  aggregate,
+  annualRevenue,
+  canAfford,
+  closeWeek,
+  earn,
+  financePhase,
+  initialFinance,
+  spend,
+} from './finance';
