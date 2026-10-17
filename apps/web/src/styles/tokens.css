@@ -51,6 +51,12 @@
   --fir: #1f5a3b; /* hausses uniquement */
   --paper-on-accent: #f3eee3;
 
+  /* Bandeau boursier : encre en clair, papier foncé en sombre */
+  --ticker-bg: #1a1a1a;
+  --ticker-fg: #f3eee3;
+  --ticker-up: #7fd0a0;
+  --ticker-down: #ff8a73;
+
   /* Typographie */
   --font-display: 'Libre Caslon Display', 'Didot', 'Bodoni 72', Georgia, serif;
   --font-text: 'Public Sans', 'Helvetica Neue', Arial, sans-serif;
@@ -107,6 +113,10 @@
   --vermillion: #ef6a52;
   --fir: #6fbf8e;
   --paper-on-accent: #1e1b17;
+  --ticker-bg: #29251f;
+  --ticker-fg: #ece4d3;
+  --ticker-up: #6fbf8e;
+  --ticker-down: #ef6a52;
 }
 
 /* Sans choix manuel, on suit le système */
@@ -121,6 +131,10 @@
     --vermillion: #ef6a52;
     --fir: #6fbf8e;
     --paper-on-accent: #1e1b17;
+    --ticker-bg: #29251f;
+    --ticker-fg: #ece4d3;
+    --ticker-up: #6fbf8e;
+    --ticker-down: #ef6a52;
   }
 }
 
