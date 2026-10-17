@@ -21,7 +21,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `feat/core-argent` : type `Cents`, opérations entières, répartition sans perte de centime, arrondi centralisé
 - [x] `feat/core-math` : `clamp`, `lerp`, courbes, escompte, tables de probabilités, moyennes pondérées
 - [x] `feat/core-hash` : sérialisation canonique et empreinte d'état
-- [ ] `feat/core-ticks` : boucle de simulation en ticks, pipeline de phases nommées et ordonnées
+- [x] `feat/core-ticks` : boucle de simulation en ticks, pipeline de phases nommées et ordonnées
 - [ ] `feat/core-actions` : commandes typées, validation, application pure, journal d'actions
 - [ ] `feat/core-replay` : rejouer seed + journal, tests de propriétés (déterminisme, replay)
 - [ ] `feat/core-evenements-base` : événements pondérés avec conditions et délai de recharge
@@ -178,7 +178,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | Phase | Total | Faites |
 | ----- | ----- | ------ |
 | 0     | 1     | 1      |
-| 1     | 13    | 5      |
+| 1     | 13    | 6      |
 | 2     | 6     | 0      |
 | 3     | 18    | 0      |
 | 4     | 16    | 0      |
