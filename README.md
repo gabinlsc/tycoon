@@ -20,9 +20,21 @@ pnpm check      # lint, typecheck, tests et build
 
 ## Ajouter un jeu
 
-Ajouter une entrée dans `GAMES`, dans `apps/web/src/data/games.ts`. Rien d'autre : la grille de jeux, le schéma des crossovers et le pied de page se mettent à jour tout seuls.
+1. Ajouter une entrée dans `GAMES`, dans `apps/web/src/data/games.ts` : la carte, la page `/jeux/<slug>` et le pied de page se mettent à jour tout seuls. Champs : `slug` (unique, sert d'URL et de clé de sauvegarde), `name`, `symbol`, `pitch`, `tagline`, `genre`, `status`, `mechanic`, `playtime`, `color`, `icon`, `stats`.
+2. Quand le jeu est jouable : créer `apps/web/src/games/<slug>/index.tsx` (export par défaut du composant), l'enregistrer dans `apps/web/src/games/registry.ts` avec `lazy(() => import('./<slug>'))`, puis passer son statut à `Disponible`.
+3. Dans le jeu, lire et écrire la sauvegarde avec `useGameSave(slug)` : elle est isolée par compte et par jeu.
 
-Champs principaux : `name`, `symbol` (unique), `color`, `icon`, `stats`, `tagline`, `genre`, `status`, `mechanic`, `playtime`, `crossovers` (liens vers d'autres symboles) et, une fois le jeu en ligne, `href`.
+Chaque jeu est indépendant : rien n'est partagé entre eux (monnaie, progression, données).
+
+## Comptes
+
+Pas d'e-mail ni de mot de passe : un pseudo réservé et huit codes de récupération à usage unique. La connexion est automatique dans le navigateur. Le code est dans `apps/web/src/accounts`.
+
+Pour l'instant le stockage est local (`localStorage`, classe `LocalAccountStore`) : un pseudo n'est réservé que sur l'appareil et le compte ne se retrouve pas ailleurs. Pour passer à un vrai serveur, il suffit d'implémenter l'interface `AccountStore` (`accounts/types.ts`) et de l'instancier dans `AccountProvider`.
+
+## Hébergement
+
+Le site utilise des URL propres (`/jeux/syndicate`) : l'hébergeur doit renvoyer `index.html` pour toutes les routes. `apps/web/public/_redirects` le fait pour Netlify et Cloudflare Pages ; à adapter ailleurs.
 
 ## Modifier les tokens
 

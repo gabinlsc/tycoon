@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router-dom';
+import { Doodles } from './Doodles';
 import { SiteFooter } from './SiteFooter';
 import { Navbar } from './Navbar';
 import { ScrollManager } from './ScrollManager';
@@ -8,6 +9,7 @@ export function Layout() {
   return (
     <>
       <ScrollManager />
+      <Doodles />
       <a className="skip-link" href="#contenu">
         Aller au contenu
       </a>

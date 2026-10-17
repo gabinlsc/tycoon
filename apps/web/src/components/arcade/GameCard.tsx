@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { usePointerParallax } from '../../lib/usePointerParallax';
 import type { Game } from '../../data/games';
 import { Button } from './ui/Button';
 import { GameIcon } from './ui/GameIcon';
@@ -11,12 +12,13 @@ const STATUS_CLASS: Record<Game['status'], string> = {
 };
 
 /** Carte de jeu : bandeau coloré avec emblème, fiche de stats, mécanique et durée. */
-export function GameCard({ game }: { game: Game }) {
+export function GameCard({ game, as: Heading = 'h3' }: { game: Game; as?: 'h2' | 'h3' }) {
   const playable = game.status === 'Disponible';
+  const banner = usePointerParallax<HTMLDivElement>();
 
   return (
     <article className="game card">
-      <div className={`game__banner game-bg game-bg--${game.color}`}>
+      <div ref={banner} className={`game__banner game-bg game-bg--${game.color}`}>
         <span className="game__symbol">{game.symbol}</span>
         <span className={`game__status game__status--${STATUS_CLASS[game.status]}`}>
           {game.status}
@@ -26,7 +28,7 @@ export function GameCard({ game }: { game: Game }) {
         </div>
       </div>
       <div className="game__body">
-        <h3 className="game__name">{game.name}</h3>
+        <Heading className="game__name">{game.name}</Heading>
         <p className="game__genre">{game.genre}</p>
         <p className="game__tagline">{game.tagline}</p>
         <div className="game__stats">

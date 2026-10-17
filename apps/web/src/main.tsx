@@ -10,6 +10,7 @@ import './styles/arcade/games.css';
 import './styles/arcade/sections.css';
 import './styles/arcade/pages.css';
 import './styles/arcade/account.css';
+import './styles/arcade/game.css';
 import { AccountProvider } from './accounts/AccountContext';
 import { App } from './App';
 

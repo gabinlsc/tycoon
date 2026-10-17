@@ -5,7 +5,7 @@ export function GamesPage() {
   usePageTitle('Les jeux');
   return (
     <div className="page-top">
-      <GameGrid />
+      <GameGrid pageTitle />
     </div>
   );
 }

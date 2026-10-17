@@ -121,7 +121,7 @@
   position: relative;
   justify-self: center;
   width: min(100%, 24rem);
-  transform: translateY(var(--parallax-y, 0));
+  translate: 0 var(--parallax-y, 0);
 }
 .hero__card {
   position: relative;
@@ -218,5 +218,56 @@
 @media (prefers-reduced-motion: reduce) {
   .hero__orb {
     animation: none;
+  }
+}
+
+/* ---- Entrée de la une : tout rebondit en cascade au chargement ---- */
+.hero__tilt {
+  position: relative;
+}
+.hero__card {
+  /* La carte suit légèrement le pointeur, en gardant son inclinaison de base */
+  transform: rotate(2deg) perspective(900px) rotateX(calc(var(--py, 0) * -10deg))
+    rotateY(calc(var(--px, 0) * 12deg));
+  transition: transform 160ms var(--ease-out);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero__chip,
+  .hero__line,
+  .hero__lead,
+  .hero__actions,
+  .hero__art {
+    animation: hero-pop 800ms var(--ease-bounce) both;
+  }
+  .hero__chip {
+    animation-delay: 50ms;
+  }
+  .hero__line:nth-child(1) {
+    animation-delay: 150ms;
+  }
+  .hero__line:nth-child(2) {
+    animation-delay: 270ms;
+  }
+  .hero__line:nth-child(3) {
+    animation-delay: 390ms;
+  }
+  .hero__lead {
+    animation-delay: 520ms;
+  }
+  .hero__actions {
+    animation-delay: 640ms;
+  }
+  .hero__art {
+    animation-delay: 300ms;
+  }
+}
+@keyframes hero-pop {
+  from {
+    opacity: 0;
+    transform: translateY(60px) scale(0.85) rotate(-3deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }

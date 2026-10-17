@@ -186,3 +186,40 @@
     animation: none;
   }
 }
+
+/* ---- Formes en suspension derrière l'interface ---- */
+.doodles {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.doodles__shape {
+  position: absolute;
+  color: #fff;
+  opacity: 0.4;
+  animation: doodle-drift 12s ease-in-out infinite;
+}
+:root[data-theme='dark'] .doodles__shape {
+  opacity: 0.1;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .doodles__shape {
+    opacity: 0.1;
+  }
+}
+@keyframes doodle-drift {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(18px, -34px) rotate(45deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .doodles__shape {
+    animation: none;
+  }
+}
