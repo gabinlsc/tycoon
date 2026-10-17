@@ -10,6 +10,7 @@ import { type LabelAction, renameLabel } from './actions';
 import { DIFFICULTY_BOUNDS, DIFFICULTY_PRESETS, EVENTS, SANDBOX_CASH, START } from './balance';
 import type { DifficultyPreset, DifficultySettings, GameConfig, GameMode } from './config';
 import { type LabelSignal, buildPipeline } from './pipeline';
+import { artistsPhase } from './dynamics';
 import { financePhase, initialFinance } from './finance';
 import { initialCredibility, initialMarket } from './market';
 import { generateWorld } from './world';
@@ -49,6 +50,7 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
   streams: LABEL_STREAMS,
   phases: buildPipeline({
     'echeances-evenements': eventEngine.duePhase,
+    artistes: artistsPhase,
     finances: financePhase,
     'tirage-evenements': eventEngine.phase,
   }),

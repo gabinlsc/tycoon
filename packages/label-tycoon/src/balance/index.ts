@@ -26,3 +26,4 @@ export {
 } from './artists';
 export { WORLD } from './world';
 export { FINANCE } from './finance';
+export { DYNAMICS } from './dynamics';

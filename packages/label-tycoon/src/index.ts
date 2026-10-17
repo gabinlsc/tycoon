@@ -82,3 +82,4 @@ export {
   spend,
 } from './finance';
 export { artisticTalent } from './formulas';
+export { type ArtistDelta, adjustArtist, artistsPhase, driftArtist } from './dynamics';
