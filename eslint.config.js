@@ -11,6 +11,10 @@ import jsxA11y from 'eslint-plugin-jsx-a11y';
  */
 const NON_DETERMINISTIC =
   "Interdit dans la simulation : source non déterministe. Passe par le RNG de l'état.";
+const NOT_PORTABLE =
+  "Interdit dans la simulation : résultat non garanti identique d'un moteur JavaScript à l'autre. Utilise les fonctions de @tycoon/core (exp, ln, pow, sin, cos…).";
+const NOT_PORTABLE_POW =
+  "Interdit dans la simulation : l'opérateur ** n'est pas garanti identique d'un moteur à l'autre. Utilise powInt (exposant entier) ou pow de @tycoon/core.";
 const BROWSER_ONLY =
   'Interdit dans la simulation : API du navigateur. La simulation doit tourner sans DOM.';
 
@@ -31,11 +35,37 @@ const simulationRules = {
     { object: 'performance', property: 'now', message: NON_DETERMINISTIC },
     { object: 'crypto', property: 'getRandomValues', message: NON_DETERMINISTIC },
     { object: 'crypto', property: 'randomUUID', message: NON_DETERMINISTIC },
+    ...[
+      'exp',
+      'expm1',
+      'log',
+      'log1p',
+      'log2',
+      'log10',
+      'pow',
+      'sin',
+      'cos',
+      'tan',
+      'asin',
+      'acos',
+      'atan',
+      'atan2',
+      'sinh',
+      'cosh',
+      'tanh',
+      'asinh',
+      'acosh',
+      'atanh',
+      'cbrt',
+      'hypot',
+    ].map((property) => ({ object: 'Math', property, message: NOT_PORTABLE })),
   ],
   'no-restricted-syntax': [
     'error',
     { selector: "NewExpression[callee.name='Date']", message: NON_DETERMINISTIC },
     { selector: "CallExpression[callee.name='Date']", message: NON_DETERMINISTIC },
+    { selector: "BinaryExpression[operator='**']", message: NOT_PORTABLE_POW },
+    { selector: "AssignmentExpression[operator='**=']", message: NOT_PORTABLE_POW },
   ],
   'no-restricted-imports': [
     'error',

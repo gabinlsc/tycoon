@@ -1,7 +1,9 @@
+import { cos, ln } from '../math/dmath';
 import { type Seed, seedToU32, splitMix32 } from './seed';
 import { type RngState, isValidState, xoshiroNext } from './xoshiro';
 
 const TWO_POW_32 = 4294967296;
+const TWO_PI = 6.283185307179586;
 
 /** Construit l'état initial d'une graine : quatre mots tirés de SplitMix32, jamais tous nuls. */
 export function stateFromSeed(seed: Seed): RngState {
@@ -83,7 +85,8 @@ export class Rng {
   gaussian(mean = 0, stdDev = 1): number {
     const u1 = 1 - this.float(); // ]0, 1], évite log(0)
     const u2 = this.float();
-    const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+    // ln et cos maison : Math.log et Math.cos ne sont pas identiques d'un moteur à l'autre
+    const z = Math.sqrt(-2 * ln(u1)) * cos(TWO_PI * u2);
     return mean + stdDev * z;
   }
 

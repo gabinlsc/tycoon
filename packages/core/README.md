@@ -5,6 +5,7 @@ Moteur de simulation **générique**, partagé par tous les tycoons. Il ne conti
 ## Règles
 
 - **Déterminisme** : pas de `Math.random`, `Date`, `performance`, ni de DOM. Tout l'aléatoire passe par le générateur à graine stocké dans l'état. Ces règles sont vérifiées par ESLint (`eslint.config.js`) et par `src/architecture.test.ts`.
+- **Mathématiques portables** : `Math.exp`, `log`, `pow`, `sin`, `cos` et `**` ne sont pas identiques d'un moteur à l'autre. Utiliser `exp`, `ln`, `pow`, `powInt`, `sin`, `cos` de `@tycoon/core` (opérations IEEE exactes uniquement). Interdit par lint.
 - **Argent en centimes**, en entiers.
 - **Fonctions pures** : `(état, action | tick) → nouvel état`.
 - Les tests qui ont besoin d'une horloge (bancs de performance) sont dans des fichiers `*.test.ts` : ils sont exemptés des règles ci-dessus.
