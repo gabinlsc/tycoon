@@ -1,13 +1,7 @@
+import { Link, NavLink } from 'react-router-dom';
 import { SITE } from '../../config/site';
 import { useTheme } from '../../lib/useTheme';
-import { Coin } from './ui/Coin';
-
-const NAV = [
-  { href: '#jeux', label: 'Jeux' },
-  { href: '#defi-du-jour', label: 'Défi du jour' },
-  { href: '#classements', label: 'Classements' },
-  { href: '#a-propos', label: 'Comment jouer' },
-] as const;
+import { Logo } from './Logo';
 
 function ThemeSwitch() {
   const { theme, toggle } = useTheme();
@@ -35,32 +29,30 @@ function ThemeSwitch() {
   );
 }
 
-/** Barre du haut façon HUD de jeu : logo, rubriques, niveau et trésorerie de départ. */
-export function Navbar() {
+/** Barre du haut : logo, rubriques, bascule de thème. Le compte s'y ajoute avec la feature comptes. */
+export function Navbar({ account }: { account?: React.ReactNode }) {
   return (
     <header className="navbar">
       <div className="navbar__inner page">
-        <a className="navbar__logo" href="#top" aria-label={`${SITE.name}, accueil`}>
-          <Coin size={40} />
+        <Link className="navbar__logo" to="/" aria-label={`${SITE.name}, accueil`}>
+          <Logo />
           <span>{SITE.name}</span>
-        </a>
+        </Link>
         <nav className="navbar__nav" aria-label="Rubriques">
           <ul>
-            {NAV.map((item) => (
-              <li key={item.href}>
-                <a href={item.href}>{item.label}</a>
-              </li>
-            ))}
+            <li>
+              <NavLink to="/jeux">Jeux</NavLink>
+            </li>
+            <li>
+              <Link to="/#comment-jouer">Comment jouer</Link>
+            </li>
+            <li>
+              <Link to="/#abonnement">Être prévenu</Link>
+            </li>
           </ul>
         </nav>
         <div className="navbar__hud">
-          <p className="hud-pill hud-pill--level" title="Niveau de départ">
-            <span>Niv.</span> 1
-          </p>
-          <p className="hud-pill hud-pill--money" title="Trésorerie de départ">
-            <Coin size={22} />
-            <span className="mono">1 000</span>
-          </p>
+          {account}
           <ThemeSwitch />
         </div>
       </div>

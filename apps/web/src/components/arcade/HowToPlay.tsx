@@ -7,7 +7,7 @@ const COLORS = ['green', 'purple', 'orange', 'pink'] as const;
 /** Quatre cartes numérotées : les règles du hub en un coup d'œil. */
 export function HowToPlay() {
   return (
-    <section id="a-propos" className="how page" aria-labelledby="comment-titre">
+    <section id="comment-jouer" className="how page" aria-labelledby="comment-titre">
       <SectionTitle
         level="4"
         id="comment-titre"
@@ -16,7 +16,7 @@ export function HowToPlay() {
       />
       <div className="how__grid">
         {HOW_IT_WORKS.map((article, index) => (
-          <Reveal as="article" key={article.numeral} delay={index * 90} className="how__card card">
+          <Reveal as="article" key={article.title} delay={index * 90} className="how__card card">
             <p
               className={`how__number mono game-bg game-bg--${COLORS[index % COLORS.length] ?? 'green'}`}
               aria-hidden="true"

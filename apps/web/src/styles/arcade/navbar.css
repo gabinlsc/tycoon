@@ -51,7 +51,8 @@
   white-space: nowrap;
   transition: transform var(--dur-fast) var(--ease-bounce);
 }
-.navbar__nav a:hover {
+.navbar__nav a:hover,
+.navbar__nav a.active {
   background: var(--gold);
   color: var(--on-color);
   transform: translateY(-2px);

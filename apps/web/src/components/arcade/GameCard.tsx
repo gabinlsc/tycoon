@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import type { Game } from '../../data/games';
 import { Button } from './ui/Button';
 import { GameIcon } from './ui/GameIcon';
@@ -11,7 +12,7 @@ const STATUS_CLASS: Record<Game['status'], string> = {
 
 /** Carte de jeu : bandeau coloré avec emblème, fiche de stats, mécanique et durée. */
 export function GameCard({ game }: { game: Game }) {
-  const playable = game.status === 'Disponible' && game.href;
+  const playable = game.status === 'Disponible';
 
   return (
     <article className="game card">
@@ -43,14 +44,8 @@ export function GameCard({ game }: { game: Game }) {
             <dd>{game.playtime}</dd>
           </div>
         </dl>
-        <Button
-          href={playable ? game.href : '#abonnement'}
-          tone={playable ? 'green' : 'purple'}
-          aria-label={
-            playable ? `Jouer à ${game.name}` : `Être prévenu de la sortie de ${game.name}`
-          }
-        >
-          {playable ? 'Jouer' : 'Me prévenir'}
+        <Button as={Link} to={`/jeux/${game.slug}`} tone={playable ? 'green' : 'purple'}>
+          {playable ? 'Jouer' : 'Découvrir'}
         </Button>
       </div>
     </article>
