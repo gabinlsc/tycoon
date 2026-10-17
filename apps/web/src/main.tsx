@@ -13,6 +13,7 @@ import './styles/leaderboard.css';
 import './styles/how.css';
 import './styles/crossovers.css';
 import './styles/subscribe.css';
+import './styles/footer.css';
 import { App } from './App';
 import { initIntro } from './lib/intro';
 
