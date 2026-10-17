@@ -1,6 +1,10 @@
 import type { GameMode } from '../config';
 import type { TierId } from '../balance/tiers';
 import type { BaseGenreId, GenreFamily } from '../content/genres';
+import type { TraitId } from '../content/traits';
+import type { CareerPhase } from '../artists';
+import type { TalentLevel } from '../balance/artists';
+import type { Origin } from '../naming';
 
 /**
  * Toutes les chaînes affichées du jeu, en français. Aucune chaîne n'est écrite en dur dans les
@@ -35,6 +39,53 @@ export const fr = {
     latino: 'Latino',
     electro: 'Électro',
   } satisfies Record<GenreFamily, string>,
+
+  traits: {
+    perfectionniste: 'Perfectionniste',
+    fetard: 'Fêtard',
+    discret: 'Discret',
+    provocateur: 'Provocateur',
+    bosseur: 'Bosseur',
+    diva: 'Diva',
+    loyal: 'Loyal',
+    opportuniste: 'Opportuniste',
+    solitaire: 'Solitaire',
+    sociable: 'Sociable',
+    paresseux: 'Paresseux',
+    visionnaire: 'Visionnaire',
+    prudent: 'Prudent',
+    impulsif: 'Impulsif',
+    humble: 'Humble',
+    ambitieux: 'Ambitieux',
+    nostalgique: 'Nostalgique',
+    militant: 'Militant',
+    cerebral: 'Cérébral',
+    instinctif: 'Instinctif',
+  } satisfies Record<TraitId, string>,
+
+  phasesDeCarriere: {
+    emergent: 'Émergent',
+    montee: 'En montée',
+    pic: 'Au sommet',
+    plateau: 'Plateau',
+    declin: 'En déclin',
+  } satisfies Record<CareerPhase, string>,
+
+  niveaux: {
+    amateur: 'Amateur',
+    espoir: 'Espoir',
+    confirme: 'Confirmé',
+    star: 'Star',
+  } satisfies Record<TalentLevel, string>,
+
+  origines: {
+    france: 'France',
+    maghreb: 'Maghreb',
+    afrique: 'Afrique',
+    antilles: 'Antilles',
+    'europe-sud': 'Europe du Sud',
+    latine: 'Amérique latine',
+  } satisfies Record<Origin, string>,
 
   modes: {
     carriere: 'Carrière',

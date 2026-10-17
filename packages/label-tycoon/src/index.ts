@@ -50,3 +50,15 @@ export {
   initialMarket,
   trendMultiplier,
 } from './market';
+export {
+  type Artist,
+  type CareerPhase,
+  type GenerationContext,
+  type GenerationOptions,
+  careerPhaseFor,
+  generateArtist,
+  notoriety,
+  takenStageNames,
+} from './artists';
+export { TRAITS, TRAIT_IDS, type TraitDef, type TraitId } from './content/traits';
+export { type World, generateWorld } from './world';

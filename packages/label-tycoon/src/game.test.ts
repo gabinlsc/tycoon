@@ -51,7 +51,7 @@ describe('nouvelle partie', () => {
             ...defaultConfig(),
             difficulty: { ...DIFFICULTY_PRESETS.normal, startingCash: multiplier },
           };
-          return Number.isSafeInteger(initialState(config).label.tresorerie);
+          return Number.isSafeInteger(initialState('t', config).label.tresorerie);
         },
       ),
     );
@@ -59,7 +59,7 @@ describe('nouvelle partie', () => {
 
   it('la difficulté change le budget de départ, du plus facile au plus difficile', () => {
     const cash = (preset: 'facile' | 'normal' | 'difficile') =>
-      initialState(defaultConfig(preset)).label.tresorerie;
+      initialState('t', defaultConfig(preset)).label.tresorerie;
     expect(cash('facile')).toBe(money.euros(20_000));
     expect(cash('difficile')).toBe(money.euros(5_000));
     expect(cash('facile')).toBeGreaterThan(cash('normal'));
@@ -67,7 +67,7 @@ describe('nouvelle partie', () => {
   });
 
   it("le bac à sable donne de l'argent illimité", () => {
-    const state = initialState({ ...defaultConfig('normal', 'bac-a-sable'), sandbox: true });
+    const state = initialState('t', { ...defaultConfig('normal', 'bac-a-sable'), sandbox: true });
     expect(state.label.tresorerie).toBeGreaterThan(money.euros(100_000_000));
   });
 
@@ -78,7 +78,7 @@ describe('nouvelle partie', () => {
         difficulty: { ...DIFFICULTY_PRESETS.normal, [key]: DIFFICULTY_BOUNDS[key].max + 1 },
       };
       expect(validateConfig(tooHigh)).toContain(key);
-      expect(() => initialState(tooHigh)).toThrow(RangeError);
+      expect(() => initialState('t', tooHigh)).toThrow(RangeError);
     }
     const nan: GameConfig = {
       ...defaultConfig(),
@@ -90,7 +90,7 @@ describe('nouvelle partie', () => {
 
   it('ne partage aucune référence avec les réglages fournis', () => {
     const config = defaultConfig();
-    const state = initialState(config);
+    const state = initialState('t', config);
     config.difficulty.startingCash = 99;
     expect(state.config.difficulty.startingCash).toBe(1);
   });
@@ -102,7 +102,7 @@ describe('nouvelle partie', () => {
   });
 
   it('attribue des identifiants uniques et croissants', () => {
-    const state = initialState(defaultConfig());
+    const state = initialState('t', defaultConfig());
     expect([newId(state), newId(state), newId(state)]).toEqual([1, 2, 3]);
     expect(state.nextId).toBe(4);
   });
@@ -165,7 +165,7 @@ describe('renommer le label', () => {
     session = labelGame.advance(result.session, 5).session;
     const replayed = labelGame.replay(
       'rj',
-      initialState(defaultConfig()),
+      initialState('rj', defaultConfig()),
       session.journal,
       session.engine.tick,
     );

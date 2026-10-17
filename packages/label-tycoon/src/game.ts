@@ -11,6 +11,7 @@ import { DIFFICULTY_BOUNDS, DIFFICULTY_PRESETS, EVENTS, SANDBOX_CASH, START } fr
 import type { DifficultyPreset, DifficultySettings, GameConfig, GameMode } from './config';
 import { type LabelSignal, buildPipeline } from './pipeline';
 import { initialCredibility, initialMarket } from './market';
+import { generateWorld } from './world';
 import type { LabelState } from './state';
 
 /** Un flux aléatoire par système : ajouter un tirage dans l'un ne décale pas les autres. */
@@ -74,8 +75,8 @@ export function validateConfig(config: GameConfig): string | null {
   return null;
 }
 
-/** État initial d'une partie pour des réglages donnés (sans aucun tirage au sort). */
-export function initialState(config: GameConfig): LabelState {
+/** État initial d'une partie : réglages, monde déduit de la graine, aucun tirage de la simulation. */
+export function initialState(seed: Seed, config: GameConfig): LabelState {
   const problem = validateConfig(config);
   if (problem) throw new RangeError(problem);
   const cash = config.sandbox
@@ -92,6 +93,8 @@ export function initialState(config: GameConfig): LabelState {
     },
     events: emptyEventsState(),
     marche: initialMarket(),
+    villes: generateWorld(seed).villes,
+    artistes: [],
     nextId: 1,
   };
 }
@@ -106,5 +109,5 @@ function structuredConfig(config: GameConfig): GameConfig {
 
 /** Nouvelle partie. Même graine et mêmes réglages : même partie, au bit près. */
 export function newGame(seed: Seed, config: GameConfig = defaultConfig()): LabelSession {
-  return labelGame.newSession(seed, initialState(config));
+  return labelGame.newSession(seed, initialState(seed, config));
 }
