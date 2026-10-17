@@ -1,0 +1,24 @@
+import { type Action, type ActionHandler, type ResolveEventAction, reject } from '@tycoon/core';
+import { LABEL_NAME_MAX } from './balance';
+import type { LabelSignal } from './pipeline';
+import type { LabelState } from './state';
+
+export interface RenameLabelAction extends Action {
+  readonly type: 'renommer-label';
+  readonly nom: string;
+}
+
+/** Toutes les actions du joueur. Une action = une entrée du journal, rejouable. */
+export type LabelAction = RenameLabelAction | ResolveEventAction;
+
+export const renameLabel: ActionHandler<LabelState, RenameLabelAction, LabelSignal> = {
+  validate(_state, action) {
+    const nom = action.nom.trim();
+    if (nom === '') return reject('nom-vide');
+    if ([...nom].length > LABEL_NAME_MAX) return reject('nom-trop-long', { max: LABEL_NAME_MAX });
+    return null;
+  },
+  apply(state, action) {
+    state.label.nom = action.nom.trim();
+  },
+};
