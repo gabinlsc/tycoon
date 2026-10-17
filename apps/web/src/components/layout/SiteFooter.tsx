@@ -1,14 +1,7 @@
+import { Link } from 'react-router-dom';
 import { GAMES } from '../../data/games';
 import { SITE } from '../../config/site';
-import { Coin } from './ui/Coin';
-
-const NAV = [
-  { href: '#jeux', label: 'Jeux' },
-  { href: '#defi-du-jour', label: 'Défi du jour' },
-  { href: '#classements', label: 'Classements' },
-  { href: '#a-propos', label: 'Comment jouer' },
-  { href: '#abonnement', label: 'Être prévenu' },
-] as const;
+import { Logo } from './Logo';
 
 /** Pied de page : liens, liste des jeux et mentions légales (placeholders). */
 export function SiteFooter() {
@@ -18,31 +11,39 @@ export function SiteFooter() {
       <div className="footer__inner page">
         <div className="footer__brand">
           <p className="footer__logo">
-            <Coin size={36} />
+            <Logo size={36} />
             <span>{SITE.name}</span>
           </p>
-          <p>Hébergé en France. Les entreprises, les cours et les fortunes cités sont fictifs.</p>
+          <p>Hébergé en France. Chaque jeu est indépendant : ton compte ne garde que ton pseudo.</p>
         </div>
         <nav aria-label="Plan du site">
           <h2 className="footer__title">Le hub</h2>
           <ul>
-            {NAV.map((item) => (
-              <li key={item.href}>
-                <a className="ink-link" href={item.href}>
-                  {item.label}
-                </a>
-              </li>
-            ))}
+            <li>
+              <Link className="ink-link" to="/jeux">
+                Tous les jeux
+              </Link>
+            </li>
+            <li>
+              <Link className="ink-link" to="/#comment-jouer">
+                Comment jouer
+              </Link>
+            </li>
+            <li>
+              <Link className="ink-link" to="/#abonnement">
+                Être prévenu
+              </Link>
+            </li>
           </ul>
         </nav>
         <nav aria-label="Les jeux">
           <h2 className="footer__title">Les jeux</h2>
           <ul>
             {GAMES.map((game) => (
-              <li key={game.symbol}>
-                <a className="ink-link" href="#jeux">
+              <li key={game.slug}>
+                <Link className="ink-link" to={`/jeux/${game.slug}`}>
                   {game.name}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -51,19 +52,14 @@ export function SiteFooter() {
           <h2 className="footer__title">Infos</h2>
           <ul>
             <li>
-              <a className="ink-link" href="#mentions-legales">
+              <Link className="ink-link" to="/mentions-legales">
                 Mentions légales
-              </a>
+              </Link>
             </li>
             <li>
-              <a className="ink-link" href="#confidentialite">
+              <Link className="ink-link" to="/confidentialite">
                 Confidentialité
-              </a>
-            </li>
-            <li>
-              <a className="ink-link" href="#contact">
-                Contact
-              </a>
+              </Link>
             </li>
           </ul>
         </nav>

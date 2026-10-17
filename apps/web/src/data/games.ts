@@ -1,7 +1,6 @@
-/** Catalogue des jeux. Ajouter un jeu = ajouter une entrée dans GAMES, rien d'autre. */
+/** Catalogue des jeux. Ajouter un jeu = ajouter une entrée dans GAMES. Chaque jeu est indépendant. */
 
 export type GameStatus = 'Disponible' | 'En développement' | 'Bientôt';
-
 export type GameColor = 'purple' | 'orange' | 'blue' | 'pink' | 'green' | 'red';
 export type GameIcon = 'vinyl' | 'truck' | 'sneaker' | 'disco' | 'ball' | 'case';
 
@@ -12,145 +11,126 @@ export interface GameStats {
   depth: number;
 }
 
-export interface Crossover {
-  /** Symbole boursier du jeu relié. */
-  with: string;
-  /** Ce que le lien change concrètement pour le joueur. */
-  label: string;
-}
-
 export interface Game {
+  /** Identifiant d'URL : /jeux/<slug>. Unique et stable, il sert aussi de clé de sauvegarde. */
+  slug: string;
   name: string;
-  /** Symbole boursier fictif (3 à 5 lettres). */
+  /** Sigle court affiché sur les cartes (3 à 5 lettres). */
   symbol: string;
   tagline: string;
+  /** Pitch de la page du jeu, quelques phrases. */
+  pitch: string;
   genre: string;
   status: GameStatus;
-  /** Mécanique principale, affichée au survol. */
+  /** Mécanique principale. */
   mechanic: string;
-  /** Durée d'une partie, affichée au survol. */
+  /** Durée d'une partie. */
   playtime: string;
-  /** Couleur de la carte et de l'emblème. */
+  /** Couleur de la carte, du médaillon et de l'introduction. */
   color: GameColor;
   icon: GameIcon;
   stats: GameStats;
-  /** Cours de départ fictif, en euros (simulation de marché conservée pour l'ancien ticker). */
-  price: number;
-  /** Volatilité de la marche aléatoire (écart-type relatif par tick). */
-  volatility: number;
-  /** Graine : même courbe pour tout le monde, à chaque visite. */
-  seed: number;
-  /** Lien externe vers le jeu quand il existe. */
-  href?: string;
-  crossovers: Crossover[];
 }
 
 export const GAMES = [
   {
+    slug: 'label-tycoon',
     name: 'Label Tycoon',
     symbol: 'LBL',
     color: 'purple',
     icon: 'vinyl',
     stats: { profit: 4, difficulty: 3, depth: 5 },
     tagline: 'Signez les voix de demain avant que le concurrent ne les entende.',
+    pitch:
+      "Tu pars d'un petit studio et d'un carnet d'adresses vide. Repère les talents, signe-les au bon moment, finance leurs albums et pilote leurs carrières sur dix ans. Un tube peut tout changer, un flop aussi.",
     genre: 'Industrie musicale',
     status: 'En développement',
     mechanic: 'Signer des artistes, financer leurs albums, piloter leurs carrières sur dix ans.',
     playtime: '25 à 40 min',
-    price: 142.35,
-    volatility: 0.012,
-    seed: 1101,
-    crossovers: [
-      { with: 'CLUB', label: 'Le label place son DJ en résidence dans la boîte de nuit.' },
-      { with: 'SNKR', label: 'Un artiste du label prête sa voix à une collection de baskets.' },
-    ],
   },
   {
+    slug: 'street-food-empire',
     name: 'Street Food Empire',
     symbol: 'FOOD',
     color: 'orange',
     icon: 'truck',
     stats: { profit: 3, difficulty: 2, depth: 3 },
     tagline: 'Un camion, une plaque, un quartier. Puis cent enseignes.',
+    pitch:
+      "Un camion d'occasion, une plaque de cuisson et un emplacement à gagner. Compose ton menu, gère tes stocks, choisis tes quartiers, puis transforme ton succès en franchise.",
     genre: 'Restauration',
     status: 'Bientôt',
     mechanic: 'Optimiser un menu, des stocks et des emplacements, puis franchiser.',
     playtime: '15 à 30 min',
-    price: 38.9,
-    volatility: 0.016,
-    seed: 2202,
-    crossovers: [{ with: 'CLUB', label: "Le food truck s'installe à la sortie du festival." }],
   },
   {
+    slug: 'sneaker-brand',
     name: 'Sneaker Brand',
     symbol: 'SNKR',
     color: 'blue',
     icon: 'sneaker',
     stats: { profit: 5, difficulty: 3, depth: 4 },
     tagline: 'Revendez des paires rares, puis lancez la vôtre.',
+    pitch:
+      'Tout commence par la revente : repère les paires rares, achète avant la hype, revends au bon moment. Quand la trésorerie suit, dessine ta propre marque et enchaîne les drops.',
     genre: 'Mode et revente',
     status: 'Bientôt',
     mechanic: 'Spéculer sur la revente, puis dessiner des drops et gérer le niveau de hype.',
     playtime: '20 à 35 min',
-    price: 87.2,
-    volatility: 0.022,
-    seed: 3303,
-    crossovers: [
-      { with: 'FCO', label: 'Le club de football signe la dotation maillot et crampons.' },
-    ],
   },
   {
+    slug: 'club-owner',
     name: 'Club Owner',
     symbol: 'CLUB',
     color: 'pink',
     icon: 'disco',
     stats: { profit: 4, difficulty: 2, depth: 4 },
-    tagline: 'Une cave, un vigile, une file d’attente. Visez le festival.',
+    tagline: "Une cave, un vigile, une file d'attente. Visez le festival.",
+    pitch:
+      'Une cave humide, un vigile et une platine. Programme tes soirées, gère le bar et la sécurité, fais monter la réputation du lieu, puis vise grand : ton propre festival.',
     genre: 'Vie nocturne',
     status: 'Bientôt',
     mechanic: 'Programmer des soirées, gérer le bar et la sécurité, puis monter un festival.',
     playtime: '20 à 30 min',
-    price: 54.6,
-    volatility: 0.019,
-    seed: 4404,
-    crossovers: [{ with: 'SYND', label: "La façade du club blanchit l'argent du syndicat." }],
   },
   {
+    slug: 'football-club-owner',
     name: 'Football Club Owner',
     symbol: 'FCO',
     color: 'green',
     icon: 'ball',
     stats: { profit: 4, difficulty: 4, depth: 5 },
     tagline: 'Le club sans le ballon : billetterie, transferts, droits télé.',
+    pitch:
+      "Tu diriges le club, pas l'équipe. Masse salariale, stade, billetterie, transferts, sponsors et droits télé : les matchs se jouent sans toi, mais tes décisions les gagnent ou les perdent.",
     genre: 'Sport business',
     status: 'En développement',
     mechanic:
       'Gérer la masse salariale, le stade et les transferts. Les matchs se jouent sans vous.',
     playtime: '30 à 50 min',
-    price: 211.05,
-    volatility: 0.01,
-    seed: 5505,
-    crossovers: [{ with: 'LBL', label: "L'hymne du club sort sur le label maison." }],
   },
   {
+    slug: 'syndicate',
     name: 'Syndicate',
     symbol: 'SYND',
     color: 'red',
     icon: 'case',
     stats: { profit: 5, difficulty: 5, depth: 4 },
     tagline: 'Un empire qui ne figure sur aucun registre.',
+    pitch:
+      "Bâtis des façades légales, achète la loyauté de tes hommes et garde une longueur d'avance sur l'enquête. Chaque affaire rapporte gros, chaque erreur coûte plus cher encore.",
     genre: 'Empire clandestin',
     status: 'Bientôt',
     mechanic: "Bâtir des façades légales, acheter la loyauté de vos hommes, éviter l'enquête.",
     playtime: '25 à 45 min',
-    price: 19.75,
-    volatility: 0.03,
-    seed: 6606,
-    crossovers: [],
   },
 ] as const satisfies readonly Game[];
 
-export type GameSymbol = (typeof GAMES)[number]['symbol'];
+export type GameSlug = (typeof GAMES)[number]['slug'];
 
-/** Jeu mis en avant dans le gros titre : le premier de la liste par défaut. */
-export const FEATURED_SYMBOL: GameSymbol = 'LBL';
+/** Jeu mis en avant sur la page d'accueil. */
+export const FEATURED_SLUG: GameSlug = 'label-tycoon';
+
+export function findGame(slug: string | undefined): Game | undefined {
+  return GAMES.find((g) => g.slug === slug);
+}

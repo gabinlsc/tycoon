@@ -1,41 +1,36 @@
-/** Les quatre articles de la rubrique « Comment ça marche ». */
-export interface Article {
-  numeral: string;
+/** Les quatre règles de la rubrique « Comment jouer ». */
+export interface Rule {
   title: string;
   paragraphs: readonly string[];
 }
 
-export const HOW_IT_WORKS: readonly Article[] = [
+export const HOW_IT_WORKS: readonly Rule[] = [
   {
-    numeral: 'I',
-    title: 'Jouez sans compte',
+    title: 'Un pseudo, point final',
     paragraphs: [
-      'Aucune inscription, aucun mot de passe, aucune carte bancaire. Vous ouvrez un jeu, vous jouez. Votre partie est sauvegardée dans votre navigateur, sur votre appareil, et nulle part ailleurs.',
-      "Le jeu ne vous demande jamais votre adresse. L'abonnement à l'édition est facultatif, et ne sert qu'à vous prévenir des sorties.",
+      "Pas d'e-mail, pas de mot de passe. Tu choisis un pseudo et tu reçois des codes de récupération à garder précieusement.",
+      'Ton navigateur te reconnaît ensuite tout seul : tu ouvres le site, tu es connecté.',
     ],
   },
   {
-    numeral: 'II',
-    title: 'Une progression commune',
+    title: 'Chaque jeu vit sa vie',
     paragraphs: [
-      "Votre réputation de patron voyage d'un jeu à l'autre. Un label qui tourne bien ouvre des contrats plus avantageux dans la boîte de nuit ; une marque connue attire de meilleurs joueurs au club de football.",
-      'Chaque titre garde ses règles propres. Seuls le capital de confiance et les contacts sont partagés.',
+      "Un jeu, un univers, ses règles, sa trésorerie. Ce que tu gagnes dans l'un ne sert pas dans l'autre.",
+      'Tu peux donc changer de métier quand tu veux, sans rien perdre ni rien devoir.',
     ],
   },
   {
-    numeral: 'III',
-    title: 'Des empires qui se croisent',
+    title: 'Tout est sauvegardé',
     paragraphs: [
-      "Le label signe le DJ de la boîte de nuit. La marque de baskets lance une collaboration avec un artiste. Le syndicat, lui, blanchit ses recettes derrière le comptoir d'un bar.",
-      'Ces liens sont des événements de jeu : ils débloquent des contrats, des exclusivités, parfois des ennuis. Le schéma plus bas en dresse la carte.',
+      "Tes parties sont enregistrées automatiquement sur ton compte, jeu par jeu. Tu fermes l'onglet, tu reviens, tu reprends là où tu t'étais arrêté.",
+      "Tu peux effacer la sauvegarde d'un jeu à tout moment depuis ta page de compte.",
     ],
   },
   {
-    numeral: 'IV',
-    title: 'Un défi chaque jour',
+    title: 'Tes codes, ta clé',
     paragraphs: [
-      'À minuit, heure de Paris, une nouvelle quête est publiée : même jeu, même capital, même contrainte pour tout le monde. Quinze minutes, un objectif chiffré.',
-      "Les meilleurs scores de la veille s'affichent au podium. Personne ne peut rejouer la quête d'hier : elle disparaît pour de bon.",
+      "Perdu l'accès à ton compte ? Un code de récupération te le rend. Chaque code ne sert qu'une fois, alors garde-les en lieu sûr.",
+      "Personne ne peut les retrouver pour toi : il n'y a pas d'e-mail sur lequel les renvoyer.",
     ],
   },
 ];

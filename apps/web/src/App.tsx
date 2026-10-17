@@ -1,32 +1,22 @@
-import { ActivityFeed } from './components/arcade/ActivityFeed';
-import { CrossoverMap } from './components/arcade/CrossoverMap';
-import { DailyQuest } from './components/arcade/DailyQuest';
-import { GameGrid } from './components/arcade/GameGrid';
-import { Hero } from './components/arcade/Hero';
-import { HowToPlay } from './components/arcade/HowToPlay';
-import { Leaderboard } from './components/arcade/Leaderboard';
-import { Navbar } from './components/arcade/Navbar';
-import { SiteFooter } from './components/arcade/SiteFooter';
-import { SubscribeBox } from './components/arcade/SubscribeBox';
+import { Route, Routes } from 'react-router-dom';
+import { Layout } from './components/layout/Layout';
+import { GamePage } from './pages/GamePage';
+import { GamesPage } from './pages/GamesPage';
+import { HomePage } from './pages/HomePage';
+import { LegalPage } from './pages/LegalPage';
+import { NotFoundPage } from './pages/NotFoundPage';
 
 export function App() {
   return (
-    <>
-      <a className="skip-link" href="#contenu">
-        Aller au contenu
-      </a>
-      <Navbar />
-      <ActivityFeed />
-      <main id="contenu">
-        <Hero />
-        <GameGrid />
-        <DailyQuest />
-        <Leaderboard />
-        <HowToPlay />
-        <CrossoverMap />
-        <SubscribeBox />
-      </main>
-      <SiteFooter />
-    </>
+    <Routes>
+      <Route element={<Layout />}>
+        <Route index element={<HomePage />} />
+        <Route path="jeux" element={<GamesPage />} />
+        <Route path="jeux/:slug" element={<GamePage />} />
+        <Route path="mentions-legales" element={<LegalPage title="Mentions légales" />} />
+        <Route path="confidentialite" element={<LegalPage title="Confidentialité" />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
+    </Routes>
   );
 }
