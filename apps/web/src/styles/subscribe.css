@@ -1,0 +1,113 @@
+.subscribe {
+  padding-block: var(--sp-7);
+}
+.subscribe__box {
+  max-width: 44rem;
+  padding: var(--sp-5);
+  border: var(--rule-thick) double var(--rule);
+  background: var(--paper-deep);
+}
+.subscribe__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.subscribe__label {
+  font-size: var(--fs-micro);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.subscribe__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+}
+.subscribe__input {
+  flex: 1 1 16rem;
+  min-width: 0;
+  padding: var(--sp-3) var(--sp-4);
+  border: var(--rule-thin) solid var(--ink);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-family: var(--font-mono);
+}
+.subscribe__input::placeholder {
+  color: var(--ink-soft);
+}
+.subscribe__input[aria-invalid='true'] {
+  border-color: var(--vermillion);
+  box-shadow: 0 0 0 1px var(--vermillion);
+}
+.subscribe__row .stamp-button {
+  cursor: pointer;
+  font-family: inherit;
+}
+.subscribe__row .stamp-button:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+.subscribe__error {
+  min-height: 1.5em;
+  color: var(--vermillion);
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+.subscribe__note {
+  color: var(--ink-soft);
+  font-size: var(--fs-small);
+}
+
+/* Succès : un tampon « Reçu » s'abat sur le formulaire */
+.subscribe__done {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding-right: 7rem;
+}
+.subscribe__done-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  line-height: 1;
+}
+.subscribe__stamp {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: var(--sp-1) var(--sp-3);
+  border: 3px solid var(--vermillion);
+  color: var(--vermillion);
+  font-size: var(--fs-h3);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transform: rotate(-8deg);
+}
+@keyframes stamp-down {
+  0% {
+    transform: rotate(-8deg) scale(1.9);
+    opacity: 0;
+  }
+  70% {
+    transform: rotate(-8deg) scale(0.94);
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(-8deg) scale(1);
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .subscribe__stamp {
+    animation: stamp-down 380ms var(--ease-press) both;
+  }
+}
+@media (max-width: 30rem) {
+  .subscribe__done {
+    padding-right: 0;
+    padding-top: 3.5rem;
+  }
+}
