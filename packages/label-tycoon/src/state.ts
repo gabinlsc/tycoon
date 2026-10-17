@@ -1,6 +1,7 @@
 import type { Cents, EventsState } from '@tycoon/core';
 import type { TierId } from './balance';
 import type { GameConfig } from './config';
+import type { MarketState } from './market';
 
 /** Le label du joueur. */
 export interface LabelData {
@@ -10,6 +11,8 @@ export interface LabelData {
   tresorerie: Cents;
   /** Réputation (0-100). */
   reputation: number;
+  /** Crédibilité du label dans chaque genre (0-100), par identifiant de genre. */
+  credibilite: Record<string, number>;
 }
 
 /**
@@ -21,6 +24,7 @@ export interface LabelState {
   config: GameConfig;
   label: LabelData;
   events: EventsState;
+  marche: MarketState;
   /** Prochain identifiant libre, partagé par toutes les entités (artistes, sorties, contrats…). */
   nextId: number;
 }

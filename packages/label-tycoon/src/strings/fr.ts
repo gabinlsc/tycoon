@@ -1,5 +1,6 @@
 import type { GameMode } from '../config';
 import type { TierId } from '../balance/tiers';
+import type { BaseGenreId, GenreFamily } from '../content/genres';
 
 /**
  * Toutes les chaînes affichées du jeu, en français. Aucune chaîne n'est écrite en dur dans les
@@ -13,6 +14,27 @@ export const fr = {
     etabli: 'Label établi',
     major: 'Major',
   } satisfies Record<TierId, string>,
+
+  genres: {
+    rap: 'Rap',
+    drill: 'Drill',
+    trap: 'Trap',
+    afro: 'Afro',
+    rnb: 'R&B',
+    'pop-urbaine': 'Pop urbaine',
+    'electro-pop': 'Électro-pop',
+    latino: 'Trap latin',
+    variete: 'Variété contemporaine',
+    dancehall: 'Dancehall',
+  } satisfies Record<BaseGenreId, string>,
+
+  famillesDeGenre: {
+    urbain: 'Musiques urbaines',
+    pop: 'Pop',
+    afro: 'Afro et caribéen',
+    latino: 'Latino',
+    electro: 'Électro',
+  } satisfies Record<GenreFamily, string>,
 
   modes: {
     carriere: 'Carrière',

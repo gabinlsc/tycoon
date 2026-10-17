@@ -4,5 +4,6 @@
  */
 export { DIFFICULTY_BOUNDS, DIFFICULTY_PRESETS } from './difficulty';
 export { EVENTS } from './events';
+export { MARKET, START_CREDIBILITY } from './market';
 export { LABEL_NAME_MAX, SANDBOX_CASH, START } from './start';
 export { type CertificationLevel, TIERS, type TierId, type TierRule } from './tiers';
