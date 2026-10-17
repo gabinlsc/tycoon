@@ -1,0 +1,22 @@
+export { type LabelAction, type RenameLabelAction, renameLabel } from './actions';
+export * from './balance';
+export type { DifficultyPreset, DifficultySettings, GameConfig, GameMode } from './config';
+export {
+  LABEL_STREAMS,
+  type LabelSession,
+  defaultConfig,
+  eventEngine,
+  initialState,
+  labelGame,
+  newGame,
+  validateConfig,
+} from './game';
+export {
+  type LabelPhase,
+  type LabelSignal,
+  PHASE_ORDER,
+  type PhaseName,
+  buildPipeline,
+} from './pipeline';
+export { type LabelData, type LabelState, newId } from './state';
+export { type Strings, describeRejection, fr, strings } from './strings';
