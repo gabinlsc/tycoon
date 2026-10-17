@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import './styles/tokens.css';
 import './styles/base.css';
 import './styles/masthead.css';
+import './styles/ticker.css';
 import { App } from './App';
 import { initIntro } from './lib/intro';
 
