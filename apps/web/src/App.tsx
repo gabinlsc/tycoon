@@ -1,6 +1,7 @@
 import { Masthead } from './components/Masthead/Masthead';
 import { Crossovers } from './components/Crossovers/Crossovers';
 import { DailyChallenge } from './components/DailyChallenge/DailyChallenge';
+import { Footer } from './components/Footer/Footer';
 import { Headline } from './components/Headline/Headline';
 import { HowItWorks } from './components/HowItWorks/HowItWorks';
 import { Leaderboard } from './components/Leaderboard/Leaderboard';
@@ -26,6 +27,7 @@ export function App() {
         <Crossovers />
         <Subscribe />
       </main>
+      <Footer />
     </MarketProvider>
   );
 }
