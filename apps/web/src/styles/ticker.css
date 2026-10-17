@@ -50,27 +50,6 @@
 }
 
 .flip {
-  color: #7fd0a0;
-}
-.ticker__item--down .ticker__delta,
-.ticker__item--down .flip {
-  color: #ff8a73;
-}
-:root[data-theme='dark'] .ticker {
-  background: var(--paper-deep);
-  color: var(--ink);
-  border-color: var(--rule);
-}
-:root[data-theme='dark'] .ticker__item--up .ticker__delta,
-:root[data-theme='dark'] .ticker__item--up .flip {
-  color: var(--fir);
-}
-:root[data-theme='dark'] .ticker__item--down .ticker__delta,
-:root[data-theme='dark'] .ticker__item--down .flip {
-  color: var(--vermillion);
-}
-
-.flip {
   display: inline-flex;
 }
 .flip__char {
