@@ -34,3 +34,19 @@ export {
   pickStyle,
   uniqueName,
 } from './naming';
+export {
+  type BaseGenreId,
+  GENRES,
+  GENRE_IDS,
+  type GenreDef,
+  type GenreFamily,
+  type VocalAxis,
+} from './content/genres';
+export {
+  type GenreMarket,
+  type MarketState,
+  genreKeys,
+  initialCredibility,
+  initialMarket,
+  trendMultiplier,
+} from './market';

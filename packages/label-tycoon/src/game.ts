@@ -10,6 +10,7 @@ import { type LabelAction, renameLabel } from './actions';
 import { DIFFICULTY_BOUNDS, DIFFICULTY_PRESETS, EVENTS, SANDBOX_CASH, START } from './balance';
 import type { DifficultyPreset, DifficultySettings, GameConfig, GameMode } from './config';
 import { type LabelSignal, buildPipeline } from './pipeline';
+import { initialCredibility, initialMarket } from './market';
 import type { LabelState } from './state';
 
 /** Un flux aléatoire par système : ajouter un tirage dans l'un ne décale pas les autres. */
@@ -87,8 +88,10 @@ export function initialState(config: GameConfig): LabelState {
       tier: 'home-studio',
       tresorerie: cash,
       reputation: START.reputation,
+      credibilite: initialCredibility(),
     },
     events: emptyEventsState(),
+    marche: initialMarket(),
     nextId: 1,
   };
 }

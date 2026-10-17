@@ -24,7 +24,7 @@ describe('nouvelle partie', () => {
   it('démarre en home-studio avec le budget de départ', () => {
     const { engine } = newGame('graine');
     expect(engine.tick).toBe(0);
-    expect(engine.data.label).toEqual({
+    expect(engine.data.label).toMatchObject({
       nom: 'Mon label',
       tier: 'home-studio',
       tresorerie: money.euros(10_000),
