@@ -9,6 +9,7 @@ import './styles/headline.css';
 import './styles/quotes.css';
 import './styles/sparkline.css';
 import './styles/daily.css';
+import './styles/leaderboard.css';
 import { App } from './App';
 import { initIntro } from './lib/intro';
 
