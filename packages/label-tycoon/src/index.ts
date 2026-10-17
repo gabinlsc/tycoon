@@ -83,3 +83,11 @@ export {
 } from './finance';
 export { artisticTalent } from './formulas';
 export { type ArtistDelta, adjustArtist, artistsPhase, driftArtist } from './dynamics';
+export {
+  type ProgressionContext,
+  progressionMultiplier,
+  stepSkills,
+  updatePhase,
+  weeklyDecline,
+  yearlyDeclineRoll,
+} from './career';
