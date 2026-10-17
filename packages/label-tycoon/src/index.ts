@@ -20,3 +20,17 @@ export {
 } from './pipeline';
 export { type LabelData, type LabelState, newId } from './state';
 export { type Strings, describeRejection, fr, strings } from './strings';
+export {
+  type Origin,
+  type RealName,
+  type StageStyle,
+  generateCityName,
+  generateLabelName,
+  generateRealName,
+  generateStageName,
+  isExcluded,
+  normalizeForCompare,
+  pickOrigin,
+  pickStyle,
+  uniqueName,
+} from './naming';
