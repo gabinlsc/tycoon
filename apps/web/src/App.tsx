@@ -1,9 +1,13 @@
-import { SITE } from './config/site';
+import { Masthead } from './components/Masthead/Masthead';
 
 export function App() {
   return (
-    <main className="page">
-      <h1>{SITE.name}</h1>
-    </main>
+    <>
+      <a className="skip-link" href="#contenu">
+        Aller au contenu
+      </a>
+      <Masthead />
+      <main id="contenu" className="page" />
+    </>
   );
 }
