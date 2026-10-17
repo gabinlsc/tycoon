@@ -2,6 +2,16 @@
 
 export type GameStatus = 'Disponible' | 'En développement' | 'Bientôt';
 
+export type GameColor = 'purple' | 'orange' | 'blue' | 'pink' | 'green' | 'red';
+export type GameIcon = 'vinyl' | 'truck' | 'sneaker' | 'disco' | 'ball' | 'case';
+
+/** Note de 1 à 5 affichée en barre de stat, façon fiche de personnage. */
+export interface GameStats {
+  profit: number;
+  difficulty: number;
+  depth: number;
+}
+
 export interface Crossover {
   /** Symbole boursier du jeu relié. */
   with: string;
@@ -20,7 +30,11 @@ export interface Game {
   mechanic: string;
   /** Durée d'une partie, affichée au survol. */
   playtime: string;
-  /** Cours de départ fictif, en euros. */
+  /** Couleur de la carte et de l'emblème. */
+  color: GameColor;
+  icon: GameIcon;
+  stats: GameStats;
+  /** Cours de départ fictif, en euros (simulation de marché conservée pour l'ancien ticker). */
   price: number;
   /** Volatilité de la marche aléatoire (écart-type relatif par tick). */
   volatility: number;
@@ -35,6 +49,9 @@ export const GAMES = [
   {
     name: 'Label Tycoon',
     symbol: 'LBL',
+    color: 'purple',
+    icon: 'vinyl',
+    stats: { profit: 4, difficulty: 3, depth: 5 },
     tagline: 'Signez les voix de demain avant que le concurrent ne les entende.',
     genre: 'Industrie musicale',
     status: 'En développement',
@@ -51,6 +68,9 @@ export const GAMES = [
   {
     name: 'Street Food Empire',
     symbol: 'FOOD',
+    color: 'orange',
+    icon: 'truck',
+    stats: { profit: 3, difficulty: 2, depth: 3 },
     tagline: 'Un camion, une plaque, un quartier. Puis cent enseignes.',
     genre: 'Restauration',
     status: 'Bientôt',
@@ -64,6 +84,9 @@ export const GAMES = [
   {
     name: 'Sneaker Brand',
     symbol: 'SNKR',
+    color: 'blue',
+    icon: 'sneaker',
+    stats: { profit: 5, difficulty: 3, depth: 4 },
     tagline: 'Revendez des paires rares, puis lancez la vôtre.',
     genre: 'Mode et revente',
     status: 'Bientôt',
@@ -79,6 +102,9 @@ export const GAMES = [
   {
     name: 'Club Owner',
     symbol: 'CLUB',
+    color: 'pink',
+    icon: 'disco',
+    stats: { profit: 4, difficulty: 2, depth: 4 },
     tagline: 'Une cave, un vigile, une file d’attente. Visez le festival.',
     genre: 'Vie nocturne',
     status: 'Bientôt',
@@ -92,6 +118,9 @@ export const GAMES = [
   {
     name: 'Football Club Owner',
     symbol: 'FCO',
+    color: 'green',
+    icon: 'ball',
+    stats: { profit: 4, difficulty: 4, depth: 5 },
     tagline: 'Le club sans le ballon : billetterie, transferts, droits télé.',
     genre: 'Sport business',
     status: 'En développement',
@@ -106,6 +135,9 @@ export const GAMES = [
   {
     name: 'Syndicate',
     symbol: 'SYND',
+    color: 'red',
+    icon: 'case',
+    stats: { profit: 5, difficulty: 5, depth: 4 },
     tagline: 'Un empire qui ne figure sur aucun registre.',
     genre: 'Empire clandestin',
     status: 'Bientôt',

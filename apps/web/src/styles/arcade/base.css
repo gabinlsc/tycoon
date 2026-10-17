@@ -1,0 +1,133 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light dark;
+  -webkit-text-size-adjust: 100%;
+}
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: var(--font-text);
+  font-weight: 600;
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  /* Ciel dégradé, fixe derrière tout le contenu */
+  background: linear-gradient(180deg, var(--sky-top), var(--sky-bottom)) fixed;
+  /* clip (et non hidden) : garde le comportement de la barre collante */
+  overflow-x: clip;
+}
+
+/* Trame de petits losanges pour donner de la matière au ciel */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.18;
+  background-image: radial-gradient(#ffffff 2px, transparent 2.5px);
+  background-size: 28px 28px;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: 0.01em;
+}
+p {
+  margin: 0;
+}
+
+.page {
+  max-width: var(--page-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* Focus : anneau jaune épais avec contour encre, visible sur tous les fonds */
+:focus-visible {
+  outline: 4px solid var(--gold);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px var(--outline);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--sp-4);
+  top: -5rem;
+  z-index: 100;
+  padding: var(--sp-2) var(--sp-4);
+  border: var(--border);
+  border-radius: var(--r-sm);
+  background: var(--gold);
+  color: var(--on-color);
+  font-weight: 800;
+}
+.skip-link:focus {
+  top: var(--sp-4);
+}
+
+/* Carte de base : contour épais, ombre pleine, coins ronds */
+.card {
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--pop);
+}
+
+.ink-link {
+  color: inherit;
+  text-decoration: none;
+  background: linear-gradient(var(--gold), var(--gold)) no-repeat left bottom / 0% 6px;
+  transition: background-size var(--dur-base) var(--ease-out);
+}
+.ink-link:hover,
+.ink-link:focus-visible {
+  background-size: 100% 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Chiffres : police d'affichage, chiffres de largeur fixe pour que les compteurs ne sautillent pas */
+.mono {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
