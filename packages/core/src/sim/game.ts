@@ -69,6 +69,14 @@ export type DispatchResult<G, A extends Action, S extends Signal> =
   | { ok: true; session: Session<G, A>; signals: S[] }
   | { ok: false; session: Session<G, A>; rejection: Rejection };
 
+export interface ReplayOptions<G> {
+  /**
+   * Appelée à chaque semaine (y compris la semaine 0), une fois les actions de cette semaine
+   * appliquées. Sert aux points de contrôle. L'état est en lecture seule : ne pas le modifier.
+   */
+  onTick?: (engine: Readonly<EngineState<G>>) => void;
+}
+
 export class ReplayError extends Error {
   readonly index: number;
   readonly rejection: Rejection | null;
@@ -101,6 +109,7 @@ export interface Game<G, A extends Action, S extends Signal = Signal> {
     initialData: G,
     journal: readonly JournalEntry<A>[],
     untilTick: number,
+    options?: ReplayOptions<G>,
   ): Session<G, A>;
 }
 
@@ -156,7 +165,7 @@ export function createGame<G, A extends Action, S extends Signal = Signal>(
       };
     },
 
-    replay(seed, initialData, journal, untilTick) {
+    replay(seed, initialData, journal, untilTick, options: ReplayOptions<G> = {}) {
       if (!Number.isInteger(untilTick) || untilTick < 0) {
         throw new RangeError(`Semaine cible invalide : ${String(untilTick)}`);
       }
@@ -190,9 +199,11 @@ export function createGame<G, A extends Action, S extends Signal = Signal>(
         }
       };
       drain();
+      options.onTick?.(engine);
       while (engine.tick < untilTick) {
         simulation.runOwned(engine, 1);
         drain();
+        options.onTick?.(engine);
       }
       return { engine, journal: accepted };
     },

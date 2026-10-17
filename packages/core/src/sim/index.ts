@@ -16,6 +16,7 @@ export {
   type GameDefinition,
   type JournalEntry,
   type Rejection,
+  type ReplayOptions,
   ReplayError,
   type Session,
   createGame,
