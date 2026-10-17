@@ -1,6 +1,7 @@
 import { Link, NavLink } from 'react-router-dom';
 import { SITE } from '../../config/site';
 import { useTheme } from '../../lib/useTheme';
+import { AccountPill } from '../account/AccountPill';
 import { Logo } from './Logo';
 
 function ThemeSwitch() {
@@ -29,8 +30,8 @@ function ThemeSwitch() {
   );
 }
 
-/** Barre du haut : logo, rubriques, bascule de thème. Le compte s'y ajoute avec la feature comptes. */
-export function Navbar({ account }: { account?: React.ReactNode }) {
+/** Barre du haut : logo, rubriques, compte et bascule de thème. */
+export function Navbar() {
   return (
     <header className="navbar">
       <div className="navbar__inner page">
@@ -52,7 +53,7 @@ export function Navbar({ account }: { account?: React.ReactNode }) {
           </ul>
         </nav>
         <div className="navbar__hud">
-          {account}
+          <AccountPill />
           <ThemeSwitch />
         </div>
       </div>
