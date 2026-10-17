@@ -91,3 +91,16 @@ export {
   weeklyDecline,
   yearlyDeclineRoll,
 } from './career';
+export {
+  HIDDEN_ATTRIBUTES,
+  type DropProspectAction,
+  type Prospect,
+  type Range,
+  type ScoutAction,
+  type ScoutedAttribute,
+  type TrialAction,
+  VISIBLE_ATTRIBUTES,
+  knownRange,
+  rangeWidth,
+  scoutTalents,
+} from './scouting';

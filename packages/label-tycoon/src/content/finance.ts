@@ -20,6 +20,7 @@ export const EXPENSE_CATEGORIES = [
   'avances',
   'royalties',
   'tournees',
+  'reperage',
   'interets',
   'impots',
   'autres',

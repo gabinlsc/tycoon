@@ -1,5 +1,6 @@
 import { type Phase, calendarOf, clamp } from '@tycoon/core';
 import { stepSkills, updatePhase, yearlyDeclineRoll } from './career';
+import { observeProspects } from './scouting';
 import type { Artist } from './artists';
 import { DYNAMICS } from './balance';
 import type { LabelSignal } from './pipeline';
@@ -65,6 +66,7 @@ export function driftArtist(artist: Artist): void {
 export const artistsPhase: Phase<LabelState, LabelSignal> = {
   name: 'artistes',
   run(state, ctx) {
+    observeProspects(state);
     const yearEnd = calendarOf(ctx.tick).isYearEnd;
     for (const artist of state.artistes) {
       driftArtist(artist);

@@ -28,3 +28,4 @@ export { WORLD } from './world';
 export { FINANCE } from './finance';
 export { DYNAMICS } from './dynamics';
 export { COMEBACK, CULT, DECLINE, PROGRESSION } from './career';
+export { SCOUTING, SOURCES, type ScoutSource, type SourceProfile } from './scouting';
