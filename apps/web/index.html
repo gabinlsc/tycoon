@@ -23,7 +23,17 @@
       type="font/woff2"
       crossorigin
     />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f3eee3" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1e1b17" media="(prefers-color-scheme: dark)" />
     <link rel="icon" href="data:," />
+    <script>
+      // Pose le thème choisi avant le premier rendu, pour éviter un éclair de papier clair.
+      try {
+        var t = localStorage.getItem('tycoon-theme');
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>
