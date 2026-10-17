@@ -38,6 +38,13 @@ Source unique : `apps/web/src/styles/arcade/tokens.css`. Aucune valeur de couleu
 
 Lilita One pour les titres et tous les chiffres (classe `.mono`, chiffres tabulaires), Nunito (600 et 800) pour le texte. Polices auto-hébergées dans `apps/web/public/fonts`, `font-display: swap`, deux polices critiques préchargées.
 
+## Pages et arrivée sur un jeu
+
+- Routes : `/` (accueil), `/jeux`, `/jeux/:slug` (page d'un jeu), `/compte`, pages légales, 404.
+- **Chaque jeu est indépendant** : pas de monnaie, de progression ni de lien partagés entre jeux. Le hub ne montre aucune trésorerie. Le compte ne porte que le pseudo ; les sauvegardes sont isolées par compte et par jeu.
+- **Arrivée sur un jeu (« le WOW »)** : le rideau `GameIntro` s'ouvre à chaque première visite d'un jeu dans la session : la couleur du jeu inonde l'écran, l'emblème s'abat avec ondes de choc et tremblement, le titre jaillit lettre par lettre dans une pluie de pièces, puis le rideau se lève et la page entre en cascade (stats qui se remplissent, titre qui ondule). Passable (clic, Échap, Entrée, bouton), rejouable depuis la page, absent en `prefers-reduced-motion`.
+- Aucune donnée fictive dans le hub : tant qu'une information n'existe pas (classement, activité), on ne l'affiche pas.
+
 ## Composants de base
 
 Dans `apps/web/src/components/arcade/ui` : `Button` (3D, tons `green`, `gold`, `purple`, `ghost`), `Coin` (pièce SVG), `GameIcon` (emblèmes SVG des jeux), `StatBar` (barre de stat sur 5), `SectionTitle` (pastille de niveau et titre), `Reveal` (apparition par rebond).
@@ -45,6 +52,7 @@ Dans `apps/web/src/components/arcade/ui` : `Button` (3D, tons `green`, `gold`, `
 ## Principes d'animation
 
 - **CSS natif** autant que possible, hooks maison (`useInView`, `useParallax`, `useCountUp`) pour le reste. Pas de bibliothèque d'animation.
+- Le hub vit : formes en suspension derrière l'interface (`Doodles`), une qui rebondit en cascade au chargement, emblèmes qui suivent le pointeur (`usePointerParallax`).
 - Mouvements **élastiques** : `--ease-bounce` pour les apparitions, les survols et les cartes qui rebondissent.
 - Pièces qui flottent dans la une, emblèmes qui se penchent au survol, boutons qui s'enfoncent au clic, compteurs de fortune qui s'emballent puis se calent, traits du schéma des crossovers qui se dessinent.
 - Le fil d'actualité défile en boucle (pause au survol et au focus).
@@ -60,7 +68,7 @@ Dans `apps/web/src/components/arcade/ui` : `Button` (3D, tons `green`, `gold`, `
 
 ## Données et contenu
 
-- Jeux : uniquement `apps/web/src/data/games.ts` (nom, symbole, couleur, emblème, stats, liens entre jeux). Ajouter un jeu ne demande qu'une entrée.
+- Jeux : `apps/web/src/data/games.ts` (slug, nom, pitch, couleur, emblème, stats). Un jeu jouable s'enregistre en plus dans `src/games/registry.ts`.
 - Marque et domaine : uniquement `apps/web/src/config/site.ts`.
 - Tout le texte est en français, ton direct et vivant, tutoiement, chiffres concrets, aucune phrase marketing creuse.
 - Tout ce qui est aléatoire est à graine : même résultat pour tous les visiteurs, tests reproductibles.

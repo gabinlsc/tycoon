@@ -11,7 +11,11 @@ export function StatBar({ label, value }: StatBarProps) {
       <span className="stat__label">{label}</span>
       <span className="stat__bar" role="img" aria-label={`${value} sur 5`}>
         {[1, 2, 3, 4, 5].map((n) => (
-          <span key={n} className={`stat__seg${n <= value ? ' is-on' : ''}`} />
+          <span
+            key={n}
+            className={`stat__seg${n <= value ? ' is-on' : ''}`}
+            style={{ '--i': n } as React.CSSProperties}
+          />
         ))}
       </span>
     </div>
