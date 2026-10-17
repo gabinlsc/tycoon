@@ -6,3 +6,4 @@ export * as money from './money';
 export type { Cents } from './money/cents';
 export { cents } from './money/cents';
 export * from './math';
+export * from './hash';
