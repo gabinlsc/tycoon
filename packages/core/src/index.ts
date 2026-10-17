@@ -1,2 +1,2 @@
-// Futur moteur de simulation partagé entre les jeux (économie, temps, progression commune).
-export {};
+// Moteur de simulation générique, partagé entre les tycoons. Voir README.md.
+export * from './rng';
