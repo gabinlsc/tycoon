@@ -111,3 +111,14 @@ export {
   scoutLevelOf,
   scoutTalents,
 } from './scouting';
+export {
+  type Clauses,
+  type Contrat,
+  type SignAction,
+  type Utility,
+  type UtilityTerm,
+  clausesValid,
+  fairAdvance,
+  labelShare,
+  utilityOf,
+} from './contracts';

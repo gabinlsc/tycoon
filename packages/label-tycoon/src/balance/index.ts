@@ -24,6 +24,7 @@ export {
   TRAIT_COUNT_WEIGHTS,
   type TalentLevel,
 } from './artists';
+export { CONTRACTS } from './contracts';
 export { WORLD } from './world';
 export { FINANCE } from './finance';
 export { DYNAMICS } from './dynamics';

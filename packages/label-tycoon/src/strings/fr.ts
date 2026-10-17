@@ -160,6 +160,10 @@ export const fr = {
     'trop-de-denicheurs': (p: { max: number }) =>
       `Ton équipe compte déjà ${p.max} dénicheurs : renvoie-en un d'abord.`,
     'genre-inconnu': () => "Ce genre n'existe pas.",
+    'artiste-introuvable': () => "Cet artiste n'existe pas.",
+    'artiste-indisponible': () => 'Cet artiste est déjà sous contrat ailleurs.',
+    'clauses-invalides': () => 'Ces clauses sortent des limites autorisées.',
+    'offre-refusee': () => "L'artiste refuse cette offre : revois les clauses.",
     'suivi-introuvable': () => "Ce talent n'est pas dans ta liste de suivi.",
     'essai-deja-fait': () => 'Tu as déjà fait passer un essai à ce talent.',
   },
