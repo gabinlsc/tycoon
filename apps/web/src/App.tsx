@@ -1,4 +1,5 @@
 import { Masthead } from './components/Masthead/Masthead';
+import { DailyChallenge } from './components/DailyChallenge/DailyChallenge';
 import { Headline } from './components/Headline/Headline';
 import { Quotes } from './components/Quotes/Quotes';
 import { Ticker } from './components/Ticker/Ticker';
@@ -15,6 +16,7 @@ export function App() {
       <main id="contenu">
         <Headline />
         <Quotes />
+        <DailyChallenge />
       </main>
     </MarketProvider>
   );
