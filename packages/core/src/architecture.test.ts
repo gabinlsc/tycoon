@@ -21,6 +21,12 @@ const FORBIDDEN: Array<{ label: string; pattern: RegExp }> = [
   { label: 'Date()', pattern: /(^|[^.\w])Date\s*\(/ },
   { label: 'performance', pattern: /\bperformance\./ },
   { label: 'crypto', pattern: /\bcrypto\.(getRandomValues|randomUUID|subtle)\b/ },
+  {
+    label: 'Math transcendant (non portable)',
+    pattern:
+      /\bMath\.(exp|expm1|log|log1p|log2|log10|pow|sin|cos|tan|asin|acos|atan|atan2|sinh|cosh|tanh|asinh|acosh|atanh|cbrt|hypot)\b/,
+  },
+  { label: 'opérateur **', pattern: /\*\*/ },
   { label: 'window', pattern: /\bwindow\./ },
   { label: 'document', pattern: /\bdocument\./ },
   { label: 'localStorage', pattern: /\b(localStorage|sessionStorage|indexedDB)\b/ },
