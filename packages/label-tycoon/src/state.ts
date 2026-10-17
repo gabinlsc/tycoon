@@ -1,5 +1,6 @@
 import type { Cents, EventsState } from '@tycoon/core';
 import type { TierId } from './balance';
+import type { Artist } from './artists';
 import type { GameConfig } from './config';
 import type { MarketState } from './market';
 
@@ -25,6 +26,10 @@ export interface LabelState {
   label: LabelData;
   events: EventsState;
   marche: MarketState;
+  /** Villes fictives du monde, fixées au départ. */
+  villes: string[];
+  /** Tous les artistes du monde : libres, signés par le joueur ou par un rival (voir `employeur`). */
+  artistes: Artist[];
   /** Prochain identifiant libre, partagé par toutes les entités (artistes, sorties, contrats…). */
   nextId: number;
 }
