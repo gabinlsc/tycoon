@@ -63,6 +63,16 @@
   }
   .board td,
   .board tbody th {
-    padding: var(--sp-2);
+    padding: var(--sp-2) var(--sp-1);
+  }
+  .board__rank {
+    width: 2rem;
+  }
+  .board__player,
+  .board__amount {
+    font-size: var(--fs-body);
+  }
+  .board__weekly {
+    font-size: var(--fs-micro);
   }
 }
