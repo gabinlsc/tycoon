@@ -107,6 +107,7 @@ export const fr = {
     avances: 'Avances aux artistes',
     royalties: 'Royalties versées',
     tournees: 'Tournées',
+    reperage: 'Repérage',
     interets: 'Intérêts et remboursements',
     impots: 'Impôts',
     autres: 'Autres dépenses',
@@ -119,6 +120,13 @@ export const fr = {
     voix: 'Voix',
     bornes: 'Limites de 0 à 100',
   },
+
+  sourcesDeReperage: {
+    'open-mic': 'Scènes ouvertes',
+    plateforme: 'Plateforme de streaming amateur',
+    battle: 'Battles',
+    candidature: 'Candidatures spontanées',
+  } satisfies Record<'open-mic' | 'plateforme' | 'battle' | 'candidature', string>,
 
   modes: {
     carriere: 'Carrière',
@@ -143,6 +151,13 @@ export const fr = {
     'decision-introuvable': () => "Cette décision n'existe plus.",
     'choix-inconnu': () => "Ce choix n'existe pas.",
     'choix-indisponible': () => "Ce choix n'est pas disponible pour le moment.",
+    'source-inconnue': () => "Cette source de repérage n'existe pas.",
+    'fonds-insuffisants': (p: { besoin: number }) =>
+      `Fonds insuffisants : il faut ${p.besoin} centimes.`,
+    'trop-de-suivis': (p: { max: number }) =>
+      `Tu suis déjà ${p.max} talents : abandonne-en un d'abord.`,
+    'suivi-introuvable': () => "Ce talent n'est pas dans ta liste de suivi.",
+    'essai-deja-fait': () => 'Tu as déjà fait passer un essai à ce talent.',
   },
 } as const;
 

@@ -2,6 +2,7 @@ import type { Cents, EventsState } from '@tycoon/core';
 import type { TierId } from './balance';
 import type { Artist } from './artists';
 import type { FinanceState } from './finance';
+import type { Prospect } from './scouting';
 import type { GameConfig } from './config';
 import type { MarketState } from './market';
 
@@ -32,6 +33,8 @@ export interface LabelState {
   villes: string[];
   /** Tous les artistes du monde : libres, signés par le joueur ou par un rival (voir `employeur`). */
   artistes: Artist[];
+  /** Talents que le joueur suit (repérage) : il n'en connaît que des fourchettes. */
+  suivis: Prospect[];
   /** Prochain identifiant libre, partagé par toutes les entités (artistes, sorties, contrats…). */
   nextId: number;
 }

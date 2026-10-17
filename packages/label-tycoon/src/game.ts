@@ -13,6 +13,7 @@ import { type LabelSignal, buildPipeline } from './pipeline';
 import { artistsPhase } from './dynamics';
 import { financePhase, initialFinance } from './finance';
 import { initialCredibility, initialMarket } from './market';
+import { dropProspect, scout, studioTrial } from './scouting';
 import { generateWorld } from './world';
 import type { LabelState } from './state';
 
@@ -58,6 +59,9 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
   actions: {
     ...eventEngine.actionHandlers,
     'renommer-label': renameLabel,
+    reperer: scout,
+    'abandonner-suivi': dropProspect,
+    'essai-studio': studioTrial,
   },
 });
 
@@ -101,6 +105,7 @@ export function initialState(seed: Seed, config: GameConfig): LabelState {
     finances: initialFinance(),
     villes: generateWorld(seed).villes,
     artistes: [],
+    suivis: [],
     nextId: 1,
   };
 }
