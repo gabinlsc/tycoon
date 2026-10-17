@@ -5,6 +5,7 @@ import { Headline } from './components/Headline/Headline';
 import { HowItWorks } from './components/HowItWorks/HowItWorks';
 import { Leaderboard } from './components/Leaderboard/Leaderboard';
 import { Quotes } from './components/Quotes/Quotes';
+import { Subscribe } from './components/Subscribe/Subscribe';
 import { Ticker } from './components/Ticker/Ticker';
 import { MarketProvider } from './lib/market';
 
@@ -23,6 +24,7 @@ export function App() {
         <Leaderboard />
         <HowItWorks />
         <Crossovers />
+        <Subscribe />
       </main>
     </MarketProvider>
   );
