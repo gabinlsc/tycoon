@@ -1,4 +1,5 @@
 import { GAMES, type Game } from '../data/games';
+import { PLAYERS } from '../data/players';
 import { mulberry32 } from './prng';
 
 /**
@@ -95,19 +96,6 @@ export function dailyChallenge(key: string): DailyChallenge {
     constraint: CONSTRAINTS[Math.floor(rand() * CONSTRAINTS.length)] ?? CONSTRAINTS[0],
   };
 }
-
-const PLAYERS = [
-  'Marguerite V.',
-  'Baron Noir',
-  'Léon des Halles',
-  'Tonton Bilan',
-  'Mlle Caisse',
-  'Jules & Fils',
-  'Rita la Rouge',
-  'Opaline',
-  'Le Comptable',
-  'Capitaine Marge',
-] as const;
 
 export interface PodiumEntry {
   rank: 1 | 2 | 3;
