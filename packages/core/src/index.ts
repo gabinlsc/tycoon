@@ -9,3 +9,4 @@ export * from './math';
 export * from './hash';
 export * from './sim';
 export * from './replay';
+export * from './events';
