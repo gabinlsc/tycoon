@@ -49,6 +49,28 @@ export const SOURCES: Readonly<Record<ScoutSource, SourceProfile>> = {
   },
 };
 
+export const SCOUTS = {
+  /** Frais de recrutement d'un dénicheur. */
+  hireCost: money.euros(1500) as Cents,
+  /** Salaire hebdomadaire d'un dénicheur. */
+  weeklyWage: money.euros(120) as Cents,
+  /** Nombre maximal de dénicheurs employés. */
+  max: 4,
+  /** Niveau (0-100) d'un dénicheur recruté : bornes du tirage. */
+  levelMin: 15,
+  levelMax: 75,
+  /** Part des talents remontés qui appartiennent au genre fétiche du dénicheur. */
+  biasShare: 0.6,
+} as const;
+
+/** Concurrence des rivaux sur les talents libres suivis (GDD, 5.3). */
+export const RIVAL_SCOUTING = {
+  /** Probabilité hebdomadaire de base qu'un rival signe un talent libre suivi (à agressivité 1). */
+  weeklyBase: 0.004,
+  /** Multiplicateur à notoriété maximale : les talents connus partent plus vite. */
+  notorietyBoost: 6,
+} as const;
+
 export const SCOUTING = {
   /** Largeur minimale d'une fourchette, même après une longue observation. */
   minWidth: 3,

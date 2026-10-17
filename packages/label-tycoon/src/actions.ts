@@ -1,7 +1,13 @@
 import { type Action, type ActionHandler, type ResolveEventAction, reject } from '@tycoon/core';
 import { LABEL_NAME_MAX } from './balance';
 import type { LabelSignal } from './pipeline';
-import type { DropProspectAction, ScoutAction, TrialAction } from './scouting';
+import type {
+  DropProspectAction,
+  FireScoutAction,
+  HireScoutAction,
+  ScoutAction,
+  TrialAction,
+} from './scouting';
 import type { LabelState } from './state';
 
 export interface RenameLabelAction extends Action {
@@ -11,7 +17,13 @@ export interface RenameLabelAction extends Action {
 
 /** Toutes les actions du joueur. Une action = une entrée du journal, rejouable. */
 export type LabelAction =
-  RenameLabelAction | ResolveEventAction | ScoutAction | DropProspectAction | TrialAction;
+  | RenameLabelAction
+  | ResolveEventAction
+  | ScoutAction
+  | DropProspectAction
+  | TrialAction
+  | HireScoutAction
+  | FireScoutAction;
 
 export const renameLabel: ActionHandler<LabelState, RenameLabelAction, LabelSignal> = {
   validate(_state, action) {

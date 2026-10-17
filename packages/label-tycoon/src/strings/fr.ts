@@ -156,6 +156,10 @@ export const fr = {
       `Fonds insuffisants : il faut ${p.besoin} centimes.`,
     'trop-de-suivis': (p: { max: number }) =>
       `Tu suis déjà ${p.max} talents : abandonne-en un d'abord.`,
+    'denicheur-introuvable': () => "Ce dénicheur n'est pas dans ton équipe.",
+    'trop-de-denicheurs': (p: { max: number }) =>
+      `Ton équipe compte déjà ${p.max} dénicheurs : renvoie-en un d'abord.`,
+    'genre-inconnu': () => "Ce genre n'existe pas.",
     'suivi-introuvable': () => "Ce talent n'est pas dans ta liste de suivi.",
     'essai-deja-fait': () => 'Tu as déjà fait passer un essai à ce talent.',
   },

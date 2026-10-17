@@ -2,7 +2,7 @@ import type { Cents, EventsState } from '@tycoon/core';
 import type { TierId } from './balance';
 import type { Artist } from './artists';
 import type { FinanceState } from './finance';
-import type { Prospect } from './scouting';
+import type { Denicheur, Prospect } from './scouting';
 import type { GameConfig } from './config';
 import type { MarketState } from './market';
 
@@ -35,6 +35,8 @@ export interface LabelState {
   artistes: Artist[];
   /** Talents que le joueur suit (repérage) : il n'en connaît que des fourchettes. */
   suivis: Prospect[];
+  /** Dénicheurs employés : ils améliorent la précision des fourchettes et orientent le repérage. */
+  denicheurs: Denicheur[];
   /** Prochain identifiant libre, partagé par toutes les entités (artistes, sorties, contrats…). */
   nextId: number;
 }
