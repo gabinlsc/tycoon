@@ -1,6 +1,6 @@
-# Le Tycoon
+# Tycoon Hub
 
-Portail de jeux de gestion jouables dans le navigateur, présenté comme la une d'un quotidien financier fictif. Chaque jeu est une entreprise cotée en bourse. Pour l'instant, seule la page d'accueil existe ; les jeux arrivent ensuite.
+Portail de jeux de gestion (tycoons) jouables dans le navigateur, au look cartoon / jeu mobile. Pour l'instant, seule la page d'accueil existe ; les jeux arrivent ensuite.
 
 ## Lancer le projet
 
@@ -20,13 +20,13 @@ pnpm check      # lint, typecheck, tests et build
 
 ## Ajouter un jeu
 
-Ajouter une entrée dans `GAMES`, dans `apps/web/src/data/games.ts`. Rien d'autre : le ticker, la cote, le schéma des crossovers et le pied de page se mettent à jour tout seuls.
+Ajouter une entrée dans `GAMES`, dans `apps/web/src/data/games.ts`. Rien d'autre : la grille de jeux, le schéma des crossovers et le pied de page se mettent à jour tout seuls.
 
-Champs principaux : `name`, `symbol` (unique), `tagline`, `genre`, `status`, `mechanic`, `playtime`, `price`, `volatility`, `seed`, `crossovers` (liens vers d'autres symboles) et, une fois le jeu en ligne, `href`.
+Champs principaux : `name`, `symbol` (unique), `color`, `icon`, `stats`, `tagline`, `genre`, `status`, `mechanic`, `playtime`, `crossovers` (liens vers d'autres symboles) et, une fois le jeu en ligne, `href`.
 
 ## Modifier les tokens
 
-Couleurs, polices, espacements, durées et easings vivent dans `apps/web/src/styles/tokens.css`, thème clair et « Édition du soir » compris. Les composants n'utilisent que ces variables.
+Couleurs, polices, espacements, durées et easings vivent dans `apps/web/src/styles/arcade/tokens.css`, thèmes Jour et Nuit compris. Les composants n'utilisent que ces variables.
 
 Le nom du site et le domaine sont dans `apps/web/src/config/site.ts`.
 

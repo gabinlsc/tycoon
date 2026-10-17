@@ -1,0 +1,188 @@
+/* ---- Boutons 3D ---- */
+.btn {
+  --btn: var(--green);
+  --btn-dark: var(--green-dark);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: 0.7rem 1.5rem;
+  border: var(--border);
+  border-radius: var(--r-md);
+  background: var(--btn);
+  color: var(--on-color);
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  text-transform: uppercase;
+  cursor: pointer;
+  /* Le « socle » 3D : ombre pleine plus ombre colorée en dessous */
+  box-shadow:
+    inset 0 -6px 0 var(--btn-dark),
+    var(--pop);
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+}
+.btn:hover {
+  transform: translateY(-2px);
+}
+.btn:active {
+  transform: translateY(5px);
+  box-shadow:
+    inset 0 -2px 0 var(--btn-dark),
+    0 1px 0 var(--outline);
+}
+.btn:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+.btn--lg {
+  padding: 0.9rem 2rem;
+  font-size: 1.4rem;
+}
+.btn--gold {
+  --btn: var(--gold);
+  --btn-dark: var(--gold-dark);
+}
+.btn--purple {
+  --btn: var(--purple);
+  --btn-dark: var(--purple-dark);
+  color: #fff;
+}
+.btn--ghost {
+  --btn: var(--surface);
+  --btn-dark: color-mix(in srgb, var(--surface), var(--outline) 18%);
+  color: var(--text);
+}
+
+/* ---- Apparition par rebond ---- */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    transition:
+      opacity var(--dur-slow) var(--ease-out),
+      transform var(--dur-slow) var(--ease-bounce);
+  }
+  .reveal:not(.is-in) {
+    opacity: 0;
+    transform: translateY(36px) scale(0.94);
+  }
+}
+
+/* ---- Titre de rubrique ---- */
+.section-title {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-6);
+}
+.section-title__level {
+  padding: 0.15rem 0.9rem;
+  border: 3px solid var(--outline);
+  border-radius: 999px;
+  background: var(--gold);
+  color: var(--on-color);
+  font-family: var(--font-display);
+  font-size: var(--fs-small);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: var(--pop-sm);
+}
+.section-title__level span {
+  opacity: 0.7;
+}
+.section-title__text {
+  font-size: var(--fs-h2);
+  color: #fff;
+  /* Contour épais autour du texte : l'effet « titre de jeu » */
+  -webkit-text-stroke: 0;
+  text-shadow:
+    -3px -3px 0 var(--outline),
+    3px -3px 0 var(--outline),
+    -3px 3px 0 var(--outline),
+    3px 3px 0 var(--outline),
+    0 6px 0 var(--outline),
+    -3px 6px 0 var(--outline),
+    3px 6px 0 var(--outline);
+}
+.section-title__kicker {
+  max-width: 56ch;
+  padding: var(--sp-2) var(--sp-4);
+  border: 3px solid var(--outline);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  font-weight: 800;
+}
+
+/* ---- Barres de stats ---- */
+.stat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  font-size: var(--fs-small);
+  font-weight: 800;
+}
+.stat__bar {
+  display: flex;
+  gap: 3px;
+}
+.stat__seg {
+  width: 1.1rem;
+  height: 0.8rem;
+  border: 2px solid var(--outline);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--surface), var(--outline) 14%);
+}
+.stat__seg.is-on {
+  background: var(--gold);
+}
+
+/* ---- Pièces flottantes ---- */
+@keyframes coin-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-6deg);
+  }
+  50% {
+    transform: translateY(-14px) rotate(6deg);
+  }
+}
+@keyframes coin-spin {
+  to {
+    transform: rotateY(360deg);
+  }
+}
+.coin {
+  display: block;
+  filter: drop-shadow(0 3px 0 var(--outline));
+}
+
+/* ---- Chiffres à volets (compte à rebours) ---- */
+.flip {
+  display: inline-flex;
+}
+.flip__char {
+  display: inline-block;
+  min-width: 0.62em;
+  text-align: center;
+  transform-origin: 50% 100%;
+  animation: flip-in var(--dur-base) var(--ease-bounce) both;
+}
+@keyframes flip-in {
+  from {
+    transform: perspective(200px) rotateX(-90deg);
+    opacity: 0;
+  }
+  to {
+    transform: perspective(200px) rotateX(0);
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flip__char {
+    animation: none;
+  }
+}

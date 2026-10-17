@@ -23,7 +23,7 @@ export function Countdown() {
   const text = format(seconds);
   return (
     <p className="countdown">
-      <span className="countdown__label mono">Prochaine grille dans</span>
+      <span className="countdown__label mono">Prochaine quête dans</span>
       {/* La version animée change chaque seconde : on ne l'annonce pas, on donne l'heure en clair */}
       <span aria-hidden="true" className="countdown__digits">
         <FlipDigits value={text} />

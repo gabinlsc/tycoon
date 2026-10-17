@@ -18,7 +18,7 @@ Une fonctionnalité, une branche, une PR, un commit sur `main` (merge en squash)
 
 1. Partir de `main` à jour.
 2. Créer une branche `feat/<nom-court>` (ou `fix/`, `chore/`, `refactor/`, `docs/`).
-3. Faire des commits atomiques au format Conventional Commits, en français : `feat(ticker): défilement infini avec pause au survol`.
+3. Faire des commits atomiques au format Conventional Commits, en français : `feat(hero): pièces flottantes avec parallaxe`.
 4. Avant de pousser, tout doit passer : `pnpm check` (lint, typecheck, tests, build). Ne jamais pousser une branche rouge.
 5. Pousser la branche et ouvrir la PR. Le titre suit le format Conventional Commits, car il devient le message du commit sur `main`. La description dit ce qui change et comment tester.
 6. Merger en squash et supprimer la branche.
@@ -26,7 +26,7 @@ Une fonctionnalité, une branche, une PR, un commit sur `main` (merge en squash)
 
 ## Conventional Commits
 
-Types : `feat`, `fix`, `chore`, `refactor`, `docs`, `test`, `perf`. Portée entre parenthèses (`masthead`, `ticker`, `la-cote`, `a11y-perf`…). Sujet à l'impératif ou au présent, sans point final. Le corps explique le pourquoi quand il n'est pas évident.
+Types : `feat`, `fix`, `chore`, `refactor`, `docs`, `test`, `perf`. Portée entre parenthèses (`navbar`, `hero`, `jeux`, `a11y-perf`…). Sujet à l'impératif ou au présent, sans point final. Le corps explique le pourquoi quand il n'est pas évident.
 
 ## Messages et traces
 
