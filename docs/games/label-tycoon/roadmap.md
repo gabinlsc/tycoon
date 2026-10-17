@@ -25,7 +25,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `feat/core-actions` : commandes typées, validation, application pure, journal d'actions
 - [x] `feat/core-replay` : rejouer seed + journal, tests de propriétés (déterminisme, replay)
 - [x] `feat/core-evenements-base` : événements pondérés avec conditions et délai de recharge
-- [ ] `feat/core-evenements-choix` : choix multiples, conséquences immédiates et différées
+- [x] `feat/core-evenements-choix` : choix multiples, conséquences immédiates et différées
 - [ ] `feat/core-evenements-chaines` : chaînes d'événements, file d'événements programmés
 - [ ] `feat/core-sauvegarde` : enveloppe versionnée, migrations enchaînées, sauvegardes de référence
 - [ ] `test/core-performance` : banc de performance du moteur (budget de tick)
@@ -178,7 +178,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | Phase | Total | Faites |
 | ----- | ----- | ------ |
 | 0     | 1     | 1      |
-| 1     | 13    | 9      |
+| 1     | 13    | 10     |
 | 2     | 6     | 0      |
 | 3     | 18    | 0      |
 | 4     | 16    | 0      |

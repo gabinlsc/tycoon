@@ -42,8 +42,72 @@ export interface EventDef<G> {
    * Ne doit pas modifier `data`.
    */
   readonly prepare?: (data: G, ctx: EventContext) => Vars | null;
-  /** Effets immédiats. Renvoie les lignes de conséquence à afficher. */
+  /** Effets immédiats, au moment où l'événement survient. Renvoie les lignes de conséquence à afficher. */
   readonly apply?: (data: G, ctx: EventContext, vars: Vars) => readonly Consequence[] | undefined;
+  /**
+   * Choix proposés au joueur. S'il y en a, l'événement devient une **décision** : elle reste en
+   * attente jusqu'à la réponse du joueur ou jusqu'à son échéance.
+   */
+  readonly choices?: readonly ChoiceDef<G>[];
+  /** Semaines laissées pour répondre (4 par défaut). */
+  readonly deadline?: number;
+  /** Choix appliqué automatiquement à l'échéance. Obligatoire s'il y a des choix. */
+  readonly defaultChoice?: string;
+}
+
+/** Effet à retardement : lancé `afterWeeks` semaines après le choix, par clé de registre. */
+export interface DelayedEffect {
+  readonly afterWeeks: number;
+  /** Clé d'un effet déclaré dans `delayedEffects` du moteur (l'état ne stocke que des clés). */
+  readonly effect: string;
+}
+
+export interface ChoiceDef<G> {
+  readonly id: string;
+  /** Disponibilité du choix (par exemple : assez de trésorerie). Absent = toujours disponible. */
+  readonly when?: (data: G, vars: Vars, tick: number) => boolean;
+  readonly apply?: (data: G, ctx: EventContext, vars: Vars) => readonly Consequence[] | undefined;
+  readonly delayed?: readonly DelayedEffect[];
+}
+
+export type DelayedEffectFn<G> = (
+  data: G,
+  ctx: EventContext,
+  vars: Vars,
+) => readonly Consequence[] | undefined;
+
+/** Décision en attente de réponse. */
+export interface PendingEvent {
+  instanceId: number;
+  eventId: string;
+  createdTick: number;
+  /** Première semaine où le choix par défaut s'applique si le joueur n'a pas répondu. */
+  deadlineTick: number;
+  vars: Vars;
+}
+
+/** Effet différé programmé, en attente de son échéance. */
+export interface ScheduledEffect {
+  dueTick: number;
+  effect: string;
+  vars: Vars;
+  instanceId: number;
+  eventId: string;
+}
+
+/** Ce qui s'est passé quand une décision a été tranchée. */
+export interface Outcome {
+  choiceId: string;
+  tick: number;
+  /** Vrai si le choix a été appliqué par défaut faute de réponse. */
+  auto: boolean;
+  consequences: readonly Consequence[];
+}
+
+export interface DelayedResult {
+  tick: number;
+  effect: string;
+  consequences: readonly Consequence[];
 }
 
 /** Trace d'un événement survenu, conservée dans l'état (nombre borné). */
@@ -53,6 +117,10 @@ export interface FiredEvent {
   tick: number;
   vars: Vars;
   consequences: readonly Consequence[];
+  /** Présent une fois la décision tranchée. */
+  outcome?: Outcome;
+  /** Conséquences différées déjà survenues. */
+  delayedResults?: DelayedResult[];
 }
 
 /** État du moteur d'événements, à inclure dans les données du jeu. Entièrement sérialisable. */
@@ -63,6 +131,8 @@ export interface EventsState {
   count: Record<string, number>;
   history: FiredEvent[];
   nextInstanceId: number;
+  pending: PendingEvent[];
+  scheduled: ScheduledEffect[];
 }
 
 export const emptyEventsState = (): EventsState => ({
@@ -70,4 +140,6 @@ export const emptyEventsState = (): EventsState => ({
   count: {},
   history: [],
   nextInstanceId: 1,
+  pending: [],
+  scheduled: [],
 });
