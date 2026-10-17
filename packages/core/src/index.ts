@@ -10,3 +10,4 @@ export * from './hash';
 export * from './sim';
 export * from './replay';
 export * from './events';
+export * from './save';
