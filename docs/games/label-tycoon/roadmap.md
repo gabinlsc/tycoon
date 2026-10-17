@@ -18,7 +18,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 
 - [x] `chore/core-outillage` : fast-check, règles ESLint de déterminisme (`Math.random`, `Date`, `performance.now`…), test d'architecture (aucun import DOM ou React dans `core` et `label-tycoon`)
 - [x] `feat/core-rng` : xoshiro128**, état sérialisable, entiers, flottants, gaussien, choix pondéré, mélange, **flux indépendants** par système
-- [ ] `feat/core-argent` : type `Cents`, opérations entières, répartition sans perte de centime, arrondi centralisé
+- [x] `feat/core-argent` : type `Cents`, opérations entières, répartition sans perte de centime, arrondi centralisé
 - [ ] `feat/core-math` : `clamp`, `lerp`, courbes, escompte, tables de probabilités, moyennes pondérées
 - [ ] `feat/core-hash` : sérialisation canonique et empreinte d'état
 - [ ] `feat/core-ticks` : boucle de simulation en ticks, pipeline de phases nommées et ordonnées
@@ -178,7 +178,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | Phase | Total | Faites |
 | ----- | ----- | ------ |
 | 0     | 1     | 1      |
-| 1     | 13    | 2      |
+| 1     | 13    | 3      |
 | 2     | 6     | 0      |
 | 3     | 18    | 0      |
 | 4     | 16    | 0      |
