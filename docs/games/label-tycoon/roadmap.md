@@ -6,13 +6,13 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - À chaque session : relire `docs/`, ouvrir ce fichier, reprendre à la **première case non cochée**.
 - Chaque ligne donne le nom de branche suggéré. Le titre de la PR suit Conventional Commits, en français.
 - Avant chaque push : `pnpm check` vert (lint, typecheck, tests, build) et vérification des messages de commit.
-- Les ajouts par rapport au prompt initial sont marqués **(+)**. Voir le [GDD](./gdd.md).
+- Les ajouts par rapport au prompt initial sont marqués **(+)**. Voir le [GDD](./gdd.md). Tout est validé, mode Infini compris.
 
 **Ordre ajusté (+)** : par rapport à l'ordre suggéré dans le prompt, la coquille d'interface (worker, `/jeux/label-tycoon`, QG) est placée **avant** les systèmes les plus profonds, pour avoir un jalon jouable tôt (fin de la phase 6) et valider le ressenti au lieu de simuler à l'aveugle. Le script d'équilibrage arrive dès que la boucle économique existe (phase 5), puis est rejoué à chaque jalon.
 
 ## Phase 0 : cadrage
 
-- [ ] `docs/label-tycoon-gdd` : game design document et roadmap (cette PR, en attente de validation)
+- [x] `docs/label-tycoon-gdd` : game design document et roadmap, validés
 
 ## Phase 1 : `packages/core` (moteur générique)
 
@@ -79,7 +79,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [ ] `feat/label-paliers` : les 4 paliers, déblocages, changement de nature du jeu
 - [ ] `feat/label-valorisation` : score principal, valeur du catalogue actualisée
 
-## Phase 5 : rivaux, événements, presse, premières simulations
+## Phase 5 : rivaux, événements, fil d'actus, premières simulations
 
 - [ ] `feat/label-rivaux-generation` : 3 à 5 rivaux, personnalités, mêmes règles que le joueur
 - [ ] `feat/label-rivaux-decisions` : décisions par utilitaire, signatures, sorties, enchères
@@ -92,7 +92,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [ ] `feat/label-evenements-medias` : événements médias (≥ 10)
 - [ ] `feat/label-evenements-business` : événements business (≥ 10)
 - [ ] `feat/label-ceremonies` : remise de prix annuelle, nominations, gagnants simulés (≥ 8 événements)
-- [ ] `feat/label-presse` : générateur d'articles pour La Une du label
+- [ ] `feat/label-fil-actus` : générateur d'actus pour Le Fil du label
 - [ ] `feat/label-rapport-mensuel` : données du rapport mensuel (ce qui a marché, raté, pourquoi)
 - [ ] `feat/label-succes-objectifs` : succès, objectifs dynamiques, records (+)
 
@@ -123,7 +123,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [ ] `feat/label-ecran-personnel` : personnel
 - [ ] `feat/label-ecran-batiments` : bâtiments
 - [ ] `feat/label-ecran-tournees` : tournées et merch (+)
-- [ ] `feat/label-ecran-une` : La Une du label
+- [ ] `feat/label-ecran-fil` : Le Fil du label
 - [ ] `feat/label-ecran-parametres` : paramètres et raccourcis
 - [ ] `feat/label-ecran-rapport-mensuel` : rapport mensuel
 - [ ] `feat/label-ecran-succes` : succès et records (+)
@@ -139,7 +139,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [ ] `feat/label-scenarios-moteur` : moteur de scénarios (objectifs, limite de temps, états de départ)
 - [ ] `feat/label-scenarios-contenu` : 6 à 8 scénarios
 - [ ] `feat/label-defi-du-jour` : seed du jour, 52 semaines, score, résultat partageable
-- [ ] `feat/label-defi-validation` : contrat d'API de validation par replay et backend mocké
+- [ ] `feat/label-defi-validation` : contrat d'API (format du journal d'actions et de la réponse), validation par replay, backend mocké
 - [ ] `feat/label-tutoriel` : « Ton premier signataire », guidé et passable
 
 ## Phase 9 : équilibrage
@@ -150,7 +150,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [ ] `chore/label-equilibrage-3` : cibles atteintes (aucune stratégie dominante, faillite an 1 < 2 %, premier disque d'or entre la 2e et la 4e année)
 - [ ] `docs/label-balance` : `docs/games/label-tycoon/balance.md`
 
-## Phase 10 : un tycoon infini (+, voir GDD section 14)
+## Phase 10 : un tycoon infini (+, voir GDD section 14, **dans la V1**)
 
 - [ ] `feat/label-paliers-groupe` : palier Groupe, sous-labels, direction par des cadres
 - [ ] `feat/label-paliers-conglomerat` : palier Conglomérat, plateforme maison, studios de synchro

@@ -1,6 +1,6 @@
 # Label Tycoon : game design document
 
-> Statut : **proposition soumise à validation**. Aucun code de jeu n'est écrit tant que ce document et la [roadmap](./roadmap.md) ne sont pas validés.
+> Statut : **validé**. Ce document et la [roadmap](./roadmap.md) font foi ; le mode Infini / Héritage (section 14) fait partie de la V1.
 >
 > Convention : tout ce qui est marqué **[PROPOSITION]** est une idée ajoutée par rapport à la demande initiale. Le reste en découle directement. Toutes les valeurs numériques sont des **valeurs de départ**, destinées à vivre dans `packages/label-tycoon/src/balance/` et à être recalées par simulation.
 
@@ -25,16 +25,18 @@ Quatre piliers :
 | Major                                   | 15 à 25 h                                               |
 | Au-delà (Groupe, Conglomérat, Héritage) | illimité, nouvelle partie « Héritage » à chaque cycle   |
 
-## 2. Écarts avec la demande initiale (à valider)
+## 2. Décisions validées
 
-Le prompt et le dépôt actuel divergent sur quelques points. Voici ce que je propose, pour que tu tranches.
+Le prompt initial et le dépôt divergeaient sur quelques points. Voici ce qui a été tranché.
 
-1. **Direction artistique.** Le prompt décrit la direction « journal » (papier, encre, une couleur d'accent, aucun glow). Or `docs/design.md` a été réécrit : le portail est désormais **cartoon / jeu mobile** (contours épais, ombres pleines, couleurs saturées, thèmes Jour et Nuit). Les deux documents se contredisent. **Je suis `docs/design.md`**, qui est la référence à jour. L'idée « univers du disque » est conservée : pochettes de vinyles en SVG, crédits façon notes de pochette, classements façon hit-parade, console de studio dessinée au trait, le tout habillé avec les codes arcade (contours épais, pastilles, boutons 3D).
-2. **Le journal.** Le portail n'a plus de journal _Le Tycoon_. Je propose d'appeler le fil d'actualité du jeu **« La Une du label »** : des coupures de presse générées, dans la direction artistique actuelle. Le nom reste modifiable (chaînes centralisées).
-3. **Route.** Le portail sert les jeux sur `/jeux/<slug>` via `games/registry.ts` (chargement à la demande). Label Tycoon est donc rendu dans l'emplacement de jeu de `/jeux/label-tycoon`, avec l'introduction cinématique existante. **Je propose en plus un alias `/label`** qui redirige vers cette page, pour respecter la demande.
-4. **Sauvegardes.** Le compte du portail stocke ses sauvegardes dans `localStorage` (petites données, via `useGameSave`). Une partie de Label Tycoon est trop grosse : le jeu utilise **IndexedDB**, dans une base propre, avec des clés préfixées par l'identifiant du compte (ou `invite` si personne n'est connecté). **[PROPOSITION]** J'ajoute à `AccountStore` une méthode optionnelle d'enregistrement de métadonnées de sauvegarde, pour que la page de compte affiche et efface aussi les parties de Label Tycoon.
-5. **Identité Git.** Le prompt contient un e-mail à remplir (`<TON_EMAIL_NOREPLY_GITHUB>`). Je continue avec l'identité configurée depuis le début du dépôt (`Gabin LESCOAT`, `lescoatgabin@gmail.com`). Dis-moi si tu veux la changer.
-6. **Dépendances à ajouter** : `fast-check` (tests de propriétés, développement), `zod` (validation des sauvegardes importées, chargé avec le jeu uniquement). Aucune autre bibliothèque de simulation, pas de bibliothèque de graphiques (SVG maison).
+1. **Direction artistique : arcade.** `docs/design.md` fait foi (contours épais, ombres pleines, couleurs saturées, boutons 3D, thèmes Jour et Nuit, tokens). Plus aucune référence au « journal ». L'idée « univers du disque » est conservée : pochettes de vinyles en SVG, crédits façon notes de pochette, classements façon hit-parade, console de studio dessinée au trait, habillés avec les codes arcade.
+2. **Le fil d'actualité s'appelle « Le Fil du label »** : un fil d'actus dans la direction arcade (cartes, pastilles, pochettes), et non des coupures de presse. Le nom reste modifiable (chaînes centralisées).
+3. **Route.** Les jeux sont servis par `games/registry.ts` sur `/jeux/<slug>`. Label Tycoon est rendu dans l'emplacement de jeu de `/jeux/label-tycoon`, avec l'introduction cinématique existante, et **`/label` est un alias** qui y redirige.
+4. **Sauvegardes.** Le compte du portail stocke ses sauvegardes dans `localStorage` (petites données, via `useGameSave`). Une partie de Label Tycoon est trop grosse : le jeu utilise **IndexedDB**, dans une base propre, avec des clés préfixées par l'identifiant du compte (ou `invite` si personne n'est connecté). Une méthode optionnelle d'`AccountStore` remonte des métadonnées de sauvegarde pour que la page de compte affiche et efface aussi les parties de Label Tycoon.
+5. **Identité Git** : `Gabin LESCOAT` / `lescoatgabin@gmail.com`.
+6. **Défi du jour** : le serveur de validation reste mocké, mais le **contrat d'API** (format du journal d'actions et de la réponse) est spécifié et implémenté côté client (voir la roadmap).
+7. **Mode Infini / Héritage dans la V1** (section 14).
+8. **Dépendances à ajouter** : `fast-check` (tests de propriétés, développement), `zod` (validation des sauvegardes importées, chargé avec le jeu uniquement). Aucune autre bibliothèque de simulation, pas de bibliothèque de graphiques (SVG maison).
 
 ## 3. Architecture
 
@@ -81,7 +83,7 @@ Dépendances autorisées : `apps/web` → `label-tycoon` → `core`. Jamais dans
 ### 3.5 Données et équilibrage
 
 - `packages/label-tycoon/src/balance/` : un fichier typé et commenté par domaine (`quality.ts`, `streams.ts`, `contracts.ts`, `finance.ts`, `staff.ts`, `buildings.ts`, `rivals.ts`, `tiers.ts`, `events.ts`, `touring.ts`, `market.ts`, `scouting.ts`, `difficulty.ts`). Aucun nombre magique dans les règles.
-- `packages/label-tycoon/src/content/` : genres, noms, villes, traits, événements, scénarios, articles de presse. De la donnée typée, séparée de la logique.
+- `packages/label-tycoon/src/content/` : genres, noms, villes, traits, événements, scénarios, actus du fil. De la donnée typée, séparée de la logique.
 - `packages/label-tycoon/src/strings/fr.ts` : toutes les chaînes affichées, avec variables typées. Aucune chaîne en dur dans les composants ni dans les règles.
 - Les **réglages de difficulté** (budget de départ, agressivité des rivaux, volatilité) sont des multiplicateurs appliqués sur `balance/`, enregistrés dans la partie (ils font partie du hash).
 
@@ -103,7 +105,7 @@ Dépendances autorisées : `apps/web` → `label-tycoon` → `core`. Jamais dans
   11. finances : revenus, dépenses, intérêts, entretien, faillite ;
   12. tirage des événements ;
   13. palier du label, objectifs, succès ;
-  14. journal de presse et notifications ; auto-pause éventuelle.
+  14. actus du fil et notifications ; auto-pause éventuelle.
 - **Auto-pause** réglable par type : décision requise, offre d'un rival, fin de contrat, crise financière, sortie importante, nomination aux cérémonies, artiste en danger (burnout). La pause se déclenche à la fin du tick qui produit la notification.
 - **Boîte de réception** : notifications (lecture seule) et décisions (avec échéance en semaines). Une décision qui expire déclenche son option par défaut, affichée à l'avance dans la décision (« si tu ne réponds pas : … »).
 
@@ -332,13 +334,13 @@ Moteur dans `core` : conditions de déclenchement, poids, délai de recharge, ch
 | Business   | offre de synchro, offre de rachat, contrôle fiscal, procès                                    |
 | Cérémonies | remise de prix annuelle fictive, nominations et gagnants simulés selon les sorties de l'année |
 
-Textes au ton de presse, vivants, avec variables (noms, chiffres). **Les conséquences d'un choix s'affichent clairement après qu'il est fait** (récapitulatif lisible : ce qui change, de combien).
+Textes au ton vivant et direct, avec variables (noms, chiffres). **Les conséquences d'un choix s'affichent clairement après qu'il est fait** (récapitulatif lisible : ce qui change, de combien).
 
 Chaque événement est une donnée typée : `id`, `catégorie`, `conditions`, `poids`, `recharge`, `texte`, `choix[]` (chacun avec `effets` immédiats et différés, et `suite` éventuelle).
 
-### 5.14 La Une du label
+### 5.14 Le Fil du label
 
-Fil d'actualité du label, présenté comme une collection de coupures de presse dans la direction artistique du portail. Les articles sont **générés à partir des événements de la partie** (sorties, classements, signatures, clashs, faillites de rivaux), avec des gabarits de titres et d'accroches variés pour éviter la répétition. Il raconte l'histoire du label et sert d'archive (consultable, filtrable).
+Fil d'actualité du label, présenté sous forme de cartes dans la direction artistique du portail (pastilles, pochettes, boutons 3D). Les actus sont **générés à partir des événements de la partie** (sorties, classements, signatures, clashs, faillites de rivaux), avec des gabarits de titres et d'accroches variés pour éviter la répétition. Il raconte l'histoire du label et sert d'archive (consultable, filtrable).
 
 ## 6. Modes de jeu
 
@@ -371,7 +373,7 @@ Elle suit `docs/design.md` (arcade : contours épais, ombres pleines, couleurs s
 - **tampon encreur** animé pour la signature d'un contrat ;
 - graphiques SVG maison, traits épais et aplats arcade, jamais de bibliothèque.
 
-Les interdits historiques (néons, dégradés, glow, emojis) ont été levés par `docs/design.md`, mais pas la lisibilité : l'information n'est jamais portée par la couleur seule (flèches, signes + et −).
+Les interdits historiques (néons, dégradés, glow, emojis) sont levés par `docs/design.md`, mais pas la lisibilité : l'information n'est jamais portée par la couleur seule (flèches, signes + et −).
 
 ### 8.2 Écrans (une PR chacun)
 
@@ -388,7 +390,7 @@ Les interdits historiques (néons, dégradés, glow, emojis) ont été levés pa
 11. Finances
 12. Personnel
 13. Bâtiments
-14. La Une du label
+14. Le Fil du label
 15. Paramètres et sauvegardes
 
 **[PROPOSITION]** Écrans ajoutés plus tard : Tournées, Catalogue (réédition, vinyles), Succès, Héritage.
@@ -427,24 +429,24 @@ Les interdits historiques (néons, dégradés, glow, emojis) ont été levés pa
 
 ## 10. Contenu : volumes visés à la V1
 
-| Contenu                       | Volume V1                             |
-| ----------------------------- | ------------------------------------- |
-| Genres de départ              | 10                                    |
-| Sous-genres générables        | 30+                                   |
-| Événements                    | 60+                                   |
-| Traits d'artistes             | 20                                    |
-| Traits de personnel           | 10                                    |
-| Scénarios                     | 6 à 8                                 |
-| Gabarits d'articles de presse | 150+                                  |
-| Succès                        | 60                                    |
-| Noms (prénoms, noms, scène)   | milliers, par assemblage de morphèmes |
+| Contenu                     | Volume V1                             |
+| --------------------------- | ------------------------------------- |
+| Genres de départ            | 10                                    |
+| Sous-genres générables      | 30+                                   |
+| Événements                  | 60+                                   |
+| Traits d'artistes           | 20                                    |
+| Traits de personnel         | 10                                    |
+| Scénarios                   | 6 à 8                                 |
+| Gabarits d'actus du fil     | 150+                                  |
+| Succès                      | 60                                    |
+| Noms (prénoms, noms, scène) | milliers, par assemblage de morphèmes |
 
 Tout ce contenu est de la donnée typée, ce qui permet d'en ajouter sans toucher à la logique.
 
 ## 11. Contraintes de contenu
 
 - Aucun vrai nom d'artiste, de label, de titre, de lieu protégé : tout est fictif et généré.
-- Pas de contenu explicite dans les textes générés (le ton reste « presse musicale »).
+- Pas de contenu explicite dans les textes générés (le ton reste celui d'un magazine musical).
 - Les noms de villes sont fictifs.
 
 ## 12. Risques et parades
@@ -460,15 +462,9 @@ Tout ce contenu est de la donnée typée, ce qui permet d'en ajouter sans touche
 
 ## 13. Questions ouvertes
 
-1. Direction artistique : confirmes-tu que **`docs/design.md` (arcade)** prime sur la description « journal » du prompt ?
-2. Nom du fil d'actualité : « La Une du label » te convient-il ?
-3. Alias `/label` vers `/jeux/label-tycoon` : OK ?
-4. Pour les sauvegardes, OK pour une base IndexedDB propre au jeu, avec en option les métadonnées remontées dans la page de compte ?
-5. Identité Git : on garde `Gabin LESCOAT` / `lescoatgabin@gmail.com` ?
-6. Le défi du jour validé par le serveur reste mocké ici : veux-tu que je prépare le contrat d'API (format du journal, de la réponse) dans la roadmap ?
-7. Le mode « Infini / Héritage » de la section 14 est une proposition importante : veux-tu qu'il soit dans la V1 ou en V1.5 ?
+Aucune à ce stade : les sept questions de la première version ont été tranchées (section 2). Les questions nouvelles seront ajoutées ici au fil des phases.
 
-## 14. Un tycoon infini : longévité et profondeur **[PROPOSITION]**
+## 14. Un tycoon infini : longévité et profondeur (dans la V1)
 
 Cette section répond à « un tycoon, c'est infini ». L'objectif est qu'une partie puisse durer des dizaines d'heures sans que les systèmes s'essoufflent, et qu'on ait toujours une raison de continuer.
 
@@ -504,7 +500,7 @@ La partie traverse des **ères** d'environ 8 à 12 ans qui modifient les règles
 
 ### 14.5 Contenu qui grossit après la V1
 
-- Pipeline de contenu pensé pour grossir : événements, genres, scénarios, gabarits de presse sont des fichiers de données. Objectif : **60 événements à la V1, 150 à 6 mois, 300 à terme**.
+- Pipeline de contenu pensé pour grossir : événements, genres, scénarios, gabarits d'actus sont des fichiers de données. Objectif : **60 événements à la V1, 150 à 6 mois, 300 à terme**.
 - **Marchés internationaux** : chaque pays a ses genres, ses plateformes, ses classements locaux, ses rivaux. L'export devient une couche de jeu à part entière.
 - **Saisons de contenu** : saisons de festivals, crises économiques, nouvelles technologies musicales (fictives), chacune apportant des événements dédiés.
 - **Défis hebdomadaires** en plus du défi du jour (seed de la semaine, contraintes spéciales).
