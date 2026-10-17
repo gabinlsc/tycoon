@@ -1,4 +1,5 @@
-import { type Phase, clamp } from '@tycoon/core';
+import { type Phase, calendarOf, clamp } from '@tycoon/core';
+import { stepSkills, updatePhase, yearlyDeclineRoll } from './career';
 import type { Artist } from './artists';
 import { DYNAMICS } from './balance';
 import type { LabelSignal } from './pipeline';
@@ -56,10 +57,30 @@ export function driftArtist(artist: Artist): void {
   if (artist.hype < 0.5) artist.hype = 0;
 }
 
-/** Phase « artistes » : dérive hebdomadaire de tous les artistes du monde, dans l'ordre des identifiants. */
+/**
+ * Phase « artistes » : pour chaque artiste, dans l'ordre des identifiants, dérive hebdomadaire,
+ * évolution des compétences et de la phase de carrière ; en fin d'année, vieillissement puis
+ * tirage de retour en grâce ou de statut culte pour ceux qui déclinent.
+ */
 export const artistsPhase: Phase<LabelState, LabelSignal> = {
   name: 'artistes',
-  run(state) {
-    for (const artist of state.artistes) driftArtist(artist);
+  run(state, ctx) {
+    const yearEnd = calendarOf(ctx.tick).isYearEnd;
+    for (const artist of state.artistes) {
+      driftArtist(artist);
+      stepSkills(artist);
+      updatePhase(artist);
+      if (yearEnd) {
+        artist.age += 1;
+        updatePhase(artist);
+        const outcome = yearlyDeclineRoll(artist, ctx.rng('carrieres'));
+        if (outcome) {
+          ctx.emit({
+            kind: outcome === 'retour' ? 'retour-en-grace' : 'statut-culte',
+            payload: { artisteId: artist.id },
+          });
+        }
+      }
+    }
   },
 };

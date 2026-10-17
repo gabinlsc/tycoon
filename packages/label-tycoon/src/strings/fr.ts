@@ -70,6 +70,7 @@ export const fr = {
     pic: 'Au sommet',
     plateau: 'Plateau',
     declin: 'En déclin',
+    culte: 'Statut culte',
   } satisfies Record<CareerPhase, string>,
 
   niveaux: {

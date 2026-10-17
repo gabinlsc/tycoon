@@ -29,7 +29,7 @@ import {
   uniqueName,
 } from './naming';
 
-export type CareerPhase = 'emergent' | 'montee' | 'pic' | 'plateau' | 'declin';
+export type CareerPhase = 'emergent' | 'montee' | 'pic' | 'plateau' | 'declin' | 'culte';
 
 /**
  * Un artiste, fictif et généré. Tous les attributs sont des entiers (0-100 sauf indication).
@@ -66,6 +66,8 @@ export interface Artist {
   polyvalence: number;
 
   phase: CareerPhase;
+  /** Nombre de retours en grâce déjà vécus. */
+  retours: number;
   /** Âge du pic de carrière (caché). */
   agePic: number;
 
@@ -250,6 +252,7 @@ export function generateArtist(
     loyaute,
     polyvalence,
     phase: careerPhaseFor(age, agePic, niveau),
+    retours: 0,
     agePic,
     hype: score(profile.hype + rng.gaussian(0, 3)),
     moral: DYNAMIC_START.moral,

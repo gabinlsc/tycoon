@@ -29,6 +29,7 @@ export const LABEL_STREAMS = [
   'finances',
   'personnel',
   'tournees',
+  'carrieres',
 ] as const;
 
 export type LabelSession = Session<LabelState, LabelAction>;
