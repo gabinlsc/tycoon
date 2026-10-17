@@ -11,6 +11,8 @@
     "build": "echo \"@tycoon/core : rien à construire pour l'instant\""
   },
   "devDependencies": {
+    "@types/node": "^26.6.5",
+    "fast-check": "^4.10.2",
     "vitest": "^2.1.0"
   }
 }
