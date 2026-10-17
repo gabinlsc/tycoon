@@ -1,5 +1,6 @@
 import { Masthead } from './components/Masthead/Masthead';
 import { Headline } from './components/Headline/Headline';
+import { Quotes } from './components/Quotes/Quotes';
 import { Ticker } from './components/Ticker/Ticker';
 import { MarketProvider } from './lib/market';
 
@@ -13,6 +14,7 @@ export function App() {
       <Ticker />
       <main id="contenu">
         <Headline />
+        <Quotes />
       </main>
     </MarketProvider>
   );
