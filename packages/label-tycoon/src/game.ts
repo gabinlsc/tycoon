@@ -13,6 +13,7 @@ import { type LabelSignal, buildPipeline } from './pipeline';
 import { artistsPhase } from './dynamics';
 import { financePhase, initialFinance } from './finance';
 import { initialCredibility, initialMarket } from './market';
+import { sign } from './contracts';
 import { dropProspect, fireScout, hireScout, scout, studioTrial } from './scouting';
 import { generateWorld } from './world';
 import type { LabelState } from './state';
@@ -60,6 +61,7 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
     ...eventEngine.actionHandlers,
     'renommer-label': renameLabel,
     reperer: scout,
+    signer: sign,
     'recruter-denicheur': hireScout,
     'renvoyer-denicheur': fireScout,
     'abandonner-suivi': dropProspect,
@@ -109,6 +111,7 @@ export function initialState(seed: Seed, config: GameConfig): LabelState {
     artistes: [],
     suivis: [],
     denicheurs: [],
+    contrats: [],
     nextId: 1,
   };
 }

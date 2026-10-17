@@ -1,0 +1,137 @@
+import { type ActionHandler, type Cents, cents, clamp, money, reject } from '@tycoon/core';
+import type { Action } from '@tycoon/core';
+import { type Artist, notoriety } from './artists';
+import { CONTRACTS } from './balance';
+import { canAfford, spend } from './finance';
+import type { LabelSignal } from './pipeline';
+import { type LabelState, newId } from './state';
+
+/** Clauses d'un contrat d'artiste. */
+export interface Clauses {
+  /** Avance versée à la signature. */
+  avance: Cents;
+  /** Part des royalties reversée à l'artiste (points de base). */
+  royaltiesArtisteBps: number;
+  /** Durée en années. */
+  dureeAnnees: number;
+  /** Exclusivité : l'artiste ne peut sortir de musique ailleurs. */
+  exclusivite: boolean;
+  /** Part du label sur concerts, merch et synchro (points de base, 0 = contrat classique). */
+  part360Bps: number;
+  /** Prix de rachat anticipé du contrat par l'artiste (0 = pas de clause). */
+  clauseRachat: Cents;
+}
+
+export interface Contrat {
+  id: number;
+  artisteId: number;
+  clauses: Clauses;
+  /** Semaine de signature. */
+  signeLe: number;
+  /** Semaine d'échéance. */
+  echeance: number;
+}
+
+export interface UtilityTerm {
+  id: string;
+  valeur: number;
+}
+export interface Utility {
+  total: number;
+  termes: UtilityTerm[];
+}
+
+/** Avance « juste » pour cet artiste : ce qu'il juge normal de recevoir à la signature. */
+export function fairAdvance(artist: Artist): Cents {
+  return cents(
+    CONTRACTS.advanceFloor +
+      Math.round((notoriety(artist.fanbase) * CONTRACTS.advancePerNotoriety) / 1),
+  );
+}
+
+/**
+ * Modèle d'utilité de l'artiste : somme de termes lisibles (avance, royalties, prestige du label,
+ * affinité, exclusivité, 360, durée, rachat). Au-dessus du seuil, il accepte.
+ */
+export function utilityOf(artist: Artist, clauses: Clauses, reputation: number): Utility {
+  const w = CONTRACTS.weights;
+  const fair = fairAdvance(artist);
+  const ego = artist.ego / 100;
+  const loyal = artist.loyaute / 100;
+  const termes: UtilityTerm[] = [
+    { id: 'avance', valeur: w.avance * clamp((clauses.avance - fair) / fair, -1, 2) },
+    {
+      id: 'royalties',
+      valeur:
+        w.royalties *
+        ((clauses.royaltiesArtisteBps - CONTRACTS.fairRoyaltiesBps) / 10_000) *
+        (1 + ego),
+    },
+    { id: 'prestige', valeur: w.prestige * (reputation - notoriety(artist.fanbase)) },
+    { id: 'affinite', valeur: w.affinite * artist.affinite },
+    { id: 'exclusivite', valeur: clauses.exclusivite ? -w.exclusivite * (0.5 + ego) : 0 },
+    {
+      id: 'clause360',
+      valeur: ((-w.clause360 * clauses.part360Bps) / 10_000) * (0.5 + artist.ethique / 100),
+    },
+    { id: 'duree', valeur: -w.duree * (clauses.dureeAnnees - 2) * (1.5 - loyal) },
+    { id: 'rachat', valeur: clauses.clauseRachat > 0 ? w.rachat * (0.5 + ego) : 0 },
+  ];
+  return { total: termes.reduce((s, t) => s + t.valeur, 0), termes };
+}
+
+export function clausesValid(c: Clauses): boolean {
+  const { royaltiesBps, durationYears, share360Bps } = CONTRACTS;
+  return (
+    Number.isInteger(c.avance) &&
+    c.avance >= 0 &&
+    Number.isInteger(c.clauseRachat) &&
+    c.clauseRachat >= 0 &&
+    c.royaltiesArtisteBps >= royaltiesBps.min &&
+    c.royaltiesArtisteBps <= royaltiesBps.max &&
+    c.dureeAnnees >= durationYears.min &&
+    c.dureeAnnees <= durationYears.max &&
+    c.part360Bps >= share360Bps.min &&
+    c.part360Bps <= share360Bps.max
+  );
+}
+
+export interface SignAction extends Action {
+  readonly type: 'signer';
+  readonly artisteId: number;
+  readonly clauses: Clauses;
+}
+
+export const sign: ActionHandler<LabelState, SignAction, LabelSignal> = {
+  validate(state, action) {
+    const artist = state.artistes.find((a) => a.id === action.artisteId);
+    if (!artist) return reject('artiste-introuvable');
+    if (artist.employeur !== 'libre') return reject('artiste-indisponible');
+    if (!clausesValid(action.clauses)) return reject('clauses-invalides');
+    if (!canAfford(state, action.clauses.avance))
+      return reject('fonds-insuffisants', { besoin: action.clauses.avance });
+    const { total } = utilityOf(artist, action.clauses, state.label.reputation);
+    if (total < CONTRACTS.acceptThreshold) return reject('offre-refusee');
+    return null;
+  },
+  apply(state, action, ctx) {
+    const artist = state.artistes.find((a) => a.id === action.artisteId);
+    if (!artist) return;
+    spend(state, 'avances', action.clauses.avance);
+    artist.employeur = 'joueur';
+    state.suivis = state.suivis.filter((p) => p.artisteId !== artist.id);
+    state.contrats.push({
+      id: newId(state),
+      artisteId: artist.id,
+      clauses: { ...action.clauses },
+      signeLe: ctx.tick,
+      echeance: ctx.tick + action.clauses.dureeAnnees * 52,
+    });
+    ctx.emit({ kind: 'artiste-signe', payload: { artisteId: artist.id } });
+  },
+};
+
+/** Part des royalties revenant au label pour un montant brut. */
+export function labelShare(clauses: Clauses, gross: Cents): Cents {
+  return cents(gross - money.applyBps(gross, clauses.royaltiesArtisteBps));
+}
