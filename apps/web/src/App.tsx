@@ -1,4 +1,5 @@
 import { Masthead } from './components/Masthead/Masthead';
+import { Headline } from './components/Headline/Headline';
 import { Ticker } from './components/Ticker/Ticker';
 import { MarketProvider } from './lib/market';
 
@@ -10,7 +11,9 @@ export function App() {
       </a>
       <Masthead />
       <Ticker />
-      <main id="contenu" className="page" />
+      <main id="contenu">
+        <Headline />
+      </main>
     </MarketProvider>
   );
 }

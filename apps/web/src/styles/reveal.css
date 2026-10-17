@@ -1,0 +1,17 @@
+/* Révélation par masque : jamais de fondu vers le haut générique.
+   Le contenu est visible par défaut ; le masque n'est posé que si le JS est actif
+   et que l'utilisateur accepte le mouvement. */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    transition: clip-path var(--dur-slow) var(--ease-ink);
+  }
+  .reveal--down:not(.is-in) {
+    clip-path: inset(0 0 100% 0);
+  }
+  .reveal--right:not(.is-in) {
+    clip-path: inset(0 100% 0 0);
+  }
+  .reveal.is-in {
+    clip-path: inset(0 0 0 0);
+  }
+}
