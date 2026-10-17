@@ -6,6 +6,8 @@ import './styles/masthead.css';
 import './styles/ticker.css';
 import './styles/reveal.css';
 import './styles/headline.css';
+import './styles/quotes.css';
+import './styles/sparkline.css';
 import { App } from './App';
 import { initIntro } from './lib/intro';
 
