@@ -27,3 +27,7 @@ Vérifiés par `src/perf.test.ts` (seuils larges, pour attraper une régression 
 | 200 000 × `exp`, `ln`, `sin`, `cos`    | 88 ms  | 400 ms        |
 
 Objectif du jeu : 52 semaines en moins de 200 ms (≈ 3,8 ms par semaine) et 10 ans en moins de 3 s. Le moteur n'en consomme qu'une petite part.
+
+## Expliquer un calcul
+
+`explain()` (module `explain`) construit un résultat **et** la liste ordonnée des termes qui l'ont produit (`term`, `scale`, `offset`, `limit`). La somme des contributions est toujours exactement la valeur finale. Les formules du jeu renvoient un `Explained` plutôt qu'un nombre nu, et l'interface en fait une infobulle (« d'où vient ce chiffre »). Les termes portent une clé, jamais de texte : les libellés sont dans les chaînes du jeu.

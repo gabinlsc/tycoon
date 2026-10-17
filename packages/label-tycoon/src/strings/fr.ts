@@ -111,6 +111,14 @@ export const fr = {
     autres: 'Autres dépenses',
   } satisfies Record<ExpenseCategory, string>,
 
+  /** Libellés des termes d'explication (infobulles « d'où vient ce chiffre »). */
+  explications: {
+    plume: 'Plume',
+    flow: 'Flow',
+    voix: 'Voix',
+    bornes: 'Limites de 0 à 100',
+  },
+
   modes: {
     carriere: 'Carrière',
     scenario: 'Scénario',

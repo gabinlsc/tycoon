@@ -19,7 +19,7 @@ export {
   buildPipeline,
 } from './pipeline';
 export { type LabelData, type LabelState, newId } from './state';
-export { type Strings, describeRejection, fr, strings } from './strings';
+export { type Strings, describeRejection, fr, strings, termLabel } from './strings';
 export {
   type Origin,
   type RealName,
@@ -81,3 +81,4 @@ export {
   initialFinance,
   spend,
 } from './finance';
+export { artisticTalent } from './formulas';
