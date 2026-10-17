@@ -33,7 +33,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 ## Phase 2 : fondations de `packages/label-tycoon`
 
 - [x] `chore/label-fondations` : package, structure `balance/`, `content/`, `strings/fr`, types d'état, `newGame(seed, difficulté)`
-- [ ] `feat/label-noms-villes` : génération de noms, noms de scène, villes fictives, liste d'exclusion
+- [x] `feat/label-noms-villes` : génération de noms, noms de scène, villes fictives, liste d'exclusion
 - [ ] `feat/label-genres` : genres de départ et modèle de popularité (statique)
 - [ ] `feat/label-artistes-generation` : génération procédurale d'artistes (attributs, traits, identité, potentiel, âge de pic)
 - [ ] `feat/label-finances-base` : trésorerie, revenus et dépenses, compte de résultat, boucle hebdomadaire
@@ -179,7 +179,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | ----- | ----- | ------ |
 | 0     | 1     | 1      |
 | 1     | 13    | 13     |
-| 2     | 6     | 1      |
+| 2     | 6     | 2      |
 | 3     | 18    | 0      |
 | 4     | 16    | 0      |
 | 5     | 14    | 0      |
