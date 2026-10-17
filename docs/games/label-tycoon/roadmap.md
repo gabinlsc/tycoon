@@ -28,7 +28,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `feat/core-evenements-choix` : choix multiples, conséquences immédiates et différées
 - [x] `feat/core-evenements-chaines` : chaînes d'événements, file d'événements programmés
 - [x] `feat/core-sauvegarde` : enveloppe versionnée, migrations enchaînées, sauvegardes de référence
-- [ ] `test/core-performance` : banc de performance du moteur (budget de tick)
+- [x] `test/core-performance` : banc de performance du moteur (budget de tick)
 
 ## Phase 2 : fondations de `packages/label-tycoon`
 
@@ -178,7 +178,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | Phase | Total | Faites |
 | ----- | ----- | ------ |
 | 0     | 1     | 1      |
-| 1     | 13    | 12     |
+| 1     | 13    | 13     |
 | 2     | 6     | 0      |
 | 3     | 18    | 0      |
 | 4     | 16    | 0      |
