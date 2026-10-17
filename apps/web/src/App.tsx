@@ -1,33 +1,32 @@
-import { Masthead } from './components/Masthead/Masthead';
-import { Crossovers } from './components/Crossovers/Crossovers';
-import { DailyChallenge } from './components/DailyChallenge/DailyChallenge';
-import { Footer } from './components/Footer/Footer';
-import { Headline } from './components/Headline/Headline';
-import { HowItWorks } from './components/HowItWorks/HowItWorks';
-import { Leaderboard } from './components/Leaderboard/Leaderboard';
-import { Quotes } from './components/Quotes/Quotes';
-import { Subscribe } from './components/Subscribe/Subscribe';
-import { Ticker } from './components/Ticker/Ticker';
-import { MarketProvider } from './lib/market';
+import { ActivityFeed } from './components/arcade/ActivityFeed';
+import { CrossoverMap } from './components/arcade/CrossoverMap';
+import { DailyQuest } from './components/arcade/DailyQuest';
+import { GameGrid } from './components/arcade/GameGrid';
+import { Hero } from './components/arcade/Hero';
+import { HowToPlay } from './components/arcade/HowToPlay';
+import { Leaderboard } from './components/arcade/Leaderboard';
+import { Navbar } from './components/arcade/Navbar';
+import { SiteFooter } from './components/arcade/SiteFooter';
+import { SubscribeBox } from './components/arcade/SubscribeBox';
 
 export function App() {
   return (
-    <MarketProvider>
+    <>
       <a className="skip-link" href="#contenu">
         Aller au contenu
       </a>
-      <Masthead />
-      <Ticker />
+      <Navbar />
+      <ActivityFeed />
       <main id="contenu">
-        <Headline />
-        <Quotes />
-        <DailyChallenge />
+        <Hero />
+        <GameGrid />
+        <DailyQuest />
         <Leaderboard />
-        <HowItWorks />
-        <Crossovers />
-        <Subscribe />
+        <HowToPlay />
+        <CrossoverMap />
+        <SubscribeBox />
       </main>
-      <Footer />
-    </MarketProvider>
+      <SiteFooter />
+    </>
   );
 }

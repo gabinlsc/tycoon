@@ -1,0 +1,123 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: var(--border);
+  background: var(--surface);
+}
+.navbar__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2) var(--sp-5);
+  padding-block: var(--sp-2);
+}
+.navbar__logo {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+
+.navbar__nav {
+  order: 3;
+  flex-basis: 100%;
+  overflow-x: auto;
+}
+.navbar__nav ul {
+  display: flex;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: var(--sp-1) 0 var(--sp-2);
+  list-style: none;
+}
+.navbar__nav a {
+  display: block;
+  padding: 0.3rem 1rem;
+  border: 3px solid var(--outline);
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: var(--fs-small);
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: transform var(--dur-fast) var(--ease-bounce);
+}
+.navbar__nav a:hover {
+  background: var(--gold);
+  color: var(--on-color);
+  transform: translateY(-2px);
+}
+
+.navbar__hud {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.hud-pill {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  margin: 0;
+  padding: 0.15rem 0.75rem;
+  border: 3px solid var(--outline);
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+}
+.hud-pill--level {
+  background: var(--purple);
+  color: #fff;
+}
+.hud-pill--level span {
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+}
+.hud-pill--money {
+  background: var(--surface-2);
+  padding-left: 0.3rem;
+}
+
+.theme-switch {
+  display: grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border: 3px solid var(--outline);
+  border-radius: 50%;
+  background: var(--surface-2);
+  cursor: pointer;
+  box-shadow: var(--pop-sm);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.theme-switch:active {
+  transform: translateY(3px);
+  box-shadow: none;
+}
+
+@media (min-width: 62rem) {
+  .navbar__nav {
+    order: 0;
+    flex-basis: auto;
+    overflow: visible;
+  }
+  .navbar__nav ul {
+    padding: 0;
+  }
+}
+@media (max-width: 30rem) {
+  .navbar__logo span {
+    font-size: 1.25rem;
+  }
+  .hud-pill--level {
+    display: none;
+  }
+}

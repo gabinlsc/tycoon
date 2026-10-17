@@ -34,8 +34,8 @@ export const HOW_IT_WORKS: readonly Article[] = [
     numeral: 'IV',
     title: 'Un défi chaque jour',
     paragraphs: [
-      'À minuit, heure de Paris, une nouvelle grille est publiée : même jeu, même capital, même contrainte pour tout le monde. Quinze minutes, un objectif chiffré.',
-      "Les meilleurs scores de la veille s'affichent au podium. Personne ne peut rejouer la grille d'hier : on la lit dans le journal du lendemain.",
+      'À minuit, heure de Paris, une nouvelle quête est publiée : même jeu, même capital, même contrainte pour tout le monde. Quinze minutes, un objectif chiffré.',
+      "Les meilleurs scores de la veille s'affichent au podium. Personne ne peut rejouer la quête d'hier : elle disparaît pour de bon.",
     ],
   },
 ];
