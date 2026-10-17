@@ -9,6 +9,8 @@ import './styles/arcade/hero.css';
 import './styles/arcade/games.css';
 import './styles/arcade/sections.css';
 import './styles/arcade/pages.css';
+import './styles/arcade/account.css';
+import { AccountProvider } from './accounts/AccountContext';
 import { App } from './App';
 
 const root = document.getElementById('root');
@@ -17,7 +19,9 @@ if (!root) throw new Error('Élément #root introuvable');
 createRoot(root).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <AccountProvider>
+        <App />
+      </AccountProvider>
     </BrowserRouter>
   </StrictMode>,
 );

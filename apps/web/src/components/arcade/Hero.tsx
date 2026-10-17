@@ -29,8 +29,8 @@ export function Hero() {
           <Button as={Link} to="/jeux" tone="gold" size="lg">
             Voir les jeux
           </Button>
-          <Button as={Link} to="/#comment-jouer" tone="ghost" size="lg">
-            Comment jouer
+          <Button as={Link} to="/compte" tone="ghost" size="lg">
+            Créer mon pseudo
           </Button>
         </div>
       </div>
