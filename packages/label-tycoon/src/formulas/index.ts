@@ -1,0 +1,1 @@
+export { artisticTalent } from './talent';

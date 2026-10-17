@@ -14,3 +14,9 @@ export function describeRejection(rejection: Rejection, s: Strings = strings): s
     ? template((rejection.params ?? {}) as never)
     : `Action refusée (${rejection.code}).`;
 }
+
+/** Libellé d'un terme d'explication, avec la clé brute en repli pour ne jamais afficher un blanc. */
+export function termLabel(key: string, s: Strings = strings): string {
+  const table = s.explications as Record<string, string | undefined>;
+  return table[key] ?? key;
+}

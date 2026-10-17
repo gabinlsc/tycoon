@@ -11,3 +11,4 @@ export * from './sim';
 export * from './replay';
 export * from './events';
 export * from './save';
+export * from './explain';
