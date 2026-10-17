@@ -20,7 +20,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `feat/core-rng` : xoshiro128**, état sérialisable, entiers, flottants, gaussien, choix pondéré, mélange, **flux indépendants** par système
 - [x] `feat/core-argent` : type `Cents`, opérations entières, répartition sans perte de centime, arrondi centralisé
 - [x] `feat/core-math` : `clamp`, `lerp`, courbes, escompte, tables de probabilités, moyennes pondérées
-- [ ] `feat/core-hash` : sérialisation canonique et empreinte d'état
+- [x] `feat/core-hash` : sérialisation canonique et empreinte d'état
 - [ ] `feat/core-ticks` : boucle de simulation en ticks, pipeline de phases nommées et ordonnées
 - [ ] `feat/core-actions` : commandes typées, validation, application pure, journal d'actions
 - [ ] `feat/core-replay` : rejouer seed + journal, tests de propriétés (déterminisme, replay)
@@ -178,7 +178,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | Phase | Total | Faites |
 | ----- | ----- | ------ |
 | 0     | 1     | 1      |
-| 1     | 13    | 4      |
+| 1     | 13    | 5      |
 | 2     | 6     | 0      |
 | 3     | 18    | 0      |
 | 4     | 16    | 0      |
