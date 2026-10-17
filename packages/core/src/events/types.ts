@@ -51,6 +51,11 @@ export interface EventDef<G> {
   readonly choices?: readonly ChoiceDef<G>[];
   /** Semaines laissées pour répondre (4 par défaut). */
   readonly deadline?: number;
+  /**
+   * Suites de l'événement (chaînes). Pour un événement simple, programmées à sa survenue ; pour
+   * une décision, ce sont celles du choix retenu (`ChoiceDef.followUps`) qui comptent.
+   */
+  readonly followUps?: readonly FollowUpDef[];
   /** Choix appliqué automatiquement à l'échéance. Obligatoire s'il y a des choix. */
   readonly defaultChoice?: string;
 }
@@ -68,7 +73,35 @@ export interface ChoiceDef<G> {
   readonly when?: (data: G, vars: Vars, tick: number) => boolean;
   readonly apply?: (data: G, ctx: EventContext, vars: Vars) => readonly Consequence[] | undefined;
   readonly delayed?: readonly DelayedEffect[];
+  /** Événements à programmer si ce choix est retenu. */
+  readonly followUps?: readonly FollowUpDef[];
 }
+
+/**
+ * Suite d'événement : « dans N semaines, avec une probabilité, tel événement ». C'est ce qui forme
+ * une chaîne (le fan insulté devient une polémique qui devient une procédure).
+ */
+export interface FollowUpDef {
+  readonly eventId: string;
+  /** Semaines avant la suite (au moins 1). */
+  readonly afterWeeks: number;
+  /** Probabilité que la suite ait lieu, tirée au moment où elle est programmée (1 par défaut). */
+  readonly chance?: number;
+  /** Reprendre les variables de l'événement d'origine (nom de l'artiste, montant…). Vrai par défaut. */
+  readonly inherit?: boolean;
+}
+
+/** Suite programmée, en attente de son échéance. */
+export interface ScheduledFollowUp {
+  dueTick: number;
+  eventId: string;
+  vars: Vars;
+  parentInstanceId: number;
+  /** Rang dans la chaîne : 1 pour la première suite, 2 pour la suivante… */
+  step: number;
+}
+
+export type FlagValue = string | number | boolean;
 
 export type DelayedEffectFn<G> = (
   data: G,
@@ -84,6 +117,8 @@ export interface PendingEvent {
   /** Première semaine où le choix par défaut s'applique si le joueur n'a pas répondu. */
   deadlineTick: number;
   vars: Vars;
+  /** Rang de la décision dans une chaîne (0 si tirée au sort). */
+  chainStep: number;
 }
 
 /** Effet différé programmé, en attente de son échéance. */
@@ -121,6 +156,10 @@ export interface FiredEvent {
   outcome?: Outcome;
   /** Conséquences différées déjà survenues. */
   delayedResults?: DelayedResult[];
+  /** Pour une suite d'événement : l'instance qui l'a provoquée. */
+  parentInstanceId?: number;
+  /** Rang dans la chaîne (absent pour un événement tiré au sort). */
+  chainStep?: number;
 }
 
 /** État du moteur d'événements, à inclure dans les données du jeu. Entièrement sérialisable. */
@@ -133,6 +172,10 @@ export interface EventsState {
   nextInstanceId: number;
   pending: PendingEvent[];
   scheduled: ScheduledEffect[];
+  /** Suites d'événements programmées, triées par échéance. */
+  followUps: ScheduledFollowUp[];
+  /** Drapeaux d'histoire posés par les effets et lus par les conditions des événements. */
+  flags: Record<string, FlagValue>;
 }
 
 export const emptyEventsState = (): EventsState => ({
@@ -142,4 +185,25 @@ export const emptyEventsState = (): EventsState => ({
   nextInstanceId: 1,
   pending: [],
   scheduled: [],
+  followUps: [],
+  flags: {},
 });
+
+export const getFlag = (state: EventsState, key: string): FlagValue | undefined => state.flags[key];
+export const hasFlag = (state: EventsState, key: string): boolean => state.flags[key] !== undefined;
+export function setFlag(state: EventsState, key: string, value: FlagValue): void {
+  state.flags[key] = value;
+}
+/** Ajoute à un drapeau numérique (0 s'il n'existe pas) et renvoie la nouvelle valeur. */
+export function addToFlag(state: EventsState, key: string, delta: number): number {
+  const current = state.flags[key];
+  const next = (typeof current === 'number' ? current : 0) + delta;
+  state.flags[key] = next;
+  return next;
+}
+
+/** Programme une suite à la main (hors définition d'événement), en gardant la liste triée. */
+export function scheduleFollowUp(state: EventsState, followUp: ScheduledFollowUp): void {
+  state.followUps.push(followUp);
+  state.followUps.sort((a, b) => a.dueTick - b.dueTick);
+}

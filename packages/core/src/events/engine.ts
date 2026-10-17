@@ -6,17 +6,19 @@ import {
   type Signal,
   reject,
 } from '../sim';
-import type {
-  ChoiceDef,
-  Consequence,
-  DelayedEffectFn,
-  EventContext,
-  EventDef,
-  EventsState,
-  FiredEvent,
-  Outcome,
-  PendingEvent,
-  Vars,
+import {
+  type ChoiceDef,
+  type Consequence,
+  type DelayedEffectFn,
+  type EventContext,
+  type EventDef,
+  type EventsState,
+  type FiredEvent,
+  type FollowUpDef,
+  type Outcome,
+  type PendingEvent,
+  type Vars,
+  scheduleFollowUp,
 } from './types';
 
 export interface EventEngineOptions<G> {
@@ -31,6 +33,8 @@ export interface EventEngineOptions<G> {
   readonly chance: number | ((data: G, tick: number) => number);
   /** Taille maximale de l'historique conservé. */
   readonly historyLimit?: number;
+  /** Longueur maximale d'une chaîne d'événements : au-delà, la suite est abandonnée (évite les boucles). */
+  readonly maxChainDepth?: number;
   /** Nombre maximal de décisions en attente : au-delà, plus de nouvelle décision n'est tirée. */
   readonly maxPending?: number;
   /** Effets à retardement, par clé. */
@@ -92,6 +96,7 @@ export function createEventEngine<G>(options: EventEngineOptions<G>): EventEngin
     maxPerTick = 2,
     historyLimit = 200,
     maxPending = 8,
+    maxChainDepth = 6,
     delayedEffects = {},
   } = options;
 
@@ -107,8 +112,28 @@ export function createEventEngine<G>(options: EventEngineOptions<G>): EventEngin
     validateChoices(event);
     byId.set(event.id, event);
   }
+  for (const event of events) {
+    validateFollowUps(event.id, event.followUps);
+    for (const choice of event.choices ?? [])
+      validateFollowUps(`${event.id}/${choice.id}`, choice.followUps);
+  }
   if (!Number.isInteger(maxPerTick) || maxPerTick < 1) throw new RangeError('maxPerTick invalide');
+  if (!Number.isInteger(maxChainDepth) || maxChainDepth < 1)
+    throw new RangeError('maxChainDepth invalide');
   if (!Number.isInteger(maxPending) || maxPending < 1) throw new RangeError('maxPending invalide');
+
+  function validateFollowUps(owner: string, followUps: readonly FollowUpDef[] | undefined): void {
+    for (const followUp of followUps ?? []) {
+      if (!byId.has(followUp.eventId))
+        throw new RangeError(`${owner} : suite inconnue (${followUp.eventId})`);
+      if (!Number.isInteger(followUp.afterWeeks) || followUp.afterWeeks < 1) {
+        throw new RangeError(`${owner} : délai de suite invalide`);
+      }
+      if (followUp.chance !== undefined && !(followUp.chance >= 0 && followUp.chance <= 1)) {
+        throw new RangeError(`${owner} : probabilité de suite invalide`);
+      }
+    }
+  }
 
   function validateChoices(event: EventDef<G>): void {
     if (!event.choices) {
@@ -165,17 +190,52 @@ export function createEventEngine<G>(options: EventEngineOptions<G>): EventEngin
       state.history.splice(0, state.history.length - historyLimit);
   }
 
-  function record(data: G, ctx: EventContext, event: EventDef<G>, vars: Vars): FiredResult {
+  /** Programme les suites d'un événement. La probabilité est tirée maintenant, pas à l'échéance. */
+  function scheduleFollowUps(
+    state: EventsState,
+    ctx: EventContext,
+    defs: readonly FollowUpDef[] | undefined,
+    parentInstanceId: number,
+    vars: Vars,
+    parentStep: number,
+  ): void {
+    for (const def of defs ?? []) {
+      if (def.chance !== undefined && !ctx.rng(stream).chance(def.chance)) continue;
+      scheduleFollowUp(state, {
+        dueTick: ctx.tick + def.afterWeeks,
+        eventId: def.eventId,
+        vars: def.inherit === false ? {} : vars,
+        parentInstanceId,
+        step: parentStep + 1,
+      });
+    }
+  }
+
+  function record(
+    data: G,
+    ctx: EventContext,
+    event: EventDef<G>,
+    vars: Vars,
+    chain?: { parentInstanceId: number; step: number },
+  ): FiredResult {
     const state = getState(data);
     const consequences = event.apply?.(data, ctx, vars) ?? [];
     const instanceId = state.nextInstanceId;
     state.nextInstanceId += 1;
     state.count[event.id] = (state.count[event.id] ?? 0) + 1;
     if (event.cooldown) state.nextAllowed[event.id] = ctx.tick + event.cooldown;
-    state.history.push({ instanceId, eventId: event.id, tick: ctx.tick, vars, consequences });
+    const entry: FiredEvent = { instanceId, eventId: event.id, tick: ctx.tick, vars, consequences };
+    if (chain) {
+      entry.parentInstanceId = chain.parentInstanceId;
+      entry.chainStep = chain.step;
+    }
+    state.history.push(entry);
     trimHistory(state);
 
     const isDecision = Boolean(event.choices);
+    // Un événement simple programme ses suites tout de suite ; une décision, à la résolution du choix
+    if (!isDecision)
+      scheduleFollowUps(state, ctx, event.followUps, instanceId, vars, chain?.step ?? 0);
     if (isDecision) {
       state.pending.push({
         instanceId,
@@ -183,6 +243,7 @@ export function createEventEngine<G>(options: EventEngineOptions<G>): EventEngin
         createdTick: ctx.tick,
         deadlineTick: ctx.tick + (event.deadline ?? DEFAULT_DEADLINE),
         vars,
+        chainStep: chain?.step ?? 0,
       });
     }
     ctx.emit({
@@ -230,6 +291,7 @@ export function createEventEngine<G>(options: EventEngineOptions<G>): EventEngin
     }
     // Ordre stable des échéances : par semaine, puis par ordre d'inscription
     state.scheduled.sort((a, b) => a.dueTick - b.dueTick);
+    scheduleFollowUps(state, ctx, choice.followUps, instanceId, pending.vars, pending.chainStep);
     state.pending.splice(index, 1);
 
     const outcome: Outcome = { choiceId, tick: ctx.tick, auto, consequences };
@@ -279,6 +341,35 @@ export function createEventEngine<G>(options: EventEngineOptions<G>): EventEngin
         const fallback = byId.get(pending.eventId)?.defaultChoice;
         if (fallback !== undefined) resolve(data, ctx, pending.instanceId, fallback, true);
       }
+
+      // 3. Suites d'événements arrivées à échéance
+      const postponed: typeof state.followUps = [];
+      while (state.followUps.length > 0 && (state.followUps[0]?.dueTick ?? Infinity) <= ctx.tick) {
+        const followUp = state.followUps.shift();
+        if (!followUp) break;
+        const event = byId.get(followUp.eventId);
+        if (!event || followUp.step > maxChainDepth) continue; // chaîne trop longue : abandonnée
+        if (event.when && !event.when(data, ctx.tick)) continue; // la situation a changé : la suite tombe
+        if (event.choices) {
+          const crowded =
+            state.pending.length >= maxPending || state.pending.some((p) => p.eventId === event.id);
+          if (crowded) {
+            postponed.push({ ...followUp, dueTick: ctx.tick + 1 });
+            continue;
+          }
+        }
+        let vars = followUp.vars;
+        if (event.prepare) {
+          const prepared = event.prepare(data, ctx);
+          if (prepared === null) continue;
+          vars = { ...followUp.vars, ...prepared };
+        }
+        record(data, ctx, event, vars, {
+          parentInstanceId: followUp.parentInstanceId,
+          step: followUp.step,
+        });
+      }
+      for (const later of postponed) scheduleFollowUp(state, later);
     },
   };
 
