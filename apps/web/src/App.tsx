@@ -1,4 +1,5 @@
 import { Masthead } from './components/Masthead/Masthead';
+import { Crossovers } from './components/Crossovers/Crossovers';
 import { DailyChallenge } from './components/DailyChallenge/DailyChallenge';
 import { Headline } from './components/Headline/Headline';
 import { HowItWorks } from './components/HowItWorks/HowItWorks';
@@ -21,6 +22,7 @@ export function App() {
         <DailyChallenge />
         <Leaderboard />
         <HowItWorks />
+        <Crossovers />
       </main>
     </MarketProvider>
   );
