@@ -1,8 +1,8 @@
-import { Rng } from '../rng/rng';
-import type { RngState } from '../rng/xoshiro';
 import type { Seed } from '../rng/seed';
 import { type RngStreams, createStreams } from '../rng/streams';
 import { cloneJson } from './clone';
+import { openStreams } from './context';
+import type { Signal, TickContext } from './types';
 
 /**
  * Boucle de simulation en ticks (1 tick = 1 semaine).
@@ -13,22 +13,7 @@ import { cloneJson } from './clone';
  * donne toujours le même résultat.
  */
 
-/** Information remontée par la simulation à l'interface (notification, demande de pause…). */
-export interface Signal {
-  kind: string;
-  /** Si vrai, la boucle rapide s'arrête à la fin du tick (auto-pause). */
-  interrupt?: boolean;
-  payload?: Readonly<Record<string, unknown>>;
-}
-
-export interface TickContext<S extends Signal = Signal> {
-  /** Indice de la semaine simulée (0 pour la première semaine de la partie). */
-  readonly tick: number;
-  /** Générateur du flux nommé. Il avance, et son état est réécrit dans l'état de jeu en fin de tick. */
-  rng(stream: string): Rng;
-  /** Émet un signal pour l'interface. */
-  emit(signal: S): void;
-}
+export type { Signal, TickContext };
 
 export interface Phase<G, S extends Signal = Signal> {
   readonly name: string;
@@ -84,6 +69,15 @@ export interface Simulation<G, S extends Signal = Signal> {
     ticks: number,
     options?: { stopOnInterrupt?: boolean },
   ): RunResult<G, S>;
+  /**
+   * Comme `run`, mais **modifie `state` en place** (aucune copie). À réserver à celui qui possède
+   * l'état et n'en a plus besoin tel quel : replays, simulations d'équilibrage, travailleur de calcul.
+   */
+  runOwned(
+    state: EngineState<G>,
+    ticks: number,
+    options?: { stopOnInterrupt?: boolean },
+  ): RunResult<G, S>;
 }
 
 function isDue(phase: Phase<unknown>, weekNumber: number): boolean {
@@ -108,41 +102,19 @@ export function createSimulation<G, S extends Signal = Signal>(
 
   /** Avance d'un tick en modifiant `state` (qui nous appartient). */
   function advance(state: EngineState<G>, signals: S[]): void {
-    const rngs = new Map<string, Rng>();
-    const ctx: TickContext<S> = {
-      tick: state.tick,
-      rng(stream) {
-        if (!streamNames.has(stream)) throw new RangeError(`Flux aléatoire inconnu : ${stream}`);
-        let rng = rngs.get(stream);
-        if (!rng) {
-          rng = new Rng(state.streams[stream] as RngState);
-          rngs.set(stream, rng);
-        }
-        return rng;
-      },
-      emit(signal) {
-        signals.push(signal);
-      },
-    };
-
+    const { ctx, commit } = openStreams<S>(streamNames, state.streams, state.tick, signals);
     const weekNumber = state.tick + 1;
     for (const phase of definition.phases) {
       if (!isDue(phase as Phase<unknown>, weekNumber)) continue;
       const replacement = phase.run(state.data, ctx);
       if (replacement !== undefined) state.data = replacement;
     }
-
     // Réécriture des seuls flux utilisés, dans l'ordre fixe de la définition (pas celui des appels)
-    const nextStreams: Record<string, RngState> = { ...state.streams };
-    for (const name of definition.streams) {
-      const rng = rngs.get(name);
-      if (rng) nextStreams[name] = rng.snapshot();
-    }
-    state.streams = nextStreams as RngStreams;
+    state.streams = commit(definition.streams);
     state.tick += 1;
   }
 
-  return {
+  const simulation: Simulation<G, S> = {
     definition,
 
     newState(seed, data) {
@@ -161,24 +133,36 @@ export function createSimulation<G, S extends Signal = Signal>(
       return { state: next, signals };
     },
 
-    run(state, ticks, options = {}) {
-      if (!Number.isInteger(ticks) || ticks < 0)
-        throw new RangeError(`Nombre de ticks invalide : ${String(ticks)}`);
+    run(state, ticks, options) {
       // Une seule copie pour tout le lot : les ticks suivants travaillent sur cette copie privée
-      const next = cloneJson(state);
-      const signals: S[] = [];
-      let ticksRun = 0;
-      let interrupted = false;
-      while (ticksRun < ticks) {
-        const before = signals.length;
-        advance(next, signals);
-        ticksRun += 1;
-        if (options.stopOnInterrupt && signals.slice(before).some((s) => s.interrupt)) {
-          interrupted = true;
-          break;
-        }
-      }
-      return { state: next, signals, ticksRun, interrupted };
+      return runOwned(cloneJson(state), ticks, options);
+    },
+
+    runOwned(state, ticks, options) {
+      return runOwned(state, ticks, options);
     },
   };
+
+  function runOwned(
+    state: EngineState<G>,
+    ticks: number,
+    options: { stopOnInterrupt?: boolean } = {},
+  ): RunResult<G, S> {
+    if (!Number.isInteger(ticks) || ticks < 0)
+      throw new RangeError(`Nombre de ticks invalide : ${String(ticks)}`);
+    const signals: S[] = [];
+    let ticksRun = 0;
+    let interrupted = false;
+    while (ticksRun < ticks) {
+      const before = signals.length;
+      advance(state, signals);
+      ticksRun += 1;
+      if (options.stopOnInterrupt && signals.slice(before).some((s) => s.interrupt)) {
+        interrupted = true;
+        break;
+      }
+    }
+    return { state, signals, ticksRun, interrupted };
+  }
+  return simulation;
 }

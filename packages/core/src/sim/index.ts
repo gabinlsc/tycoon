@@ -8,13 +8,26 @@ export {
   startOfYear,
 } from './calendar';
 export {
+  type Action,
+  type ActionHandler,
+  type ActionHandlers,
+  type DispatchResult,
+  type Game,
+  type GameDefinition,
+  type JournalEntry,
+  type Rejection,
+  ReplayError,
+  type Session,
+  createGame,
+  reject,
+} from './game';
+export {
   type EngineState,
   type Phase,
   type RunResult,
-  type Signal,
   type Simulation,
   type SimulationDefinition,
   type StepResult,
-  type TickContext,
   createSimulation,
 } from './simulation';
+export type { Signal, TickContext } from './types';
