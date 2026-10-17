@@ -36,7 +36,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `feat/label-noms-villes` : génération de noms, noms de scène, villes fictives, liste d'exclusion
 - [x] `feat/label-genres` : genres de départ et modèle de popularité (statique)
 - [x] `feat/label-artistes-generation` : génération procédurale d'artistes (attributs, traits, identité, potentiel, âge de pic)
-- [ ] `feat/label-finances-base` : trésorerie, revenus et dépenses, compte de résultat, boucle hebdomadaire
+- [x] `feat/label-finances-base` : trésorerie, revenus et dépenses, compte de résultat, boucle hebdomadaire
 - [ ] `feat/label-explain` : mécanique `explain()` (chaque formule expose la décomposition de ses termes)
 
 ## Phase 3 : le cœur économique
@@ -179,7 +179,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | ----- | ----- | ------ |
 | 0     | 1     | 1      |
 | 1     | 13    | 13     |
-| 2     | 6     | 4      |
+| 2     | 6     | 5      |
 | 3     | 18    | 0      |
 | 4     | 16    | 0      |
 | 5     | 14    | 0      |
