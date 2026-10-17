@@ -93,14 +93,21 @@ export {
 } from './career';
 export {
   HIDDEN_ATTRIBUTES,
+  type Denicheur,
   type DropProspectAction,
+  type FireScoutAction,
+  type HireScoutAction,
   type Prospect,
   type Range,
   type ScoutAction,
   type ScoutedAttribute,
   type TrialAction,
   VISIBLE_ATTRIBUTES,
+  findScout,
   knownRange,
+  payScouts,
   rangeWidth,
+  rivalsPoach,
+  scoutLevelOf,
   scoutTalents,
 } from './scouting';

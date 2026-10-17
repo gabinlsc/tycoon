@@ -44,7 +44,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `feat/label-artistes-dynamiques` : hype, moral, fatigue, fanbase, notoriété, crédibilité de rue
 - [x] `feat/label-carriere` : phases de carrière, progression des compétences, réinvention, déclin (retour en grâce, statut culte)
 - [x] `feat/label-reperage` : sources, fourchettes d'attributs, brouillard de guerre
-- [ ] `feat/label-reperage-rivaux` : dénicheurs imparfaits, biais, talents suivis aussi par les rivaux
+- [x] `feat/label-reperage-rivaux` : dénicheurs imparfaits, biais, talents suivis aussi par les rivaux
 - [ ] `feat/label-contrats` : clauses, modèle d'utilité de l'artiste, signature
 - [ ] `feat/label-negociation` : contre-propositions, jauge de réaction, offres insultantes, affinité
 - [ ] `feat/label-encheres` : enchères face aux rivaux
@@ -180,7 +180,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 0     | 1     | 1      |
 | 1     | 13    | 13     |
 | 2     | 6     | 6      |
-| 3     | 18    | 3      |
+| 3     | 18    | 4      |
 | 4     | 16    | 0      |
 | 5     | 14    | 0      |
 | 6     | 14    | 0      |
