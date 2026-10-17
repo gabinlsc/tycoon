@@ -11,3 +11,19 @@ Moteur de simulation **générique**, partagé par tous les tycoons. Il ne conti
 - Les tests qui ont besoin d'une horloge (bancs de performance) sont dans des fichiers `*.test.ts` : ils sont exemptés des règles ci-dessus.
 
 Voir `docs/games/label-tycoon/gdd.md` (section 3) pour l'architecture complète.
+
+## Budgets de performance
+
+Vérifiés par `src/perf.test.ts` (seuils larges, pour attraper une régression d'ordre de grandeur sans être fragiles en intégration continue). Mesures sur une machine de développement standard :
+
+| Opération                              | Mesure | Seuil du test |
+| -------------------------------------- | ------ | ------------- |
+| Copie d'un état de 2 000 artistes      | 1 ms   | 25 ms         |
+| Hash de ce même état                   | 11 ms  | 60 ms         |
+| 52 semaines de 12 phases (moteur seul) | 0,7 ms | 20 ms         |
+| 52 semaines sur 2 000 artistes         | 12 ms  | 120 ms        |
+| 1 million de tirages entiers           | 74 ms  | 400 ms        |
+| 200 000 gaussiens                      | 53 ms  | 400 ms        |
+| 200 000 × `exp`, `ln`, `sin`, `cos`    | 88 ms  | 400 ms        |
+
+Objectif du jeu : 52 semaines en moins de 200 ms (≈ 3,8 ms par semaine) et 10 ans en moins de 3 s. Le moteur n'en consomme qu'une petite part.
