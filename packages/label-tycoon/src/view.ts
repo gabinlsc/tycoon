@@ -7,7 +7,8 @@ import { labelScore, valuation } from './valuation';
 import { VISIBLE_ATTRIBUTES, knownRange } from './scouting';
 import { bestCertification, certificationThreshold, equivalentSales } from './charts';
 import { type Clauses, fairAdvance } from './contracts';
-import { INTEL } from './balance';
+import { INTEL, PERSONALITIES } from './balance';
+import { buyoutAsk } from './rival-interactions';
 import { analystLevel } from './forecast';
 import { genreKeys, trendMultiplier } from './market';
 import { announcedReleases } from './calendar';
@@ -146,6 +147,35 @@ export interface VuePrevision {
   marge: number;
 }
 
+export interface VueRival {
+  id: number;
+  nom: string;
+  personnalite: string;
+  genreFetiche: string;
+  reputation: number;
+  tresorerie: number;
+  valorisation: number;
+  roster: { id: number; nom: string; genreNom: string; notoriete: number; prixRachat: number }[];
+}
+
+export interface VueOffreRachat {
+  id: number;
+  rival: string;
+  artisteId: number;
+  artiste: string;
+  prix: number;
+  expire: number;
+}
+
+export interface VueConcurrence {
+  rivaux: VueRival[];
+  /** Part du marché des artistes par genre : artistes du joueur et de chaque rival. */
+  parts: { genre: string; nom: string; joueur: number; rivaux: number; libres: number }[];
+  offres: VueOffreRachat[];
+  /** Historique des affrontements (débauchages, clashs, rachats, signatures rivales). */
+  affrontements: VueActu[];
+}
+
 export interface VueJeu {
   semaine: number;
   date: { annee: number; mois: number; semaineDuMois: number };
@@ -176,6 +206,7 @@ export interface VueJeu {
   historiqueTresorerie: number[];
   /** Sorties à venir du joueur et sorties annoncées des rivaux, triées par semaine. */
   calendrier: VueSortieCalendrier[];
+  concurrence: VueConcurrence;
   /** Marché des genres, prévisions des études de marché et facteur de revenu par écoute. */
   marche: {
     genres: VueGenre[];
@@ -388,6 +419,73 @@ function marcheDe(state: LabelState): VueJeu['marche'] {
   };
 }
 
+const AFFRONTEMENTS = [
+  'debauchage',
+  'clash',
+  'contrat-vendu',
+  'offre-rachat',
+  'signature-rivale',
+  'rival-disparu',
+  'rival-nouveau',
+  'rival-evolue',
+];
+
+function concurrenceDe(state: LabelState): VueConcurrence {
+  const rivaux = state.rivaux.map<VueRival>((r) => {
+    const roster = state.artistes.filter((a) => a.employeur === `rival:${r.id}`);
+    return {
+      id: r.id,
+      nom: r.nom,
+      personnalite: PERSONALITIES[r.personnalite].nom,
+      genreFetiche: nomGenre(state, r.genreFetiche),
+      reputation: Math.round(r.reputation),
+      tresorerie: r.tresorerie,
+      valorisation: r.tresorerie + roster.reduce((sum, a) => sum + fairAdvance(a) * 3, 0),
+      roster: roster.map((a) => ({
+        id: a.id,
+        nom: a.nomScene,
+        genreNom: nomGenre(state, a.genre),
+        notoriete: Math.round(notoriety(a.fanbase)),
+        prixRachat: buyoutAsk(state, a.id),
+      })),
+    };
+  });
+  const parts = genreKeys(state.marche).map((id) => {
+    const dans = state.artistes.filter((a) => a.genre === id);
+    return {
+      genre: id,
+      nom: nomGenre(state, id),
+      joueur: dans.filter((a) => a.employeur === 'joueur').length,
+      rivaux: dans.filter((a) => a.employeur.startsWith('rival:')).length,
+      libres: dans.filter((a) => a.employeur === 'libre').length,
+    };
+  });
+  return {
+    rivaux,
+    parts,
+    offres: state.offresRachat.map((o) => ({
+      id: o.id,
+      rival: state.rivaux.find((r) => r.id === o.rivalId)?.nom ?? 'Un rival',
+      artisteId: o.artisteId,
+      artiste: nomDe(state, o.artisteId),
+      prix: o.prix,
+      expire: o.expire,
+    })),
+    affrontements: state.fil
+      .filter((a) => AFFRONTEMENTS.includes(a.kind))
+      .slice(-15)
+      .reverse()
+      .map((a) => ({
+        id: a.id,
+        semaine: a.semaine,
+        titre: a.titre,
+        texte: a.texte,
+        importance: a.importance,
+        kind: a.kind,
+      })),
+  };
+}
+
 function lastReport(state: LabelState): VueJeu['rapport'] {
   const r = state.rapportsMensuels[state.rapportsMensuels.length - 1];
   return r
@@ -531,6 +629,7 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
       progression: objectiveProgress(state, o),
     })),
     calendrier: calendrier(state, tick),
+    concurrence: concurrenceDe(state),
     marche: marcheDe(state),
     classements: {
       singles: ligneClassement(state, 'singles', tick),
