@@ -369,6 +369,7 @@ export {
   type VueFinancesDetail,
   type VueBatiment,
   type VueLigneFinance,
+  type VueScenario,
   type VuePartie,
   type VueRecord,
   type VueSucces,
@@ -389,3 +390,14 @@ export {
 } from './view';
 export { GLOSSAIRE } from './strings';
 export { type Estimate, type EstimateInput, estimateRelease } from './estimate';
+export { SCENARIOS } from './scenarios/catalogue';
+export {
+  applyScenario,
+  conditionMet,
+  findScenario,
+  scenarioPhase,
+  scenarioScore,
+  signerArtisteDeDepart,
+} from './scenarios/engine';
+export { texteCondition } from './scenarios/textes';
+export type { Condition, ScenarioDef, ScenarioState, StatutScenario } from './scenarios/types';
