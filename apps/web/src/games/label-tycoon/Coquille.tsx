@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ECRANS, type EcranId } from './ecrans';
 import { useLabel } from './LabelContext';
+import { BarreTemps } from './BarreTemps';
 import { NouvellePartie } from './NouvellePartie';
 import { useRaccourcis } from './Raccourcis';
 
@@ -44,6 +45,7 @@ export function Coquille() {
           {eur(vue.finances.tresorerie)}
         </span>
       </header>
+      <BarreTemps />
       <nav className="label-nav" aria-label="Écrans du jeu">
         {ECRANS.map((e, index) => (
           <button
