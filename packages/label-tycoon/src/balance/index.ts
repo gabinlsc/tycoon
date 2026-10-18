@@ -38,3 +38,4 @@ export {
   type SourceProfile,
 } from './scouting';
 export { RIVALS, type RivalStyle } from './rivals';
+export { QUALITY } from './quality';
