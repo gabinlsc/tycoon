@@ -140,8 +140,13 @@ export const CIBLES = {
   faillitePremiereAnneeMax: 0.02,
   /** Fenêtre du premier disque d'or (médiane, en semaines) : entre la 2e et la 4e année. */
   premierOrFenetre: [104, 208] as const,
-  /** Une stratégie est dominante si sa valorisation médiane dépasse celle de la suivante de ce facteur. */
-  dominanceMax: 1.5,
+  /**
+   * Une stratégie est dominante si elle l'emporte à 10 ans (meilleure valorisation, graine par graine,
+   * parmi les stratégies sérieuses) dans plus de cette part des parties. La médiane des valorisations
+   * ne suffit pas : les résultats d'un tycoon ont une queue très lourde, un écart de médiane se
+   * produit sans qu'aucune stratégie ne gagne systématiquement.
+   */
+  partVictoiresMax: 0.55,
   /** Un genre est dominant s'il l'emporte dans plus de cette part des parties. */
   genreDominantMax: 0.4,
 } as const;
@@ -159,8 +164,10 @@ export interface Verdict {
 export interface Analyse {
   resume: StrategySummary[];
   gagnante: BotStrategy | null;
-  /** Rapport entre la valorisation médiane de la gagnante et celle de la deuxième (10 ans). */
+  /** Rapport entre la valorisation médiane de la gagnante et celle de la deuxième (10 ans), à titre indicatif. */
   ecartGagnante: number;
+  /** Part des graines gagnées à 10 ans par chaque stratégie sérieuse. */
+  victoires: { strategie: BotStrategy; part: number }[];
   genres: { genre: string; parties: number; part: number }[];
   verdicts: Verdict[];
 }
@@ -183,6 +190,27 @@ export function analyser(results: readonly GameResult[]): Analyse {
       : gagnante && gagnante.medianValorisation10ans > 0
         ? Infinity
         : 1;
+
+  // Victoires graine par graine, entre stratégies sérieuses (les graines où tout le monde est à zéro ne comptent pas).
+  const parGraine = new Map<string, GameResult[]>();
+  for (const r of results)
+    if (STRATEGIES_SERIEUSES.includes(r.strategie))
+      parGraine.set(r.graine, [...(parGraine.get(r.graine) ?? []), r]);
+  const gagnees = new Map<BotStrategy, number>();
+  let departagees = 0;
+  for (const manches of parGraine.values()) {
+    const best = [...manches].sort(
+      (x, y) => y.valorisation10ans - x.valorisation10ans || x.strategie.localeCompare(y.strategie),
+    )[0];
+    if (!best || best.valorisation10ans <= 0) continue;
+    departagees += 1;
+    gagnees.set(best.strategie, (gagnees.get(best.strategie) ?? 0) + 1);
+  }
+  const victoires = STRATEGIES_SERIEUSES.map((strategie) => ({
+    strategie,
+    part: departagees === 0 ? 0 : (gagnees.get(strategie) ?? 0) / departagees,
+  }));
+  const meilleureVictoire = [...victoires].sort((a, b) => b.part - a.part)[0];
 
   const parGenre = new Map<string, number>();
   for (const r of results)
@@ -214,9 +242,11 @@ export function analyser(results: readonly GameResult[]): Analyse {
       mesure: orMedian === null ? 'jamais atteint' : semaineAnnee(orMedian),
     },
     {
-      libelle: `Aucune stratégie dominante (écart de valorisation médiane à 10 ans sous ×${CIBLES.dominanceMax})`,
-      atteinte: ecart < CIBLES.dominanceMax,
-      mesure: `${gagnante?.strategie ?? 'aucune'} devant de ×${Number.isFinite(ecart) ? ecart.toFixed(2) : '∞'}`,
+      libelle: `Aucune stratégie dominante (aucune ne gagne plus de ${pct(CIBLES.partVictoiresMax)} des graines à 10 ans)`,
+      atteinte: !meilleureVictoire || meilleureVictoire.part <= CIBLES.partVictoiresMax,
+      mesure: meilleureVictoire
+        ? `${meilleureVictoire.strategie} gagne ${pct(meilleureVictoire.part)} des graines (×${Number.isFinite(ecart) ? ecart.toFixed(2) : '∞'} en médiane pour ${gagnante?.strategie ?? 'aucune'})`
+        : 'aucune partie départagée',
     },
     {
       libelle: `Aucun genre dominant (moins de ${pct(CIBLES.genreDominantMax)} des parties)`,
@@ -224,7 +254,14 @@ export function analyser(results: readonly GameResult[]): Analyse {
       mesure: genreTete ? `${genreTete.genre} : ${pct(genreTete.part)}` : 'aucun genre',
     },
   ];
-  return { resume, gagnante: gagnante?.strategie ?? null, ecartGagnante: ecart, genres, verdicts };
+  return {
+    resume,
+    gagnante: gagnante?.strategie ?? null,
+    ecartGagnante: ecart,
+    victoires,
+    genres,
+    verdicts,
+  };
 }
 
 const eur = (cents: number): string => `${Math.round(cents / 100).toLocaleString('fr-FR')} €`;
@@ -272,6 +309,10 @@ export function renderReport(results: readonly GameResult[], options: SimOptions
     `## Stratégie gagnante : ${a.gagnante ?? 'aucune'}`,
     '',
     `Plus forte valorisation médiane à 10 ans, devant la suivante de ×${Number.isFinite(a.ecartGagnante) ? a.ecartGagnante.toFixed(2) : '∞'}.`,
+    '',
+    'Victoires graine par graine entre stratégies sérieuses (10 ans) : ' +
+      a.victoires.map((v) => `${v.strategie} ${pct(v.part)}`).join(', ') +
+      '.',
     '',
     '## Cibles',
     '',
