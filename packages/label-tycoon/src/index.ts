@@ -381,6 +381,7 @@ export {
   type VueBatiment,
   type VueDefi,
   type VueConglomerat,
+  type VueEre,
   type VueGroupe,
   type VueInstitution,
   type VueLigneFinance,
@@ -492,3 +493,14 @@ export {
   institutionPhase,
   revenuMusee,
 } from './institution';
+export {
+  type EreProgrammee,
+  type ErasState,
+  type ProchaineEre,
+  ereA,
+  ereCourante,
+  erasPhase,
+  initialEras,
+  programmeDEres,
+  prochaineEre,
+} from './eres';

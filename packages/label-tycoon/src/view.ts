@@ -16,6 +16,7 @@ import {
   PERSONALITIES,
   STAFF,
   ACADEMIE,
+  ERES,
   FESTIVALS_MAISON,
   FONDATION,
   GROUPE,
@@ -39,6 +40,7 @@ import { SUCCES, familyValue, objectiveProgress } from './achievements';
 import { festivalOffer } from './festivals';
 import { venueCost } from './tours';
 import { DEFI_SEMAINES, defiTermine, resultatDefi, texteResultat } from './defi';
+import { ereCourante, prochaineEre } from './eres';
 import { debloque as debloqueInstitution, revenuMusee } from './institution';
 import {
   debloque as debloqueConglomerat,
@@ -583,6 +585,17 @@ export interface VueInstitution {
   genres: { id: string; nom: string }[];
 }
 
+export interface VueEre {
+  id: string;
+  nom: string;
+  description: string;
+  depuis: number;
+  /** Effets de l'ère sur l'économie, en variation par rapport à une ère neutre (« +35 % »). */
+  effets: { libelle: string; variation: number }[];
+  /** L'ère suivante, vue à travers ce que le joueur attentif peut en savoir. */
+  prochaine: { dans: number; indice: string | null; nom: string | null } | null;
+}
+
 export interface VueJeu {
   semaine: number;
   date: { annee: number; mois: number; semaineDuMois: number };
@@ -630,6 +643,7 @@ export interface VueJeu {
   groupe: VueGroupe;
   conglomerat: VueConglomerat;
   institution: VueInstitution;
+  ere: VueEre;
   scenario: VueScenario | null;
   defi: VueDefi | null;
   rapportsMensuels: VueRapportMensuel[];
@@ -794,14 +808,19 @@ function certificationsDe(state: LabelState): VueCertification[] {
     .filter((p) => p.statut === 'sortie')
     .map((p) => {
       const ventes = equivalentSales(p.streams);
-      const suivant = niveaux.find((n) => ventes < certificationThreshold(n, p.type));
+      const suivant = niveaux.find(
+        (n) => ventes < certificationThreshold(n, p.type, ereCourante(state).certification),
+      );
       return {
         projetId: p.id,
         nom: `${nomDe(state, p.artisteId)} — ${fr.typesDeSortie[p.type as keyof typeof fr.typesDeSortie] ?? p.type}`,
         niveau: p.certification,
         ventes,
         prochain: suivant
-          ? { niveau: suivant, seuil: certificationThreshold(suivant, p.type) }
+          ? {
+              niveau: suivant,
+              seuil: certificationThreshold(suivant, p.type, ereCourante(state).certification),
+            }
           : null,
       };
     });
@@ -1141,6 +1160,28 @@ function rapportsDe(state: LabelState): VueRapportMensuel[] {
     }));
 }
 
+function ereDe(state: LabelState, tick: number): VueEre {
+  const id = state.eres.courante;
+  const r = ERES[id];
+  const depuis = state.eres.programme.filter((e) => e.debut <= tick).pop()?.debut ?? 0;
+  const pct = (x: number): number => Math.round((x - 1) * 100);
+  return {
+    id,
+    nom: r.nom,
+    description: r.description,
+    depuis,
+    effets: [
+      { libelle: 'Revenu des écoutes', variation: pct(r.streaming) },
+      { libelle: 'Ventes physiques', variation: pct(r.physique) },
+      { libelle: 'Recettes de concerts', variation: pct(r.concerts) },
+      { libelle: 'Exigence des disques certifiés', variation: pct(r.certification) },
+      { libelle: 'Emballements viraux', variation: pct(r.viral) },
+      { libelle: 'Amplitude des cycles de genres', variation: pct(r.cycles) },
+    ],
+    prochaine: prochaineEre(state.eres, tick),
+  };
+}
+
 function institutionDe(state: LabelState, tick: number): VueInstitution {
   const i = state.institution;
   const a = i.academie;
@@ -1464,6 +1505,7 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
     groupe: groupeDe(state, tick),
     conglomerat: conglomeratDe(state),
     institution: institutionDe(state, tick),
+    ere: ereDe(state, tick),
     partie: {
       mode: state.config.mode,
       scenarioId: state.config.scenarioId ?? null,

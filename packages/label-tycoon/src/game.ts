@@ -19,6 +19,7 @@ import {
 import type { DifficultyPreset, DifficultySettings, GameConfig, GameMode } from './config';
 import { type LabelSignal, buildPipeline } from './pipeline';
 import { artistsPhase } from './dynamics';
+import { erasPhase, initialEras } from './eres';
 import {
   influence,
   initialInstitution,
@@ -121,7 +122,13 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
     'echeances-evenements': eventEngine.duePhase,
     personnel: staffPhase,
     artistes: artistsPhase,
-    marche: marketPhase,
+    marche: {
+      name: 'marche',
+      run(state, ctx) {
+        erasPhase.run(state, ctx);
+        marketPhase.run(state, ctx);
+      },
+    },
     rivaux: rivalsPhase,
     production: productionPhase,
     streams: streamsPhase,
@@ -306,6 +313,7 @@ export function initialState(seed: Seed, config: GameConfig): LabelState {
     succes: [],
     objectifs: [],
     records: [],
+    eres: initialEras(seed),
     institution: initialInstitution(),
     plateforme: null,
     studiosSynchro: 0,
@@ -327,6 +335,7 @@ export function completerEtat(state: LabelState): void {
   state.studiosSynchro ??= 0;
   state.festivalsPossedes ??= 0;
   state.institution ??= initialInstitution();
+  state.eres ??= initialEras('ere-heritee');
 }
 
 /** Copie des réglages sans référence partagée avec l'appelant. */

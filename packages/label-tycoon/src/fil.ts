@@ -1,4 +1,5 @@
 import type { Phase, Rng } from '@tycoon/core';
+import { ERES } from './balance';
 import type { LabelSignal } from './pipeline';
 import type { LabelState } from './state';
 import { FIL_TEMPLATES, fillTemplate } from './strings';
@@ -33,6 +34,9 @@ export function filVars(state: LabelState, payload: Payload): Record<string, str
   if (typeof payload['niveau'] === 'string') vars['niveau'] = payload['niveau'];
   if (typeof payload['palier'] === 'string')
     vars['palier'] = fr.tiers[payload['palier'] as keyof typeof fr.tiers] ?? payload['palier'];
+  if (typeof payload['texte'] === 'string') vars['texte'] = payload['texte'];
+  if (typeof payload['ere'] === 'string')
+    vars['ere'] = ERES[payload['ere'] as keyof typeof ERES]?.nom ?? payload['ere'];
   const n = payload['spectateurs'] ?? payload['restantes'];
   if (typeof n === 'number') vars['n'] = n;
   vars['nom'] ??= 'Un artiste du label';

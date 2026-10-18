@@ -1,4 +1,5 @@
 import { type Phase, type Rng, clamp, lerp, sin } from '@tycoon/core';
+import { ERES } from './balance/eres';
 import { SUBGENRES, TRENDS } from './balance/market';
 import { GENRE_IDS } from './content/genres';
 import { fr } from './strings/fr';
@@ -69,11 +70,18 @@ const TWO_PI = 6.283185307179586;
 const phaseOf = (index: number, salt: number): number => ((index * 2.399963 + salt) % 1) * TWO_PI;
 
 /** Popularité attendue d'un genre à la semaine `tick`, sans le bruit : base + cycle lent + cycle saisonnier. */
-export function cyclicPopularity(base: number, index: number, tick: number): number {
+export function cyclicPopularity(
+  base: number,
+  index: number,
+  tick: number,
+  /** Facteur d'ère sur l'amplitude des cycles de genre. */
+  amplitude = 1,
+): number {
   return (
     base +
-    TRENDS.slowAmplitude * sin((TWO_PI * tick) / TRENDS.slowPeriod + phaseOf(index, 0.17)) +
-    TRENDS.seasonAmplitude * sin((TWO_PI * tick) / TRENDS.seasonPeriod + phaseOf(index, 0.61))
+    amplitude *
+      (TRENDS.slowAmplitude * sin((TWO_PI * tick) / TRENDS.slowPeriod + phaseOf(index, 0.17)) +
+        TRENDS.seasonAmplitude * sin((TWO_PI * tick) / TRENDS.seasonPeriod + phaseOf(index, 0.61)))
   );
 }
 
@@ -95,7 +103,12 @@ export const marketPhase: Phase<LabelState, LabelSignal> = {
       );
       genre.popularite =
         Math.round(
-          clamp(cyclicPopularity(genre.base, index, ctx.tick) + genre.bruit, 0, 100) * 10,
+          clamp(
+            cyclicPopularity(genre.base, index, ctx.tick, ERES[state.eres.courante].cycles) +
+              genre.bruit,
+            0,
+            100,
+          ) * 10,
         ) / 10;
     });
   },

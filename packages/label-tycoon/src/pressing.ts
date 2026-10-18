@@ -3,6 +3,7 @@ import type { Action } from '@tycoon/core';
 import { CERTIFICATIONS, FORMATS, PRESSING, type PhysicalFormat } from './balance';
 import { buildingLevel } from './buildings';
 import { labelShare } from './contracts';
+import { ereCourante } from './eres';
 import { canAfford, earn, spend } from './finance';
 import type { LabelSignal } from './pipeline';
 import type { LabelState } from './state';
@@ -84,7 +85,7 @@ export function physicalWeek(state: LabelState, tick: number): void {
     const sold = Math.min(demand, c.quantite - c.vendu);
     if (sold > 0) {
       c.vendu += sold;
-      const gross = cents(sold * format.prix);
+      const gross = cents(Math.round(sold * format.prix * ereCourante(state).physique));
       const contract = state.contrats.find((k) => k.artisteId === projet.artisteId);
       earn(state, 'physique', contract ? labelShare(contract.clauses, gross) : gross);
     }
