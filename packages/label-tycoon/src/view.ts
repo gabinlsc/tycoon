@@ -371,6 +371,24 @@ export interface VueScene {
   };
 }
 
+export interface VueLigneRapport {
+  titre: string;
+  artiste: string | null;
+  causes: string[];
+}
+
+export interface VueRapportMensuel {
+  semaine: number;
+  net: number;
+  revenus: number;
+  depenses: number;
+  tresorerie: number;
+  variation: number;
+  premierRevenu: string | null;
+  reussites: VueLigneRapport[];
+  echecs: VueLigneRapport[];
+}
+
 export interface VueJeu {
   semaine: number;
   date: { annee: number; mois: number; semaineDuMois: number };
@@ -406,6 +424,7 @@ export interface VueJeu {
   personnel: VuePersonnel;
   batiments: VueBatiment[];
   scene: VueScene;
+  rapportsMensuels: VueRapportMensuel[];
   /** Marché des genres, prévisions des études de marché et facteur de revenu par écoute. */
   marche: {
     genres: VueGenre[];
@@ -888,6 +907,30 @@ function sceneDe(state: LabelState): VueScene {
   };
 }
 
+function rapportsDe(state: LabelState): VueRapportMensuel[] {
+  const ligne = (l: { code: string; artisteId: number | null; causes: string[] }) => ({
+    titre: fr.evenementsRapport[l.code] ?? l.code,
+    artiste: state.artistes.find((a) => a.id === l.artisteId)?.nom ?? null,
+    causes: l.causes.map((c) => fr.causesRapport[c] ?? c),
+  });
+  return state.rapportsMensuels
+    .slice(-12)
+    .reverse()
+    .map((r) => ({
+      semaine: r.semaine,
+      net: r.net,
+      revenus: r.revenus,
+      depenses: r.depenses,
+      tresorerie: r.tresorerie,
+      variation: r.variation,
+      premierRevenu: r.premierRevenu
+        ? ((fr.categoriesRevenus as Record<string, string>)[r.premierRevenu] ?? r.premierRevenu)
+        : null,
+      reussites: r.reussites.map(ligne),
+      echecs: r.echecs.map(ligne),
+    }));
+}
+
 function lastReport(state: LabelState): VueJeu['rapport'] {
   const r = state.rapportsMensuels[state.rapportsMensuels.length - 1];
   return r
@@ -1036,6 +1079,7 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
     personnel: personnelDe(state),
     batiments: batimentsDe(state),
     scene: sceneDe(state),
+    rapportsMensuels: rapportsDe(state),
     marche: marcheDe(state),
     classements: {
       singles: ligneClassement(state, 'singles', tick),
