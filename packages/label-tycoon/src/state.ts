@@ -21,6 +21,7 @@ import type { Concert } from './concerts';
 import type { Plateforme } from './conglomerat';
 import type { ErasState } from './eres';
 import type { InstitutionState } from './institution';
+import type { InternationalState } from './international';
 import type { Dirigeant, SousLabel } from './groupe';
 import type { ScenarioState } from './scenarios/types';
 import type { Commande } from './pressing';
@@ -134,6 +135,8 @@ export interface LabelState {
   eres: ErasState;
   /** Palier Institution : fondation, académie, musée, influence. */
   institution: InstitutionState;
+  /** Marchés internationaux : bureaux locaux et campagnes (palier Major). */
+  international: InternationalState;
   /** Palier Conglomérat : plateforme maison, niveau des studios de synchro et festivals possédés. */
   plateforme: Plateforme | null;
   studiosSynchro: number;

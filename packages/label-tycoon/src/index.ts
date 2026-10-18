@@ -390,6 +390,8 @@ export {
   type VueEre,
   type VueGenerations,
   type VueHeritage,
+  type VueInternational,
+  type VuePays,
   type VueGroupe,
   type VueInstitution,
   type VueLigneFinance,
@@ -531,3 +533,16 @@ export {
   type BilanRegne,
   type ProgressionBonus,
 } from './heritage';
+
+export {
+  type InternationalState,
+  type LigneClassement,
+  type MarcheExport,
+  type OpenMarketAction,
+  type SetCampaignAction,
+  affinite,
+  affiniteDuRoster,
+  classementLocal,
+  initialInternational,
+  internationalPhase,
+} from './international';

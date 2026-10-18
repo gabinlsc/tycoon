@@ -11,6 +11,7 @@ export const REVENUE_CATEGORIES = [
   'cessions',
   'filiales',
   'plateforme',
+  'export',
   'musee',
   'autres',
 ] as const;
@@ -28,6 +29,7 @@ export const EXPENSE_CATEGORIES = [
   'impots',
   'filiales',
   'plateforme',
+  'export',
   'institution',
   'autres',
 ] as const;

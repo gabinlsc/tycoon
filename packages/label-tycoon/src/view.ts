@@ -32,6 +32,9 @@ import {
   type AchievementFamily,
   type TaxStrategy,
   GENERATIONS,
+  INTERNATIONAL,
+  PAYS,
+  PAYS_IDS,
 } from './balance';
 import { buyoutAsk } from './rival-interactions';
 import { analystLevel } from './forecast';
@@ -43,6 +46,13 @@ import { venueCost } from './tours';
 import { DEFI_SEMAINES, defiTermine, resultatDefi, texteResultat } from './defi';
 import { ereCourante, prochaineEre } from './eres';
 import { legendes } from './generations';
+import {
+  type LigneClassement,
+  affinite,
+  affiniteDuRoster,
+  classementLocal,
+  debloque as exportDebloque,
+} from './international';
 import { type BilanRegne, bilanDeRegne, regneClosable } from './heritage';
 import { debloque as debloqueInstitution, revenuMusee } from './institution';
 import {
@@ -648,6 +658,7 @@ export interface VueJeu {
   institution: VueInstitution;
   ere: VueEre;
   generations: VueGenerations;
+  international: VueInternational;
   heritage: VueHeritage;
   scenario: VueScenario | null;
   defi: VueDefi | null;
@@ -1165,6 +1176,64 @@ function rapportsDe(state: LabelState): VueRapportMensuel[] {
     }));
 }
 
+/** Un pays où le label peut s'implanter : goûts, présence et classement local. */
+export interface VuePays {
+  id: string;
+  nom: string;
+  /** Taille du marché par rapport au marché d'origine. */
+  poids: number;
+  ouvert: boolean;
+  coutOuverture: number;
+  fraisAnnuels: number;
+  penetration: number;
+  budget: number;
+  budgetMax: number;
+  /** Revenu de la dernière semaine et net cumulé (centimes). */
+  revenuHebdo: number;
+  cumul: number;
+  /** Goût moyen du pays pour ton roster (1 = comme chez soi). */
+  affiniteRoster: number;
+  genres: { id: string; nom: string; affinite: number }[];
+  classement: (Omit<LigneClassement, 'genre'> & { genreNom: string })[];
+}
+
+export interface VueInternational {
+  debloque: boolean;
+  pays: VuePays[];
+}
+
+function internationalDe(state: LabelState, tick: number): VueInternational {
+  return {
+    debloque: exportDebloque(state),
+    pays: PAYS_IDS.map((id) => {
+      const regles = PAYS[id];
+      const m = state.international.marches.find((x) => x.pays === id);
+      return {
+        id,
+        nom: regles.nom,
+        poids: regles.poids,
+        ouvert: m !== undefined,
+        coutOuverture: regles.ouverture,
+        fraisAnnuels: regles.fraisAnnuels,
+        penetration: Math.round((m?.penetration ?? 0) * 10) / 10,
+        budget: m?.budget ?? 0,
+        budgetMax: INTERNATIONAL.budgetMax,
+        revenuHebdo: m?.dernier ?? 0,
+        cumul: m?.cumul ?? 0,
+        affiniteRoster: affiniteDuRoster(state, id, tick),
+        genres: genreKeys(state.marche)
+          .map((g) => ({ id: g, nom: nomGenre(state, g), affinite: affinite(id, g, tick) }))
+          .filter((g) => regles.affinites[g.id] !== undefined)
+          .sort((a, b) => b.affinite - a.affinite),
+        classement: classementLocal(state, id, tick).map(({ genre, ...l }) => ({
+          ...l,
+          genreNom: nomGenre(state, genre),
+        })),
+      };
+    }),
+  };
+}
+
 /** Héritage : bilan du règne en cours et possibilité de le clore. */
 export interface VueHeritage {
   /** Vrai quand le règne peut être clos (palier élevé ou longue carrière, en mode carrière). */
@@ -1561,6 +1630,7 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
     institution: institutionDe(state, tick),
     ere: ereDe(state, tick),
     generations: generationsDe(state),
+    international: internationalDe(state, tick),
     heritage: { closable: regneClosable(state, tick), bilan: bilanDeRegne(state, tick) },
     partie: {
       mode: state.config.mode,

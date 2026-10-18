@@ -313,6 +313,19 @@ export const FIL_TEMPLATES: Readonly<Record<string, FilTemplate>> = {
       'On dit que le talent est de famille.',
     ],
   },
+  'marche-ouvert': {
+    importance: 2,
+    titres: [
+      'Le label s’installe à l’étranger',
+      'Un nouveau bureau ouvre ses portes',
+      'Cap sur l’international',
+    ],
+    textes: [
+      'Un bureau local ouvre : reste à conquérir le public.',
+      'Les premiers contacts locaux sont prometteurs.',
+      'Les goûts diffèrent d’un pays à l’autre : choisis bien tes artistes.',
+    ],
+  },
   'changement-ere': {
     importance: 3,
     titres: ['Une nouvelle ère commence', '{ere} : le marché a basculé', 'Les règles changent'],

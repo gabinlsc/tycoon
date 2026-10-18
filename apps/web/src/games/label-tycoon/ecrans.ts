@@ -24,6 +24,11 @@ export const ECRANS = [
   { id: 'groupe', titre: 'Groupe', description: 'Sous-labels, cadres et rachats' },
   { id: 'conglomerat', titre: 'Conglomérat', description: 'Plateforme, synchro et festivals' },
   { id: 'institution', titre: 'Institution', description: 'Fondation, académie et musée' },
+  {
+    id: 'international',
+    titre: 'International',
+    description: 'Pays, bureaux et classements locaux',
+  },
   { id: 'heritage', titre: 'Héritage', description: 'Clore le règne et Panthéon' },
   { id: 'generations', titre: 'Générations', description: 'Légendes, mentors et relève' },
 ] as const;
