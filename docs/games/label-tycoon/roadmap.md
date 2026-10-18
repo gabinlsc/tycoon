@@ -137,7 +137,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `feat/label-mode-carriere` : carrière et réglages de difficulté
 - [x] `feat/label-mode-bac-a-sable` : bac à sable
 - [x] `feat/label-scenarios-moteur` : moteur de scénarios (objectifs, limite de temps, états de départ)
-- [ ] `feat/label-scenarios-contenu` : 6 à 8 scénarios
+- [x] `feat/label-scenarios-contenu` : 6 à 8 scénarios
 - [ ] `feat/label-defi-du-jour` : seed du jour, 52 semaines, score, résultat partageable
 - [ ] `feat/label-defi-validation` : contrat d'API (format du journal d'actions et de la réponse), validation par replay, backend mocké
 - [ ] `feat/label-tutoriel` : « Ton premier signataire », guidé et passable
@@ -185,7 +185,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 5     | 14    | 14     |
 | 6     | 14    | 14     |
 | 7     | 13    | 13     |
-| 8     | 10    | 6      |
+| 8     | 10    | 7      |
 | 9     | 5     | 0      |
 | 10    | 12    | 0      |
 | 11    | 5     | 0      |

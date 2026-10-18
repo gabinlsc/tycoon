@@ -1,11 +1,8 @@
-import { type Phase, Rng, cents } from '@tycoon/core';
-import { generateArtist, takenStageNames } from '../artists';
+import { type Phase, Rng } from '@tycoon/core';
 import { familyValue } from '../achievements';
-import type { TalentLevel } from '../balance/artists';
 import { bestCertification } from '../charts';
-import { type Clauses, concludeSigning } from '../contracts';
 import type { LabelSignal } from '../pipeline';
-import { type LabelState, newId } from '../state';
+import type { LabelState } from '../state';
 import { tierRank } from '../tiers';
 import { labelScore } from '../valuation';
 import { SCENARIOS } from './catalogue';
@@ -40,6 +37,12 @@ export function conditionMet(state: LabelState, tick: number, c: Condition, limi
       return familyValue(state, 'retours', tick) >= c.min;
     case 'equipe':
       return state.personnel.length >= c.min;
+    case 'artiste-cible': {
+      const a = state.artistes.find((x) => x.id === state.scenario?.cible);
+      return a !== undefined && a.hype >= c.hype && a.fanbase >= c.fans;
+    }
+    case 'roster-max':
+      return state.artistes.filter((a) => a.employeur === 'joueur').length <= c.max;
     case 'survie':
       // `tick` est la semaine qui vient d'être jouée : la semaine `limite - 1` est la dernière.
       return tick + 1 >= limite && !state.faillite.terminee;
@@ -69,6 +72,12 @@ export const scenarioPhase: Phase<LabelState, LabelSignal> = {
       ctx.emit({ kind: 'scenario-echec', payload: { id: s.id }, interrupt: true } as LabelSignal);
       return;
     }
+    // Une règle brisée met fin au scénario (« roster-max » se lit comme : vrai tant que c'est respecté).
+    if (def.regles?.some((c) => !conditionMet(state, ctx.tick, c, s.limite))) {
+      Object.assign(s, { statut: 'echec', fin: ctx.tick, raison: 'regle' });
+      ctx.emit({ kind: 'scenario-echec', payload: { id: s.id }, interrupt: true } as LabelSignal);
+      return;
+    }
     if (def.objectifs.every((c) => conditionMet(state, ctx.tick, c, s.limite))) {
       Object.assign(s, {
         statut: 'reussi',
@@ -92,47 +101,9 @@ export const initialScenario = (def: ScenarioDef): ScenarioState => ({
   statut: 'en-cours',
   fin: null,
   score: null,
+  cible: null,
   raison: null,
 });
-
-const CLAUSES_DEPART: Clauses = {
-  avance: cents(0),
-  royaltiesArtisteBps: 2500,
-  dureeAnnees: 3,
-  exclusivite: true,
-  part360Bps: 0,
-  clauseRachat: cents(0),
-};
-
-/**
- * Aide pour les conditions initiales : crée un artiste et le signe pour le joueur, sans avance. Tout
- * le hasard vient du `Rng` fourni, donc la même graine donne le même artiste.
- */
-export function signerArtisteDeDepart(
-  state: LabelState,
-  rng: Rng,
-  options: { level: TalentLevel; genre?: string; dureeAnnees?: number },
-): number {
-  const artist = generateArtist(
-    rng,
-    {
-      id: newId(state),
-      market: state.marche,
-      cities: state.villes,
-      takenNames: takenStageNames(state.artistes),
-    },
-    options.genre ? { level: options.level, genre: options.genre } : { level: options.level },
-  );
-  state.artistes.push(artist);
-  concludeSigning(
-    state,
-    artist.id,
-    { ...CLAUSES_DEPART, dureeAnnees: options.dureeAnnees ?? CLAUSES_DEPART.dureeAnnees },
-    0,
-    () => undefined,
-  );
-  return artist.id;
-}
 
 /** Applique un scénario à une partie qui vient d'être créée. */
 export function applyScenario(state: LabelState, def: ScenarioDef, seed: string): void {

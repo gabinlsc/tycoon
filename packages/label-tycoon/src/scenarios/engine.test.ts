@@ -3,7 +3,8 @@ import { describe, expect, it } from 'vitest';
 import { defaultConfig, labelGame, newGame, validateConfig } from '../index';
 import { SCENARIOS } from './catalogue';
 import type { ScenarioDef } from './types';
-import { conditionMet, findScenario, signerArtisteDeDepart } from './engine';
+import { signerArtisteDeDepart } from './depart';
+import { conditionMet, findScenario } from './engine';
 import { texteCondition } from './textes';
 
 const config = (scenarioId: string) => ({ ...defaultConfig('normal', 'scenario'), scenarioId });
@@ -106,5 +107,31 @@ describe('issue du scénario', () => {
     const fin = s.engine.data.scenario?.fin;
     s = labelGame.advance(s, 4).session;
     expect(s.engine.data.scenario?.fin).toBe(fin);
+  });
+});
+
+describe('catalogue', () => {
+  const ids = Object.keys(SCENARIOS);
+  it('propose entre 6 et 8 scénarios', () => {
+    expect(ids.length).toBeGreaterThanOrEqual(6);
+    expect(ids.length).toBeLessThanOrEqual(8);
+  });
+  it.each(ids)('%s démarre proprement, reproductible, sans victoire ni défaite d’office', (id) => {
+    const def = SCENARIOS[id] as ScenarioDef;
+    expect(def.titre.length).toBeGreaterThan(5);
+    expect(def.description.length).toBeGreaterThan(20);
+    expect(def.objectifs.length).toBeGreaterThan(0);
+    const a = newGame('une-graine', config(id));
+    const b = newGame('une-autre', config(id));
+    const d = a.engine.data;
+    expect(JSON.stringify(d)).toBe(JSON.stringify(b.engine.data));
+    expect(d.scenario?.statut).toBe('en-cours');
+    // Au départ, les objectifs ne sont pas déjà réunis et les règles sont respectées.
+    expect(def.objectifs.every((c) => conditionMet(d, 0, c, def.limiteSemaines))).toBe(false);
+    for (const c of def.regles ?? []) expect(conditionMet(d, 0, c, def.limiteSemaines)).toBe(true);
+    for (const c of [...def.objectifs, ...(def.regles ?? [])])
+      expect(texteCondition(c).length).toBeGreaterThan(8);
+    // La première semaine ne clôt pas le scénario.
+    expect(labelGame.advance(a, 1).session.engine.data.scenario?.statut).toBe('en-cours');
   });
 });

@@ -90,3 +90,29 @@ describe('écran de départ', () => {
     expect(screen.getByRole('alert').textContent).toMatch(/hors bornes/);
   });
 });
+
+describe('mode scénario', () => {
+  it('compose les réglages d’un scénario', () => {
+    expect(
+      configDepart(
+        'scenario',
+        { ...DIFFICULTY_PRESETS.normal },
+        BAC_A_SABLE_PAR_DEFAUT,
+        'numero-un',
+      ),
+    ).toMatchObject({
+      mode: 'scenario',
+      scenarioId: 'numero-un',
+    });
+  });
+  it('lance un scénario : bandeau d’objectifs, temps restant, monde imposé', async () => {
+    const b = await ouvrir();
+    fireEvent.click(screen.getByRole('radio', { name: /Scénarios/ }));
+    expect(screen.queryByText('Graine (facultatif)')).toBeNull();
+    fireEvent.click(screen.getByRole('radio', { name: /Numéro un en un an/ }));
+    fireEvent.click(b);
+    const bandeau = await screen.findByLabelText('Scénario : Numéro un en un an');
+    expect(bandeau.textContent).toContain('Temps restant : 1 an');
+    expect(bandeau.textContent).toContain('Placer une sortie en tête du classement');
+  });
+});

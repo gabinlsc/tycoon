@@ -34,6 +34,10 @@ export function texteCondition(c: Condition): string {
       return `Réussir ${c.min} retour(s) en grâce`;
     case 'equipe':
       return `Employer ${c.min} membre(s) d’équipe`;
+    case 'artiste-cible':
+      return `Relancer l’artiste : hype ${c.hype} et ${c.fans.toLocaleString('fr-FR')} fans`;
+    case 'roster-max':
+      return c.max === 1 ? 'Rester avec un seul artiste' : `Ne jamais dépasser ${c.max} artistes`;
     case 'survie':
       return 'Tenir jusqu’au bout sans faire faillite';
   }
