@@ -3,7 +3,7 @@ import type { Action } from '@tycoon/core';
 import { type Rival, generateRival } from './auction';
 import { type Artist, notoriety } from './artists';
 import { CONTRACT_END, PERSONALITIES, RIVALS, RIVAL_INTERACTIONS as RI } from './balance';
-import { fairAdvance } from './contracts';
+import { fairAdvance, rosterCap, rosterFull } from './contracts';
 import { earn, spend } from './finance';
 import { GENRE_IDS } from './content/genres';
 import type { LabelSignal } from './pipeline';
@@ -190,6 +190,7 @@ export const buyRivalArtist: ActionHandler<LabelState, BuyRivalArtistAction, Lab
     if (!artist) return reject('artiste-introuvable');
     const rival = rivalOf(state, artist.employeur);
     if (!rival) return reject('pas-un-artiste-rival');
+    if (rosterFull(state)) return reject('roster-plein', { max: rosterCap(state) });
     const price = buyoutAsk(state, artist.id);
     if (state.label.tresorerie < price && !state.config.sandbox)
       return reject('fonds-insuffisants', { besoin: price });

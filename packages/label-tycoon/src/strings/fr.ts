@@ -118,6 +118,7 @@ export const fr = {
   causesRapport: {
     qualite: 'qualité de la sortie',
     tendance: 'tendance du genre',
+    credibilite: 'crédibilité du label dans le genre',
     hype: 'hype',
     fatigue: 'fatigue accumulée',
     tournee: 'enchaînement de tournées',
@@ -224,6 +225,7 @@ export const fr = {
     bruit: 'Part de hasard',
     qualite: 'Qualité',
     tendance: 'Tendance du genre',
+    credibilite: 'Crédibilité du label dans le genre',
     hype: 'Hype',
     marketing: 'Marketing',
   },
@@ -270,6 +272,8 @@ export const fr = {
     'genre-inconnu': () => "Ce genre n'existe pas.",
     'artiste-introuvable': () => "Cet artiste n'existe pas.",
     'artiste-indisponible': () => 'Cet artiste est déjà sous contrat ailleurs.',
+    'roster-plein': (p: { max: number }) =>
+      `Ton label ne peut accompagner que ${p.max} artistes à son palier : monte de palier ou libère une place.`,
     'clauses-invalides': () => 'Ces clauses sortent des limites autorisées.',
     'offre-refusee': () => "L'artiste refuse cette offre : revois les clauses.",
     'negociation-rompue': () => "L'artiste ne veut plus négocier avec toi.",

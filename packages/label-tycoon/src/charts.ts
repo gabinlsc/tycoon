@@ -1,5 +1,5 @@
 import type { Phase, Rng } from '@tycoon/core';
-import { CERTIFICATIONS, CHARTS } from './balance';
+import { CERTIFICATIONS, CHARTS, CREDIBILITY } from './balance';
 import type { CertificationLevel } from './balance/tiers';
 import type { LabelSignal } from './pipeline';
 import type { LabelState } from './state';
@@ -134,6 +134,12 @@ export function certify(state: LabelState, emit: (s: LabelSignal) => void): void
         100,
         state.label.reputation + CERTIFICATIONS.reputationGain[gained],
       );
+      const artist = state.artistes.find((a) => a.id === p.artisteId);
+      if (artist)
+        state.label.credibilite[artist.genre] = Math.min(
+          100,
+          (state.label.credibilite[artist.genre] ?? 0) + CREDIBILITY.certificationGain[gained],
+        );
       emit({ kind: 'certification', payload: { projetId: p.id, niveau: gained } });
     }
     p.certification = level;

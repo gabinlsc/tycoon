@@ -125,6 +125,10 @@ export {
   clausesValid,
   fairAdvance,
   labelShare,
+  prestigeFor,
+  rosterCap,
+  rosterFull,
+  rosterSize,
   utilityOf,
 } from './contracts';
 export {

@@ -162,6 +162,7 @@ export const releaseProject: ActionHandler<LabelState, ReleaseAction, LabelSigna
         trendMultiplier(market?.popularite ?? 50),
         artist.hype,
         marketingFactor(0),
+        state.label.credibilite[artist.genre] ?? 0,
       ).value;
       p.hit = hit;
       p.s1 = Math.round(

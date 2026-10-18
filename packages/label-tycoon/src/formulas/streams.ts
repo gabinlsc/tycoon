@@ -1,5 +1,5 @@
 import { type Explained, exp, explain, ln, pow } from '@tycoon/core';
-import { STREAMS } from '../balance';
+import { CREDIBILITY, STREAMS } from '../balance';
 
 /** Facteur de marketing : 1 + k·log10(1 + budget/1000 €), plafonné. Budget en euros. */
 export function marketingFactor(budgetEuros: number): number {
@@ -13,18 +13,32 @@ export function hitPotential(
   trend: number,
   hype: number,
   marketing: number,
+  /** Crédibilité du label dans le genre (0-100) : un label reconnu dans un genre y place mieux ses titres. */
+  credibility = 0,
 ): Explained {
   return explain()
     .term('qualite', pow(quality / 100, STREAMS.qualityExponent))
     .scale('tendance', trend)
+    .scale('credibilite', 1 + (CREDIBILITY.hitBonus * credibility) / 100)
     .scale('hype', 1 + hype / 100)
     .scale('marketing', marketing)
     .done();
 }
 
+/**
+ * Fans qui écoutent vraiment : tous jusqu'au seuil, puis une part qui décroît (rendements décroissants
+ * d'un très gros public). Continu au seuil.
+ */
+export function activeFans(fanbase: number): number {
+  const { fanKnee, fanExponent } = STREAMS;
+  return fanbase <= fanKnee ? fanbase : fanKnee * pow(fanbase / fanKnee, fanExponent);
+}
+
 /** Streams de la première semaine. */
 export function firstWeekStreams(fanbase: number, genreAudience: number, hit: number): number {
-  return (fanbase * STREAMS.listensPerFan + genreAudience * STREAMS.discoveryRate) * hit;
+  return (
+    (activeFans(fanbase) * STREAMS.listensPerFan + genreAudience * STREAMS.discoveryRate) * hit
+  );
 }
 
 export const decayRate = (quality: number): number =>

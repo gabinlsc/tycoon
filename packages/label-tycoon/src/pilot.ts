@@ -2,7 +2,7 @@ import { type Rejection, type Seed, reject } from '@tycoon/core';
 import type { LabelAction } from './actions';
 import { estimateRelease } from './estimate';
 import type { ClipSize, ReleaseType } from './balance';
-import { type Clauses, clausesValid, utilityOf } from './contracts';
+import { type Clauses, clausesValid, prestigeFor, utilityOf } from './contracts';
 import { type Reaction, evaluateOffer, gaugeOf } from './negotiation';
 import type { GameConfig } from './config';
 import { DEFI_SEMAINES, defiTermine } from './defi';
@@ -149,11 +149,11 @@ export class LabelPilot {
             code: 'clauses-invalides',
             message: describeRejection({ code: 'clauses-invalides' }),
           };
-        const { total } = utilityOf(artist, commande.clauses, state.label.reputation);
+        const { total } = utilityOf(artist, commande.clauses, prestigeFor(state, artist));
         return {
           type: 'reaction',
           reaction: gaugeOf(total),
-          verdict: evaluateOffer(artist, commande.clauses, state.label.reputation),
+          verdict: evaluateOffer(artist, commande.clauses, prestigeFor(state, artist)),
         };
       }
       case 'avancer': {

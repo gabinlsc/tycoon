@@ -1,5 +1,6 @@
 import { type Rng, Rng as RngClass, cents, money } from '@tycoon/core';
 import type { LabelAction } from './actions';
+import { notoriety } from './artists';
 import { type Clauses, fairAdvance } from './contracts';
 import { newGame, type LabelSession, labelGame } from './game';
 import { knownRange, VISIBLE_ATTRIBUTES } from './scouting';
@@ -49,6 +50,8 @@ function bestProspect(state: LabelState, genre?: string) {
       const range = knownRange(p, artist, attr);
       sum += range ? (range[0] + range[1]) / 2 : 0;
     }
+    // Les fans sont publics et font les revenus : un bon œil les compte autant que le talent apparent.
+    sum += 2 * notoriety(artist.fanbase);
     if (!best || sum > best.score) best = { id: artist.id, score: sum };
   }
   return best;
@@ -116,6 +119,9 @@ const sign = (
     : [];
 };
 
+/** Genres que la source « battle » fait remonter. */
+const BATTLE_GENRES = ['rap', 'drill', 'trap', 'dancehall'];
+
 export const BOTS: Readonly<Record<BotStrategy, Bot>> = {
   prudent(ctx) {
     const { state, tick } = ctx;
@@ -144,7 +150,11 @@ export const BOTS: Readonly<Record<BotStrategy, Bot>> = {
     const { state, tick } = ctx;
     const actions: LabelAction[] = [];
     if (tick % 3 === 0 && state.suivis.length < 10)
-      actions.push({ type: 'reperer', source: tick % 6 === 0 ? 'plateforme' : 'battle' });
+      // Les battles ne remontent que des genres rap : on les privilégie seulement pour ces genres.
+      actions.push({
+        type: 'reperer',
+        source: BATTLE_GENRES.includes(ctx.genre) && tick % 6 !== 0 ? 'battle' : 'plateforme',
+      });
     if (tick % 4 === 0) actions.push(...sign(ctx, 1.7, ctx.genre, euros(6000)));
     actions.push(...production(ctx, state.label.tresorerie));
     if (tick % 4 === 0) actions.push(...renew(ctx, 1.5));

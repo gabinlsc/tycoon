@@ -2,7 +2,7 @@ import { type ActionHandler, type Rng, cents, clamp, reject } from '@tycoon/core
 import type { Action } from '@tycoon/core';
 import { notoriety } from './artists';
 import { CONTRACTS, CONTRACT_END } from './balance';
-import { type Clauses, clausesValid, utilityOf } from './contracts';
+import { type Clauses, clausesValid, prestigeFor, utilityOf } from './contracts';
 import { canAfford, earn, spend } from './finance';
 import type { LabelSignal } from './pipeline';
 import type { LabelState } from './state';
@@ -39,7 +39,10 @@ export const renegotiate: ActionHandler<LabelState, RenegotiateAction, LabelSign
     if (!artist) return reject('artiste-introuvable');
     if (!canAfford(state, action.clauses.avance))
       return reject('fonds-insuffisants', { besoin: action.clauses.avance });
-    if (utilityOf(artist, action.clauses, state.label.reputation).total < CONTRACTS.acceptThreshold)
+    if (
+      utilityOf(artist, action.clauses, prestigeFor(state, artist)).total <
+      CONTRACTS.acceptThreshold
+    )
       return reject('offre-refusee');
     return null;
   },

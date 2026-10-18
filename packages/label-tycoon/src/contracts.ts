@@ -1,7 +1,7 @@
 import { type ActionHandler, type Cents, cents, clamp, money, reject } from '@tycoon/core';
 import type { Action } from '@tycoon/core';
 import { type Artist, notoriety } from './artists';
-import { CONTRACTS } from './balance';
+import { CONTRACTS, CREDIBILITY, ROSTER_CAP } from './balance';
 import { claimSubgenre } from './market';
 import { canAfford, spend } from './finance';
 import type { LabelSignal } from './pipeline';
@@ -43,6 +43,25 @@ export interface Utility {
   total: number;
   termes: UtilityTerm[];
 }
+
+/**
+ * Prestige du label aux yeux d'un artiste : sa réputation, plus un peu de sa crédibilité dans le genre
+ * de l'artiste. C'est cette valeur que le modèle d'utilité compare à la notoriété de l'artiste.
+ */
+export const prestigeFor = (state: LabelState, artist: Artist): number =>
+  state.label.reputation +
+  CREDIBILITY.prestigeWeight * (state.label.credibilite[artist.genre] ?? 0);
+
+/** Artistes actuellement sous contrat avec le joueur. */
+export const rosterSize = (state: LabelState): number =>
+  state.artistes.filter((a) => a.employeur === 'joueur').length;
+
+/** Plafond d'artistes sous contrat pour le palier actuel du label. */
+export const rosterCap = (state: LabelState): number => ROSTER_CAP[state.label.tier];
+
+/** Vrai quand le label ne peut plus signer personne (le bac à sable n'a pas de limite). */
+export const rosterFull = (state: LabelState): boolean =>
+  !state.config.sandbox && rosterSize(state) >= rosterCap(state);
 
 /** Avance « juste » pour cet artiste : ce qu'il juge normal de recevoir à la signature. */
 export function fairAdvance(artist: Artist): Cents {
@@ -107,10 +126,11 @@ export const sign: ActionHandler<LabelState, SignAction, LabelSignal> = {
     const artist = state.artistes.find((a) => a.id === action.artisteId);
     if (!artist) return reject('artiste-introuvable');
     if (artist.employeur !== 'libre') return reject('artiste-indisponible');
+    if (rosterFull(state)) return reject('roster-plein', { max: rosterCap(state) });
     if (!clausesValid(action.clauses)) return reject('clauses-invalides');
     if (!canAfford(state, action.clauses.avance))
       return reject('fonds-insuffisants', { besoin: action.clauses.avance });
-    const { total } = utilityOf(artist, action.clauses, state.label.reputation);
+    const { total } = utilityOf(artist, action.clauses, prestigeFor(state, artist));
     if (total < CONTRACTS.acceptThreshold) return reject('offre-refusee');
     return null;
   },

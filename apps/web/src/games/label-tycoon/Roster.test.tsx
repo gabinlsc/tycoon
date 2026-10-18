@@ -5,6 +5,7 @@ import type { VueArtiste } from '@tycoon/label-tycoon';
 import { Coquille } from './Coquille';
 import { creerMoteurLocal } from './engine/local';
 import { LabelProvider } from './LabelContext';
+import { texteEffectif } from './Roster';
 import { SANS_FILTRE, alertesArtiste, filtrer, trier } from './roster';
 
 afterEach(cleanup);
@@ -36,6 +37,19 @@ const liste = [
   a(2, 'Aya', { notoriete: 80, genre: 'afro', genreNom: 'Afro' }),
   a(3, 'bob', { notoriete: 50 }),
 ];
+
+describe('effectif du roster', () => {
+  it('compare le nombre d’artistes au plafond du palier', () => {
+    expect(texteEffectif(3, 6)).toBe('3 artistes sous contrat sur 6 possibles à ton palier.');
+    expect(texteEffectif(1, 6)).toContain('1 artiste sous contrat');
+  });
+  it('invite à monter de palier quand le roster est plein', () => {
+    expect(texteEffectif(6, 6)).toContain('le roster est plein');
+  });
+  it('n’annonce aucun plafond en bac à sable', () => {
+    expect(texteEffectif(30, null)).toBe('30 artistes sous contrat.');
+  });
+});
 
 describe('tri et filtre', () => {
   it('trie par nom sans tenir compte de la casse, par valeur, et départage les ex æquo par identifiant', () => {
