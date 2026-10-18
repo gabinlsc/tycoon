@@ -11,6 +11,7 @@ import {
   project,
   quality,
   reputation,
+  sizedCost,
   target,
 } from './helpers';
 
@@ -102,7 +103,11 @@ export const PRODUCTION_EVENTS: readonly LabelEvent[] = [
     weight: 0,
     apply: (d, _c, vars) => {
       const a = target(d, vars);
-      return [cash(d, -money.euros(15_000)), reputation(d, -2), ...(a ? [moral(a, -4)] : [])];
+      return [
+        cash(d, -sizedCost(d, money.euros(15_000))),
+        reputation(d, -2),
+        ...(a ? [moral(a, -4)] : []),
+      ];
     },
   },
   {
@@ -142,7 +147,9 @@ export const PRODUCTION_EVENTS: readonly LabelEvent[] = [
     },
     apply: (d, _c, vars) => {
       const p = project(d, vars);
-      return p ? [cash(d, -money.euros(1500)), delay(p, 1)] : [cash(d, -money.euros(1500))];
+      return p
+        ? [cash(d, -sizedCost(d, money.euros(1500))), delay(p, 1)]
+        : [cash(d, -sizedCost(d, money.euros(1500)))];
     },
   },
   {

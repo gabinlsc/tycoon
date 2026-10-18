@@ -322,6 +322,7 @@ export {
   renderReport,
   simulate,
   simulateGame,
+  simulateRange,
   summarize,
 } from './sim-balance';
 export { EVENT_TEXTS, type EventText, describeEvent, fillTemplate } from './strings';

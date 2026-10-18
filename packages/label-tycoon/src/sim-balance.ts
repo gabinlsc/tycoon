@@ -96,13 +96,21 @@ export function simulateGame(strategie: BotStrategy, graine: string, weeks: numb
   };
 }
 
-/** Joue toutes les parties : chaque stratégie sur les mêmes graines. */
-export function simulate(options: SimOptions): GameResult[] {
+/**
+ * Joue les graines `de` (incluse) à `a` (exclue) : chaque stratégie sur les mêmes graines. Permet de
+ * répartir une grosse simulation sur plusieurs processus, puis de rassembler les résultats.
+ */
+export function simulateRange(options: SimOptions, de: number, a: number): GameResult[] {
   const results: GameResult[] = [];
-  for (const strategie of BOT_STRATEGIES)
-    for (let i = 0; i < options.games; i += 1)
+  for (let i = de; i < a; i += 1)
+    for (const strategie of BOT_STRATEGIES)
       results.push(simulateGame(strategie, `${options.seedPrefix}-${i}`, options.weeks));
   return results;
+}
+
+/** Joue toutes les parties : chaque stratégie sur les mêmes graines. */
+export function simulate(options: SimOptions): GameResult[] {
+  return simulateRange(options, 0, options.games);
 }
 
 export function summarize(results: readonly GameResult[]): StrategySummary[] {
