@@ -160,6 +160,61 @@ export const EVENT_TEXTS: Readonly<Record<string, EventText>> = {
     titre: 'Buzz à {ville}',
     texte: 'Une scène locale à {ville} fait parler du {genre}.',
   },
+  'clash-public': {
+    titre: 'Clash public',
+    texte:
+      '{nom} s’est fait attaquer publiquement par un autre artiste. Les médias attendent une réponse.',
+    choix: { repondre: 'Répondre', calmer: 'Calmer le jeu' },
+  },
+  polemique: {
+    titre: 'Polémique',
+    texte: 'Une phrase de {nom} fait polémique. Un démenti coûterait {frais} centimes.',
+    choix: { dementir: 'Démentir', assumer: 'Assumer' },
+  },
+  'mauvais-buzz': {
+    titre: 'La polémique s’emballe',
+    texte: 'Les propos de {nom} continuent d’alimenter les débats, et pas en bien.',
+  },
+  'interview-ratee': {
+    titre: 'Interview ratée',
+    texte: '{nom} s’est emmêlé·e lors d’une interview : l’extrait circule partout.',
+  },
+  'buzz-positif': {
+    titre: 'Buzz positif',
+    texte: 'La presse encense {nom}, de nouveaux fans arrivent.',
+  },
+  'article-elogieux': {
+    titre: 'Article élogieux',
+    texte: 'Un grand média salue l’écriture de {nom}.',
+  },
+  documentaire: {
+    titre: 'Proposition de documentaire',
+    texte:
+      'Une équipe veut tourner un documentaire sur {nom}. Participation aux frais : {cout} centimes.',
+    choix: { accepter: 'Accepter', refuser: 'Refuser' },
+  },
+  'rumeur-couple': {
+    titre: 'Rumeur people',
+    texte: 'Une rumeur sentimentale sur {nom} occupe les magazines.',
+  },
+  'passage-tv': {
+    titre: 'Invitation télé',
+    texte: '{nom} est invité·e sur un plateau télé très regardé.',
+    choix: { accepter: 'Y aller', refuser: 'Décliner' },
+  },
+  'critique-assassine': {
+    titre: 'Critique assassine',
+    texte: 'Une critique cinglante du dernier projet de {nom} fait mal aux écoutes.',
+  },
+  'influenceur-fan': {
+    titre: 'Un influenceur adore',
+    texte: 'Un influenceur très suivi partage son amour pour {nom}.',
+  },
+  'fausse-information': {
+    titre: 'Fausse information',
+    texte: 'Une fausse information sur {nom} se propage. Un démenti coûte {frais} centimes.',
+    choix: { dementir: 'Démentir', ignorer: 'Ignorer' },
+  },
   'collaboration-spontanee': {
     titre: 'Collaboration spontanée',
     texte: '{nom} et {autre} improvisent un titre ensemble. Les fans adorent.',

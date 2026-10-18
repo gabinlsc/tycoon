@@ -112,3 +112,12 @@ export function quality(p: Projet, delta: number): Consequence {
   if (p.qualite !== null) p.qualite = clamp(p.qualite + delta, 0, 100);
   return { kind: 'qualite', params: { projetId: p.id, delta } };
 }
+
+/** Atténue un effet négatif selon le niveau de l'attaché de presse (jusqu'à moitié moins fort). */
+export function mitigated(d: LabelState, delta: number): number {
+  if (delta >= 0) return delta;
+  const level = d.personnel
+    .filter((m) => m.role === 'attache')
+    .reduce((best, m) => Math.max(best, m.niveau), 0);
+  return Math.round(delta * (1 - (0.5 * level) / 100));
+}
