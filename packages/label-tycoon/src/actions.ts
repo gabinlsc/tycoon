@@ -3,6 +3,7 @@ import { LABEL_NAME_MAX } from './balance';
 import type { LabelSignal } from './pipeline';
 import type { BreakAction, ReleaseAction, RenegotiateAction } from './contract-end';
 import type { LaunchAction, ReleaseAction as ReleaseProjectAction } from './production';
+import type { SyncAnswerAction } from './sync';
 import type { ApplyFestivalAction } from './festivals';
 import type { TourAction } from './tours';
 import type { ConcertAction } from './concerts';
@@ -53,7 +54,8 @@ export type LabelAction =
   | PressAction
   | ConcertAction
   | TourAction
-  | ApplyFestivalAction;
+  | ApplyFestivalAction
+  | SyncAnswerAction;
 
 export const renameLabel: ActionHandler<LabelState, RenameLabelAction, LabelSignal> = {
   validate(_state, action) {
