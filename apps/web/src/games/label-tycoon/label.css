@@ -219,3 +219,66 @@
   flex-wrap: wrap;
   gap: var(--sp-2);
 }
+
+.label-tip {
+  position: relative;
+  display: inline-block;
+}
+.label-tip__trigger {
+  padding: 0;
+  border: 0;
+  border-bottom: 2px dotted currentColor;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: help;
+}
+.label-tip__trigger:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
+}
+.label-tip__bubble {
+  position: absolute;
+  z-index: 20;
+  inset-block-start: calc(100% + var(--sp-2));
+  inset-inline-start: 0;
+  width: max-content;
+  max-width: min(22rem, 80vw);
+  padding: var(--sp-3);
+  border: var(--border) solid var(--outline);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--pop-sm);
+  font-family: var(--font-text);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  text-align: start;
+}
+.label-tip__terms {
+  display: grid;
+  gap: var(--sp-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.label-tip__terms li {
+  display: grid;
+  grid-template-columns: 9rem 4rem auto;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.label-tip__bar {
+  height: 0.6rem;
+  border: 2px solid var(--outline);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.label-tip__bar > span {
+  display: block;
+  height: 100%;
+  background: var(--green);
+}
+.label-tip__bar > span[data-negatif] {
+  background: var(--red);
+}

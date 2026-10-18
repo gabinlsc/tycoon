@@ -3,7 +3,7 @@ import { notoriety } from './artists';
 import { fr } from './strings/fr';
 import { describeEvent } from './strings';
 import type { LabelState } from './state';
-import { labelScore } from './valuation';
+import { labelScore, valuation } from './valuation';
 import { VISIBLE_ATTRIBUTES, knownRange } from './scouting';
 import { bestCertification } from './charts';
 
@@ -64,6 +64,8 @@ export interface VueJeu {
   finances: {
     tresorerie: number;
     valorisation: number;
+    /** Termes de la valorisation (clé, contribution en centimes), pour l’infobulle. */
+    termesValorisation: { cle: string; contribution: number }[];
     semainesNegatives: number;
     faillite: boolean;
   };
@@ -167,6 +169,10 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
     finances: {
       tresorerie: state.label.tresorerie,
       valorisation: labelScore(state, tick),
+      termesValorisation: valuation(state, tick).terms.map((t) => ({
+        cle: t.key,
+        contribution: t.contribution,
+      })),
       semainesNegatives: state.faillite.semaines,
       faillite: state.faillite.terminee,
     },
