@@ -22,3 +22,16 @@ describe('catalogue des jeux', () => {
     expect(findGame(undefined)).toBeUndefined();
   });
 });
+
+describe('catalogue et registre des jeux', () => {
+  it('un jeu est « Disponible » exactement quand il est enregistré dans le registre', async () => {
+    const { GAME_MODULES } = await import('../games/registry');
+    for (const game of GAMES)
+      expect(game.status === 'Disponible', game.slug).toBe(game.slug in GAME_MODULES);
+  });
+
+  it('Label Tycoon est disponible et mis en avant', () => {
+    expect(findGame('label-tycoon')?.status).toBe('Disponible');
+    expect(FEATURED_SLUG).toBe('label-tycoon');
+  });
+});
