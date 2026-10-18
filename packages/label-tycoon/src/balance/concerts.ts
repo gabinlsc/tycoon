@@ -90,3 +90,25 @@ export const FESTIVALS = {
   ] as readonly string[],
   suffixes: ['Fest', 'Open Air', 'Live', 'Sessions'] as readonly string[],
 } as const;
+
+/** Synchronisation : offres de pub, film et jeu vidéo fictifs (GDD, 5.6). */
+export const SYNC = {
+  kinds: {
+    pub: { cachet: money.euros(8000), hype: 4, fans: 800, moral: -5 },
+    film: { cachet: money.euros(20_000), hype: 8, fans: 2500, moral: 3 },
+    jeu: { cachet: money.euros(12_000), hype: 6, fans: 1800, moral: 4 },
+  },
+  /** Probabilité hebdomadaire par sortie, avant le facteur de qualité. */
+  weeklyChance: 0.012,
+  /** Qualité minimale d'une sortie pour recevoir des offres. */
+  minQuality: 45,
+  /** Validité d'une offre en semaines, et offres en attente maximum. */
+  validWeeks: 6,
+  maxPending: 5,
+  /** Part du cachet gardée par le label (plus la part 360). */
+  labelBps: 5000,
+  /** Un artiste dont l'éthique dépasse ce seuil perd du moral avec une pub. */
+  ethicsThreshold: 70,
+  brands: ['Aurore', 'Vektor', 'Lumen', 'Nordic', 'Pixel Park', 'Cobalt'] as readonly string[],
+} as const;
+export type SyncKind = keyof typeof SYNC.kinds;

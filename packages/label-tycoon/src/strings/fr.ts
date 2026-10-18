@@ -201,6 +201,7 @@ export const fr = {
     'festival-complet': () => 'Ce festival a déjà retenu un artiste de ton label.',
     'festival-conflit': () => 'Cet artiste est déjà pris cette semaine-là.',
     'candidature-refusee': () => "L'artiste n'est pas assez connu pour ce festival.",
+    'offre-introuvable': () => "Cette offre n'est plus valable.",
     'suivi-introuvable': () => "Ce talent n'est pas dans ta liste de suivi.",
     'essai-deja-fait': () => 'Tu as déjà fait passer un essai à ce talent.',
   },

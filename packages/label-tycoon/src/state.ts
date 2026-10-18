@@ -4,6 +4,7 @@ import type { Artist } from './artists';
 import type { FinanceState } from './finance';
 import type { Rival } from './auction';
 import type { Contrat } from './contracts';
+import type { OffreSynchro } from './sync';
 import type { Festival } from './festivals';
 import type { Tournee } from './tours';
 import type { Concert } from './concerts';
@@ -82,6 +83,8 @@ export interface LabelState {
   tournees: Tournee[];
   /** Festivals ouverts aux candidatures. */
   festivals: Festival[];
+  /** Offres de synchronisation en attente de réponse. */
+  offresSynchro: OffreSynchro[];
   /** Négociations en cours ou rompues, une par artiste. */
   negociations: Negociation[];
   /** Prochain identifiant libre, partagé par toutes les entités (artistes, sorties, contrats…). */

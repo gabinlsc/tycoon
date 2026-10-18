@@ -65,4 +65,14 @@ export {
   type BuildingRule,
 } from './buildings';
 export { FORMATS, PRESSING, type PhysicalFormat } from './pressing';
-export { CONCERTS, FESTIVALS, TOUR, VENUES, VENUE_IDS, type Venue, type VenueId } from './concerts';
+export {
+  CONCERTS,
+  FESTIVALS,
+  SYNC,
+  type SyncKind,
+  TOUR,
+  VENUES,
+  VENUE_IDS,
+  type Venue,
+  type VenueId,
+} from './concerts';
