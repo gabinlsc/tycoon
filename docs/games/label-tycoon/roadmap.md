@@ -148,7 +148,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `chore/label-equilibrage-1` : passe d'équilibrage économie et production
 - [x] `chore/label-equilibrage-2` : passe d'équilibrage marché, rivaux, personnel
 - [x] `chore/label-equilibrage-3` : cibles atteintes (aucune stratégie dominante, faillite an 1 < 2 %, premier disque d'or entre la 2e et la 4e année)
-- [ ] `docs/label-balance` : `docs/games/label-tycoon/balance.md`
+- [x] `docs/label-balance` : `docs/games/label-tycoon/balance.md`
 
 ## Phase 10 : un tycoon infini (+, voir GDD section 14, **dans la V1**)
 
@@ -186,7 +186,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 6     | 14    | 14     |
 | 7     | 13    | 13     |
 | 8     | 10    | 10     |
-| 9     | 5     | 4      |
+| 9     | 5     | 5      |
 | 10    | 12    | 0      |
 | 11    | 5     | 0      |
 

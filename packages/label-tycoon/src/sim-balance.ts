@@ -159,6 +159,9 @@ export const CIBLES = {
   genreDominantMax: 0.4,
 } as const;
 
+/** Libellé du regroupement des sous-genres fictifs dans les genres dominants. */
+export const SOUS_GENRES = 'sous-genres émergents';
+
 export const STRATEGIES_SERIEUSES: readonly BotStrategy[] = BOT_STRATEGIES.filter(
   (s) => s !== 'aleatoire',
 );
@@ -222,7 +225,11 @@ export function analyser(results: readonly GameResult[]): Analyse {
 
   const parGenre = new Map<string, number>();
   for (const r of results)
-    if (r.genreDominant) parGenre.set(r.genreDominant, (parGenre.get(r.genreDominant) ?? 0) + 1);
+    if (r.genreDominant) {
+      // Les sous-genres sont générés par partie (« sg-123 ») : on les regroupe sous une seule ligne.
+      const genre = r.genreDominant.startsWith('sg-') ? SOUS_GENRES : r.genreDominant;
+      parGenre.set(genre, (parGenre.get(genre) ?? 0) + 1);
+    }
   const genres = [...parGenre.entries()]
     .map(([genre, parties]) => ({
       genre,

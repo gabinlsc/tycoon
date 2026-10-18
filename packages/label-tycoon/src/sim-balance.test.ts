@@ -152,6 +152,16 @@ describe('analyse des cibles', () => {
     expect(a.verdicts[1]?.atteinte).toBe(false);
     expect(a.verdicts[3]?.atteinte).toBe(false);
   });
+  it('regroupe les sous-genres fictifs sous une seule ligne', () => {
+    const r = [
+      partie({ graine: 'a', genreDominant: 'sg-12' }),
+      partie({ graine: 'b', genreDominant: 'sg-9876' }),
+      partie({ graine: 'c', genreDominant: 'rap' }),
+    ];
+    const genres = analyser(r).genres;
+    expect(genres.find((g) => g.genre === 'sous-genres émergents')?.parties).toBe(2);
+    expect(genres.some((g) => g.genre.startsWith('sg-'))).toBe(false);
+  });
   it('ignore le bot aléatoire pour les faillites de la première année', () => {
     const r = [
       ...equilibre().filter((g) => g.strategie !== 'aleatoire'),
