@@ -13,6 +13,7 @@ import {
   project,
   reputation,
   roster,
+  sizedCost,
   target,
 } from './helpers';
 
@@ -74,7 +75,7 @@ export const BUSINESS_EVENTS: readonly LabelEvent[] = [
     category: 'business',
     weight: 3,
     cooldown: 52,
-    apply: (d) => [cash(d, -legalCost(d, money.euros(2500)))],
+    apply: (d) => [cash(d, -sizedCost(d, legalCost(d, money.euros(2500))))],
   },
   {
     id: 'proces-ancien-employe',
@@ -82,7 +83,7 @@ export const BUSINESS_EVENTS: readonly LabelEvent[] = [
     weight: (d) => (d.personnel.length > 0 ? 2 : 0),
     cooldown: 80,
     when: (d) => d.personnel.length > 0,
-    apply: (d) => [cash(d, -legalCost(d, money.euros(8000))), reputation(d, -1)],
+    apply: (d) => [cash(d, -sizedCost(d, legalCost(d, money.euros(8000)))), reputation(d, -1)],
   },
   {
     id: 'subvention-culturelle',
@@ -105,7 +106,7 @@ export const BUSINESS_EVENTS: readonly LabelEvent[] = [
       },
       {
         id: 'payer',
-        apply: (d, _c, vars) => [cash(d, -Number(vars['somme']))],
+        apply: (d, _c, vars) => [cash(d, -sizedCost(d, Number(vars['somme'])))],
       },
     ],
     defaultChoice: 'payer',
@@ -139,7 +140,10 @@ export const BUSINESS_EVENTS: readonly LabelEvent[] = [
     cooldown: 104,
     apply: (d) => {
       for (const p of d.projets) if (p.statut === 'production') p.fin += 1;
-      return [cash(d, -money.euros(4000)), { kind: 'retard-general', params: { semaines: 1 } }];
+      return [
+        cash(d, -sizedCost(d, money.euros(4000))),
+        { kind: 'retard-general', params: { semaines: 1 } },
+      ];
     },
   },
   {
@@ -167,6 +171,6 @@ export const BUSINESS_EVENTS: readonly LabelEvent[] = [
     category: 'business',
     weight: 2,
     cooldown: 104,
-    apply: (d) => [cash(d, -money.euros(3000))],
+    apply: (d) => [cash(d, -sizedCost(d, money.euros(3000)))],
   },
 ];

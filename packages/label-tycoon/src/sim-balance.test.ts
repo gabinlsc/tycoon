@@ -6,6 +6,7 @@ import {
   quantile,
   renderReport,
   simulate,
+  simulateRange,
   summarize,
 } from './index';
 
@@ -17,6 +18,15 @@ describe('simulation d’équilibrage', () => {
   it('joue chaque stratégie sur les mêmes graines', () => {
     expect(results).toHaveLength(BOT_STRATEGIES.length * options.games);
     expect(new Set(results.map((r) => r.graine)).size).toBe(options.games);
+  });
+
+  it('se répartit par tranches de graines : les morceaux recollés valent la simulation entière', () => {
+    const recollee = [...simulateRange(options, 0, 1), ...simulateRange(options, 1, 2)];
+    const triee = (r: typeof results) =>
+      [...r].sort(
+        (a, b) => a.graine.localeCompare(b.graine) || a.strategie.localeCompare(b.strategie),
+      );
+    expect(triee(recollee)).toEqual(triee(results));
   });
 
   it('est déterministe', () => {

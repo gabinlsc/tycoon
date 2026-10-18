@@ -1,6 +1,7 @@
 import type { Consequence, EventContext, EventDef, Vars } from '@tycoon/core';
 import { cents, clamp } from '@tycoon/core';
 import type { Artist } from '../../artists';
+import { EVENTS } from '../../balance';
 import { earn, spend } from '../../finance';
 import type { Projet } from '../../production';
 import type { LabelState } from '../../state';
@@ -75,6 +76,18 @@ export function reputation(d: LabelState, delta: number): Consequence {
   d.label.reputation = clamp(d.label.reputation + delta, 0, 100);
   return { kind: 'reputation', params: { delta } };
 }
+/**
+ * Coût d'une mésaventure à la taille du label : au plus une part de la trésorerie (avec un plancher),
+ * jamais plus que le montant prévu. Voir `EVENTS.misfortuneCashShare`.
+ */
+export function sizedCost(d: LabelState, amount: number): number {
+  const cap = Math.max(
+    EVENTS.misfortuneFloor,
+    Math.round(Math.max(0, d.label.tresorerie) * EVENTS.misfortuneCashShare),
+  );
+  return Math.min(amount, cap);
+}
+
 /** Gain (positif) ou dépense (négatif) de trésorerie, en centimes. */
 export function cash(d: LabelState, delta: number): Consequence {
   if (delta >= 0) earn(d, 'autres', cents(delta));
