@@ -2,6 +2,7 @@ import type { GameMode } from '../config';
 import type { TierId } from '../balance/tiers';
 import type { StaffRole, StaffTrait } from '../balance/staff';
 import type { BuildingId } from '../balance/buildings';
+import type { SyncKind, VenueId } from '../balance';
 import type { BaseGenreId, GenreFamily } from '../content/genres';
 import type { TraitId } from '../content/traits';
 import type { CareerPhase } from '../artists';
@@ -97,6 +98,20 @@ export const fr = {
     'europe-sud': 'Europe du Sud',
     latine: 'Amérique latine',
   } satisfies Record<Origin, string>,
+
+  salles: {
+    bar: 'Bar',
+    club: 'Club',
+    salle: 'Salle de concert',
+    zenith: 'Zénith',
+    stade: 'Stade',
+  } satisfies Record<VenueId, string>,
+
+  synchros: {
+    pub: 'Publicité',
+    film: 'Film',
+    jeu: 'Jeu vidéo',
+  } satisfies Record<SyncKind, string>,
 
   batiments: {
     studio: {
