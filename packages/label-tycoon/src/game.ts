@@ -1,4 +1,5 @@
 import {
+  Rng,
   type Seed,
   type Session,
   createEventEngine,
@@ -13,6 +14,7 @@ import { type LabelSignal, buildPipeline } from './pipeline';
 import { artistsPhase } from './dynamics';
 import { financePhase, initialFinance } from './finance';
 import { initialCredibility, initialMarket } from './market';
+import { auction, generateRivals } from './auction';
 import { sign } from './contracts';
 import { propose } from './negotiation';
 import { dropProspect, fireScout, hireScout, scout, studioTrial } from './scouting';
@@ -63,6 +65,7 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
     'renommer-label': renameLabel,
     reperer: scout,
     signer: sign,
+    encherir: auction,
     proposer: propose,
     'recruter-denicheur': hireScout,
     'renvoyer-denicheur': fireScout,
@@ -114,6 +117,7 @@ export function initialState(seed: Seed, config: GameConfig): LabelState {
     suivis: [],
     denicheurs: [],
     contrats: [],
+    rivaux: generateRivals(Rng.fromSeed(`${seed}:rivaux`)),
     negociations: [],
     nextId: 1,
   };

@@ -130,3 +130,4 @@ export {
   evaluateOffer,
   gaugeOf,
 } from './negotiation';
+export { type AuctionAction, type Rival, generateRivals, rivalBid } from './auction';

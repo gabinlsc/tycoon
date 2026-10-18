@@ -2,6 +2,7 @@ import type { Cents, EventsState } from '@tycoon/core';
 import type { TierId } from './balance';
 import type { Artist } from './artists';
 import type { FinanceState } from './finance';
+import type { Rival } from './auction';
 import type { Contrat } from './contracts';
 import type { Negociation } from './negotiation';
 import type { Denicheur, Prospect } from './scouting';
@@ -41,6 +42,8 @@ export interface LabelState {
   denicheurs: Denicheur[];
   /** Contrats en cours : au plus un par artiste. */
   contrats: Contrat[];
+  /** Labels rivaux. */
+  rivaux: Rival[];
   /** Négociations en cours ou rompues, une par artiste. */
   negociations: Negociation[];
   /** Prochain identifiant libre, partagé par toutes les entités (artistes, sorties, contrats…). */
