@@ -64,6 +64,13 @@ export const fr = {
     instinctif: 'Instinctif',
   } satisfies Record<TraitId, string>,
 
+  typesDeSortie: {
+    single: 'Single',
+    ep: 'EP',
+    album: 'Album',
+    mixtape: 'Mixtape',
+  },
+
   phasesDeCarriere: {
     emergent: 'Émergent',
     montee: 'En montée',
