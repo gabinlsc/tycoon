@@ -15,6 +15,7 @@ import { artistsPhase } from './dynamics';
 import { financePhase, initialFinance } from './finance';
 import { initialCredibility, initialMarket } from './market';
 import { breakContract, releaseArtist, renegotiate } from './contract-end';
+import { chartsPhase, emptyCharts } from './charts';
 import { rivalsPhase } from './calendar';
 import { auction, generateRivals } from './auction';
 import { sign } from './contracts';
@@ -63,6 +64,7 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
     rivaux: rivalsPhase,
     production: productionPhase,
     streams: streamsPhase,
+    classements: chartsPhase,
     finances: financePhase,
     'tirage-evenements': eventEngine.phase,
   }),
@@ -132,6 +134,7 @@ export function initialState(seed: Seed, config: GameConfig): LabelState {
     negociations: [],
     projets: [],
     sortiesRivales: [],
+    classements: emptyCharts(),
     nextId: 1,
   };
 }

@@ -203,6 +203,7 @@ describe('pipeline', () => {
       'rivaux',
       'production',
       'streams',
+      'classements',
       'artistes',
       'finances',
       'tirage-evenements',

@@ -48,6 +48,8 @@ export interface Projet {
   viral: { semaines: number; mult: number } | null;
   /** Cumul des streams depuis la sortie. */
   streams: number;
+  /** Streams de la dernière semaine (alimente les classements). */
+  derniers: number;
 }
 
 /** Coût total d'un projet. */
@@ -126,6 +128,7 @@ export const launchProject: ActionHandler<LabelState, LaunchAction, LabelSignal>
       hit: 0,
       viral: null,
       streams: 0,
+      derniers: 0,
     });
     state.nextId += 1;
     if (retard > 0)
@@ -210,6 +213,7 @@ export const streamsPhase: Phase<LabelState, LabelSignal> = {
         weeklyStreams(p.s1, p.qualite ?? 0, ctx.tick - p.sortieLe) * (p.viral?.mult ?? 1),
       );
       p.streams += streams;
+      p.derniers = streams;
       if (artist) artist.fanbase += fansGained(streams, artist.charisme);
       const gross = cents(Math.round(streams * STREAMS.centsPerStream));
       if (gross <= 0) continue;

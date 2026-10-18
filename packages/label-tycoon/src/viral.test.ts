@@ -20,6 +20,7 @@ const projet = (hit: number): Projet => ({
   s1: 1000,
   hit,
   viral: null,
+  derniers: 0,
   streams: 0,
 });
 

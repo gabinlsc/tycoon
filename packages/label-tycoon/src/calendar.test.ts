@@ -77,6 +77,7 @@ describe('collision', () => {
         s1: 0,
         hit: 0,
         viral: null,
+        derniers: 0,
         streams: 0,
       });
       if (clash)

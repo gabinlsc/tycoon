@@ -4,6 +4,7 @@ import type { Artist } from './artists';
 import type { FinanceState } from './finance';
 import type { Rival } from './auction';
 import type { Contrat } from './contracts';
+import type { ChartsState } from './charts';
 import type { SortieRivale } from './calendar';
 import type { Projet } from './production';
 import type { Negociation } from './negotiation';
@@ -50,6 +51,8 @@ export interface LabelState {
   projets: Projet[];
   /** Sorties planifiées par les rivaux. */
   sortiesRivales: SortieRivale[];
+  /** Classements hebdomadaires et historique des sorties du joueur. */
+  classements: ChartsState;
   /** Négociations en cours ou rompues, une par artiste. */
   negociations: Negociation[];
   /** Prochain identifiant libre, partagé par toutes les entités (artistes, sorties, contrats…). */
