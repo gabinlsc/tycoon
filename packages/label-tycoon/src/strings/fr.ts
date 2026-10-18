@@ -209,6 +209,7 @@ export const fr = {
     'plafond-depasse': (p: { max: number }) =>
       `Ta banque n'ira pas au-delà de ${p.max} centimes d'encours.`,
     'pret-introuvable': () => "Ce prêt n'existe pas.",
+    'trop-d-investisseurs': (p: { max: number }) => `Tu as déjà ${p.max} investisseurs actifs.`,
     'suivi-introuvable': () => "Ce talent n'est pas dans ta liste de suivi.",
     'essai-deja-fait': () => 'Tu as déjà fait passer un essai à ce talent.',
   },
