@@ -19,6 +19,7 @@ import type { Festival } from './festivals';
 import type { Tournee } from './tours';
 import type { Concert } from './concerts';
 import type { Plateforme } from './conglomerat';
+import type { ErasState } from './eres';
 import type { InstitutionState } from './institution';
 import type { Dirigeant, SousLabel } from './groupe';
 import type { ScenarioState } from './scenarios/types';
@@ -129,6 +130,8 @@ export interface LabelState {
   records: { clef: string; valeur: number; semaine: number }[];
   /** Négociations en cours ou rompues, une par artiste. */
   negociations: Negociation[];
+  /** Ères : programme tiré à la création et ère en cours. */
+  eres: ErasState;
   /** Palier Institution : fondation, académie, musée, influence. */
   institution: InstitutionState;
   /** Palier Conglomérat : plateforme maison, niveau des studios de synchro et festivals possédés. */

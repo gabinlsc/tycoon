@@ -1,5 +1,6 @@
 import type { Phase, Rng } from '@tycoon/core';
 import { CERTIFICATIONS, CHARTS, CREDIBILITY } from './balance';
+import { ereCourante } from './eres';
 import type { CertificationLevel } from './balance/tiers';
 import type { LabelSignal } from './pipeline';
 import type { LabelState } from './state';
@@ -96,16 +97,25 @@ export const equivalentSales = (streams: number): number =>
   Math.floor(streams / CERTIFICATIONS.streamsPerSale);
 
 /** Seuil de ventes équivalentes pour un niveau et un type de sortie. */
-export function certificationThreshold(level: CertificationLevel, type: string): number {
-  const base = CERTIFICATIONS.thresholds[level] * CERTIFICATIONS.eraFactor;
+export function certificationThreshold(
+  level: CertificationLevel,
+  type: string,
+  /** Facteur de l'ère en cours (1 = ère neutre). */
+  ere = 1,
+): number {
+  const base = CERTIFICATIONS.thresholds[level] * CERTIFICATIONS.eraFactor * ere;
   return Math.round(chartOf(type) === 'albums' ? base * CERTIFICATIONS.albumFactor : base);
 }
 
 /** Meilleur niveau atteint par une sortie, ou `null`. */
-export function certificationFor(streams: number, type: string): CertificationLevel | null {
+export function certificationFor(
+  streams: number,
+  type: string,
+  ere = 1,
+): CertificationLevel | null {
   const sales = equivalentSales(streams);
   let best: CertificationLevel | null = null;
-  for (const level of LEVELS) if (sales >= certificationThreshold(level, type)) best = level;
+  for (const level of LEVELS) if (sales >= certificationThreshold(level, type, ere)) best = level;
   return best;
 }
 
@@ -123,7 +133,7 @@ export function bestCertification(state: LabelState): CertificationLevel | null 
 export function certify(state: LabelState, emit: (s: LabelSignal) => void): void {
   for (const p of state.projets) {
     if (p.statut !== 'sortie') continue;
-    const level = certificationFor(p.streams, p.type);
+    const level = certificationFor(p.streams, p.type, ereCourante(state).certification);
     if (!level) continue;
     const from = p.certification ? LEVELS.indexOf(p.certification) : -1;
     const to = LEVELS.indexOf(level);

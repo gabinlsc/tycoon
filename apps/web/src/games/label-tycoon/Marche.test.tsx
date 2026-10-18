@@ -5,7 +5,7 @@ import type { VueGenre, VuePrevision } from '@tycoon/label-tycoon';
 import { Coquille } from './Coquille';
 import { creerMoteurLocal } from './engine/local';
 import { LabelProvider } from './LabelContext';
-import { fourchettePrevision, parPopularite } from './Marche';
+import { fourchettePrevision, parPopularite, texteVariation } from './Marche';
 
 afterEach(cleanup);
 
@@ -40,6 +40,14 @@ describe('aides du marché', () => {
   });
 });
 
+describe('variation d’ère', () => {
+  it('écrit les variations avec leur signe', () => {
+    expect(texteVariation(35)).toBe('+35 %');
+    expect(texteVariation(-18)).toBe('−18 %');
+    expect(texteVariation(0)).toBe('inchangé');
+  });
+});
+
 describe('écran Marché', () => {
   it('liste les genres, commande une étude et affiche la prévision', async () => {
     render(
@@ -52,6 +60,7 @@ describe('écran Marché', () => {
     fireEvent.click(b);
     fireEvent.click(await screen.findByRole('button', { name: /Marché/ }));
     await screen.findByRole('heading', { name: 'Marché' });
+    expect(screen.getByRole('heading', { name: 'Ère du streaming' })).toBeTruthy();
     expect(document.querySelectorAll('.label-table tbody tr').length).toBeGreaterThanOrEqual(10);
     expect(screen.getByText('Aucune étude pour l’instant.')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: /Commander une étude/ }));

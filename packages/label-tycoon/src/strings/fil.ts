@@ -282,4 +282,22 @@ export const FIL_TEMPLATES: Readonly<Record<string, FilTemplate>> = {
       'Les rivaux encaissent.',
     ],
   },
+  'signal-ere': {
+    importance: 2,
+    titres: ['Le vent tourne dans l’industrie', 'Signaux faibles', 'Quelque chose change'],
+    textes: [
+      '{texte}',
+      'On en parle dans le métier : {texte}',
+      'Les initiés l’ont remarqué : {texte}',
+    ],
+  },
+  'changement-ere': {
+    importance: 3,
+    titres: ['Une nouvelle ère commence', '{ere} : le marché a basculé', 'Les règles changent'],
+    textes: [
+      'Début de : {ere}. Les anciennes habitudes ne suffisent plus.',
+      '{ere} s’ouvre : adapte ton label.',
+      'Le marché a changé de visage : {ere}.',
+    ],
+  },
 };

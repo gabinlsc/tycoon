@@ -5,6 +5,7 @@ import { CONCERTS, VENUES, type VenueId } from './balance';
 import { buildingLevel } from './buildings';
 import { liveShare } from './contracts';
 import { afterTourDate } from './tours';
+import { ereCourante } from './eres';
 import { canAfford, earn, spend } from './finance';
 import type { LabelSignal } from './pipeline';
 import type { LabelState } from './state';
@@ -93,7 +94,7 @@ export function concertsWeek(
       buildingLevel(state, 'concert'),
     );
     c.spectateurs = Math.round(venue.capacite * fill);
-    const gross = cents(c.spectateurs * c.prix * 100);
+    const gross = cents(Math.round(c.spectateurs * c.prix * 100 * ereCourante(state).concerts));
     c.recette = liveShare(state, artist.id, gross, CONCERTS.commissionBps);
     if (c.recette > 0) earn(state, 'concerts', cents(c.recette));
     artist.fatigue = clamp(artist.fatigue + CONCERTS.fatigue, 0, 100);

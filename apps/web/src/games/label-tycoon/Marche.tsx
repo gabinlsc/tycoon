@@ -17,13 +17,17 @@ export function fourchettePrevision(p: VuePrevision): [number, number] {
   return [Math.max(0, p.valeur - p.marge), Math.min(100, p.valeur + p.marge)];
 }
 
+/** Variation affichée « +35 % », « −18 % » ou « inchangé ». */
+export const texteVariation = (v: number): string =>
+  v === 0 ? 'inchangé' : `${v > 0 ? '+' : '−'}${Math.abs(v)} %`;
+
 /** Marché des genres, sous-genres émergents et études de marché (prévisions bruitées). */
 export function Marche() {
   const { vue, envoyer } = useLabel();
   const [genre, setGenre] = useState('');
   const [horizon, setHorizon] = useState(13);
   if (!vue) return null;
-  const m = vue.marche;
+  const m = { ...vue.marche, ere: vue.ere };
   const tries = parPopularite(m.genres);
   const choisi = genre || tries[0]?.id || '';
   const abordable = vue.finances.tresorerie >= m.coutEtude;
@@ -36,6 +40,27 @@ export function Marche() {
         sorties. Revenu par écoute des plateformes : ×
         <span className="mono">{m.facteurStreaming}</span>.
       </p>
+      <section aria-labelledby="ere-titre" className="label-card">
+        <h3 id="ere-titre">{m.ere.nom}</h3>
+        <p>{m.ere.description}</p>
+        <ul className="label-list">
+          {m.ere.effets
+            .filter((e) => e.variation !== 0)
+            .map((e) => (
+              <li key={e.libelle}>
+                {e.libelle} : <strong className="mono">{texteVariation(e.variation)}</strong>
+              </li>
+            ))}
+        </ul>
+        {m.ere.prochaine?.indice ? (
+          <p>
+            Signal avant-coureur : <em>{m.ere.prochaine.indice}</em>
+            {m.ere.prochaine.nom
+              ? ` Prochaine ère : ${m.ere.prochaine.nom}, dans ${m.ere.prochaine.dans} semaine(s).`
+              : ''}
+          </p>
+        ) : null}
+      </section>
       <GraphBarres
         titre="Popularité des genres (0 à 100)"
         etiquettes={tries.map((g) => g.nom.slice(0, 8))}

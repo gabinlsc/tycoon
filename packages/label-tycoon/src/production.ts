@@ -16,6 +16,7 @@ import { fansGained, viralStep } from './viral';
 import { weeklyStreams } from './formulas/streams';
 import { collisionFactor } from './calendar';
 import { repartirStreaming } from './conglomerat';
+import { ereCourante } from './eres';
 import { bonusRemuneration } from './institution';
 import { firstWeekStreams, hitPotential, marketingFactor } from './formulas/streams';
 import { trendMultiplier } from './market';
@@ -217,7 +218,7 @@ export const streamsPhase: Phase<LabelState, LabelSignal> = {
     for (const p of state.projets) {
       if (p.statut !== 'sortie' || p.sortieLe === null) continue;
       const artist = state.artistes.find((a) => a.id === p.artisteId);
-      const viral = artist ? viralStep(p, artist, rng) : null;
+      const viral = artist ? viralStep(p, artist, rng, ereCourante(state).viral) : null;
       if (viral) ctx.emit({ kind: 'viral', payload: { projetId: p.id, artisteId: p.artisteId } });
       const streams = Math.round(
         weeklyStreams(p.s1, p.qualite ?? 0, ctx.tick - p.sortieLe) * (p.viral?.mult ?? 1),
@@ -230,7 +231,8 @@ export const streamsPhase: Phase<LabelState, LabelSignal> = {
           streams *
             STREAMS.centsPerStream *
             state.marche.facteurStreaming *
-            bonusRemuneration(state, ctx.tick),
+            bonusRemuneration(state, ctx.tick) *
+            ereCourante(state).streaming,
         ),
       );
       if (gross <= 0) continue;

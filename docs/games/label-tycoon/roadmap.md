@@ -155,7 +155,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `feat/label-paliers-groupe` : palier Groupe, sous-labels, direction par des cadres
 - [x] `feat/label-paliers-conglomerat` : palier Conglomérat, plateforme maison, studios de synchro
 - [x] `feat/label-paliers-institution` : palier Institution, fondation, académie
-- [ ] `feat/label-eres` : ères et changements de règles économiques, signaux avant-coureurs
+- [x] `feat/label-eres` : ères et changements de règles économiques, signaux avant-coureurs
 - [ ] `feat/label-generations` : retraite, mentors, relève, enfants d'artistes
 - [ ] `feat/label-heritage` : mode Héritage et Panthéon local
 - [ ] `feat/label-international` : marchés internationaux, genres et classements par pays, export
@@ -187,7 +187,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 7     | 13    | 13     |
 | 8     | 10    | 10     |
 | 9     | 5     | 5      |
-| 10    | 12    | 3      |
+| 10    | 12    | 4      |
 | 11    | 5     | 0      |
 
 (Mettre ce tableau à jour dans la PR qui coche une case.)
