@@ -16,6 +16,7 @@ import { initialFinance } from './finance';
 import { initialCredibility, initialMarket, marketPhase } from './market';
 import { breakContract, releaseArtist, renegotiate } from './contract-end';
 import { chartsPhase, emptyCharts } from './charts';
+import { mentor } from './relations';
 import { chooseTax, initialTax } from './tax';
 import { sellContract } from './bankruptcy';
 import { answerInvestor } from './investors';
@@ -91,6 +92,7 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
     'renommer-label': renameLabel,
     reperer: scout,
     signer: sign,
+    parrainer: mentor,
     'choisir-fiscalite': chooseTax,
     'vendre-contrat': sellContract,
     'accepter-investisseur': answerInvestor,
@@ -188,6 +190,8 @@ export function initialState(seed: Seed, config: GameConfig): LabelState {
     investisseurs: [],
     faillite: { semaines: 0, terminee: false },
     fiscalite: initialTax(),
+    relations: [],
+    mentorats: [],
     nextId: 1,
   };
 }

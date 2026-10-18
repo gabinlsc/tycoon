@@ -212,6 +212,10 @@ export const fr = {
     'trop-d-investisseurs': (p: { max: number }) => `Tu as déjà ${p.max} investisseurs actifs.`,
     'rival-introuvable': () => "Ce label rival n'existe pas.",
     'strategie-inconnue': () => "Cette stratégie fiscale n'existe pas.",
+    'mentorat-invalide': () => 'Un mentor au pic ou en plateau parraine un émergent du même genre.',
+    'deja-parraine': () => 'Cet artiste a déjà un mentor.',
+    'trop-de-mentorats': (p: { max: number }) =>
+      `Tu ne peux pas suivre plus de ${p.max} mentorats.`,
     'suivi-introuvable': () => "Ce talent n'est pas dans ta liste de suivi.",
     'essai-deja-fait': () => 'Tu as déjà fait passer un essai à ce talent.',
   },
