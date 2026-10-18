@@ -430,7 +430,24 @@ export { signerArtisteDeDepart } from './scenarios/depart';
 export { ORDRE_SCENARIOS } from './scenarios/catalogue';
 export { texteCondition } from './scenarios/textes';
 export type { Condition, ScenarioDef, ScenarioState, StatutScenario } from './scenarios/types';
-export { dateDuDefi, dateValide, graineDuDefi } from './defi-date';
+export {
+  dateDuDefi,
+  dateValide,
+  estDefiHebdo,
+  graineDuDefi,
+  identifiantDefiValide,
+  semaineDuDefi,
+  semaineValide,
+} from './defi-date';
+export {
+  CONTRAINTES,
+  PLAFOND_ECURIE_REDUITE,
+  contrainteActive,
+  contrainteDeLaSemaine,
+  difficulteDeLaSemaine,
+  refusDeContrainte,
+  type ContrainteId,
+} from './defi-hebdo';
 export {
   DEFI_SEMAINES,
   type ResultatDefi,

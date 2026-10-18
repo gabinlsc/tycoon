@@ -6,11 +6,17 @@ Les types vivent dans `packages/label-tycoon/src/defi-validation.ts` ; le code d
 
 ## Règles du défi
 
-- **Date** : jour UTC, au format `AAAA-MM-JJ`.
+- **Date** : jour UTC, au format `AAAA-MM-JJ` (ou semaine `AAAA-Snn`, voir plus bas).
 - **Graine** : `defi-AAAA-MM-JJ`. Une graine qui ne correspond pas à la date est refusée par le moteur.
 - **Réglages** : difficulté normale, mode `defi`, aucune option de bac à sable. Ils sont fixés par `configDefi(date)`.
 - **Durée** : exactement 52 semaines. Au-delà, le moteur n'avance plus et refuse toute action (`defi-termine`).
 - **Score** : valorisation finale du label en euros, entière ; 0 en cas de faillite.
+
+## Défi de la semaine
+
+Le défi de la semaine suit exactement le même contrat : le champ `date` porte alors un identifiant de semaine ISO (UTC) au format `AAAA-Snn` (par exemple `2026-S42`) au lieu d'un jour. La graine est `defi-AAAA-Snn`, la durée est de 52 semaines et le score se calcule de la même façon.
+
+Chaque semaine impose une **contrainte**, choisie par une empreinte de l'identifiant (donc identique pour tous) : sans crédit, écurie réduite à trois artistes, un seul genre, budget de départ divisé par deux, sans concerts, ou rivaux presque deux fois plus agressifs. Les contraintes sont appliquées par le moteur lui-même (réglages de difficulté ou refus d'action) : le serveur les retrouve donc en rejouant le journal, sans rien faire de plus. Un journal qui enfreint la contrainte est refusé avec le code `action-refusee`.
 
 ## Journal d'actions
 

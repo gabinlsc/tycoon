@@ -2,6 +2,7 @@ import { type ActionHandler, type Cents, cents, clamp, money, reject } from '@ty
 import type { Action } from '@tycoon/core';
 import { type Artist, notoriety } from './artists';
 import { CONTRACTS, CREDIBILITY, ROSTER_CAP } from './balance';
+import { PLAFOND_ECURIE_REDUITE, contrainteActive } from './defi-hebdo';
 import { claimSubgenre } from './market';
 import { canAfford, spend } from './finance';
 import type { LabelSignal } from './pipeline';
@@ -57,7 +58,10 @@ export const rosterSize = (state: LabelState): number =>
   state.artistes.filter((a) => a.employeur === 'joueur').length;
 
 /** Plafond d'artistes sous contrat pour le palier actuel du label. */
-export const rosterCap = (state: LabelState): number => ROSTER_CAP[state.label.tier];
+export const rosterCap = (state: LabelState): number =>
+  contrainteActive(state)?.id === 'roster-reduit'
+    ? Math.min(PLAFOND_ECURIE_REDUITE, ROSTER_CAP[state.label.tier])
+    : ROSTER_CAP[state.label.tier];
 
 /** Vrai quand le label ne peut plus signer personne (le bac à sable n'a pas de limite). */
 export const rosterFull = (state: LabelState): boolean =>

@@ -17,6 +17,8 @@ const rendre = (ui: ReactNode) =>
 
 const defi: VueDefi = {
   date: '2026-10-18',
+  type: 'jour',
+  contrainte: null,
   semainesRestantes: 12,
   termine: false,
   score: 12_345,
@@ -69,6 +71,38 @@ describe('écran de départ : défi du jour', () => {
     expect(screen.queryByText('Graine (facultatif)')).toBeNull();
     fireEvent.click(b);
     const bandeau = await screen.findByLabelText(/^Défi du \d{4}-\d{2}-\d{2}$/);
+    expect(bandeau.textContent).toContain('Semaines restantes : 52');
+  });
+});
+
+describe('défi de la semaine', () => {
+  it('annonce la contrainte dans le bandeau', () => {
+    rendre(
+      <BandeauDefi
+        defi={{
+          ...defi,
+          date: '2026-S42',
+          type: 'semaine',
+          contrainte: { id: 'sans-emprunt', nom: 'Sans crédit', description: 'Aucun prêt.' },
+        }}
+      />,
+    );
+    expect(screen.getByRole('heading', { name: /Défi de la semaine — 2026-S42/ })).toBeTruthy();
+    expect(screen.getByText(/Contrainte :/).textContent).toContain('Sans crédit');
+  });
+  it('se lance depuis l’écran de départ avec sa contrainte', async () => {
+    render(
+      <LabelProvider fabrique={() => Promise.resolve(creerMoteurLocal())}>
+        <Coquille />
+      </LabelProvider>,
+    );
+    const b = await screen.findByRole('button', { name: 'Nouvelle partie' });
+    await waitFor(() => expect((b as HTMLButtonElement).disabled).toBe(false));
+    fireEvent.click(screen.getByRole('radio', { name: /Défi de la semaine/ }));
+    expect(screen.getByText(/Défi de la semaine \d{4}-S\d{2}/)).toBeTruthy();
+    fireEvent.click(b);
+    const bandeau = await screen.findByLabelText(/^Défi de la semaine \d{4}-S\d{2}$/);
+    expect(bandeau.textContent).toContain('Contrainte :');
     expect(bandeau.textContent).toContain('Semaines restantes : 52');
   });
 });

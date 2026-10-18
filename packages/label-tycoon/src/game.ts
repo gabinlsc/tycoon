@@ -1,4 +1,6 @@
 import {
+  type ActionHandler,
+  type ActionHandlers,
   Rng,
   type Seed,
   type Session,
@@ -6,6 +8,7 @@ import {
   createGame,
   emptyEventsState,
   money,
+  reject,
 } from '@tycoon/core';
 import { type LabelAction, renameLabel } from './actions';
 import {
@@ -45,7 +48,8 @@ import {
   setEnvelope,
 } from './groupe';
 import { GRAINE_TUTORIEL } from './tutoriel-graine';
-import { dateValide, graineDuDefi } from './defi-date';
+import { graineDuDefi, identifiantDefiValide } from './defi-date';
+import { refusDeContrainte } from './defi-hebdo';
 import { applyScenario, findScenario, scenarioPhase } from './scenarios/engine';
 import { initialFinance } from './finance';
 import { LABEL_EVENTS } from './content/events';
@@ -122,6 +126,26 @@ export const eventEngine = createEventEngine<LabelState>({
   phaseNames: { due: 'echeances-evenements', draw: 'tirage-evenements' },
 });
 
+/** Fait respecter la contrainte du défi de la semaine : elle refuse l'action avant le contrôle habituel. */
+function contraindre(
+  handlers: ActionHandlers<LabelState, LabelAction, LabelSignal>,
+): ActionHandlers<LabelState, LabelAction, LabelSignal> {
+  const out: Record<string, ActionHandler<LabelState, LabelAction, LabelSignal>> = {};
+  for (const [type, h] of Object.entries(handlers) as [
+    string,
+    ActionHandler<LabelState, LabelAction, LabelSignal>,
+  ][]) {
+    out[type] = {
+      apply: (state, action, ctx) => h.apply(state, action, ctx),
+      validate(state, action, ctx) {
+        const refus = refusDeContrainte(state, action);
+        return refus ? reject(refus.code, refus.params) : h.validate(state, action, ctx);
+      },
+    };
+  }
+  return out as unknown as ActionHandlers<LabelState, LabelAction, LabelSignal>;
+}
+
 export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
   streams: LABEL_STREAMS,
   phases: buildPipeline({
@@ -178,7 +202,7 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
     },
     'tirage-evenements': eventEngine.phase,
   }),
-  actions: {
+  actions: contraindre({
     ...eventEngine.actionHandlers,
     'renommer-label': renameLabel,
     reperer: scout,
@@ -235,7 +259,7 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
     'renvoyer-denicheur': fireScout,
     'abandonner-suivi': dropProspect,
     'essai-studio': studioTrial,
-  },
+  }),
 });
 
 export function defaultConfig(
@@ -382,7 +406,7 @@ function structuredConfig(config: GameConfig): GameConfig {
 /** Nouvelle partie. Même graine et mêmes réglages : même partie, au bit près. */
 export function newGame(seed: Seed, config: GameConfig = defaultConfig()): LabelSession {
   if (config.mode === 'defi') {
-    if (!config.defiDate || !dateValide(config.defiDate))
+    if (!config.defiDate || !identifiantDefiValide(config.defiDate))
       throw new RangeError(`Date de défi invalide : ${String(config.defiDate)}`);
     if (seed !== graineDuDefi(config.defiDate))
       throw new RangeError('La graine d’un défi découle de sa date.');
