@@ -66,6 +66,7 @@ export function QG({ allerA }: { allerA: (ecran: EcranId) => void }) {
           <ul className="label-alerts">
             {liste.map((a) => (
               <li key={a.id} className={`label-alert label-alert--${a.niveau}`}>
+                <strong>{a.niveau === 'danger' ? '⚠ Urgent : ' : 'ℹ À noter : '}</strong>
                 {a.texte}
                 {a.ecran ? (
                   <Button type="button" tone="ghost" onClick={() => allerA(a.ecran as EcranId)}>

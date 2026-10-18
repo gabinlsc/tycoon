@@ -92,6 +92,7 @@ export function Calendrier() {
                     className={e.origine === 'joueur' ? 'is-mine' : 'is-rival'}
                   >
                     <strong>{e.nom}</strong> · {e.genreNom}
+                    {e.origine === 'joueur' ? ' · ton label' : ' · label rival'}
                     {e.origine === 'joueur'
                       ? ` · ${e.statut === 'prete' ? 'prête' : 'en production'}`
                       : e.poids >= RIVAL_RELEASES.bigWeight
