@@ -223,3 +223,14 @@
     animation: none;
   }
 }
+
+/* Tactile et petits écrans : boutons et liens autonomes d'au moins 44 px */
+@media (pointer: coarse), (max-width: 48rem) {
+  .btn {
+    min-height: 44px;
+  }
+  .ink-link {
+    display: inline-block;
+    padding-block: 0.65rem;
+  }
+}
