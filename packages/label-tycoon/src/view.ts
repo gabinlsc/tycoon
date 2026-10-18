@@ -15,8 +15,12 @@ import {
   LOANS,
   PERSONALITIES,
   STAFF,
+  ACADEMIE,
   FESTIVALS_MAISON,
+  FONDATION,
   GROUPE,
+  INFLUENCE,
+  MUSEE,
   PLATEFORME,
   STUDIOS_SYNCHRO,
   TAX,
@@ -35,6 +39,7 @@ import { SUCCES, familyValue, objectiveProgress } from './achievements';
 import { festivalOffer } from './festivals';
 import { venueCost } from './tours';
 import { DEFI_SEMAINES, defiTermine, resultatDefi, texteResultat } from './defi';
+import { debloque as debloqueInstitution, revenuMusee } from './institution';
 import {
   debloque as debloqueConglomerat,
   portee,
@@ -557,6 +562,27 @@ export interface VueConglomerat {
   festivals: { possedes: number; max: number; cout: number; revenuAnnuel: number };
 }
 
+export interface VueInstitution {
+  debloque: boolean;
+  /** Influence disponible (0-100) et coût des règles qu'elle permet d'infléchir. */
+  influence: number;
+  regles: { id: string; cout: number; actif: boolean; fin: number | null }[];
+  fondation: { don: number; donne: number; donMax: number };
+  academie: {
+    niveau: number;
+    max: number;
+    coutSuivant: number | null;
+    genre: string;
+    budget: number;
+    budgetMax: number;
+    prochaine: number;
+    diplomes: number;
+  } | null;
+  coutAcademie: number;
+  musee: { niveau: number; max: number; coutSuivant: number | null; revenuAnnuel: number };
+  genres: { id: string; nom: string }[];
+}
+
 export interface VueJeu {
   semaine: number;
   date: { annee: number; mois: number; semaineDuMois: number };
@@ -603,6 +629,7 @@ export interface VueJeu {
   partie: VuePartie;
   groupe: VueGroupe;
   conglomerat: VueConglomerat;
+  institution: VueInstitution;
   scenario: VueScenario | null;
   defi: VueDefi | null;
   rapportsMensuels: VueRapportMensuel[];
@@ -1114,6 +1141,45 @@ function rapportsDe(state: LabelState): VueRapportMensuel[] {
     }));
 }
 
+function institutionDe(state: LabelState, tick: number): VueInstitution {
+  const i = state.institution;
+  const a = i.academie;
+  return {
+    debloque: debloqueInstitution(state),
+    influence: Math.round(i.influence * 10) / 10,
+    regles: (Object.keys(INFLUENCE.rules) as (keyof typeof INFLUENCE.rules)[]).map((id) => {
+      const active = i.regles.find((r) => r.regle === id && r.fin >= tick);
+      return {
+        id,
+        cout: INFLUENCE.rules[id].cost,
+        actif: active !== undefined,
+        fin: active?.fin ?? null,
+      };
+    }),
+    fondation: { don: i.don, donne: i.donne, donMax: FONDATION.donMax },
+    academie: a
+      ? {
+          niveau: a.niveau,
+          max: ACADEMIE.max,
+          coutSuivant: a.niveau >= ACADEMIE.max ? null : (ACADEMIE.cost[a.niveau] ?? null),
+          genre: a.genre,
+          budget: a.budget,
+          budgetMax: ACADEMIE.budgetMax,
+          prochaine: a.prochaine,
+          diplomes: a.diplomes,
+        }
+      : null,
+    coutAcademie: ACADEMIE.cost[0] ?? 0,
+    musee: {
+      niveau: i.musee,
+      max: MUSEE.max,
+      coutSuivant: i.musee >= MUSEE.max ? null : (MUSEE.cost[i.musee] ?? null),
+      revenuAnnuel: revenuMusee(state),
+    },
+    genres: genreKeys(state.marche).map((id) => ({ id, nom: nomGenre(state, id) })),
+  };
+}
+
 function conglomeratDe(state: LabelState): VueConglomerat {
   const p = state.plateforme;
   return {
@@ -1397,6 +1463,7 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
     scene: sceneDe(state),
     groupe: groupeDe(state, tick),
     conglomerat: conglomeratDe(state),
+    institution: institutionDe(state, tick),
     partie: {
       mode: state.config.mode,
       scenarioId: state.config.scenarioId ?? null,

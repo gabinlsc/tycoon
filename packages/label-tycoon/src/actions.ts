@@ -29,6 +29,13 @@ import type {
   TrialAction,
 } from './scouting';
 import type {
+  InfluenceAction,
+  SetAcademyAction,
+  SetDonationAction,
+  UpgradeAcademyAction,
+  UpgradeMuseumAction,
+} from './institution';
+import type {
   BuyFestivalAction,
   BuySyncStudioAction,
   CreatePlatformAction,
@@ -91,7 +98,12 @@ export type LabelAction =
   | CreatePlatformAction
   | SetPlatformAction
   | BuySyncStudioAction
-  | BuyFestivalAction;
+  | BuyFestivalAction
+  | SetDonationAction
+  | UpgradeAcademyAction
+  | SetAcademyAction
+  | UpgradeMuseumAction
+  | InfluenceAction;
 
 export const renameLabel: ActionHandler<LabelState, RenameLabelAction, LabelSignal> = {
   validate(_state, action) {
