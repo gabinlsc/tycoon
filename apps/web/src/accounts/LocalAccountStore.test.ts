@@ -137,6 +137,19 @@ describe('LocalAccountStore', () => {
     expect(await store.listSaves()).toEqual([]);
   });
 
+  it('remonte le résumé fourni par le jeu dans la liste des sauvegardes', async () => {
+    await store.create('Alice');
+    await store.writeSave('label-tycoon', {
+      version: 1,
+      resume: 'Neon · semaine 8',
+      emplacements: 2,
+    });
+    await store.writeSave('syndicate', { cash: 10 });
+    const saves = await store.listSaves();
+    expect(saves.find((s) => s.slug === 'label-tycoon')?.resume).toBe('Neon · semaine 8');
+    expect(saves.find((s) => s.slug === 'syndicate')?.resume).toBeUndefined();
+  });
+
   it('efface une sauvegarde sans toucher aux autres', async () => {
     await store.create('Alice');
     await store.writeSave('a', 1);

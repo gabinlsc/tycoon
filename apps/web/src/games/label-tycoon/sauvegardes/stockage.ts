@@ -115,6 +115,12 @@ export function creerStockageIndexedDB(): StockageParties {
   };
 }
 
+/** Efface tous les emplacements d'un compte (suppression des sauvegardes depuis la page de compte). */
+export async function purgerParties(compte: string, stockage?: StockageParties): Promise<void> {
+  const cible = stockage ?? choisirStockage().stockage;
+  for (const e of EMPLACEMENTS) await cible.effacer(compte, e).catch(() => undefined);
+}
+
 /** IndexedDB quand il est disponible, la mémoire de la session sinon. */
 export function choisirStockage(): { stockage: StockageParties; persistant: boolean } {
   if (typeof indexedDB === 'undefined')

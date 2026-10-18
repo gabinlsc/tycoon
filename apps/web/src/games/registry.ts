@@ -1,9 +1,18 @@
 import { lazy, type ComponentType, type LazyExoticComponent } from 'react';
+import { purgerParties } from './label-tycoon/sauvegardes/stockage';
 
 /** Props reçues par chaque jeu. Un jeu lit et écrit sa sauvegarde avec `useGameSave(slug)`. */
 export interface GameProps {
   slug: string;
 }
+
+/**
+ * Nettoyage des données qu'un jeu range hors du compte (IndexedDB…) : appelé quand le joueur efface
+ * la sauvegarde d'un jeu ou supprime son compte, pour ne rien laisser derrière.
+ */
+export const PURGES: Readonly<Record<string, (compte: string) => Promise<void>>> = {
+  'label-tycoon': (compte) => purgerParties(compte),
+};
 
 /**
  * Registre des jeux jouables. Chaque jeu est un module indépendant, chargé à la demande :
