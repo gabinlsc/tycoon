@@ -371,3 +371,14 @@
 .hit__value {
   text-align: end;
 }
+
+/* Pochettes */
+.pochette {
+  display: block;
+  filter: drop-shadow(4px 4px 0 var(--outline));
+}
+.pochette__titre {
+  fill: #fff;
+  font-family: var(--font-display);
+  font-size: 20px;
+}
