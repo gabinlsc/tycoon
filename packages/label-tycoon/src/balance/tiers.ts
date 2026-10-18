@@ -65,6 +65,7 @@ export const UNLOCKS = {
   emprunter: 'independant',
   investisseurs: 'etabli',
   'directeur-financier': 'etabli',
+  export: 'major',
   'sous-labels': 'groupe',
   'rachat-rival': 'groupe',
   plateforme: 'conglomerat',

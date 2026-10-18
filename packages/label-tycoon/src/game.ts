@@ -81,6 +81,7 @@ import { sign } from './contracts';
 import { launchProject, productionPhase, releaseProject, streamsPhase } from './production';
 import { propose } from './negotiation';
 import { dropProspect, fireScout, hireScout, scout, studioTrial } from './scouting';
+import { initialInternational, internationalPhase, openMarket, setCampaign } from './international';
 import { appliquerHeritage, validerHeritage } from './heritage';
 import { generateWorld } from './world';
 import type { LabelState } from './state';
@@ -140,6 +141,7 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
         livePhase.run(state, ctx);
         groupePhase.run(state, ctx);
         conglomeratPhase.run(state, ctx);
+        internationalPhase.run(state, ctx);
         institutionPhase.run(state, ctx);
       },
     },
@@ -202,6 +204,8 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
     'regler-plateforme': setPlatform,
     'acheter-studio-synchro': buySyncStudio,
     'acheter-festival': buyFestival,
+    'ouvrir-marche': openMarket,
+    'regler-campagne': setCampaign,
     'regler-fondation': setDonation,
     'ameliorer-academie': upgradeAcademy,
     'regler-academie': setAcademy,
@@ -321,6 +325,7 @@ export function initialState(seed: Seed, config: GameConfig): LabelState {
     records: [],
     eres: initialEras(seed),
     institution: initialInstitution(),
+    international: initialInternational(),
     plateforme: null,
     studiosSynchro: 0,
     festivalsPossedes: 0,
@@ -343,6 +348,7 @@ export function completerEtat(state: LabelState): void {
   state.studiosSynchro ??= 0;
   state.festivalsPossedes ??= 0;
   state.institution ??= initialInstitution();
+  state.international ??= initialInternational();
   state.eres ??= initialEras('ere-heritee');
 }
 

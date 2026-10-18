@@ -17,6 +17,7 @@ import { Conglomerat } from './Conglomerat';
 import { Institution } from './Institution';
 import { Generations } from './Generations';
 import { Heritage } from './Heritage';
+import { International } from './International';
 
 /** Écrans sans état de navigation propre : un composant par identifiant. */
 export const ECRANS_SIMPLES: Partial<Record<EcranId, ComponentType>> = {
@@ -37,4 +38,5 @@ export const ECRANS_SIMPLES: Partial<Record<EcranId, ComponentType>> = {
   institution: Institution,
   generations: Generations,
   heritage: Heritage,
+  international: International,
 };
