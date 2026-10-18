@@ -432,7 +432,7 @@ export interface VueJeu {
   succes: number;
 }
 
-const FIL_VISIBLE = 40;
+const FIL_VISIBLE = 100;
 const HISTORIQUE = 26;
 const NB_ECHEANCES = 6;
 

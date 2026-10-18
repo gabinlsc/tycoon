@@ -8,6 +8,7 @@ import { Finances } from './Finances';
 import { Personnel } from './Personnel';
 import { Batiments } from './Batiments';
 import { Tournees } from './Tournees';
+import { Fil } from './Fil';
 
 /** Écrans sans état de navigation propre : un composant par identifiant. */
 export const ECRANS_SIMPLES: Partial<Record<EcranId, ComponentType>> = {
@@ -19,4 +20,5 @@ export const ECRANS_SIMPLES: Partial<Record<EcranId, ComponentType>> = {
   personnel: Personnel,
   batiments: Batiments,
   tournees: Tournees,
+  fil: Fil,
 };
