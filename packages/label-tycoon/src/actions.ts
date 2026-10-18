@@ -3,6 +3,7 @@ import { LABEL_NAME_MAX } from './balance';
 import type { LabelSignal } from './pipeline';
 import type { BreakAction, ReleaseAction, RenegotiateAction } from './contract-end';
 import type { LaunchAction, ReleaseAction as ReleaseProjectAction } from './production';
+import type { StudyAction } from './forecast';
 import type { AuctionAction } from './auction';
 import type { SignAction } from './contracts';
 import type { ProposeAction } from './negotiation';
@@ -36,7 +37,8 @@ export type LabelAction =
   | BreakAction
   | ReleaseAction
   | LaunchAction
-  | ReleaseProjectAction;
+  | ReleaseProjectAction
+  | StudyAction;
 
 export const renameLabel: ActionHandler<LabelState, RenameLabelAction, LabelSignal> = {
   validate(_state, action) {

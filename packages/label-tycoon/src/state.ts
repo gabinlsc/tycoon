@@ -4,6 +4,7 @@ import type { Artist } from './artists';
 import type { FinanceState } from './finance';
 import type { Rival } from './auction';
 import type { Contrat } from './contracts';
+import type { Prevision } from './forecast';
 import type { SousGenre } from './market';
 import type { ChartsState } from './charts';
 import type { SortieRivale } from './calendar';
@@ -56,6 +57,8 @@ export interface LabelState {
   classements: ChartsState;
   /** Sous-genres fictifs vivants. */
   sousGenres: SousGenre[];
+  /** Prévisions de popularité obtenues par les études de marché. */
+  previsions: Prevision[];
   /** Négociations en cours ou rompues, une par artiste. */
   negociations: Negociation[];
   /** Prochain identifiant libre, partagé par toutes les entités (artistes, sorties, contrats…). */

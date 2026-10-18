@@ -44,3 +44,16 @@ export const SUBGENRES = {
   firstSignerCredibility: 30,
   prefixes: ['Néo', 'Hyper', 'Lo-fi', 'Cyber', 'Velours', 'Solaire', 'Nocturne', 'Brut'],
 } as const;
+
+/** Veille : études de marché et prévisions bruitées (GDD, 5.7). */
+export const INTEL = {
+  /** Coût d'une étude de marché. */
+  studyCost: 2500 * 100,
+  /** Horizons autorisés, en semaines. */
+  horizons: [4, 13, 26] as readonly number[],
+  /** Écart-type de l'erreur de prévision sans analyste (points), et réduction maximale grâce à un analyste de niveau 100. */
+  baseError: 14,
+  maxReduction: 0.8,
+  /** Prévisions conservées. */
+  keep: 12,
+} as const;

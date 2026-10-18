@@ -16,6 +16,7 @@ import { financePhase, initialFinance } from './finance';
 import { initialCredibility, initialMarket, marketPhase } from './market';
 import { breakContract, releaseArtist, renegotiate } from './contract-end';
 import { chartsPhase, emptyCharts } from './charts';
+import { marketStudy } from './forecast';
 import { rivalsPhase } from './calendar';
 import { auction, generateRivals } from './auction';
 import { sign } from './contracts';
@@ -74,6 +75,7 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
     'renommer-label': renameLabel,
     reperer: scout,
     signer: sign,
+    'etude-marche': marketStudy,
     'lancer-projet': launchProject,
     'sortir-projet': releaseProject,
     renegocier: renegotiate,
@@ -137,6 +139,7 @@ export function initialState(seed: Seed, config: GameConfig): LabelState {
     sortiesRivales: [],
     classements: emptyCharts(),
     sousGenres: [],
+    previsions: [],
     nextId: 1,
   };
 }

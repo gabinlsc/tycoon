@@ -186,3 +186,10 @@ export {
   certify,
   equivalentSales,
 } from './charts';
+export {
+  type Prevision,
+  type StudyAction,
+  analystLevel,
+  expectedPopularity,
+  forecastError,
+} from './forecast';
