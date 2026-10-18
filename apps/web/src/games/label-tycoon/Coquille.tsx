@@ -4,6 +4,7 @@ import { useLabel } from './LabelContext';
 import { BarreTemps } from './BarreTemps';
 import { BoiteReception, notificationsNonLues } from './BoiteReception';
 import { InfobulleCalcul, Terme } from './Infobulle';
+import { QG } from './QG';
 import { NouvellePartie } from './NouvellePartie';
 import { useRaccourcis } from './Raccourcis';
 
@@ -85,7 +86,9 @@ export function Coquille() {
         </p>
       ) : null}
       <main className="label-main">
-        {ecran === 'boite' ? (
+        {ecran === 'qg' ? (
+          <QG allerA={setEcran} />
+        ) : ecran === 'boite' ? (
           <BoiteReception dernierLu={dernierLu} onLu={setDernierLu} />
         ) : (
           <Placeholder id={ecran} />

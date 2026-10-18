@@ -105,7 +105,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `feat/label-ui-infobulles` : composant d'infobulle explicative branché sur `explain()` (+ glossaire)
 - [x] `feat/label-ui-graphiques` : bibliothèque de graphiques SVG maison (courbes, barres, aires, hit-parade)
 - [x] `feat/label-ui-pochettes` : pochettes de vinyles générées en SVG
-- [ ] `feat/label-ecran-qg` : QG (tableau de bord)
+- [x] `feat/label-ecran-qg` : QG (tableau de bord)
 - [ ] `feat/label-ecran-roster` : Roster
 - [ ] `feat/label-ecran-fiche-artiste` : fiche artiste
 - [ ] `feat/label-ecran-reperage` : repérage
@@ -183,7 +183,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 3     | 18    | 18     |
 | 4     | 16    | 16     |
 | 5     | 14    | 14     |
-| 6     | 14    | 7      |
+| 6     | 14    | 8      |
 | 7     | 13    | 0      |
 | 8     | 10    | 0      |
 | 9     | 5     | 0      |

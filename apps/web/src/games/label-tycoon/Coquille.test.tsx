@@ -29,7 +29,7 @@ describe('coquille du jeu', () => {
     expect(screen.getByText('Home-studio')).toBeTruthy();
     for (const e of ECRANS)
       expect(screen.getByRole('button', { name: new RegExp(e.titre) })).toBeTruthy();
-    expect(screen.getByRole('heading', { name: 'QG' })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'Finances' })).toBeTruthy();
   });
 
   it('change d’écran au clic', async () => {
