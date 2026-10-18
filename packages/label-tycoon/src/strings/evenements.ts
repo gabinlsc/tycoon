@@ -215,6 +215,55 @@ export const EVENT_TEXTS: Readonly<Record<string, EventText>> = {
     texte: 'Une fausse information sur {nom} se propage. Un démenti coûte {frais} centimes.',
     choix: { dementir: 'Démentir', ignorer: 'Ignorer' },
   },
+  'offre-synchro-exceptionnelle': {
+    titre: 'Offre de synchro exceptionnelle',
+    texte: 'Un grand film veut utiliser un titre de {nom}. Le cachet est très généreux.',
+  },
+  'rachat-catalogue': {
+    titre: 'Offre de rachat de catalogue',
+    texte: 'Un fonds propose {prix} centimes pour les droits du projet de {nom}.',
+    choix: { vendre: 'Vendre les droits', garder: 'Garder le catalogue' },
+  },
+  inspection: {
+    titre: 'Contrôle administratif',
+    texte: 'Une inspection impose des mises aux normes. Un juriste limite la facture.',
+  },
+  'proces-ancien-employe': {
+    titre: 'Procès d’un ancien employé',
+    texte: 'Un ancien collaborateur attaque le label aux prud’hommes.',
+  },
+  'subvention-culturelle': {
+    titre: 'Subvention culturelle',
+    texte: 'Le label décroche une aide à la création : un bon coup de pouce.',
+  },
+  'litige-fiscal': {
+    titre: 'Litige fiscal',
+    texte:
+      'L’administration réclame {somme} centimes. Contester coûte moins cher qu’en cas d’erreur, avec un juriste.',
+    choix: { contester: 'Contester', payer: 'Payer' },
+  },
+  'partenariat-marque': {
+    titre: 'Partenariat avec une marque',
+    texte: 'Une marque propose {cachet} centimes pour associer son image à {nom}.',
+    choix: { accepter: 'Accepter', refuser: 'Refuser' },
+  },
+  cyberattaque: {
+    titre: 'Cyberattaque',
+    texte: 'Les serveurs du label sont attaqués : frais de remise en route et un projet retardé.',
+  },
+  'don-de-mecene': {
+    titre: 'Un mécène généreux',
+    texte: 'Un passionné de musique fait un don au label.',
+  },
+  'talent-du-metier': {
+    titre: 'Un talent du métier se libère',
+    texte:
+      'Un professionnel très recherché ajoute ton label à sa liste : il est disponible à l’embauche.',
+  },
+  'hausse-loyer': {
+    titre: 'Hausse du loyer',
+    texte: 'Le propriétaire révise le loyer à la hausse : un rappel est dû.',
+  },
   'collaboration-spontanee': {
     titre: 'Collaboration spontanée',
     texte: '{nom} et {autre} improvisent un titre ensemble. Les fans adorent.',

@@ -121,3 +121,11 @@ export function mitigated(d: LabelState, delta: number): number {
     .reduce((best, m) => Math.max(best, m.niveau), 0);
   return Math.round(delta * (1 - (0.5 * level) / 100));
 }
+
+/** Atténue un coût juridique selon le niveau du juriste (jusqu'à moitié moins cher). */
+export function legalCost(d: LabelState, amount: number): number {
+  const level = d.personnel
+    .filter((m) => m.role === 'juriste')
+    .reduce((best, m) => Math.max(best, m.niveau), 0);
+  return Math.round(amount * (1 - (0.5 * level) / 100));
+}
