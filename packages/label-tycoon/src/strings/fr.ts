@@ -1,5 +1,6 @@
 import type { GameMode } from '../config';
 import type { TierId } from '../balance/tiers';
+import type { StaffRole, StaffTrait } from '../balance/staff';
 import type { BaseGenreId, GenreFamily } from '../content/genres';
 import type { TraitId } from '../content/traits';
 import type { CareerPhase } from '../artists';
@@ -95,6 +96,23 @@ export const fr = {
     'europe-sud': 'Europe du Sud',
     latine: 'Amérique latine',
   } satisfies Record<Origin, string>,
+
+  rolesPersonnel: {
+    producteur: 'Producteur',
+    ingenieur: 'Ingénieur du son',
+    attache: 'Attaché de presse',
+    'community-manager': 'Community manager',
+    tourneur: 'Tourneur',
+    juriste: 'Juriste',
+    'directeur-financier': 'Directeur financier',
+  } satisfies Record<StaffRole, string>,
+
+  traitsPersonnel: {
+    ambitieux: 'Ambitieux',
+    loyal: 'Loyal',
+    perfectionniste: 'Perfectionniste',
+    paresseux: 'Paresseux',
+  } satisfies Record<StaffTrait, string>,
 
   categoriesRevenus: {
     streaming: 'Streaming',
