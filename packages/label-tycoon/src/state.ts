@@ -4,6 +4,7 @@ import type { Artist } from './artists';
 import type { FinanceState } from './finance';
 import type { Rival } from './auction';
 import type { Contrat } from './contracts';
+import type { Concert } from './concerts';
 import type { Commande } from './pressing';
 import type { BatimentsState } from './buildings';
 import type { Cadre, DelegationDomain, Rapport } from './delegation';
@@ -73,6 +74,8 @@ export interface LabelState {
   batiments: BatimentsState;
   /** Commandes de pressage (vinyles, CD). */
   commandes: Commande[];
+  /** Concerts organisés. */
+  concerts: Concert[];
   /** Négociations en cours ou rompues, une par artiste. */
   negociations: Negociation[];
   /** Prochain identifiant libre, partagé par toutes les entités (artistes, sorties, contrats…). */

@@ -189,6 +189,8 @@ export const fr = {
     'format-inconnu': () => "Ce format physique n'existe pas.",
     'quantite-invalide': (p: { min: number; max: number }) =>
       `La quantité doit être comprise entre ${p.min} et ${p.max} exemplaires.`,
+    'salle-inconnue': () => "Cette salle n'existe pas.",
+    'prix-invalide': () => "Le prix du billet doit être un nombre entier d'euros, au moins 1.",
     'suivi-introuvable': () => "Ce talent n'est pas dans ta liste de suivi.",
     'essai-deja-fait': () => 'Tu as déjà fait passer un essai à ce talent.',
   },

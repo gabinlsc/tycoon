@@ -1,5 +1,6 @@
 import type { Phase } from '@tycoon/core';
 import type { LabelSignal } from './pipeline';
+import { concertsWeek } from './concerts';
 import { physicalWeek } from './pressing';
 import type { LabelState } from './state';
 
@@ -8,5 +9,6 @@ export const livePhase: Phase<LabelState, LabelSignal> = {
   name: 'tournees',
   run(state, ctx) {
     physicalWeek(state, ctx.tick);
+    concertsWeek(state, ctx.tick, ctx.emit);
   },
 };
