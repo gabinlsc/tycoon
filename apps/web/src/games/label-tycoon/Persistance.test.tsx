@@ -6,7 +6,9 @@ import { AccountProvider, useAccount } from '../../accounts/AccountContext';
 import { Coquille } from './Coquille';
 import { creerMoteurLocal } from './engine/local';
 import { LabelProvider } from './LabelContext';
-import { DELAI_SAUVEGARDE_MS, Persistance } from './Persistance';
+import { Persistance } from './Persistance';
+import { PERIODE_AUTO, resumeSauvegarde, sauvegardeAutoDue } from './sauvegardes/regles';
+import { type SauvegardeLabel, creerStockageMemoire } from './sauvegardes/stockage';
 
 beforeEach(() => window.localStorage.clear());
 afterEach(cleanup);
@@ -20,22 +22,19 @@ function Compte() {
   );
 }
 
-function Jeu() {
+function Jeu({ stockage }: { stockage: ReturnType<typeof creerStockageMemoire> }) {
   return (
     <MemoryRouter>
       <AccountProvider>
         <Compte />
         <LabelProvider fabrique={() => Promise.resolve(creerMoteurLocal())}>
-          <Persistance />
+          <Persistance stockage={stockage} />
           <Coquille />
         </LabelProvider>
       </AccountProvider>
     </MemoryRouter>
   );
 }
-
-const attendre = (ms: number) =>
-  act(async () => void (await new Promise((r) => setTimeout(r, ms))));
 
 async function demarrer() {
   const b = await screen.findByRole('button', { name: 'Nouvelle partie' });
@@ -44,48 +43,99 @@ async function demarrer() {
   await screen.findByRole('navigation', { name: 'Écrans du jeu' });
 }
 
+async function connecter() {
+  fireEvent.click(await screen.findByText('creer'));
+  await waitFor(() => expect((screen.getByText('creer') as HTMLButtonElement).disabled).toBe(true));
+}
+
+describe('règles de sauvegarde', () => {
+  it('sauvegarde automatiquement toutes les 4 semaines, une seule fois par semaine', () => {
+    expect(PERIODE_AUTO).toBe(4);
+    expect(sauvegardeAutoDue(0, -1)).toBe(false);
+    expect(sauvegardeAutoDue(3, -1)).toBe(false);
+    expect(sauvegardeAutoDue(4, -1)).toBe(true);
+    expect(sauvegardeAutoDue(4, 4)).toBe(false);
+    expect(sauvegardeAutoDue(8, 4)).toBe(true);
+  });
+  it('résume une sauvegarde', () => {
+    const s: SauvegardeLabel = {
+      version: 1,
+      sauvegarde: '{}',
+      semaine: 12,
+      label: 'Neon',
+      palier: 'Home-studio',
+      tresorerie: 2_500_000,
+      enregistreLe: '',
+    };
+    expect(resumeSauvegarde(s).replace(/\s/g, ' ')).toBe(
+      'Neon · semaine 12 · Home-studio · 25 000 €',
+    );
+  });
+});
+
 describe('sauvegarde de la partie', () => {
   it('prévient quand il n’y a pas de compte', async () => {
-    render(<Jeu />);
+    render(<Jeu stockage={creerStockageMemoire()} />);
     expect(await screen.findByText(/pour que ta partie soit sauvegardée/)).toBeTruthy();
     await demarrer();
     expect(screen.getByText(/ne sera pas sauvegardée/)).toBeTruthy();
   });
 
-  it('enregistre la partie du compte, puis la propose à la reprise', async () => {
-    const premier = render(<Jeu />);
-    fireEvent.click(await screen.findByText('creer'));
-    await waitFor(() =>
-      expect((screen.getByText('creer') as HTMLButtonElement).disabled).toBe(true),
-    );
+  it('enregistre dans un emplacement manuel puis le recharge après une reprise', async () => {
+    const stockage = creerStockageMemoire();
+    const premier = render(<Jeu stockage={stockage} />);
+    await connecter();
     await demarrer();
-    await attendre(DELAI_SAUVEGARDE_MS + 300);
-    await screen.findByText(/Partie sauvegardée \(semaine 0\)/);
-    const cles = Object.keys(window.localStorage).filter((k) => k.includes('label-tycoon'));
-    expect(cles.length).toBeGreaterThan(0);
+    fireEvent.click(screen.getByText('Sauvegardes'));
+    fireEvent.click(await screen.findByRole('button', { name: /Sauvegarder dans emplacement 2/ }));
+    await screen.findByText('Emplacement 2 enregistrée.');
     premier.unmount();
 
-    render(<Jeu />);
-    const reprendre = await screen.findByRole(
+    render(<Jeu stockage={stockage} />);
+    const charger = await screen.findByRole(
       'button',
-      { name: 'Reprendre ma partie' },
+      { name: /Charger emplacement 2/ },
       { timeout: 3000 },
     );
-    fireEvent.click(reprendre);
+    fireEvent.click(charger);
     await screen.findByRole('navigation', { name: 'Écrans du jeu' });
     expect(screen.getByLabelText('Trésorerie')).toBeTruthy();
   });
 
-  it('demande confirmation avant de recommencer', async () => {
-    render(<Jeu />);
-    fireEvent.click(await screen.findByText('creer'));
-    await waitFor(() =>
-      expect((screen.getByText('creer') as HTMLButtonElement).disabled).toBe(true),
-    );
+  it('crée la sauvegarde automatique à la quatrième semaine', async () => {
+    const stockage = creerStockageMemoire();
+    render(<Jeu stockage={stockage} />);
+    await connecter();
     await demarrer();
-    await attendre(DELAI_SAUVEGARDE_MS + 300);
+    for (let i = 0; i < PERIODE_AUTO; i += 1) {
+      await act(async () => {
+        fireEvent.click(screen.getByRole('button', { name: /Semaine ▶/ }));
+        await new Promise((r) => setTimeout(r, 150));
+      });
+    }
+    await screen.findByText(/Sauvegarde automatique \(semaine 4\)/, undefined, { timeout: 4000 });
+  }, 20_000);
+
+  it('efface un emplacement manuel', async () => {
+    const stockage = creerStockageMemoire();
+    render(<Jeu stockage={stockage} />);
+    await connecter();
+    await demarrer();
+    fireEvent.click(screen.getByText('Sauvegardes'));
+    fireEvent.click(await screen.findByRole('button', { name: /Sauvegarder dans emplacement 1/ }));
+    fireEvent.click(await screen.findByRole('button', { name: /Effacer emplacement 1/ }));
+    await waitFor(() =>
+      expect(screen.queryByRole('button', { name: /Effacer emplacement 1/ })).toBeNull(),
+    );
+  });
+
+  it('demande confirmation avant de recommencer', async () => {
+    render(<Jeu stockage={creerStockageMemoire()} />);
+    await connecter();
+    await demarrer();
+    fireEvent.click(screen.getByText('Sauvegardes'));
     fireEvent.click(await screen.findByRole('button', { name: 'Recommencer' }));
-    expect(screen.getByRole('button', { name: 'Oui, tout recommencer' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Oui, recommencer une partie' })).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: 'Annuler' }));
     expect(screen.getByRole('button', { name: 'Recommencer' })).toBeTruthy();
   });

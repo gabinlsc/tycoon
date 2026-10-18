@@ -131,7 +131,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 
 ## Phase 8 : sauvegarde, modes de jeu
 
-- [ ] `feat/label-sauvegarde-indexeddb` : 3 emplacements manuels, sauvegarde automatique toutes les 4 semaines
+- [x] `feat/label-sauvegarde-indexeddb` : 3 emplacements manuels, sauvegarde automatique toutes les 4 semaines
 - [ ] `feat/label-sauvegarde-export` : export et import JSON, validation `zod`, sauvegarde corrompue sans blocage
 - [ ] `feat/label-sauvegarde-compte` : métadonnées de sauvegarde remontées dans la page de compte (+)
 - [ ] `feat/label-mode-carriere` : carrière et réglages de difficulté
@@ -185,7 +185,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 5     | 14    | 14     |
 | 6     | 14    | 14     |
 | 7     | 13    | 13     |
-| 8     | 10    | 0      |
+| 8     | 10    | 1      |
 | 9     | 5     | 0      |
 | 10    | 12    | 0      |
 | 11    | 5     | 0      |

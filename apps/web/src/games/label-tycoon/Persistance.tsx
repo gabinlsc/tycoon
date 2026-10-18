@@ -1,11 +1,22 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAccount, useGameSave } from '../../accounts/AccountContext';
 import { Button } from '../../components/arcade/ui/Button';
 import { useLabel } from './LabelContext';
+import { LIBELLES_EMPLACEMENT, resumeSauvegarde, sauvegardeAutoDue } from './sauvegardes/regles';
+import {
+  EMPLACEMENTS,
+  EMPLACEMENTS_MANUELS,
+  type Emplacement,
+  type SauvegardeLabel,
+  type StockageParties,
+  choisirStockage,
+} from './sauvegardes/stockage';
 
-/** Ce qu'on range dans la sauvegarde du compte : la partie sérialisée par le moteur et un résumé. */
-export interface SauvegardeLabel {
+export type { SauvegardeLabel } from './sauvegardes/stockage';
+
+/** Ancienne sauvegarde unique, rangée dans le compte : migrée vers l'emplacement automatique. */
+interface SauvegardeHeritee {
   version: 1;
   sauvegarde: string;
   semaine: number;
@@ -13,59 +24,117 @@ export interface SauvegardeLabel {
   enregistreLe: string;
 }
 
-/** Délai avant d'enregistrer après un changement : évite d'écrire à chaque semaine d'une avance rapide. */
-export const DELAI_SAUVEGARDE_MS = 1500;
+type Contenu = Partial<Record<Emplacement, SauvegardeLabel>>;
+
+interface Props {
+  /** Stockage à utiliser (les tests injectent la mémoire) ; IndexedDB par défaut. */
+  stockage?: StockageParties;
+}
 
 /**
- * Sauvegarde simple : la partie est enregistrée dans le compte (local au navigateur) peu après chaque
- * changement, et peut être reprise depuis l'écran de départ. Sans compte, rien n'est enregistré et le
+ * Sauvegardes du jeu : une sauvegarde automatique toutes les 4 semaines et trois emplacements
+ * manuels, rangés dans IndexedDB et isolés par compte. Sans compte, rien n'est enregistré et le
  * joueur en est averti.
  */
-export function Persistance() {
-  const { status } = useAccount();
+export function Persistance({ stockage: injecte }: Props) {
+  const { status, account } = useAccount();
   const { vue, envoyer } = useLabel();
-  const sauvegarde = useGameSave<SauvegardeLabel>('label-tycoon');
-  const [etat, setEtat] = useState<string | null>(null);
+  const heritee = useGameSave<SauvegardeHeritee>('label-tycoon');
+  const [stockage] = useState<StockageParties>(() => injecte ?? choisirStockage().stockage);
+  const [contenu, setContenu] = useState<Contenu>({});
+  const [message, setMessage] = useState<string | null>(null);
   const [confirmer, setConfirmer] = useState(false);
-  const derniere = useRef<number>(-1);
-  const { save, data, state, clear } = sauvegarde;
+  const derniereAuto = useRef(-1);
+  const compte = status === 'in' ? (account?.id ?? null) : null;
+
+  const rafraichir = useCallback(async () => {
+    if (!compte) return setContenu({});
+    setContenu(await stockage.lister(compte).catch(() => ({})));
+  }, [compte, stockage]);
 
   useEffect(() => {
-    if (!vue || status !== 'in' || vue.semaine === derniere.current) return;
-    const timer = setTimeout(() => {
-      void envoyer({ type: 'sauvegarder' }).then(async (r) => {
-        if (r.type !== 'sauvegarde') return;
-        derniere.current = vue.semaine;
-        await save({
+    void rafraichir();
+  }, [rafraichir]);
+
+  // Migration de l'ancienne sauvegarde unique vers l'emplacement automatique.
+  useEffect(() => {
+    if (!compte || heritee.state !== 'ready' || !heritee.data) return;
+    const ancienne = heritee.data;
+    void (async () => {
+      const present = await stockage.lire(compte, 'auto').catch(() => null);
+      if (!present)
+        await stockage.ecrire(compte, 'auto', {
           version: 1,
-          sauvegarde: r.sauvegarde,
+          sauvegarde: ancienne.sauvegarde,
+          semaine: ancienne.semaine,
+          label: ancienne.label,
+          palier: '',
+          tresorerie: 0,
+          enregistreLe: ancienne.enregistreLe,
+        });
+      await heritee.clear();
+      await rafraichir();
+    })().catch(() => undefined);
+  }, [compte, heritee, stockage, rafraichir]);
+
+  const ecrire = useCallback(
+    async (emplacement: Emplacement): Promise<boolean> => {
+      if (!compte || !vue) return false;
+      const reponse = await envoyer({ type: 'sauvegarder' });
+      if (reponse.type !== 'sauvegarde') return false;
+      try {
+        await stockage.ecrire(compte, emplacement, {
+          version: 1,
+          sauvegarde: reponse.sauvegarde,
           semaine: vue.semaine,
           label: vue.label.nom,
+          palier: vue.label.palier,
+          tresorerie: vue.finances.tresorerie,
           enregistreLe: new Date().toISOString(),
         });
-        setEtat(`Partie sauvegardée (semaine ${vue.semaine}).`);
-      });
-    }, DELAI_SAUVEGARDE_MS);
-    return () => clearTimeout(timer);
-  }, [vue, status, envoyer, save]);
+      } catch {
+        setMessage('Sauvegarde impossible : le stockage du navigateur est refusé ou plein.');
+        return false;
+      }
+      await rafraichir();
+      return true;
+    },
+    [compte, vue, envoyer, stockage, rafraichir],
+  );
 
-  if (!vue) {
-    if (status === 'in' && state === 'ready' && data) {
-      return (
-        <div className="label-resume">
-          <p>
-            Une partie t’attend : <strong>{data.label}</strong>, semaine {data.semaine}.
-          </p>
-          <Button
-            type="button"
-            tone="green"
-            onClick={() => void envoyer({ type: 'charger', sauvegarde: data.sauvegarde })}
-          >
-            Reprendre ma partie
-          </Button>
-        </div>
-      );
+  // Sauvegarde automatique toutes les 4 semaines.
+  const semaine = vue?.semaine ?? -1;
+  useEffect(() => {
+    if (!compte || semaine < 0 || !sauvegardeAutoDue(semaine, derniereAuto.current)) return;
+    derniereAuto.current = semaine;
+    void ecrire('auto').then((ok) => {
+      if (ok) setMessage(`Sauvegarde automatique (semaine ${semaine}).`);
+    });
+  }, [compte, semaine, ecrire]);
+
+  const charger = async (emplacement: Emplacement) => {
+    const s = contenu[emplacement];
+    if (!s) return;
+    const reponse = await envoyer({ type: 'charger', sauvegarde: s.sauvegarde });
+    if (reponse.type === 'erreur') {
+      setMessage(`Cette sauvegarde est illisible : ${reponse.message}`);
+      return;
     }
+    derniereAuto.current = s.semaine;
+    setMessage(`${LIBELLES_EMPLACEMENT[emplacement]} chargée.`);
+  };
+
+  const effacer = async (emplacement: Emplacement) => {
+    if (!compte) return;
+    await stockage.effacer(compte, emplacement);
+    await rafraichir();
+  };
+
+  if (status !== 'in') {
+    if (vue)
+      return (
+        <p className="label-screen__soon">Pas de compte : cette partie ne sera pas sauvegardée.</p>
+      );
     return status === 'out' ? (
       <p className="label-screen__soon">
         <Link to="/compte">Crée ton pseudo</Link> pour que ta partie soit sauvegardée.
@@ -73,27 +142,61 @@ export function Persistance() {
     ) : null;
   }
 
+  const lignes = vue ? EMPLACEMENTS : EMPLACEMENTS.filter((e) => contenu[e]);
+  if (!vue && lignes.length === 0) return null;
+
   return (
-    <div className="label-save">
-      <span role="status">
-        {status === 'in'
-          ? (etat ?? 'La partie sera sauvegardée automatiquement.')
-          : 'Pas de compte : cette partie ne sera pas sauvegardée.'}
-      </span>
-      {status === 'in' && data ? (
+    <details className="label-save" open={!vue}>
+      <summary>{vue ? 'Sauvegardes' : 'Reprendre une partie'}</summary>
+      <ul className="label-list">
+        {lignes.map((e) => {
+          const s = contenu[e];
+          const manuel = (EMPLACEMENTS_MANUELS as readonly string[]).includes(e);
+          return (
+            <li key={e}>
+              <strong>{LIBELLES_EMPLACEMENT[e]}</strong> — {s ? resumeSauvegarde(s) : 'vide'}{' '}
+              {vue && manuel ? (
+                <Button
+                  type="button"
+                  tone="ghost"
+                  onClick={() =>
+                    void ecrire(e).then(
+                      (ok) => ok && setMessage(`${LIBELLES_EMPLACEMENT[e]} enregistrée.`),
+                    )
+                  }
+                >
+                  Sauvegarder dans {LIBELLES_EMPLACEMENT[e].toLowerCase()}
+                </Button>
+              ) : null}{' '}
+              {s ? (
+                <>
+                  <Button type="button" tone="green" onClick={() => void charger(e)}>
+                    Charger {LIBELLES_EMPLACEMENT[e].toLowerCase()}
+                  </Button>{' '}
+                  {manuel ? (
+                    <Button type="button" tone="ghost" onClick={() => void effacer(e)}>
+                      Effacer {LIBELLES_EMPLACEMENT[e].toLowerCase()}
+                    </Button>
+                  ) : null}
+                </>
+              ) : null}
+            </li>
+          );
+        })}
+      </ul>
+      {vue ? (
         confirmer ? (
           <>
             <Button
               type="button"
               tone="ghost"
               onClick={() => {
-                void clear();
                 void envoyer({ type: 'nouvelle-partie', graine: Date.now().toString(36) });
                 setConfirmer(false);
-                derniere.current = -1;
+                derniereAuto.current = -1;
               }}
             >
-              Oui, tout recommencer
+              Oui, recommencer une partie
             </Button>
             <Button type="button" tone="ghost" onClick={() => setConfirmer(false)}>
               Annuler
@@ -105,6 +208,7 @@ export function Persistance() {
           </Button>
         )
       ) : null}
-    </div>
+      <p role="status">{message ?? 'Sauvegarde automatique toutes les 4 semaines.'}</p>
+    </details>
   );
 }
