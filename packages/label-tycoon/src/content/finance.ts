@@ -9,6 +9,7 @@ export const REVENUE_CATEGORIES = [
   'merch',
   'synchro',
   'cessions',
+  'filiales',
   'autres',
 ] as const;
 
@@ -23,6 +24,7 @@ export const EXPENSE_CATEGORIES = [
   'reperage',
   'interets',
   'impots',
+  'filiales',
   'autres',
 ] as const;
 

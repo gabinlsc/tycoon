@@ -1,6 +1,7 @@
 import { type Cents, money } from '@tycoon/core';
 
-export type TierId = 'home-studio' | 'independant' | 'etabli' | 'major';
+export type TierId =
+  'home-studio' | 'independant' | 'etabli' | 'major' | 'groupe' | 'conglomerat' | 'institution';
 export type CertificationLevel = 'or' | 'platine' | 'diamant';
 
 export interface TierRule {
@@ -38,6 +39,25 @@ export const TIERS: readonly TierRule[] = [
     minAnnualRevenue: money.euros(20_000_000),
     requiredCertification: 'diamant',
   },
+  // Paliers de longue durée (GDD, 14.1) : le jeu change de nature, on pilote des filiales.
+  {
+    id: 'groupe',
+    minReputation: 85,
+    minAnnualRevenue: money.euros(100_000_000),
+    requiredCertification: 'diamant',
+  },
+  {
+    id: 'conglomerat',
+    minReputation: 92,
+    minAnnualRevenue: money.euros(400_000_000),
+    requiredCertification: 'diamant',
+  },
+  {
+    id: 'institution',
+    minReputation: 97,
+    minAnnualRevenue: money.euros(1_500_000_000),
+    requiredCertification: 'diamant',
+  },
 ];
 
 /** Palier minimal requis pour débloquer une fonctionnalité (GDD, 5.1). */
@@ -45,6 +65,10 @@ export const UNLOCKS = {
   emprunter: 'independant',
   investisseurs: 'etabli',
   'directeur-financier': 'etabli',
+  'sous-labels': 'groupe',
+  'rachat-rival': 'groupe',
+  plateforme: 'conglomerat',
+  fondation: 'institution',
 } as const satisfies Record<string, TierId>;
 
 /**
@@ -57,4 +81,7 @@ export const ROSTER_CAP: Readonly<Record<TierId, number>> = {
   independant: 12,
   etabli: 24,
   major: 48,
+  groupe: 96,
+  conglomerat: 150,
+  institution: 240,
 };

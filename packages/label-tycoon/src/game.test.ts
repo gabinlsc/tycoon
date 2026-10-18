@@ -223,7 +223,15 @@ describe('équilibrage et textes', () => {
       expect(TIERS[i]?.minReputation).toBeGreaterThan(TIERS[i - 1]?.minReputation ?? 0);
       expect(TIERS[i]?.minAnnualRevenue).toBeGreaterThan(TIERS[i - 1]?.minAnnualRevenue ?? 0);
     }
-    expect(TIERS.map((t) => t.id)).toEqual(['home-studio', 'independant', 'etabli', 'major']);
+    expect(TIERS.map((t) => t.id)).toEqual([
+      'home-studio',
+      'independant',
+      'etabli',
+      'major',
+      'groupe',
+      'conglomerat',
+      'institution',
+    ]);
   });
 
   it('chaque palier a un nom affichable', () => {

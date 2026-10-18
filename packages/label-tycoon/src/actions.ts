@@ -28,6 +28,13 @@ import type {
   ScoutAction,
   TrialAction,
 } from './scouting';
+import type {
+  AppointExecutiveAction,
+  BuyRivalAction,
+  CloseSubLabelAction,
+  CreateSubLabelAction,
+  SetEnvelopeAction,
+} from './groupe';
 import type { LabelState } from './state';
 
 export interface RenameLabelAction extends Action {
@@ -69,7 +76,12 @@ export type LabelAction =
   | ChooseTaxAction
   | MentorAction
   | BuyoutAnswerAction
-  | BuyRivalArtistAction;
+  | BuyRivalArtistAction
+  | CreateSubLabelAction
+  | AppointExecutiveAction
+  | SetEnvelopeAction
+  | CloseSubLabelAction
+  | BuyRivalAction;
 
 export const renameLabel: ActionHandler<LabelState, RenameLabelAction, LabelSignal> = {
   validate(_state, action) {

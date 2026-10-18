@@ -19,6 +19,14 @@ import {
 import type { DifficultyPreset, DifficultySettings, GameConfig, GameMode } from './config';
 import { type LabelSignal, buildPipeline } from './pipeline';
 import { artistsPhase } from './dynamics';
+import {
+  appointExecutive,
+  buyRival,
+  closeSubLabel,
+  createSubLabel,
+  groupePhase,
+  setEnvelope,
+} from './groupe';
 import { GRAINE_TUTORIEL } from './tutoriel-graine';
 import { dateValide, graineDuDefi } from './defi-date';
 import { applyScenario, findScenario, scenarioPhase } from './scenarios/engine';
@@ -102,7 +110,13 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
     production: productionPhase,
     streams: streamsPhase,
     classements: chartsPhase,
-    tournees: livePhase,
+    tournees: {
+      name: 'tournees',
+      run(state, ctx) {
+        livePhase.run(state, ctx);
+        groupePhase.run(state, ctx);
+      },
+    },
     finances: ledgerPhase,
     fil: {
       name: 'fil',
@@ -153,6 +167,11 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
     presser: press,
     construire: build,
     'configurer-delegation': configureDelegation,
+    'creer-sous-label': createSubLabel,
+    'nommer-cadre': appointExecutive,
+    'regler-enveloppe': setEnvelope,
+    'fermer-sous-label': closeSubLabel,
+    'racheter-rival': buyRival,
     embaucher: hire,
     licencier: fire,
     'etude-marche': marketStudy,
@@ -260,6 +279,8 @@ export function initialState(seed: Seed, config: GameConfig): LabelState {
     succes: [],
     objectifs: [],
     records: [],
+    sousLabels: [],
+    cadres: [],
     nextId: 1,
   };
 }
