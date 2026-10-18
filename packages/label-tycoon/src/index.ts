@@ -131,3 +131,9 @@ export {
   gaugeOf,
 } from './negotiation';
 export { type AuctionAction, type Rival, generateRivals, rivalBid } from './auction';
+export {
+  type BreakAction,
+  type ReleaseAction,
+  type RenegotiateAction,
+  contractsWeek,
+} from './contract-end';

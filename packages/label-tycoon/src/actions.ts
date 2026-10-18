@@ -1,6 +1,7 @@
 import { type Action, type ActionHandler, type ResolveEventAction, reject } from '@tycoon/core';
 import { LABEL_NAME_MAX } from './balance';
 import type { LabelSignal } from './pipeline';
+import type { BreakAction, ReleaseAction, RenegotiateAction } from './contract-end';
 import type { AuctionAction } from './auction';
 import type { SignAction } from './contracts';
 import type { ProposeAction } from './negotiation';
@@ -29,7 +30,10 @@ export type LabelAction =
   | FireScoutAction
   | SignAction
   | ProposeAction
-  | AuctionAction;
+  | AuctionAction
+  | RenegotiateAction
+  | BreakAction
+  | ReleaseAction;
 
 export const renameLabel: ActionHandler<LabelState, RenameLabelAction, LabelSignal> = {
   validate(_state, action) {

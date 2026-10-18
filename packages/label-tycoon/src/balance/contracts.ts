@@ -42,3 +42,18 @@ export const NEGOTIATION = {
   counterRoyaltiesStep: 500,
   counterAdvanceStepShare: 0.25,
 } as const;
+
+/** Fin de contrat (GDD, 5.4). */
+export const CONTRACT_END = {
+  /** Semaines de grâce après l'échéance pour renouveler avant que l'artiste parte. */
+  graceWeeks: 4,
+  /** Rupture anticipée par le label : pénalité = avance × ce multiple, affinité perdue. */
+  breakPenaltyMultiple: 1,
+  breakAffinityLoss: 30,
+  /** Probabilité de procès après une rupture, et dommages (multiple de l'avance). */
+  lawsuitChance: 0.4,
+  lawsuitDamagesMultiple: 2,
+  /** Rachat de clause : probabilité hebdomadaire une fois la notoriété seuil atteinte. */
+  buyoutNotoriety: 60,
+  buyoutWeeklyChance: 0.02,
+} as const;

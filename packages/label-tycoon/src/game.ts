@@ -14,6 +14,7 @@ import { type LabelSignal, buildPipeline } from './pipeline';
 import { artistsPhase } from './dynamics';
 import { financePhase, initialFinance } from './finance';
 import { initialCredibility, initialMarket } from './market';
+import { breakContract, releaseArtist, renegotiate } from './contract-end';
 import { auction, generateRivals } from './auction';
 import { sign } from './contracts';
 import { propose } from './negotiation';
@@ -65,6 +66,9 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
     'renommer-label': renameLabel,
     reperer: scout,
     signer: sign,
+    renegocier: renegotiate,
+    'rompre-contrat': breakContract,
+    'liberer-artiste': releaseArtist,
     encherir: auction,
     proposer: propose,
     'recruter-denicheur': hireScout,
