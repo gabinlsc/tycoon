@@ -39,6 +39,10 @@ export function filVars(state: LabelState, payload: Payload): Record<string, str
   if (typeof payload['texte'] === 'string') vars['texte'] = payload['texte'];
   if (typeof payload['ere'] === 'string')
     vars['ere'] = ERES[payload['ere'] as keyof typeof ERES]?.nom ?? payload['ere'];
+  for (const k of ['severite', 'semaines', 'baisse', 'preavis'] as const)
+    if (typeof payload[k] === 'number') vars[k] = payload[k];
+  if (typeof payload['montant'] === 'number')
+    vars['montant'] = `${Math.round(payload['montant'] / 100).toLocaleString('fr-FR')} €`;
   if (typeof payload['ville'] === 'string') vars['ville'] = payload['ville'];
   if (typeof payload['genre'] === 'string')
     vars['genre'] =

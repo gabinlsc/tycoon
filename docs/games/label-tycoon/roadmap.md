@@ -160,7 +160,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `feat/label-heritage` : mode Héritage et Panthéon local
 - [x] `feat/label-international` : marchés internationaux, genres et classements par pays, export
 - [x] `feat/label-scenes-locales` : scènes de villes et profils de genres
-- [ ] `feat/label-regulation` : friction de fin de partie (anti-concentration, piratage, plateformes qui renégocient)
+- [x] `feat/label-regulation` : friction de fin de partie (anti-concentration, piratage, plateformes qui renégocient)
 - [ ] `feat/label-evenements-v2` : 60 → 150 événements, par saisons de contenu
 - [ ] `feat/label-defis-hebdo` : défis hebdomadaires
 - [ ] `test/label-simulation-30-ans` : simulation de 30 ans, garde-fou contre la divergence de valorisation
@@ -187,7 +187,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 7     | 13    | 13     |
 | 8     | 10    | 10     |
 | 9     | 5     | 5      |
-| 10    | 12    | 8      |
+| 10    | 12    | 9      |
 | 11    | 5     | 0      |
 
 (Mettre ce tableau à jour dans la PR qui coche une case.)

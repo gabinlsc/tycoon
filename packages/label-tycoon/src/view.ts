@@ -32,6 +32,7 @@ import {
   type AchievementFamily,
   type TaxStrategy,
   GENERATIONS,
+  REGULATION,
   SCENES,
   INTERNATIONAL,
   PAYS,
@@ -48,6 +49,13 @@ import { DEFI_SEMAINES, defiTermine, resultatDefi, texteResultat } from './defi'
 import { ereCourante, prochaineEre } from './eres';
 import { legendes } from './generations';
 import { estEmergente } from './scenes';
+import {
+  active as regulationActive,
+  chanceDeResister,
+  partDeMarche,
+  pleadAllowed,
+  severiteEffective,
+} from './regulation';
 import {
   type LigneClassement,
   affinite,
@@ -662,6 +670,7 @@ export interface VueJeu {
   generations: VueGenerations;
   international: VueInternational;
   scenesVilles: VueSceneVille[];
+  regulation: VueRegulation;
   heritage: VueHeritage;
   scenario: VueScenario | null;
   defi: VueDefi | null;
@@ -1179,6 +1188,69 @@ function rapportsDe(state: LabelState): VueRapportMensuel[] {
     }));
 }
 
+/** Friction de fin de partie : concentration, piratage et tarifs des plateformes. */
+export interface VueRegulation {
+  actif: boolean;
+  /** Part de marché du label et seuil de surveillance, en pourcentage. */
+  partDeMarche: number;
+  seuil: number;
+  surveillance: number;
+  averti: boolean;
+  amendes: number;
+  coutPlaidoyer: number;
+  plaidoyerPossible: boolean;
+  piratage: { severite: number; fin: number; restantes: number } | null;
+  veille: number;
+  veilleMax: number;
+  coutVeille: number;
+  renegociation: {
+    baisse: number;
+    debut: number;
+    fin: number;
+    enCours: boolean;
+    resistee: boolean;
+    chance: number;
+  } | null;
+  coutResistance: number;
+}
+
+function regulationDe(state: LabelState, tick: number): VueRegulation {
+  const r = state.regulation;
+  const p = r.piratage;
+  const n = r.renegociation;
+  return {
+    actif: regulationActive(state),
+    partDeMarche: Math.round(partDeMarche(state) * 100),
+    seuil: Math.round(REGULATION.concentration.threshold * 100),
+    surveillance: Math.round(r.surveillance),
+    averti: r.averti,
+    amendes: r.amendes,
+    coutPlaidoyer: REGULATION.concentration.lobbyCost,
+    plaidoyerPossible: pleadAllowed(state, tick),
+    piratage: p
+      ? {
+          severite: Math.round(severiteEffective(state, p) * 100),
+          fin: p.fin,
+          restantes: Math.max(0, p.fin - tick),
+        }
+      : null,
+    veille: r.veille,
+    veilleMax: REGULATION.piratage.maxLevel,
+    coutVeille: REGULATION.piratage.levelCost,
+    renegociation: n
+      ? {
+          baisse: Math.round(n.baisse * 1000) / 10,
+          debut: n.debut,
+          fin: n.fin,
+          enCours: tick >= n.debut,
+          resistee: n.resistee,
+          chance: Math.round(chanceDeResister(state) * 100),
+        }
+      : null,
+    coutResistance: REGULATION.renegociation.resistCost,
+  };
+}
+
 /** Scène musicale d'une ville. */
 export interface VueSceneVille {
   ville: string;
@@ -1665,6 +1737,7 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
     generations: generationsDe(state),
     international: internationalDe(state, tick),
     scenesVilles: scenesDe(state),
+    regulation: regulationDe(state, tick),
     heritage: { closable: regneClosable(state, tick), bilan: bilanDeRegne(state, tick) },
     partie: {
       mode: state.config.mode,

@@ -392,6 +392,7 @@ export {
   type VueHeritage,
   type VueInternational,
   type VueSceneVille,
+  type VueRegulation,
   type VuePays,
   type VueGroupe,
   type VueInstitution,
@@ -556,3 +557,20 @@ export {
   scenesPhase,
   scoutScene,
 } from './scenes';
+
+export {
+  type PleadAction,
+  type RegulationState,
+  type Renegociation,
+  type ResistAction,
+  type SetWatchAction,
+  type VaguePiratage,
+  active as regulationActive,
+  chanceDeResister,
+  facteurRegulation,
+  initialRegulation,
+  partDeMarche,
+  pleadAllowed,
+  regulationPhase,
+  severiteEffective,
+} from './regulation';

@@ -19,6 +19,7 @@ import { Generations } from './Generations';
 import { Heritage } from './Heritage';
 import { International } from './International';
 import { Scenes } from './Scenes';
+import { Regulation } from './Regulation';
 
 /** Écrans sans état de navigation propre : un composant par identifiant. */
 export const ECRANS_SIMPLES: Partial<Record<EcranId, ComponentType>> = {
@@ -41,4 +42,5 @@ export const ECRANS_SIMPLES: Partial<Record<EcranId, ComponentType>> = {
   heritage: Heritage,
   international: International,
   scenes: Scenes,
+  regulation: Regulation,
 };
