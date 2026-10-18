@@ -865,3 +865,41 @@
   flex-wrap: wrap;
   gap: var(--sp-2);
 }
+
+/* Tactile et petits écrans : cibles d'au moins 44 px (cases à cocher d'au moins 24 px dans une ligne de 44 px) */
+@media (pointer: coarse), (max-width: 48rem) {
+  .label-time__btn,
+  .label-nav__item,
+  .label-tip__trigger,
+  .intro__skip {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .label-screen select,
+  .label-screen input[type='number'],
+  .label-screen input[type='text'] {
+    min-height: 44px;
+  }
+  .label-screen summary,
+  .label-time summary {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    cursor: pointer;
+  }
+  .label-main input[type='checkbox'],
+  .label-main input[type='radio'],
+  .label-time input[type='checkbox'] {
+    width: 1.5rem;
+    height: 1.5rem;
+    flex: none;
+  }
+  .label-main label:has(> input[type='checkbox']),
+  .label-main label:has(> input[type='radio']),
+  .label-time label:has(> input[type='checkbox']) {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    min-height: 44px;
+  }
+}

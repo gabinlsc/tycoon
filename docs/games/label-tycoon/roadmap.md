@@ -169,7 +169,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 
 - [x] `chore/label-a11y` : accessibilité (clavier, contraste AA, information hors couleur seule)
 - [x] `perf/label-performance` : budgets de performance (52 semaines < 200 ms, 10 ans < 3 s), chargement du jeu
-- [ ] `chore/label-responsive-final` : passe responsive (360, 768, 1280, 1920) et tactile
+- [x] `chore/label-responsive-final` : passe responsive (360, 768, 1280, 1920) et tactile
 - [ ] `docs/label-guide` : guide du joueur et glossaire
 - [ ] `feat/label-integration-portail` : statut « Disponible » sur l'accueil, lien vers `/label`, mise à jour de `data/games.ts` et du registre
 
@@ -188,6 +188,6 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 8     | 10    | 10     |
 | 9     | 5     | 5      |
 | 10    | 12    | 12     |
-| 11    | 5     | 2      |
+| 11    | 5     | 3      |
 
 (Mettre ce tableau à jour dans la PR qui coche une case.)

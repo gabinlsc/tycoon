@@ -122,3 +122,15 @@
     display: none;
   }
 }
+
+/* Tactile et petits écrans : liens et boutons de la barre d'au moins 44 px */
+@media (pointer: coarse), (max-width: 48rem) {
+  .navbar__logo,
+  .navbar__nav a,
+  .theme-switch {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
