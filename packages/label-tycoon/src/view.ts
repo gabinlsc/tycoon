@@ -6,6 +6,7 @@ import type { LabelState } from './state';
 import { labelScore, valuation } from './valuation';
 import { VISIBLE_ATTRIBUTES, knownRange } from './scouting';
 import { bestCertification } from './charts';
+import { type Clauses, fairAdvance } from './contracts';
 import { objectiveProgress } from './achievements';
 
 /**
@@ -45,6 +46,15 @@ export interface VueSuivi {
   source: string;
   observations: number;
   essai: boolean;
+  /** Avance habituelle pour un talent de cette notoriété (centimes), arrondie : un repère, pas une valeur exacte. */
+  avanceIndicative: number;
+  /** État de la négociation en cours avec ce talent. */
+  negociation: {
+    contres: number;
+    reaction: string;
+    contre: Clauses | null;
+    rompue: boolean;
+  } | null;
   /** Fourchettes des attributs connus. */
   fourchettes: Record<string, readonly [number, number]>;
 }
@@ -214,12 +224,17 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
       const r = knownRange(p, a, attr);
       if (r) fourchettes[attr] = r;
     }
+    const n = state.negociations.find((x) => x.artisteId === a.id);
     return [
       {
         id: a.id,
         nom: a.nomScene,
         genre: a.genre,
         source: p.source,
+        avanceIndicative: Math.round(fairAdvance(a) / 50_000) * 50_000,
+        negociation: n
+          ? { contres: n.contres, reaction: n.reaction, contre: n.contre, rompue: n.rompue }
+          : null,
         observations: p.observations,
         essai: p.essai,
         fourchettes,

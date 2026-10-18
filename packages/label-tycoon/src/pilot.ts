@@ -1,5 +1,7 @@
 import { type Rejection, type Seed } from '@tycoon/core';
 import type { LabelAction } from './actions';
+import { type Clauses, clausesValid, utilityOf } from './contracts';
+import { type Reaction, evaluateOffer, gaugeOf } from './negotiation';
 import type { GameConfig } from './config';
 import { type LabelSession, eventEngine, labelGame, newGame } from './game';
 import { describeRejection } from './strings';
@@ -13,6 +15,7 @@ export type CommandeJeu =
   | { type: 'sauvegarder' }
   | { type: 'avancer'; semaines: number; arretSurSignal?: boolean }
   | { type: 'action'; action: LabelAction }
+  | { type: 'evaluer-offre'; artisteId: number; clauses: Clauses }
   | { type: 'vue' };
 
 /** Signal simplifié pour l'interface. */
@@ -24,6 +27,7 @@ export interface SignalVue {
 
 export type ReponseJeu =
   | { type: 'vue'; vue: VueJeu; signaux: SignalVue[]; semainesJouees: number; interrompu: boolean }
+  | { type: 'reaction'; reaction: Reaction; verdict: 'accepte' | 'contre' | 'insulte' }
   | { type: 'refus'; code: string; message: string }
   | { type: 'sauvegarde'; sauvegarde: string }
   | { type: 'erreur'; message: string };
@@ -95,6 +99,24 @@ export class LabelPilot {
           : { type: 'erreur', message: 'Aucune partie en cours.' };
       case 'vue':
         return this.view();
+      case 'evaluer-offre': {
+        if (!this.session) return { type: 'erreur', message: 'Aucune partie en cours.' };
+        const state = this.session.engine.data;
+        const artist = state.artistes.find((a) => a.id === commande.artisteId);
+        if (!artist) return { type: 'erreur', message: 'Artiste introuvable.' };
+        if (!clausesValid(commande.clauses))
+          return {
+            type: 'refus',
+            code: 'clauses-invalides',
+            message: describeRejection({ code: 'clauses-invalides' }),
+          };
+        const { total } = utilityOf(artist, commande.clauses, state.label.reputation);
+        return {
+          type: 'reaction',
+          reaction: gaugeOf(total),
+          verdict: evaluateOffer(artist, commande.clauses, state.label.reputation),
+        };
+      }
       case 'avancer': {
         if (!this.session) return { type: 'erreur', message: 'Aucune partie en cours.' };
         if (this.session.engine.data.faillite.terminee) return this.view();

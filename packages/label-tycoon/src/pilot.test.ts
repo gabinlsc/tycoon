@@ -102,3 +102,56 @@ describe('pilote sans worker', () => {
     }
   });
 });
+
+describe('évaluation d’une offre', () => {
+  it('renvoie la réaction de l’artiste sans rien modifier', () => {
+    const pilot = new LabelPilot();
+    pilot.handle({ type: 'nouvelle-partie', graine: 'p7' });
+    const found = vue(
+      pilot.handle({ type: 'action', action: { type: 'reperer', source: 'plateforme' } }),
+    );
+    const id = found.vue.suivis[0]?.id ?? 0;
+    const clauses = {
+      avance: 0,
+      royaltiesArtisteBps: 1000,
+      dureeAnnees: 6,
+      exclusivite: true,
+      part360Bps: 5000,
+      clauseRachat: 0,
+    } as never;
+    const bad = pilot.handle({ type: 'evaluer-offre', artisteId: id, clauses });
+    expect(bad).toMatchObject({ type: 'reaction', reaction: 'mecontent' });
+    const generous = pilot.handle({
+      type: 'evaluer-offre',
+      artisteId: id,
+      clauses: {
+        avance: 5_000_000,
+        royaltiesArtisteBps: 9000,
+        dureeAnnees: 1,
+        exclusivite: false,
+        part360Bps: 0,
+        clauseRachat: 0,
+      } as never,
+    });
+    expect(
+      generous.type === 'reaction' && ['interesse', 'enthousiaste'].includes(generous.reaction),
+    ).toBe(true);
+    expect(
+      pilot.handle({
+        type: 'evaluer-offre',
+        artisteId: id,
+        clauses: { ...(clauses as object), dureeAnnees: 99 } as never,
+      }).type,
+    ).toBe('refus');
+    expect(pilot.handle({ type: 'evaluer-offre', artisteId: 999999, clauses }).type).toBe('erreur');
+    expect(vue(pilot.handle({ type: 'vue' })).vue.suivis[0]?.negociation).toBeNull();
+  });
+  it('expose un repère d’avance arrondi, jamais la valeur exacte', () => {
+    const pilot = new LabelPilot();
+    pilot.handle({ type: 'nouvelle-partie', graine: 'p8' });
+    const found = vue(
+      pilot.handle({ type: 'action', action: { type: 'reperer', source: 'plateforme' } }),
+    );
+    for (const s of found.vue.suivis) expect(s.avanceIndicative % 50_000).toBe(0);
+  });
+});
