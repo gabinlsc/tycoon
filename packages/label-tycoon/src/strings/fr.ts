@@ -173,6 +173,7 @@ export const fr = {
       `Le studio est saturé : ${p.max} projets en cours au maximum.`,
     'projet-introuvable': () => "Ce projet n'existe pas.",
     'projet-pas-pret': () => "Ce projet n'est pas encore terminé.",
+    'horizon-invalide': () => "Cet horizon de prévision n'existe pas.",
     'suivi-introuvable': () => "Ce talent n'est pas dans ta liste de suivi.",
     'essai-deja-fait': () => 'Tu as déjà fait passer un essai à ce talent.',
   },
