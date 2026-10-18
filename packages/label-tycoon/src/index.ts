@@ -369,3 +369,4 @@ export {
   buildView,
 } from './view';
 export { GLOSSAIRE } from './strings';
+export { type Estimate, type EstimateInput, estimateRelease } from './estimate';

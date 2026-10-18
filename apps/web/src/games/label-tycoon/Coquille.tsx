@@ -9,6 +9,7 @@ import { QG } from './QG';
 import { Negociation } from './Negociation';
 import { Reperage } from './Reperage';
 import { Roster } from './Roster';
+import { Studio } from './Studio';
 import { NouvellePartie } from './NouvellePartie';
 import { useRaccourcis } from './Raccourcis';
 
@@ -101,6 +102,8 @@ export function Coquille() {
           ) : (
             <Roster ouvrir={setFiche} />
           )
+        ) : ecran === 'studio' ? (
+          <Studio />
         ) : ecran === 'reperage' ? (
           negociation !== null ? (
             <Negociation artisteId={negociation} retour={() => setNegociation(null)} />
