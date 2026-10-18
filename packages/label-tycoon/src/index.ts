@@ -233,3 +233,4 @@ export {
   unitCost,
 } from './pressing';
 export { livePhase } from './live-phase';
+export { type Concert, type ConcertAction, concertsWeek, fillRate } from './concerts';
