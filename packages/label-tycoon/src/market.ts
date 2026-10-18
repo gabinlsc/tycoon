@@ -1,9 +1,11 @@
-import { type Phase, clamp, lerp, sin } from '@tycoon/core';
-import { TRENDS } from './balance/market';
+import { type Phase, type Rng, clamp, lerp, sin } from '@tycoon/core';
+import { SUBGENRES, TRENDS } from './balance/market';
+import { GENRE_IDS } from './content/genres';
+import { fr } from './strings/fr';
 import type { LabelSignal } from './pipeline';
 import type { LabelState } from './state';
 import { MARKET, START_CREDIBILITY } from './balance/market';
-import { GENRES, GENRE_IDS } from './content/genres';
+import { GENRES } from './content/genres';
 
 /** Marché d'un genre à un instant donné. */
 export interface GenreMarket {
@@ -79,9 +81,11 @@ export const marketPhase: Phase<LabelState, LabelSignal> = {
   run(state, ctx) {
     const rng = ctx.rng('marche');
     const volatility = state.config.difficulty.marketVolatility;
+    spawnSubgenre(state, rng, ctx.tick);
+    ageSubgenres(state, ctx.tick, ctx.emit);
     genreKeys(state.marche).forEach((id, index) => {
       const genre = state.marche.genres[id];
-      if (!genre) return;
+      if (!genre || state.sousGenres.some((s) => s.id === id)) return;
       genre.bruit = clamp(
         genre.bruit * (1 - TRENDS.noiseReversion) + rng.gaussian(0, TRENDS.noiseSd * volatility),
         -TRENDS.noiseLimit,
@@ -94,3 +98,83 @@ export const marketPhase: Phase<LabelState, LabelSignal> = {
     });
   },
 };
+
+export interface SousGenre {
+  id: string;
+  nom: string;
+  parent: string;
+  naissance: number;
+  /** Durée de vie totale en semaines. */
+  duree: number;
+  pic: number;
+  /** Premier label à y avoir signé un artiste (`joueur`, `rival:n`) ou `null`. */
+  premier: string | null;
+}
+
+/** Popularité d'un sous-genre : parabole qui monte, culmine à mi-vie et retombe. */
+export function subgenrePopularity(sub: SousGenre, tick: number): number {
+  const x = clamp((tick - sub.naissance) / sub.duree, 0, 1);
+  return Math.round(sub.pic * 4 * x * (1 - x) * 10) / 10;
+}
+
+/** Naissance éventuelle d'un sous-genre fictif à partir d'un genre parent. */
+function spawnSubgenre(state: LabelState, rng: Rng, tick: number): void {
+  if (state.sousGenres.length >= SUBGENRES.maxAlive) return;
+  if (!rng.chance(SUBGENRES.birthChance)) return;
+  const parent = rng.pick(GENRE_IDS);
+  const prefix = rng.pick(SUBGENRES.prefixes);
+  const id = `sg-${state.nextId}`;
+  state.nextId += 1;
+  state.sousGenres.push({
+    id,
+    nom: `${prefix} ${fr.genres[parent]}`,
+    parent,
+    naissance: tick,
+    duree: rng.int(SUBGENRES.lifespan.min, SUBGENRES.lifespan.max),
+    pic: rng.int(SUBGENRES.peak.min, SUBGENRES.peak.max),
+    premier: null,
+  });
+  const audience = state.marche.genres[parent]?.audience ?? 0;
+  state.marche.genres[id] = {
+    popularite: 0,
+    base: 0,
+    bruit: 0,
+    audience: Math.round(audience * SUBGENRES.audienceShare),
+  };
+  state.label.credibilite[id] = 0;
+}
+
+/** Met à jour la popularité des sous-genres vivants et retire ceux qui ont disparu. */
+function ageSubgenres(state: LabelState, tick: number, emit: (s: LabelSignal) => void): void {
+  const alive: SousGenre[] = [];
+  const removed = new Set<string>();
+  for (const sub of state.sousGenres) {
+    const genre = state.marche.genres[sub.id];
+    if (tick - sub.naissance >= sub.duree || !genre) {
+      removed.add(sub.id);
+      emit({ kind: 'sous-genre-disparu', payload: { id: sub.id } });
+      continue;
+    }
+    if (tick === sub.naissance) emit({ kind: 'sous-genre-ne', payload: { id: sub.id } });
+    genre.popularite = subgenrePopularity(sub, tick);
+    alive.push(sub);
+  }
+  state.sousGenres = alive;
+  if (removed.size > 0)
+    state.marche.genres = Object.fromEntries(
+      Object.entries(state.marche.genres).filter(([id]) => !removed.has(id)),
+    );
+}
+
+/** Premier signataire d'un sous-genre : bonus de crédibilité pour le joueur. */
+export function claimSubgenre(state: LabelState, genreId: string, owner: string): boolean {
+  const sub = state.sousGenres.find((s) => s.id === genreId);
+  if (!sub || sub.premier !== null) return false;
+  sub.premier = owner;
+  if (owner === 'joueur')
+    state.label.credibilite[genreId] = Math.min(
+      100,
+      (state.label.credibilite[genreId] ?? 0) + SUBGENRES.firstSignerCredibility,
+    );
+  return true;
+}

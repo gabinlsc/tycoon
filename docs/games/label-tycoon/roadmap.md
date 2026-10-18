@@ -57,7 +57,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `feat/label-classements` : Top 50 singles et albums, bruit de marché, historique
 - [x] `feat/label-certifications` : or, platine, diamant
 - [x] `feat/label-tendances` : popularité des genres (marche aléatoire, retour à la moyenne, cycles)
-- [ ] `feat/label-sous-genres` : sous-genres émergents et disparaissant, avantage du premier signataire
+- [x] `feat/label-sous-genres` : sous-genres émergents et disparaissant, avantage du premier signataire
 - [ ] `feat/label-veille` : études de marché, prévisions bruitées
 
 ## Phase 4 : couches de profondeur
@@ -180,7 +180,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 0     | 1     | 1      |
 | 1     | 13    | 13     |
 | 2     | 6     | 6      |
-| 3     | 18    | 16     |
+| 3     | 18    | 17     |
 | 4     | 16    | 0      |
 | 5     | 14    | 0      |
 | 6     | 14    | 0      |
