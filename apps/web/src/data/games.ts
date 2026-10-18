@@ -42,10 +42,11 @@ export const GAMES = [
     stats: { profit: 4, difficulty: 3, depth: 5 },
     tagline: 'Signez les voix de demain avant que le concurrent ne les entende.',
     pitch:
-      "Tu pars d'un petit studio et d'un carnet d'adresses vide. Repère les talents, signe-les au bon moment, finance leurs albums et pilote leurs carrières sur dix ans. Un tube peut tout changer, un flop aussi.",
+      "Tu pars d'un petit studio et d'un carnet d'adresses vide. Repère les talents, signe-les au bon moment, finance leurs albums et pilote leurs carrières, puis fais grandir ton label jusqu'au conglomérat et à l'institution. Un tube peut tout changer, un flop aussi.",
     genre: 'Industrie musicale',
-    status: 'En développement',
-    mechanic: 'Signer des artistes, financer leurs albums, piloter leurs carrières sur dix ans.',
+    status: 'Disponible',
+    mechanic:
+      'Signer des artistes, financer leurs albums, piloter leurs carrières, bâtir un empire musical.',
     playtime: '25 à 40 min',
   },
   {
