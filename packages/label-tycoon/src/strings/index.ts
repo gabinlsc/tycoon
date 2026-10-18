@@ -4,6 +4,7 @@ import { type Strings, fr } from './fr';
 
 export { fr, type Strings };
 export { EVENT_TEXTS, type EventText, fillTemplate } from './evenements';
+export { FIL_TEMPLATES, type FilTemplate } from './fil';
 
 /** Chaînes actives. Une seule langue pour la V1 ; l'indirection prépare la traduction. */
 export const strings: Strings = fr;

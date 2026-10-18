@@ -15,4 +15,6 @@ export interface TickContext<S extends Signal = Signal> {
   rng(stream: string): Rng;
   /** Émet un signal pour l'interface. */
   emit(signal: S): void;
+  /** Signaux émis depuis le début du tick courant (le fil d'actus s'en nourrit). */
+  signalsThisTick?(): readonly S[];
 }

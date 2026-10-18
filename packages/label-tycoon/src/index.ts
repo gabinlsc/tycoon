@@ -332,3 +332,5 @@ export {
   ceremonyWeek,
   drawWinner,
 } from './ceremonies';
+export { FIL_LIMIT, type Actu, composeActu, filPhase, filVars } from './fil';
+export { FIL_TEMPLATES, type FilTemplate } from './strings';

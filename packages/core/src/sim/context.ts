@@ -21,6 +21,7 @@ export function openStreams<S extends Signal>(
   signals: S[],
 ): StreamAccess<S> {
   const used = new Map<string, Rng>();
+  const start = signals.length;
   const ctx: TickContext<S> = {
     tick,
     rng(stream) {
@@ -34,6 +35,9 @@ export function openStreams<S extends Signal>(
     },
     emit(signal) {
       signals.push(signal);
+    },
+    signalsThisTick() {
+      return signals.slice(start);
     },
   };
   return {
