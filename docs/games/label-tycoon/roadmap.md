@@ -117,7 +117,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 
 - [x] `feat/label-ecran-calendrier` : calendrier des sorties
 - [x] `feat/label-ecran-classements` : classements et certifications
-- [ ] `feat/label-ecran-marche` : marché et prévisions
+- [x] `feat/label-ecran-marche` : marché et prévisions
 - [ ] `feat/label-ecran-concurrence` : concurrence
 - [ ] `feat/label-ecran-finances` : finances, prêts, investisseurs
 - [ ] `feat/label-ecran-personnel` : personnel
@@ -184,7 +184,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 4     | 16    | 16     |
 | 5     | 14    | 14     |
 | 6     | 14    | 14     |
-| 7     | 13    | 2      |
+| 7     | 13    | 3      |
 | 8     | 10    | 0      |
 | 9     | 5     | 0      |
 | 10    | 12    | 0      |

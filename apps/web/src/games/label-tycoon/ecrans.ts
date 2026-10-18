@@ -12,6 +12,7 @@ export const ECRANS = [
     description: 'Sorties à venir, les tiennes et celles des rivaux',
   },
   { id: 'classements', titre: 'Classements', description: 'Top 50 et certifications' },
+  { id: 'marche', titre: 'Marché', description: 'Genres, tendances et prévisions' },
 ] as const;
 
 export type EcranId = (typeof ECRANS)[number]['id'];

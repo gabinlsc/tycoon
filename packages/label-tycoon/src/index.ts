@@ -365,6 +365,8 @@ export {
   type VueDecision,
   type VueCertification,
   type VueEcheance,
+  type VueGenre,
+  type VuePrevision,
   type VueHistoriqueClassement,
   type VueLigneClassement,
   type VueSortieCalendrier,

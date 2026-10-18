@@ -50,7 +50,7 @@ describe('coquille du jeu', () => {
     fireEvent.keyDown(input, { key: '1' });
     expect(screen.getByRole('heading', { name: 'Repérage' })).toBeTruthy();
     input.remove();
-    fireEvent.keyDown(window, { key: '9' });
+    fireEvent.keyDown(window, { key: '0' });
     expect(screen.getByRole('heading', { name: 'Repérage' })).toBeTruthy();
   });
 });
@@ -61,6 +61,6 @@ describe('raccourcis', () => {
     expect(ecranDeTouche('2')).toBe('roster');
     expect(ecranDeTouche('0')).toBeNull();
     expect(ecranDeTouche('x')).toBeNull();
-    expect(ecranDeTouche('9')).toBeNull();
+    expect(ecranDeTouche('0')).toBeNull();
   });
 });
