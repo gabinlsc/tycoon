@@ -3,6 +3,7 @@ import type { TierId } from './balance';
 import type { Artist } from './artists';
 import type { FinanceState } from './finance';
 import type { Contrat } from './contracts';
+import type { Negociation } from './negotiation';
 import type { Denicheur, Prospect } from './scouting';
 import type { GameConfig } from './config';
 import type { MarketState } from './market';
@@ -40,6 +41,8 @@ export interface LabelState {
   denicheurs: Denicheur[];
   /** Contrats en cours : au plus un par artiste. */
   contrats: Contrat[];
+  /** Négociations en cours ou rompues, une par artiste. */
+  negociations: Negociation[];
   /** Prochain identifiant libre, partagé par toutes les entités (artistes, sorties, contrats…). */
   nextId: number;
 }

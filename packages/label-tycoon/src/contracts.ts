@@ -115,21 +115,33 @@ export const sign: ActionHandler<LabelState, SignAction, LabelSignal> = {
     return null;
   },
   apply(state, action, ctx) {
-    const artist = state.artistes.find((a) => a.id === action.artisteId);
-    if (!artist) return;
-    spend(state, 'avances', action.clauses.avance);
-    artist.employeur = 'joueur';
-    state.suivis = state.suivis.filter((p) => p.artisteId !== artist.id);
-    state.contrats.push({
-      id: newId(state),
-      artisteId: artist.id,
-      clauses: { ...action.clauses },
-      signeLe: ctx.tick,
-      echeance: ctx.tick + action.clauses.dureeAnnees * 52,
-    });
-    ctx.emit({ kind: 'artiste-signe', payload: { artisteId: artist.id } });
+    concludeSigning(state, action.artisteId, action.clauses, ctx.tick, ctx.emit);
   },
 };
+
+/** Conclut la signature : avance débitée, artiste lié au label, contrat créé, négociation close. */
+export function concludeSigning(
+  state: LabelState,
+  artisteId: number,
+  clauses: Clauses,
+  tick: number,
+  emit: (signal: { kind: string; payload: Record<string, unknown> }) => void,
+): void {
+  const artist = state.artistes.find((a) => a.id === artisteId);
+  if (!artist) return;
+  spend(state, 'avances', clauses.avance);
+  artist.employeur = 'joueur';
+  state.suivis = state.suivis.filter((p) => p.artisteId !== artist.id);
+  state.negociations = state.negociations.filter((n) => n.artisteId !== artist.id);
+  state.contrats.push({
+    id: newId(state),
+    artisteId: artist.id,
+    clauses: { ...clauses },
+    signeLe: tick,
+    echeance: tick + clauses.dureeAnnees * 52,
+  });
+  emit({ kind: 'artiste-signe', payload: { artisteId: artist.id } });
+}
 
 /** Part des royalties revenant au label pour un montant brut. */
 export function labelShare(clauses: Clauses, gross: Cents): Cents {
