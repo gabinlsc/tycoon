@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAccount, useGameSave } from '../../accounts/AccountContext';
 import { Button } from '../../components/arcade/ui/Button';
 import { useLabel } from './LabelContext';
+import { exporterFichier, importerFichier, nomFichier, validerPartie } from './sauvegardes/fichier';
 import { LIBELLES_EMPLACEMENT, resumeSauvegarde, sauvegardeAutoDue } from './sauvegardes/regles';
 import {
   EMPLACEMENTS,
@@ -115,6 +116,13 @@ export function Persistance({ stockage: injecte }: Props) {
   const charger = async (emplacement: Emplacement) => {
     const s = contenu[emplacement];
     if (!s) return;
+    const verdict = validerPartie(s.sauvegarde);
+    if (!verdict.ok) {
+      setMessage(
+        `${LIBELLES_EMPLACEMENT[emplacement]} est illisible (${verdict.erreur}). Ta partie en cours n’est pas touchée.`,
+      );
+      return;
+    }
     const reponse = await envoyer({ type: 'charger', sauvegarde: s.sauvegarde });
     if (reponse.type === 'erreur') {
       setMessage(`Cette sauvegarde est illisible : ${reponse.message}`);
@@ -122,6 +130,38 @@ export function Persistance({ stockage: injecte }: Props) {
     }
     derniereAuto.current = s.semaine;
     setMessage(`${LIBELLES_EMPLACEMENT[emplacement]} chargée.`);
+  };
+
+  const exporter = (emplacement: Emplacement) => {
+    const s = contenu[emplacement];
+    if (!s) return;
+    const url = URL.createObjectURL(new Blob([exporterFichier(s)], { type: 'application/json' }));
+    const lien = document.createElement('a');
+    lien.href = url;
+    lien.download = nomFichier(s);
+    lien.click();
+    URL.revokeObjectURL(url);
+    setMessage(`${LIBELLES_EMPLACEMENT[emplacement]} exportée.`);
+  };
+
+  const importer = async (emplacement: Emplacement, fichier: File | undefined) => {
+    if (!compte || !fichier) return;
+    const texte = await new Promise<string>((resolve, reject) => {
+      const lecteur = new FileReader();
+      lecteur.onload = () => resolve(String(lecteur.result));
+      lecteur.onerror = () => reject(lecteur.error ?? new Error('lecture impossible'));
+      lecteur.readAsText(fichier);
+    }).catch(() => null);
+    if (texte === null) return setMessage('Import impossible : le fichier n’a pas pu être lu.');
+    const lu = importerFichier(texte);
+    if (!lu.ok) return setMessage(`Import refusé : ${lu.erreur}.`);
+    try {
+      await stockage.ecrire(compte, emplacement, lu.sauvegarde);
+    } catch {
+      return setMessage('Import impossible : le stockage du navigateur est refusé ou plein.');
+    }
+    await rafraichir();
+    setMessage(`Partie importée dans ${LIBELLES_EMPLACEMENT[emplacement].toLowerCase()}.`);
   };
 
   const effacer = async (emplacement: Emplacement) => {
@@ -142,12 +182,13 @@ export function Persistance({ stockage: injecte }: Props) {
     ) : null;
   }
 
-  const lignes = vue ? EMPLACEMENTS : EMPLACEMENTS.filter((e) => contenu[e]);
-  if (!vue && lignes.length === 0) return null;
+  const lignes = EMPLACEMENTS.filter(
+    (e) => vue || contenu[e] || (EMPLACEMENTS_MANUELS as readonly string[]).includes(e),
+  );
 
   return (
     <details className="label-save" open={!vue}>
-      <summary>{vue ? 'Sauvegardes' : 'Reprendre une partie'}</summary>
+      <summary>{vue ? 'Sauvegardes' : 'Reprendre ou importer une partie'}</summary>
       <ul className="label-list">
         {lignes.map((e) => {
           const s = contenu[e];
@@ -173,12 +214,28 @@ export function Persistance({ stockage: injecte }: Props) {
                   <Button type="button" tone="green" onClick={() => void charger(e)}>
                     Charger {LIBELLES_EMPLACEMENT[e].toLowerCase()}
                   </Button>{' '}
+                  <Button type="button" tone="ghost" onClick={() => exporter(e)}>
+                    Exporter {LIBELLES_EMPLACEMENT[e].toLowerCase()}
+                  </Button>{' '}
                   {manuel ? (
                     <Button type="button" tone="ghost" onClick={() => void effacer(e)}>
                       Effacer {LIBELLES_EMPLACEMENT[e].toLowerCase()}
                     </Button>
                   ) : null}
                 </>
+              ) : null}
+              {manuel ? (
+                <label className="label-field">
+                  Importer un fichier dans {LIBELLES_EMPLACEMENT[e].toLowerCase()}
+                  <input
+                    type="file"
+                    accept="application/json,.json"
+                    onChange={(ev) => {
+                      void importer(e, ev.target.files?.[0]);
+                      ev.target.value = '';
+                    }}
+                  />
+                </label>
               ) : null}
             </li>
           );

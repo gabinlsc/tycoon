@@ -14,7 +14,8 @@
     "@tycoon/label-tycoon": "workspace:*",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.30.6"
+    "react-router-dom": "^6.30.6",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@testing-library/react": "^16.0.0",

@@ -3,10 +3,12 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-libra
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { AccountProvider, useAccount } from '../../accounts/AccountContext';
+import { LabelPilot } from '@tycoon/label-tycoon';
 import { Coquille } from './Coquille';
 import { creerMoteurLocal } from './engine/local';
 import { LabelProvider } from './LabelContext';
 import { Persistance } from './Persistance';
+import { exporterFichier } from './sauvegardes/fichier';
 import { PERIODE_AUTO, resumeSauvegarde, sauvegardeAutoDue } from './sauvegardes/regles';
 import { type SauvegardeLabel, creerStockageMemoire } from './sauvegardes/stockage';
 
@@ -138,5 +140,68 @@ describe('sauvegarde de la partie', () => {
     expect(screen.getByRole('button', { name: 'Oui, recommencer une partie' })).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: 'Annuler' }));
     expect(screen.getByRole('button', { name: 'Recommencer' })).toBeTruthy();
+  });
+
+  it('importe un fichier valide puis le charge', async () => {
+    const pilote = new LabelPilot();
+    pilote.handle({ type: 'nouvelle-partie', graine: 'import' });
+    const r = pilote.handle({ type: 'sauvegarder' });
+    if (r.type !== 'sauvegarde') throw new Error('sauvegarde attendue');
+    const texte = exporterFichier({
+      version: 1,
+      sauvegarde: r.sauvegarde,
+      semaine: 0,
+      label: 'Importé',
+      palier: '',
+      tresorerie: 0,
+      enregistreLe: '',
+    });
+    render(<Jeu stockage={creerStockageMemoire()} />);
+    await connecter();
+    fireEvent.click(await screen.findByText('Reprendre ou importer une partie'));
+    const champ = (await screen.findByLabelText(
+      /Importer un fichier dans emplacement 1/,
+    )) as HTMLInputElement;
+    fireEvent.change(champ, {
+      target: { files: [new File([texte], 'partie.json', { type: 'application/json' })] },
+    });
+    await screen.findByText(/Partie importée dans emplacement 1/);
+    fireEvent.click(await screen.findByRole('button', { name: /Charger emplacement 1/ }));
+    await screen.findByRole('navigation', { name: 'Écrans du jeu' });
+  });
+
+  it('refuse un fichier abîmé sans bloquer la partie', async () => {
+    render(<Jeu stockage={creerStockageMemoire()} />);
+    await connecter();
+    await demarrer();
+    fireEvent.click(screen.getByText('Sauvegardes'));
+    const champ = (await screen.findByLabelText(
+      /Importer un fichier dans emplacement 3/,
+    )) as HTMLInputElement;
+    const fichier = new File(['{ pas du json'], 'abime.json', { type: 'application/json' });
+    fireEvent.change(champ, { target: { files: [fichier] } });
+    await screen.findByText(/Import refusé : ce fichier n’est pas du JSON valide/);
+    expect(screen.getByLabelText('Trésorerie')).toBeTruthy();
+  });
+
+  it('signale un emplacement corrompu sans toucher à la partie en cours', async () => {
+    const base = creerStockageMemoire();
+    // Même stockage, mais ce que l'on relit est tronqué : comme un fichier abîmé sur disque.
+    const abime: typeof base = {
+      ...base,
+      lister: async (compte) => {
+        const out = await base.lister(compte);
+        for (const s of Object.values(out)) s.sauvegarde = s.sauvegarde.slice(0, 50);
+        return out;
+      },
+    };
+    render(<Jeu stockage={abime} />);
+    await connecter();
+    await demarrer();
+    fireEvent.click(screen.getByText('Sauvegardes'));
+    fireEvent.click(await screen.findByRole('button', { name: /Sauvegarder dans emplacement 1/ }));
+    fireEvent.click(await screen.findByRole('button', { name: /Charger emplacement 1/ }));
+    await screen.findByText(/Emplacement 1 est illisible/);
+    expect(screen.getByLabelText('Trésorerie')).toBeTruthy();
   });
 });
