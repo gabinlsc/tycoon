@@ -68,3 +68,20 @@ export const BANKRUPTCY = {
   /** Prix de vente d'un contrat à un rival : valeur de l'avance juste × années restantes × ce facteur. */
   contractSaleFactor: 1.5,
 } as const;
+
+/** Fiscalité (GDD, 5.11) : impôt annuel sur les bénéfices, optimisation et contrôle. */
+export type TaxStrategy = 'prudente' | 'optimisee' | 'agressive';
+
+export const TAX = {
+  /** Taux légal sur le bénéfice (points de base). */
+  legalRateBps: 2500,
+  strategies: {
+    prudente: { rateBps: 2500, auditChance: 0 },
+    optimisee: { rateBps: 1800, auditChance: 0.08 },
+    agressive: { rateBps: 1000, auditChance: 0.25 },
+  } as Readonly<Record<TaxStrategy, { rateBps: number; auditChance: number }>>,
+  /** Redressement : impôt éludé × ce facteur (pénalités comprises). */
+  auditPenaltyFactor: 1.5,
+  /** Réputation perdue après un contrôle sanctionné. */
+  auditReputationLoss: 4,
+} as const;
