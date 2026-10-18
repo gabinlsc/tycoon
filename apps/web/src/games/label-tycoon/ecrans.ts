@@ -18,6 +18,7 @@ export const ECRANS = [
   { id: 'personnel', titre: 'Personnel', description: 'Équipe et délégation' },
   { id: 'batiments', titre: 'Bâtiments', description: 'Studio, bureaux et salles' },
   { id: 'tournees', titre: 'Tournées', description: 'Concerts, tournées et festivals' },
+  { id: 'parametres', titre: 'Paramètres', description: 'Auto-pauses et raccourcis' },
 ] as const;
 
 export type EcranId = (typeof ECRANS)[number]['id'];
