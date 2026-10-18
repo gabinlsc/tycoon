@@ -1,6 +1,7 @@
 import type { GameMode } from '../config';
 import type { TierId } from '../balance/tiers';
 import type { StaffRole, StaffTrait } from '../balance/staff';
+import type { BuildingId } from '../balance/buildings';
 import type { BaseGenreId, GenreFamily } from '../content/genres';
 import type { TraitId } from '../content/traits';
 import type { CareerPhase } from '../artists';
@@ -96,6 +97,29 @@ export const fr = {
     'europe-sud': 'Europe du Sud',
     latine: 'Amérique latine',
   } satisfies Record<Origin, string>,
+
+  batiments: {
+    studio: {
+      nom: 'Studio d’enregistrement',
+      effet: 'Relève la qualité maximale des sorties et le nombre de projets simultanés.',
+    },
+    repetition: {
+      nom: 'Salle de répétition',
+      effet: 'Tes artistes récupèrent plus vite de la fatigue.',
+    },
+    bureaux: {
+      nom: 'Bureaux',
+      effet: 'Chaque niveau accueille trois membres d’équipe de plus.',
+    },
+    pressage: {
+      nom: 'Usine de pressage',
+      effet: 'Permet de commander du physique et d’en réduire le coût.',
+    },
+    concert: {
+      nom: 'Salle de concert',
+      effet: 'Ta propre salle : plus de recettes sur les concerts.',
+    },
+  } satisfies Record<BuildingId, { nom: string; effet: string }>,
 
   rolesPersonnel: {
     producteur: 'Producteur',

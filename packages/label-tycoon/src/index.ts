@@ -367,6 +367,7 @@ export {
   type VueConcurrence,
   type VueEcheance,
   type VueFinancesDetail,
+  type VueBatiment,
   type VueLigneFinance,
   type VuePersonnel,
   type VueOffreRachat,
