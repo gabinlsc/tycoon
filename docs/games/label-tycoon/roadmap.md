@@ -107,7 +107,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `feat/label-ui-pochettes` : pochettes de vinyles générées en SVG
 - [x] `feat/label-ecran-qg` : QG (tableau de bord)
 - [x] `feat/label-ecran-roster` : Roster
-- [ ] `feat/label-ecran-fiche-artiste` : fiche artiste
+- [x] `feat/label-ecran-fiche-artiste` : fiche artiste
 - [ ] `feat/label-ecran-reperage` : repérage
 - [ ] `feat/label-ecran-negociation` : négociation, jauge de réaction, tampon encreur
 - [ ] `feat/label-ecran-studio` : studio, console au trait, estimation de qualité
@@ -183,7 +183,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 3     | 18    | 18     |
 | 4     | 16    | 16     |
 | 5     | 14    | 14     |
-| 6     | 14    | 9      |
+| 6     | 14    | 10     |
 | 7     | 13    | 0      |
 | 8     | 10    | 0      |
 | 9     | 5     | 0      |

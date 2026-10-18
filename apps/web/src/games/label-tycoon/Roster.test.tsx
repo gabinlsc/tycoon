@@ -16,6 +16,8 @@ const a = (id: number, nom: string, over: Partial<VueArtiste> = {}): VueArtiste 
   genreNom: 'Rap',
   phase: 'montee',
   phaseNom: 'En montée',
+  ville: 'Paris',
+  traits: [],
   age: 22,
   employeur: 'joueur',
   notoriete: 40,
