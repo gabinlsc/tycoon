@@ -37,7 +37,7 @@ export {
   type ScoutSource,
   type SourceProfile,
 } from './scouting';
-export { RIVALS, type RivalStyle } from './rivals';
+export { RIVALS, RIVAL_RELEASES, type RivalStyle } from './rivals';
 export { QUALITY } from './quality';
 export {
   CLIPS,

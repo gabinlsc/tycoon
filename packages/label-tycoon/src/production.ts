@@ -12,6 +12,7 @@ import { labelShare } from './contracts';
 import { canAfford, earn, spend } from './finance';
 import { fansGained, viralStep } from './viral';
 import { weeklyStreams } from './formulas/streams';
+import { collisionFactor } from './calendar';
 import { firstWeekStreams, hitPotential, marketingFactor } from './formulas/streams';
 import { trendMultiplier } from './market';
 import { trackQuality } from './formulas/quality';
@@ -153,7 +154,10 @@ export const releaseProject: ActionHandler<LabelState, ReleaseAction, LabelSigna
         marketingFactor(0),
       ).value;
       p.hit = hit;
-      p.s1 = Math.round(firstWeekStreams(artist.fanbase, market?.audience ?? 0, hit));
+      p.s1 = Math.round(
+        firstWeekStreams(artist.fanbase, market?.audience ?? 0, hit) *
+          collisionFactor(state, artist.genre, ctx.tick),
+      );
       artist.hype = Math.min(100, artist.hype + 10 + (p.clip === 'gros' ? 10 : 0));
     }
     ctx.emit({ kind: 'sortie', payload: { projetId: p.id, artisteId: p.artisteId } });
