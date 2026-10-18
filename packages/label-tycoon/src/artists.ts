@@ -81,6 +81,8 @@ export interface Artist {
   affinite: number;
   /** « libre », « joueur » ou l'identifiant d'un rival (« rival:3 »). */
   employeur: string;
+  /** Semaines de repos forcé restantes (après un burnout) : pas de concert ni de tournée. */
+  repos: number;
 }
 
 /** Notoriété (0-100), échelle logarithmique de la fanbase : 0 sans fan, 100 à `NOTORIETY_MAX_FANS`. */
@@ -261,6 +263,7 @@ export function generateArtist(
     rue: score(rng.gaussian(STREET_CRED_MEAN[family], STREET_CRED_SD)),
     affinite: DYNAMIC_START.affinite,
     employeur: 'libre',
+    repos: 0,
   };
 }
 

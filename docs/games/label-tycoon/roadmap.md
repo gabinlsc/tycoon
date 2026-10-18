@@ -67,7 +67,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `feat/label-batiments` : studio, salle de répétition, bureaux, effets et entretien
 - [x] `feat/label-pressage` : physique (vinyles, CD), stock, invendus
 - [x] `feat/label-concerts` : salles, billetterie, présence scénique
-- [ ] `feat/label-tournees` : tournées, fatigue, burnout, merch et stock
+- [x] `feat/label-tournees` : tournées, fatigue, burnout, merch et stock
 - [ ] `feat/label-festivals` : candidatures et cachets (+)
 - [ ] `feat/label-synchro` : offres de synchronisation
 - [ ] `feat/label-contrat-360` : parts sur concerts, merch, synchro
@@ -181,7 +181,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 1     | 13    | 13     |
 | 2     | 6     | 6      |
 | 3     | 18    | 18     |
-| 4     | 16    | 5      |
+| 4     | 16    | 6      |
 | 5     | 14    | 0      |
 | 6     | 14    | 0      |
 | 7     | 13    | 0      |

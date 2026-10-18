@@ -75,6 +75,7 @@ export const artistsPhase: Phase<LabelState, LabelSignal> = {
     const yearEnd = calendarOf(ctx.tick).isYearEnd;
     for (const artist of state.artistes) {
       driftArtist(artist);
+      if (artist.repos > 0) artist.repos -= 1;
       artist.fatigue = Math.max(0, artist.fatigue - rehearsalRecovery(state));
       stepSkills(artist);
       updatePhase(artist);
