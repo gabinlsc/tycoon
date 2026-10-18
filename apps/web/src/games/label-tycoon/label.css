@@ -530,3 +530,61 @@
   align-items: center;
   gap: var(--sp-3);
 }
+
+/* Repérage */
+.label-sources,
+.label-prospects {
+  display: grid;
+  gap: var(--sp-3);
+  margin: 0 0 var(--sp-4);
+  padding: 0;
+  list-style: none;
+}
+.label-sources li,
+.label-prospect {
+  display: grid;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4);
+  border: var(--border) solid var(--outline);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+}
+.label-sources small,
+.label-prospect small {
+  color: var(--text-soft);
+  font-weight: 700;
+}
+.label-prospect__ranges {
+  display: grid;
+  gap: var(--sp-1);
+}
+.label-prospect__hidden {
+  margin: 0;
+  color: var(--text-soft);
+  font-weight: 700;
+}
+.label-prospect__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+.label-range {
+  display: grid;
+  grid-template-columns: 6rem 1fr 4rem;
+  align-items: center;
+  gap: var(--sp-2);
+  font-weight: 800;
+}
+.label-range__track {
+  position: relative;
+  height: 0.9rem;
+  border: 2px solid var(--outline);
+  border-radius: 999px;
+  background: var(--surface);
+  overflow: hidden;
+}
+.label-range__track > span {
+  position: absolute;
+  inset-block: 0;
+  background: var(--blue);
+}
