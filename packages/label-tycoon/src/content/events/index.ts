@@ -1,8 +1,13 @@
 import { ARTIST_EVENTS } from './artistes';
+import { MARKET_EVENTS } from './marche';
 import { PRODUCTION_EVENTS } from './production';
 import type { LabelEvent } from './helpers';
 
 /** Tous les événements du jeu, par catégorie. */
-export const LABEL_EVENTS: readonly LabelEvent[] = [...ARTIST_EVENTS, ...PRODUCTION_EVENTS];
+export const LABEL_EVENTS: readonly LabelEvent[] = [
+  ...ARTIST_EVENTS,
+  ...PRODUCTION_EVENTS,
+  ...MARKET_EVENTS,
+];
 
 export type { LabelEvent };

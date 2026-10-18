@@ -64,6 +64,25 @@ export const applyFestival: ActionHandler<LabelState, ApplyFestivalAction, Label
   },
 };
 
+/** Ouvre `count` festivals pour l'été de l'année en cours. */
+export function openFestivals(state: LabelState, tick: number, rng: Rng, count: number): void {
+  const year = Math.floor(tick / 52);
+  for (let i = 0; i < count; i += 1) {
+    const min = rng.int(FESTIVALS.minNotoriety.min, FESTIVALS.minNotoriety.max);
+    state.festivals.push({
+      id: state.nextId,
+      nom: `${rng.pick(FESTIVALS.names)} ${rng.pick(FESTIVALS.suffixes)}`,
+      semaine: year * 52 + rng.int(FESTIVALS.summer.min, FESTIVALS.summer.max),
+      notorieteMin: min,
+      cachet: FESTIVALS.baseFee + min * FESTIVALS.feePerNotoriety,
+      artisteId: null,
+      tete: false,
+      tenu: false,
+    });
+    state.nextId += 1;
+  }
+}
+
 /** Ouvre les candidatures chaque année et tient les festivals de la semaine. */
 export function festivalsWeek(
   state: LabelState,
@@ -71,23 +90,7 @@ export function festivalsWeek(
   rng: Rng,
   emit: (s: LabelSignal) => void,
 ): void {
-  if (tick % 52 === FESTIVALS.openWeek) {
-    const year = Math.floor(tick / 52);
-    for (let i = 0; i < FESTIVALS.perYear; i += 1) {
-      const min = rng.int(FESTIVALS.minNotoriety.min, FESTIVALS.minNotoriety.max);
-      state.festivals.push({
-        id: state.nextId,
-        nom: `${rng.pick(FESTIVALS.names)} ${rng.pick(FESTIVALS.suffixes)}`,
-        semaine: year * 52 + rng.int(FESTIVALS.summer.min, FESTIVALS.summer.max),
-        notorieteMin: min,
-        cachet: FESTIVALS.baseFee + min * FESTIVALS.feePerNotoriety,
-        artisteId: null,
-        tete: false,
-        tenu: false,
-      });
-      state.nextId += 1;
-    }
-  }
+  if (tick % 52 === FESTIVALS.openWeek) openFestivals(state, tick, rng, FESTIVALS.perYear);
   for (const f of state.festivals) {
     if (f.tenu || tick < f.semaine) continue;
     f.tenu = true;

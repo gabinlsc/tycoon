@@ -35,6 +35,10 @@ describe('contenu des événements', () => {
     );
   });
 
+  it('comptent au moins dix événements de marché', () => {
+    expect(LABEL_EVENTS.filter((e) => e.category === 'marche').length).toBeGreaterThanOrEqual(10);
+  });
+
   it('remplit les variables des textes', () => {
     expect(fillTemplate('{nom} gagne {n}', { nom: 'Zed', n: 3 })).toBe('Zed gagne 3');
     expect(describeEvent('caprice', { nom: 'Zed', montant: 100 })?.texte).toContain('Zed');
@@ -122,5 +126,20 @@ describe('événements de production', () => {
     );
     expect(out.events.history.some((h) => production.has(h.eventId))).toBe(true);
     for (const p of out.projets) expect(p.fin).toBeGreaterThanOrEqual(p.debut);
+  });
+});
+
+describe('événements de marché', () => {
+  it('modifient le marché sans le sortir de ses bornes, sur une longue partie', () => {
+    const out = labelGame.advance(roster(1), 800);
+    const m = out.session.engine.data.marche;
+    expect(m.facteurStreaming).toBeGreaterThanOrEqual(0.6);
+    expect(m.facteurStreaming).toBeLessThanOrEqual(1.5);
+    for (const g of Object.values(m.genres)) {
+      expect(g.popularite).toBeGreaterThanOrEqual(0);
+      expect(g.popularite).toBeLessThanOrEqual(100);
+    }
+    const market = new Set(LABEL_EVENTS.filter((e) => e.category === 'marche').map((e) => e.id));
+    expect(out.session.engine.data.events.history.some((h) => market.has(h.eventId))).toBe(true);
   });
 });

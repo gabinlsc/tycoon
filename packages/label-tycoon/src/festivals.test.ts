@@ -31,7 +31,7 @@ describe('saison', () => {
     const run = () =>
       labelGame.advance(newGame('fest'), FESTIVALS.openWeek + 2).session.engine.data.festivals;
     const a = run();
-    expect(a).toHaveLength(FESTIVALS.perYear);
+    expect(a.length).toBeGreaterThanOrEqual(FESTIVALS.perYear);
     expect(
       a.every((f) => f.semaine >= FESTIVALS.summer.min && f.semaine <= FESTIVALS.summer.max),
     ).toBe(true);

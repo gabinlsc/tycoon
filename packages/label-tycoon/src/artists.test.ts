@@ -244,7 +244,7 @@ describe("génération d'un artiste", () => {
     expect(() =>
       generateArtist(Rng.fromSeed('v'), {
         id: 1,
-        market: { genres: {} },
+        market: { genres: {}, facteurStreaming: 1 },
         cities,
         takenNames: new Set(),
       }),

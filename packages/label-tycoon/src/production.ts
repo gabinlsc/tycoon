@@ -222,7 +222,9 @@ export const streamsPhase: Phase<LabelState, LabelSignal> = {
       p.streams += streams;
       p.derniers = streams;
       if (artist) artist.fanbase += fansGained(streams, artist.charisme);
-      const gross = cents(Math.round(streams * STREAMS.centsPerStream));
+      const gross = cents(
+        Math.round(streams * STREAMS.centsPerStream * state.marche.facteurStreaming),
+      );
       if (gross <= 0) continue;
       const contract = state.contrats.find((c) => c.artisteId === p.artisteId);
       earn(state, 'streaming', contract ? labelShare(contract.clauses, gross) : gross);
