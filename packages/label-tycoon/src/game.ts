@@ -19,6 +19,7 @@ import {
 import type { DifficultyPreset, DifficultySettings, GameConfig, GameMode } from './config';
 import { type LabelSignal, buildPipeline } from './pipeline';
 import { artistsPhase } from './dynamics';
+import { applyScenario, findScenario, scenarioPhase } from './scenarios/engine';
 import { initialFinance } from './finance';
 import { LABEL_EVENTS } from './content/events';
 import { GENRE_IDS } from './content/genres';
@@ -122,6 +123,7 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
           ctx.emit,
         );
         achievementsPhase.run(state, ctx);
+        scenarioPhase.run(state, ctx);
       },
     },
     'tirage-evenements': eventEngine.phase,
@@ -182,6 +184,8 @@ export function validateConfig(config: GameConfig): string | null {
       return `Réglage « ${key} » hors bornes (${min} à ${max}) : ${String(value)}`;
     }
   }
+  if (config.mode === 'scenario' && !(config.scenarioId && findScenario(config.scenarioId)))
+    return `Scénario inconnu : ${String(config.scenarioId)}`;
   const rate = config.eventRate;
   if (
     rate !== undefined &&
@@ -270,5 +274,12 @@ function structuredConfig(config: GameConfig): GameConfig {
 
 /** Nouvelle partie. Même graine et mêmes réglages : même partie, au bit près. */
 export function newGame(seed: Seed, config: GameConfig = defaultConfig()): LabelSession {
-  return labelGame.newSession(seed, initialState(seed, config));
+  if (config.mode !== 'scenario') return labelGame.newSession(seed, initialState(seed, config));
+  const def = config.scenarioId ? findScenario(config.scenarioId) : undefined;
+  if (!def) throw new RangeError(`Scénario inconnu : ${String(config.scenarioId)}`);
+  // Un scénario impose sa graine et ses conditions de départ : tous les joueurs partent du même monde.
+  const difficulty = { ...config.difficulty, ...def.difficulte };
+  const state = initialState(def.graine, { ...config, difficulty });
+  applyScenario(state, def, def.graine);
+  return labelGame.newSession(def.graine, state);
 }

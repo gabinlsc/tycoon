@@ -30,6 +30,8 @@ import { announcedReleases } from './calendar';
 import { SUCCES, familyValue, objectiveProgress } from './achievements';
 import { festivalOffer } from './festivals';
 import { venueCost } from './tours';
+import { conditionMet, findScenario } from './scenarios/engine';
+import { texteCondition } from './scenarios/textes';
 import { buildingLevel, teamCapacity } from './buildings';
 import { loanCap, loanRate, outstanding } from './loans';
 import { tierAtLeast } from './tiers';
@@ -451,6 +453,20 @@ export interface VuePartie {
   };
 }
 
+export interface VueScenario {
+  id: string;
+  titre: string;
+  description: string;
+  statut: 'en-cours' | 'reussi' | 'echec';
+  /** Semaine limite et semaines restantes (0 une fois dépassée). */
+  limite: number;
+  semainesRestantes: number;
+  objectifs: { texte: string; atteint: boolean }[];
+  fin: number | null;
+  score: number | null;
+  raison: 'faillite' | 'temps' | null;
+}
+
 export interface VueJeu {
   semaine: number;
   date: { annee: number; mois: number; semaineDuMois: number };
@@ -493,6 +509,7 @@ export interface VueJeu {
   batiments: VueBatiment[];
   scene: VueScene;
   partie: VuePartie;
+  scenario: VueScenario | null;
   rapportsMensuels: VueRapportMensuel[];
   tousSucces: VueSucces[];
   records: VueRecord[];
@@ -1002,6 +1019,27 @@ function rapportsDe(state: LabelState): VueRapportMensuel[] {
     }));
 }
 
+function scenarioDe(state: LabelState, tick: number): VueScenario | null {
+  const s = state.scenario;
+  const def = s ? findScenario(s.id) : undefined;
+  if (!s || !def) return null;
+  return {
+    id: s.id,
+    titre: def.titre,
+    description: def.description,
+    statut: s.statut,
+    limite: s.limite,
+    semainesRestantes: Math.max(0, s.limite - tick),
+    objectifs: def.objectifs.map((c) => ({
+      texte: texteCondition(c),
+      atteint: conditionMet(state, Math.max(0, tick - 1), c, s.limite),
+    })),
+    fin: s.fin,
+    score: s.score,
+    raison: s.raison,
+  };
+}
+
 function lastReport(state: LabelState): VueJeu['rapport'] {
   const r = state.rapportsMensuels[state.rapportsMensuels.length - 1];
   return r
@@ -1163,6 +1201,7 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
         bonusTresorerieRivaux: state.config.difficulty.rivalCashBonus,
       },
     },
+    scenario: scenarioDe(state, tick),
     rapportsMensuels: rapportsDe(state),
     tousSucces: SUCCES.map((s) => ({
       id: s.id,
