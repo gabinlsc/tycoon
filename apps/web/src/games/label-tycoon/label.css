@@ -429,3 +429,57 @@
   width: 100%;
   height: 0.9rem;
 }
+
+/* Roster */
+.label-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  margin-block-end: var(--sp-3);
+}
+.label-filters label {
+  display: grid;
+  gap: var(--sp-1);
+  font-weight: 800;
+}
+.label-filters input,
+.label-filters select {
+  padding: var(--sp-2);
+  border: var(--border) solid var(--outline);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+.label-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.label-table th,
+.label-table td {
+  padding: var(--sp-2) var(--sp-3);
+  border-bottom: 2px solid var(--outline);
+  text-align: start;
+}
+.label-table thead button,
+.label-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+.label-link {
+  text-decoration: underline;
+}
+.label-table small {
+  display: block;
+  color: var(--text-soft);
+  font-weight: 600;
+}
+.label-warn {
+  color: var(--red-text);
+  font-weight: 800;
+}

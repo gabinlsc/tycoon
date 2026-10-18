@@ -5,6 +5,7 @@ import { BarreTemps } from './BarreTemps';
 import { BoiteReception, notificationsNonLues } from './BoiteReception';
 import { InfobulleCalcul, Terme } from './Infobulle';
 import { QG } from './QG';
+import { Roster } from './Roster';
 import { NouvellePartie } from './NouvellePartie';
 import { useRaccourcis } from './Raccourcis';
 
@@ -26,6 +27,7 @@ export function Coquille() {
   const { etat, vue, erreur, refus } = useLabel();
   const [ecran, setEcran] = useState<EcranId>('qg');
   const [dernierLu, setDernierLu] = useState(0);
+  const [fiche, setFiche] = useState<number | null>(null);
   useRaccourcis(setEcran, vue !== null);
 
   if (etat === 'chargement') return <p className="stage__loading">Chargement du moteur…</p>;
@@ -85,9 +87,16 @@ export function Coquille() {
           {refus}
         </p>
       ) : null}
+      {fiche !== null ? (
+        <p role="status" className="label-screen__soon">
+          La fiche de l’artiste n° {fiche} arrive bientôt.
+        </p>
+      ) : null}
       <main className="label-main">
         {ecran === 'qg' ? (
           <QG allerA={setEcran} />
+        ) : ecran === 'roster' ? (
+          <Roster ouvrir={setFiche} />
         ) : ecran === 'boite' ? (
           <BoiteReception dernierLu={dernierLu} onLu={setDernierLu} />
         ) : (

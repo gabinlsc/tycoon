@@ -16,6 +16,9 @@ export interface VueArtiste {
   id: number;
   nom: string;
   genre: string;
+  /** Nom affichable du genre (sous-genres fictifs compris). */
+  genreNom: string;
+  phaseNom: string;
   age: number;
   phase: string;
   employeur: string;
@@ -26,6 +29,10 @@ export interface VueArtiste {
   fatigue: number;
   /** Compétences visibles (artistes signés ou libres : valeur réelle seulement pour le roster du joueur). */
   competences: Record<string, number>;
+  /** Contrat en cours : échéance et part de royalties de l'artiste (points de base), ou `null`. */
+  contrat: { echeance: number; royaltiesBps: number } | null;
+  /** Vrai si un projet est en production pour cet artiste. */
+  enProduction: boolean;
 }
 
 export interface VueSuivi {
@@ -110,6 +117,16 @@ const FIL_VISIBLE = 40;
 const HISTORIQUE = 26;
 const NB_ECHEANCES = 6;
 
+export function nomGenre(state: LabelState, id: string): string {
+  const base = (fr.genres as Record<string, string | undefined>)[id];
+  return base ?? state.sousGenres.find((s) => s.id === id)?.nom ?? id;
+}
+
+function contratDe(state: LabelState, artisteId: number): VueArtiste['contrat'] {
+  const c = state.contrats.find((k) => k.artisteId === artisteId);
+  return c ? { echeance: c.echeance, royaltiesBps: c.clauses.royaltiesArtisteBps } : null;
+}
+
 const nomDe = (state: LabelState, id: number): string =>
   state.artistes.find((a) => a.id === id)?.nomScene ?? 'Artiste';
 
@@ -164,6 +181,8 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
       id: a.id,
       nom: a.nomScene,
       genre: a.genre,
+      genreNom: nomGenre(state, a.genre),
+      phaseNom: fr.phasesDeCarriere[a.phase],
       age: a.age,
       phase: a.phase,
       employeur: a.employeur,
@@ -179,6 +198,8 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
         charisme: a.charisme,
         scene: a.scene,
       },
+      contrat: contratDe(state, a.id),
+      enProduction: state.projets.some((p) => p.artisteId === a.id && p.statut === 'production'),
     }));
   const suivis = state.suivis.flatMap<VueSuivi>((p) => {
     const a = state.artistes.find((x) => x.id === p.artisteId);
