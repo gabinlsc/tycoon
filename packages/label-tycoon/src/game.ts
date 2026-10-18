@@ -12,10 +12,12 @@ import { DIFFICULTY_BOUNDS, DIFFICULTY_PRESETS, EVENTS, SANDBOX_CASH, START } fr
 import type { DifficultyPreset, DifficultySettings, GameConfig, GameMode } from './config';
 import { type LabelSignal, buildPipeline } from './pipeline';
 import { artistsPhase } from './dynamics';
-import { financePhase, initialFinance } from './finance';
+import { initialFinance } from './finance';
 import { initialCredibility, initialMarket, marketPhase } from './market';
 import { breakContract, releaseArtist, renegotiate } from './contract-end';
 import { chartsPhase, emptyCharts } from './charts';
+import { ledgerPhase } from './ledger-phase';
+import { borrow, repay } from './loans';
 import { answerSync } from './sync';
 import { applyFestival } from './festivals';
 import { launchTour } from './tours';
@@ -78,7 +80,7 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
     streams: streamsPhase,
     classements: chartsPhase,
     tournees: livePhase,
-    finances: financePhase,
+    finances: ledgerPhase,
     'tirage-evenements': eventEngine.phase,
   }),
   actions: {
@@ -86,6 +88,8 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
     'renommer-label': renameLabel,
     reperer: scout,
     signer: sign,
+    emprunter: borrow,
+    'rembourser-pret': repay,
     'accepter-synchro': answerSync,
     'refuser-synchro': answerSync,
     'candidater-festival': applyFestival,
@@ -171,6 +175,8 @@ export function initialState(seed: Seed, config: GameConfig): LabelState {
     tournees: [],
     festivals: [],
     offresSynchro: [],
+    prets: [],
+    credit: { impayes: 0, rembourses: 0 },
     nextId: 1,
   };
 }

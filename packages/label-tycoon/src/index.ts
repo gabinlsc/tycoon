@@ -238,3 +238,16 @@ export { type TourAction, type Tournee, afterTourDate, launchTour, venueCost } f
 export { type ApplyFestivalAction, type Festival, festivalOffer, festivalsWeek } from './festivals';
 export { type OffreSynchro, type SyncAnswerAction, answerSync, syncOffersWeek } from './sync';
 export { type Source360, liveShare } from './contracts';
+export {
+  type BorrowAction,
+  type Credit,
+  type Pret,
+  type RepayAction,
+  borrow,
+  loanCap,
+  loanRate,
+  loansWeek,
+  outstanding,
+  repay,
+} from './loans';
+export { ledgerPhase } from './ledger-phase';
