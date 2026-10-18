@@ -60,6 +60,60 @@ export const EVENT_TEXTS: Readonly<Record<string, EventText>> = {
       '{nom} songe à quitter le label. Une prime de fidélité de {prime} centimes pourrait le·la retenir.',
     choix: { retenir: 'Verser la prime', laisser: 'Le·la laisser partir' },
   },
+  'retard-studio': {
+    titre: 'Retard au studio',
+    texte:
+      'Le projet de {nom} prend du retard : le studio propose de payer des heures supplémentaires ({prime} centimes).',
+    choix: { 'heures-sup': 'Payer les heures sup', 'accepter-retard': 'Accepter le retard' },
+  },
+  'fuite-titre': {
+    titre: 'Un titre a fuité',
+    texte: 'Un extrait du projet de {nom} circule en ligne avant la sortie.',
+    choix: { plainte: 'Porter plainte', 'en-profiter': 'En profiter pour le buzz' },
+  },
+  'sample-non-declare': {
+    titre: 'Sample non déclaré',
+    texte:
+      'Le projet de {nom} contient un sample jamais déclaré. Un règlement amiable coûterait {reglement} centimes.',
+    choix: { regler: 'Régler à l’amiable', ignorer: 'Prendre le risque' },
+  },
+  'proces-sample': {
+    titre: 'Procès pour sample',
+    texte: 'Les ayants droit attaquent le label : dommages et intérêts, et mauvaise presse.',
+  },
+  'featuring-surprise': {
+    titre: 'Featuring surprise',
+    texte: 'Un artiste en vue propose de poser sur le projet de {nom} pour {cachet} centimes.',
+    choix: { accepter: 'Accepter', refuser: 'Refuser' },
+  },
+  'panne-materiel': {
+    titre: 'Panne de matériel',
+    texte: 'Une panne au studio coûte cher et retarde le projet de {nom}.',
+  },
+  'session-inspiree': {
+    titre: 'Session inspirée',
+    texte: 'Une session de nuit transcende le projet de {nom}.',
+  },
+  'producteur-star': {
+    titre: 'Producteur star disponible',
+    texte: 'Un producteur réputé se libère pour {nom} contre {cachet} centimes.',
+    choix: { engager: 'L’engager', decliner: 'Décliner' },
+  },
+  'mixage-rate': {
+    titre: 'Mixage raté',
+    texte: 'Le mixage du projet de {nom} déçoit. Le refaire coûte {frais} centimes.',
+    choix: { refaire: 'Refaire le mixage', 'tel-quel': 'Sortir tel quel' },
+  },
+  'clip-viral': {
+    titre: 'Un clip devenu viral',
+    texte: 'Le clip de {nom} s’envole sur les plateformes.',
+  },
+  'pression-delai': {
+    titre: 'Pression sur les délais',
+    texte:
+      'Le calendrier presse pour le projet de {nom}. On peut accélérer, au risque de la qualité.',
+    choix: { accelerer: 'Accélérer', maintenir: 'Maintenir le calendrier' },
+  },
   'collaboration-spontanee': {
     titre: 'Collaboration spontanée',
     texte: '{nom} et {autre} improvisent un titre ensemble. Les fans adorent.',

@@ -2,6 +2,7 @@ import type { Consequence, EventContext, EventDef, Vars } from '@tycoon/core';
 import { cents, clamp } from '@tycoon/core';
 import type { Artist } from '../../artists';
 import { earn, spend } from '../../finance';
+import type { Projet } from '../../production';
 import type { LabelState } from '../../state';
 
 export type LabelEvent = EventDef<LabelState>;
@@ -79,4 +80,35 @@ export function cash(d: LabelState, delta: number): Consequence {
   if (delta >= 0) earn(d, 'autres', cents(delta));
   else spend(d, 'autres', cents(-delta));
   return { kind: 'tresorerie', params: { delta } };
+}
+
+// --- Projets de production ---
+
+/** Projet désigné par les variables d'un événement. */
+export const project = (d: LabelState, vars: Vars): Projet | undefined =>
+  d.projets.find((p) => p.id === Number(vars['projetId']));
+
+/** Tire un projet respectant un filtre, ou `null`. */
+export function pickProject(
+  d: LabelState,
+  ctx: EventContext,
+  filter: (p: Projet) => boolean,
+): Projet | null {
+  const list = d.projets.filter(filter);
+  return list.length === 0 ? null : ctx.rng('evenements').pick(list);
+}
+
+/** Variables standard d'un événement sur un projet (et son artiste). */
+export function aboutProject(d: LabelState, p: Projet, extra: Vars = {}): Vars {
+  const artist = d.artistes.find((a) => a.id === p.artisteId);
+  return { projetId: p.id, artisteId: p.artisteId, nom: artist?.nomScene ?? '', ...extra };
+}
+
+export function delay(p: Projet, weeks: number): Consequence {
+  p.fin += weeks;
+  return { kind: 'retard', params: { projetId: p.id, semaines: weeks } };
+}
+export function quality(p: Projet, delta: number): Consequence {
+  if (p.qualite !== null) p.qualite = clamp(p.qualite + delta, 0, 100);
+  return { kind: 'qualite', params: { projetId: p.id, delta } };
 }

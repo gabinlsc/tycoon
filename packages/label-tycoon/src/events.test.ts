@@ -29,6 +29,12 @@ describe('contenu des événements', () => {
     expect(LABEL_EVENTS.filter((e) => e.category === 'artistes').length).toBeGreaterThanOrEqual(12);
   });
 
+  it('comptent au moins dix événements de production', () => {
+    expect(LABEL_EVENTS.filter((e) => e.category === 'production').length).toBeGreaterThanOrEqual(
+      10,
+    );
+  });
+
   it('remplit les variables des textes', () => {
     expect(fillTemplate('{nom} gagne {n}', { nom: 'Zed', n: 3 })).toBe('Zed gagne 3');
     expect(describeEvent('caprice', { nom: 'Zed', montant: 100 })?.texte).toContain('Zed');
@@ -80,5 +86,41 @@ describe('dans la simulation', () => {
     const d = labelGame.advance(roster(), 400).session.engine.data;
     expect(d.events.pending.length).toBeLessThanOrEqual(6);
     expect(d.events.history.length).toBeGreaterThan(0);
+  });
+});
+
+describe('événements de production', () => {
+  it('surviennent autour d’un projet en cours, sans casser les projets', () => {
+    const session = roster(1);
+    const d = session.engine.data;
+    const artist = d.artistes.find((x) => x.employeur === 'joueur');
+    if (!artist) throw new Error('artiste attendu');
+    d.projets.push({
+      id: 9001,
+      artisteId: artist.id,
+      type: 'album',
+      clip: 'gros',
+      studio: 50,
+      producteur: 50,
+      mixage: 0,
+      debut: 0,
+      fin: 9000,
+      retard: 0,
+      statut: 'production',
+      qualite: null,
+      sortieLe: null,
+      s1: 0,
+      hit: 0,
+      viral: null,
+      streams: 0,
+      derniers: 0,
+      certification: null,
+    });
+    const out = labelGame.advance(session, 400).session.engine.data;
+    const production = new Set(
+      LABEL_EVENTS.filter((e) => e.category === 'production').map((e) => e.id),
+    );
+    expect(out.events.history.some((h) => production.has(h.eventId))).toBe(true);
+    for (const p of out.projets) expect(p.fin).toBeGreaterThanOrEqual(p.debut);
   });
 });
