@@ -3,6 +3,7 @@ import type { Action } from '@tycoon/core';
 import type { Artist } from './artists';
 import { CONCERTS, TOUR, VENUES, type VenueId } from './balance';
 import type { Concert } from './concerts';
+import { liveShare } from './contracts';
 import { canAfford, earn, spend } from './finance';
 import type { LabelSignal } from './pipeline';
 import { roleLevel } from './staff';
@@ -105,9 +106,11 @@ export function afterTourDate(
   const sold = Math.min(wanted, tour.merchStock - tour.merchVendu);
   if (sold > 0) {
     tour.merchVendu += sold;
-    const contract = state.contrats.find((k) => k.artisteId === artist.id);
-    const bps = Math.min(10_000, TOUR.merchLabelBps + (contract?.clauses.part360Bps ?? 0));
-    earn(state, 'merch', cents(Math.round((sold * TOUR.merchPrice * bps) / 10_000)));
+    earn(
+      state,
+      'merch',
+      cents(liveShare(state, artist.id, sold * TOUR.merchPrice, TOUR.merchLabelBps)),
+    );
   }
   if (artist.fatigue >= TOUR.burnoutFatigue && !tour.annulee) {
     tour.annulee = true;
