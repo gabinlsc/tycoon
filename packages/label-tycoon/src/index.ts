@@ -357,3 +357,13 @@ export {
   updateRecords,
 } from './achievements';
 export { OBJECTIF_TEXTES, RECORD_TEXTES, SUCCES_TEXTES } from './strings';
+export { type CommandeJeu, type ReponseJeu, type SignalVue, LabelPilot } from './pilot';
+export {
+  type ViewHooks,
+  type VueActu,
+  type VueArtiste,
+  type VueDecision,
+  type VueJeu,
+  type VueSuivi,
+  buildView,
+} from './view';
