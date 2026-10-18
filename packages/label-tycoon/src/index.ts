@@ -397,7 +397,8 @@ export {
   findScenario,
   scenarioPhase,
   scenarioScore,
-  signerArtisteDeDepart,
 } from './scenarios/engine';
+export { signerArtisteDeDepart } from './scenarios/depart';
+export { ORDRE_SCENARIOS } from './scenarios/catalogue';
 export { texteCondition } from './scenarios/textes';
 export type { Condition, ScenarioDef, ScenarioState, StatutScenario } from './scenarios/types';

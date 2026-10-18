@@ -464,7 +464,9 @@ export interface VueScenario {
   objectifs: { texte: string; atteint: boolean }[];
   fin: number | null;
   score: number | null;
-  raison: 'faillite' | 'temps' | null;
+  raison: 'faillite' | 'temps' | 'regle' | null;
+  /** Règles du scénario, avec leur état (vraies tant qu'elles sont respectées). */
+  regles: { texte: string; respectee: boolean }[];
 }
 
 export interface VueJeu {
@@ -1037,6 +1039,10 @@ function scenarioDe(state: LabelState, tick: number): VueScenario | null {
     fin: s.fin,
     score: s.score,
     raison: s.raison,
+    regles: (def.regles ?? []).map((c) => ({
+      texte: texteCondition(c),
+      respectee: conditionMet(state, Math.max(0, tick - 1), c, s.limite),
+    })),
   };
 }
 

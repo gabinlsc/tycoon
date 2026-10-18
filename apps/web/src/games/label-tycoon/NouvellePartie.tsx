@@ -3,6 +3,9 @@ import {
   DIFFICULTY_BOUNDS,
   DIFFICULTY_PRESETS,
   EVENT_RATE_BOUNDS,
+  ORDRE_SCENARIOS,
+  SCENARIOS,
+  texteCondition,
   defaultConfig,
   validateConfig,
 } from '@tycoon/label-tycoon';
@@ -76,10 +79,13 @@ export const BAC_A_SABLE_PAR_DEFAUT: OptionsBacASable = {
 
 /** Réglages envoyés au moteur pour le mode et les options choisis. */
 export function configDepart(
-  mode: 'carriere' | 'bac-a-sable',
+  mode: 'carriere' | 'bac-a-sable' | 'scenario',
   difficulty: DifficultySettings,
   bac: OptionsBacASable,
+  scenarioId?: string,
 ): GameConfig {
+  if (mode === 'scenario')
+    return { ...defaultConfig('normal', 'scenario'), difficulty, scenarioId: scenarioId ?? '' };
   if (mode === 'carriere') return { ...defaultConfig('normal', 'carriere'), difficulty };
   return {
     ...defaultConfig('normal', 'bac-a-sable'),
@@ -98,9 +104,10 @@ export function NouvellePartie() {
     ...DIFFICULTY_PRESETS.normal,
   });
   const [avance, setAvance] = useState(false);
-  const [mode, setMode] = useState<'carriere' | 'bac-a-sable'>('carriere');
+  const [mode, setMode] = useState<'carriere' | 'bac-a-sable' | 'scenario'>('carriere');
+  const [scenarioId, setScenarioId] = useState(ORDRE_SCENARIOS[0] ?? '');
   const [bac, setBac] = useState<OptionsBacASable>(BAC_A_SABLE_PAR_DEFAUT);
-  const config = configDepart(mode, reglages, bac);
+  const config = configDepart(mode, reglages, bac, scenarioId);
   const probleme = validateConfig(config);
   const preset = presetCorrespondant(reglages);
 
@@ -125,6 +132,17 @@ export function NouvellePartie() {
           <input
             type="radio"
             name="mode"
+            checked={mode === 'scenario'}
+            onChange={() => setMode('scenario')}
+          />
+          <span>
+            <strong>Scénarios</strong> — un défi précis, un monde fixe, un temps limité.
+          </span>
+        </label>
+        <label className="label-field--check">
+          <input
+            type="radio"
+            name="mode"
             checked={mode === 'bac-a-sable'}
             onChange={() => setMode('bac-a-sable')}
           />
@@ -133,6 +151,29 @@ export function NouvellePartie() {
           </span>
         </label>
       </fieldset>
+      {mode === 'scenario' ? (
+        <fieldset className="label-field">
+          <legend>Scénario</legend>
+          {ORDRE_SCENARIOS.map((id) => {
+            const def = SCENARIOS[id];
+            if (!def) return null;
+            return (
+              <label key={id} className="label-field--check">
+                <input
+                  type="radio"
+                  name="scenario"
+                  checked={scenarioId === id}
+                  onChange={() => setScenarioId(id)}
+                />
+                <span>
+                  <strong>{def.titre}</strong> — {def.description}
+                  <small> Objectif : {def.objectifs.map(texteCondition).join(' ; ')}.</small>
+                </span>
+              </label>
+            );
+          })}
+        </fieldset>
+      ) : null}
       {mode === 'bac-a-sable' ? (
         <fieldset className="label-field">
           <legend>Réglages du bac à sable</legend>
@@ -166,53 +207,59 @@ export function NouvellePartie() {
           <p>Le temps peut aussi s’accélérer jusqu’à ×16 pendant la partie.</p>
         </fieldset>
       ) : null}
-      <fieldset className="label-field">
-        <legend>Difficulté</legend>
-        {PRESETS.map((p) => (
-          <label key={p.id} className="label-field--check">
-            <input
-              type="radio"
-              name="difficulte"
-              checked={preset === p.id}
-              onChange={() => setReglages({ ...DIFFICULTY_PRESETS[p.id] })}
-            />
-            <span>
-              <strong>{p.nom}</strong> — {p.description}
-            </span>
-          </label>
-        ))}
-        {preset === null ? <p>Réglages personnalisés.</p> : null}
-      </fieldset>
-      <details open={avance} onToggle={(e) => setAvance(e.currentTarget.open)}>
-        <summary>Réglages avancés</summary>
-        {CURSEURS.map((c) => (
-          <label key={c.cle} className="label-field">
-            {c.nom} <small>({c.aide})</small>
-            <input
-              type="number"
-              min={DIFFICULTY_BOUNDS[c.cle].min}
-              max={DIFFICULTY_BOUNDS[c.cle].max}
-              step={c.pas}
-              value={reglages[c.cle]}
-              onChange={(e) => setReglages({ ...reglages, [c.cle]: Number(e.target.value) })}
-            />
-          </label>
-        ))}
-      </details>
+      {mode !== 'scenario' ? (
+        <>
+          <fieldset className="label-field">
+            <legend>Difficulté</legend>
+            {PRESETS.map((p) => (
+              <label key={p.id} className="label-field--check">
+                <input
+                  type="radio"
+                  name="difficulte"
+                  checked={preset === p.id}
+                  onChange={() => setReglages({ ...DIFFICULTY_PRESETS[p.id] })}
+                />
+                <span>
+                  <strong>{p.nom}</strong> — {p.description}
+                </span>
+              </label>
+            ))}
+            {preset === null ? <p>Réglages personnalisés.</p> : null}
+          </fieldset>
+          <details open={avance} onToggle={(e) => setAvance(e.currentTarget.open)}>
+            <summary>Réglages avancés</summary>
+            {CURSEURS.map((c) => (
+              <label key={c.cle} className="label-field">
+                {c.nom} <small>({c.aide})</small>
+                <input
+                  type="number"
+                  min={DIFFICULTY_BOUNDS[c.cle].min}
+                  max={DIFFICULTY_BOUNDS[c.cle].max}
+                  step={c.pas}
+                  value={reglages[c.cle]}
+                  onChange={(e) => setReglages({ ...reglages, [c.cle]: Number(e.target.value) })}
+                />
+              </label>
+            ))}
+          </details>
+        </>
+      ) : null}
       {probleme ? (
         <p role="alert" className="label-error">
           {probleme}
         </p>
       ) : null}
-      <label className="label-start__field">
-        Graine (facultatif)
-        <input
-          value={graine}
-          onChange={(e) => setGraine(e.target.value)}
-          placeholder="une même graine donne le même monde"
-          maxLength={40}
-        />
-      </label>
+      {mode !== 'scenario' ? (
+        <label className="label-start__field">
+          Graine (facultatif)
+          <input
+            value={graine}
+            onChange={(e) => setGraine(e.target.value)}
+            placeholder="une même graine donne le même monde"
+            maxLength={40}
+          />
+        </label>
+      ) : null}
       <Button
         type="button"
         tone="green"

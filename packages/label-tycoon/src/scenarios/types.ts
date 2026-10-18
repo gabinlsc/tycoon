@@ -15,6 +15,10 @@ export type Condition =
   | { type: 'signatures'; min: number }
   | { type: 'retours'; min: number }
   | { type: 'equipe'; min: number }
+  /** L'artiste désigné par le scénario (`cible`) a retrouvé hype et public. */
+  | { type: 'artiste-cible'; hype: number; fans: number }
+  /** Valeur de l'effectif maximal : vrai tant que le roster ne dépasse pas ce nombre. */
+  | { type: 'roster-max'; max: number }
   /** Tenir jusqu'à la limite de temps sans faire faillite. */
   | { type: 'survie' };
 
@@ -30,6 +34,8 @@ export interface ScenarioDef {
   difficulte?: Partial<DifficultySettings>;
   /** Toutes ces conditions doivent être réunies pour gagner. */
   objectifs: readonly Condition[];
+  /** Règles du scénario : si l'une d'elles est brisée, c'est perdu. */
+  regles?: readonly Condition[];
   /** Conditions initiales : modifie l'état de départ (trésorerie, artistes, équipe…). */
   depart?: (state: LabelState, rng: Rng) => void;
 }
@@ -44,6 +50,8 @@ export interface ScenarioState {
   /** Semaine de fin, une fois le scénario terminé. */
   fin: number | null;
   score: number | null;
-  /** Raison d'un échec : `faillite` ou `temps`. */
-  raison: 'faillite' | 'temps' | null;
+  /** Artiste mis en avant par le scénario (légende à relancer…), ou `null`. */
+  cible: number | null;
+  /** Raison d'un échec : `faillite`, `temps` ou `regle` (une règle du scénario a été brisée). */
+  raison: 'faillite' | 'temps' | 'regle' | null;
 }

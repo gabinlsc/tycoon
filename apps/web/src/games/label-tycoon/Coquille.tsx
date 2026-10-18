@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ECRANS, type EcranId } from './ecrans';
 import { useLabel } from './LabelContext';
 import { ECRANS_SIMPLES } from './ecransSimples';
+import { BandeauScenario } from './BandeauScenario';
 import { BarreTemps } from './BarreTemps';
 import { BoiteReception, notificationsNonLues } from './BoiteReception';
 import { InfobulleCalcul, Terme } from './Infobulle';
@@ -79,6 +80,7 @@ export function Coquille() {
         </span>
       </header>
       <BarreTemps />
+      {vue.scenario ? <BandeauScenario scenario={vue.scenario} /> : null}
       <nav className="label-nav" aria-label="Écrans du jeu">
         {ECRANS.map((e, index) => (
           <button
