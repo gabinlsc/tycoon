@@ -3,6 +3,10 @@ import {
   DIFFICULTY_BOUNDS,
   DIFFICULTY_PRESETS,
   EVENT_RATE_BOUNDS,
+  DEFI_SEMAINES,
+  configDefi,
+  dateDuDefi,
+  graineDuDefi,
   ORDRE_SCENARIOS,
   SCENARIOS,
   texteCondition,
@@ -11,6 +15,7 @@ import {
 } from '@tycoon/label-tycoon';
 import type { DifficultyPreset, DifficultySettings, GameConfig } from '@tycoon/label-tycoon';
 import { Button } from '../../components/arcade/ui/Button';
+import { lireMeilleurScore } from './defi';
 import { useLabel } from './LabelContext';
 
 export const PRESETS: readonly { id: DifficultyPreset; nom: string; description: string }[] = [
@@ -79,11 +84,12 @@ export const BAC_A_SABLE_PAR_DEFAUT: OptionsBacASable = {
 
 /** Réglages envoyés au moteur pour le mode et les options choisis. */
 export function configDepart(
-  mode: 'carriere' | 'bac-a-sable' | 'scenario',
+  mode: 'carriere' | 'bac-a-sable' | 'scenario' | 'defi',
   difficulty: DifficultySettings,
   bac: OptionsBacASable,
   scenarioId?: string,
 ): GameConfig {
+  if (mode === 'defi') return configDefi(dateDuDefi(new Date()));
   if (mode === 'scenario')
     return { ...defaultConfig('normal', 'scenario'), difficulty, scenarioId: scenarioId ?? '' };
   if (mode === 'carriere') return { ...defaultConfig('normal', 'carriere'), difficulty };
@@ -104,7 +110,7 @@ export function NouvellePartie() {
     ...DIFFICULTY_PRESETS.normal,
   });
   const [avance, setAvance] = useState(false);
-  const [mode, setMode] = useState<'carriere' | 'bac-a-sable' | 'scenario'>('carriere');
+  const [mode, setMode] = useState<'carriere' | 'bac-a-sable' | 'scenario' | 'defi'>('carriere');
   const [scenarioId, setScenarioId] = useState(ORDRE_SCENARIOS[0] ?? '');
   const [bac, setBac] = useState<OptionsBacASable>(BAC_A_SABLE_PAR_DEFAUT);
   const config = configDepart(mode, reglages, bac, scenarioId);
@@ -143,6 +149,18 @@ export function NouvellePartie() {
           <input
             type="radio"
             name="mode"
+            checked={mode === 'defi'}
+            onChange={() => setMode('defi')}
+          />
+          <span>
+            <strong>Défi du jour</strong> — le même monde pour tous, {DEFI_SEMAINES} semaines, score
+            = valeur finale du label.
+          </span>
+        </label>
+        <label className="label-field--check">
+          <input
+            type="radio"
+            name="mode"
             checked={mode === 'bac-a-sable'}
             onChange={() => setMode('bac-a-sable')}
           />
@@ -151,6 +169,15 @@ export function NouvellePartie() {
           </span>
         </label>
       </fieldset>
+      {mode === 'defi' ? (
+        <p>
+          Défi du {dateDuDefi(new Date())}.
+          {lireMeilleurScore(dateDuDefi(new Date())) !== null
+            ? ` Ton meilleur score du jour : ${(lireMeilleurScore(dateDuDefi(new Date())) ?? 0).toLocaleString('fr-FR')} €.`
+            : ''}{' '}
+          Un seul monde par jour : rejoue autant que tu veux, seul ton meilleur score compte.
+        </p>
+      ) : null}
       {mode === 'scenario' ? (
         <fieldset className="label-field">
           <legend>Scénario</legend>
@@ -207,7 +234,7 @@ export function NouvellePartie() {
           <p>Le temps peut aussi s’accélérer jusqu’à ×16 pendant la partie.</p>
         </fieldset>
       ) : null}
-      {mode !== 'scenario' ? (
+      {mode !== 'scenario' && mode !== 'defi' ? (
         <>
           <fieldset className="label-field">
             <legend>Difficulté</legend>
@@ -249,7 +276,7 @@ export function NouvellePartie() {
           {probleme}
         </p>
       ) : null}
-      {mode !== 'scenario' ? (
+      {mode !== 'scenario' && mode !== 'defi' ? (
         <label className="label-start__field">
           Graine (facultatif)
           <input
@@ -265,7 +292,14 @@ export function NouvellePartie() {
         tone="green"
         size="lg"
         disabled={etat !== 'pret' || probleme !== null}
-        onClick={() => void nouvellePartie(graine.trim() || Date.now().toString(36), config)}
+        onClick={() =>
+          void nouvellePartie(
+            mode === 'defi'
+              ? graineDuDefi(config.defiDate ?? '')
+              : graine.trim() || Date.now().toString(36),
+            config,
+          )
+        }
       >
         Nouvelle partie
       </Button>

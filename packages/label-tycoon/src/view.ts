@@ -30,6 +30,7 @@ import { announcedReleases } from './calendar';
 import { SUCCES, familyValue, objectiveProgress } from './achievements';
 import { festivalOffer } from './festivals';
 import { venueCost } from './tours';
+import { DEFI_SEMAINES, defiTermine, resultatDefi, texteResultat } from './defi';
 import { conditionMet, findScenario } from './scenarios/engine';
 import { texteCondition } from './scenarios/textes';
 import { buildingLevel, teamCapacity } from './buildings';
@@ -442,6 +443,8 @@ export interface VuePartie {
   mode: string;
   scenarioId: string | null;
   bacASable: boolean;
+  /** Date du défi du jour (AAAA-MM-JJ), ou `null` hors du mode défi. */
+  defiDate: string | null;
   faillitePossible: boolean;
   /** Fréquence des événements (1 = normal). */
   frequenceEvenements: number;
@@ -467,6 +470,15 @@ export interface VueScenario {
   raison: 'faillite' | 'temps' | 'regle' | null;
   /** Règles du scénario, avec leur état (vraies tant qu'elles sont respectées). */
   regles: { texte: string; respectee: boolean }[];
+}
+
+export interface VueDefi {
+  date: string;
+  semainesRestantes: number;
+  termine: boolean;
+  score: number;
+  /** Texte à partager une fois le défi terminé. */
+  partage: string;
 }
 
 export interface VueJeu {
@@ -512,6 +524,7 @@ export interface VueJeu {
   scene: VueScene;
   partie: VuePartie;
   scenario: VueScenario | null;
+  defi: VueDefi | null;
   rapportsMensuels: VueRapportMensuel[];
   tousSucces: VueSucces[];
   records: VueRecord[];
@@ -1021,6 +1034,18 @@ function rapportsDe(state: LabelState): VueRapportMensuel[] {
     }));
 }
 
+function defiDe(state: LabelState, tick: number): VueDefi | null {
+  const r = resultatDefi(state, tick);
+  if (!r) return null;
+  return {
+    date: r.date,
+    semainesRestantes: Math.max(0, DEFI_SEMAINES - tick),
+    termine: defiTermine(state, tick),
+    score: r.score,
+    partage: texteResultat(r),
+  };
+}
+
 function scenarioDe(state: LabelState, tick: number): VueScenario | null {
   const s = state.scenario;
   const def = s ? findScenario(s.id) : undefined;
@@ -1198,6 +1223,7 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
       mode: state.config.mode,
       scenarioId: state.config.scenarioId ?? null,
       bacASable: state.config.sandbox === true,
+      defiDate: state.config.defiDate ?? null,
       faillitePossible: !state.config.sandbox && !state.config.bankruptcyOff,
       frequenceEvenements: state.config.eventRate ?? 1,
       difficulte: {
@@ -1208,6 +1234,7 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
       },
     },
     scenario: scenarioDe(state, tick),
+    defi: defiDe(state, tick),
     rapportsMensuels: rapportsDe(state),
     tousSucces: SUCCES.map((s) => ({
       id: s.id,

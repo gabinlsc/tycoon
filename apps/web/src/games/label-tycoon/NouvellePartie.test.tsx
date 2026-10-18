@@ -32,6 +32,7 @@ describe('aides de la nouvelle partie', () => {
       mode: 'bac-a-sable',
       scenarioId: null,
       bacASable: true,
+      defiDate: null,
       faillitePossible: false,
       frequenceEvenements: 1,
       difficulte: {
