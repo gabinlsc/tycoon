@@ -745,3 +745,92 @@
 .label-calendar__empty {
   color: var(--text-soft);
 }
+
+/* Cartes (concurrence, bâtiments, rapports) */
+.label-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: var(--sp-3);
+}
+.label-card {
+  display: grid;
+  gap: var(--sp-2);
+  margin-block: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border: var(--border) solid var(--outline);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  box-shadow: var(--pop-sm);
+}
+.label-cards > .label-card {
+  margin-block: 0;
+}
+.label-card h3,
+.label-card h4,
+.label-card p {
+  margin: 0;
+}
+
+/* Tablette et mobile : onglets défilants, tableaux et formulaires qui tiennent dans l'écran. */
+.label-main,
+.label-screen {
+  min-width: 0;
+}
+.label-screen img,
+.label-screen svg {
+  max-width: 100%;
+}
+@media (max-width: 900px) {
+  .label-shell {
+    padding: var(--sp-3);
+  }
+  .label-nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-block: var(--sp-1) var(--sp-3);
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+  }
+  .label-nav__item {
+    flex: none;
+    scroll-snap-align: start;
+  }
+  .label-table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}
+@media (max-width: 600px) {
+  .label-shell {
+    padding: var(--sp-2);
+    gap: var(--sp-3);
+  }
+  .label-bar {
+    gap: var(--sp-2);
+    padding: var(--sp-2) var(--sp-3);
+  }
+  .label-bar__date {
+    margin-inline-start: 0;
+  }
+  .label-screen {
+    padding: var(--sp-3);
+  }
+  .label-nav__key {
+    display: none;
+  }
+  .label-time__speeds {
+    flex-wrap: wrap;
+  }
+  .label-time__btn,
+  .label-nav__item {
+    min-height: 2.75rem;
+  }
+  .label-nego__form {
+    grid-template-columns: 1fr;
+  }
+  .label-list li .btn,
+  .label-list li button {
+    margin-block-start: var(--sp-1);
+  }
+}

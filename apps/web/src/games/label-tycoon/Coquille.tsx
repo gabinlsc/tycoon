@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ECRANS, type EcranId } from './ecrans';
 import { useLabel } from './LabelContext';
 import { ECRANS_SIMPLES } from './ecransSimples';
@@ -40,6 +40,13 @@ export function Coquille() {
   const [fiche, setFiche] = useState<number | null>(null);
   const [negociation, setNegociation] = useState<number | null>(null);
   useRaccourcis(setEcran, vue !== null);
+
+  // Sur mobile la navigation défile : l'onglet actif reste visible.
+  useEffect(() => {
+    document
+      .querySelector<HTMLElement>('.label-nav [aria-current="page"]')
+      ?.scrollIntoView?.({ inline: 'center', block: 'nearest' });
+  }, [ecran, vue === null]);
 
   if (etat === 'chargement') return <p className="stage__loading">Chargement du moteur…</p>;
   if (etat === 'erreur')
