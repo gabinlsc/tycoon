@@ -192,6 +192,7 @@ export const fr = {
     cessions: 'Cessions de contrats',
     filiales: 'Sous-labels',
     plateforme: 'Plateforme maison',
+    musee: 'Musée du label',
     autres: 'Autres revenus',
   } satisfies Record<RevenueCategory, string>,
 
@@ -208,6 +209,7 @@ export const fr = {
     impots: 'Impôts',
     filiales: 'Enveloppes des sous-labels',
     plateforme: 'Plateforme maison (technologie et licences)',
+    institution: 'Fondation, académie et musée',
     autres: 'Autres dépenses',
   } satisfies Record<ExpenseCategory, string>,
 
@@ -282,6 +284,9 @@ export const fr = {
     'plateforme-existante': () => 'Tu as déjà lancé ta plateforme.',
     'pas-de-plateforme': () => "Lance d'abord ta plateforme maison.",
     'exclusivite-invalide': () => "L'exclusivité se règle de 0 à 100 %.",
+    'pas-d-academie': () => "Fonde d'abord ton académie.",
+    'regle-inconnue': () => "Cette règle du marché n'existe pas.",
+    'influence-insuffisante': () => "Tu n'as pas assez d'influence pour cela.",
     'nom-invalide': () => 'Donne un nom (32 caractères au plus).',
     'genre-deja-couvert': () => 'Un sous-label couvre déjà ce genre.',
     'trop-de-sous-labels': (p: { max: number }) =>

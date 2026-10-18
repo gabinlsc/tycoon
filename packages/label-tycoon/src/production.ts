@@ -16,6 +16,7 @@ import { fansGained, viralStep } from './viral';
 import { weeklyStreams } from './formulas/streams';
 import { collisionFactor } from './calendar';
 import { repartirStreaming } from './conglomerat';
+import { bonusRemuneration } from './institution';
 import { firstWeekStreams, hitPotential, marketingFactor } from './formulas/streams';
 import { trendMultiplier } from './market';
 import { trackQuality } from './formulas/quality';
@@ -225,7 +226,12 @@ export const streamsPhase: Phase<LabelState, LabelSignal> = {
       p.derniers = streams;
       if (artist) artist.fanbase += fansGained(streams, artist.charisme);
       const gross = cents(
-        Math.round(streams * STREAMS.centsPerStream * state.marche.facteurStreaming),
+        Math.round(
+          streams *
+            STREAMS.centsPerStream *
+            state.marche.facteurStreaming *
+            bonusRemuneration(state, ctx.tick),
+        ),
       );
       if (gross <= 0) continue;
       const contract = state.contrats.find((c) => c.artisteId === p.artisteId);

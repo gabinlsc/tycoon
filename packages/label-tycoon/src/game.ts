@@ -20,6 +20,15 @@ import type { DifficultyPreset, DifficultySettings, GameConfig, GameMode } from 
 import { type LabelSignal, buildPipeline } from './pipeline';
 import { artistsPhase } from './dynamics';
 import {
+  influence,
+  initialInstitution,
+  institutionPhase,
+  setAcademy,
+  setDonation,
+  upgradeAcademy,
+  upgradeMuseum,
+} from './institution';
+import {
   buyFestival,
   buySyncStudio,
   conglomeratPhase,
@@ -123,6 +132,7 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
         livePhase.run(state, ctx);
         groupePhase.run(state, ctx);
         conglomeratPhase.run(state, ctx);
+        institutionPhase.run(state, ctx);
       },
     },
     finances: ledgerPhase,
@@ -184,6 +194,11 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
     'regler-plateforme': setPlatform,
     'acheter-studio-synchro': buySyncStudio,
     'acheter-festival': buyFestival,
+    'regler-fondation': setDonation,
+    'ameliorer-academie': upgradeAcademy,
+    'regler-academie': setAcademy,
+    'ameliorer-musee': upgradeMuseum,
+    influencer: influence,
     embaucher: hire,
     licencier: fire,
     'etude-marche': marketStudy,
@@ -291,6 +306,7 @@ export function initialState(seed: Seed, config: GameConfig): LabelState {
     succes: [],
     objectifs: [],
     records: [],
+    institution: initialInstitution(),
     plateforme: null,
     studiosSynchro: 0,
     festivalsPossedes: 0,
@@ -310,6 +326,7 @@ export function completerEtat(state: LabelState): void {
   state.plateforme ??= null;
   state.studiosSynchro ??= 0;
   state.festivalsPossedes ??= 0;
+  state.institution ??= initialInstitution();
 }
 
 /** Copie des réglages sans référence partagée avec l'appelant. */

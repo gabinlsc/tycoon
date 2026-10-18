@@ -382,6 +382,7 @@ export {
   type VueDefi,
   type VueConglomerat,
   type VueGroupe,
+  type VueInstitution,
   type VueLigneFinance,
   type VueScenario,
   type VuePartie,
@@ -477,3 +478,17 @@ export {
   synchroChance,
 } from './conglomerat';
 export { completerEtat } from './game';
+export {
+  type Academie,
+  type InfluenceAction,
+  type InstitutionState,
+  type RegleActive,
+  type SetAcademyAction,
+  type SetDonationAction,
+  type UpgradeAcademyAction,
+  type UpgradeMuseumAction,
+  bonusRemuneration,
+  initialInstitution,
+  institutionPhase,
+  revenuMusee,
+} from './institution';
