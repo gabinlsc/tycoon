@@ -136,6 +136,7 @@ export function initialState(seed: Seed, config: GameConfig): LabelState {
     projets: [],
     sortiesRivales: [],
     classements: emptyCharts(),
+    sousGenres: [],
     nextId: 1,
   };
 }

@@ -2,6 +2,7 @@ import { type ActionHandler, type Cents, cents, clamp, money, reject } from '@ty
 import type { Action } from '@tycoon/core';
 import { type Artist, notoriety } from './artists';
 import { CONTRACTS } from './balance';
+import { claimSubgenre } from './market';
 import { canAfford, spend } from './finance';
 import type { LabelSignal } from './pipeline';
 import { type LabelState, newId } from './state';
@@ -140,6 +141,8 @@ export function concludeSigning(
     signeLe: tick,
     echeance: tick + clauses.dureeAnnees * 52,
   });
+  if (claimSubgenre(state, artist.genre, 'joueur'))
+    emit({ kind: 'premier-sous-genre', payload: { genre: artist.genre } });
   emit({ kind: 'artiste-signe', payload: { artisteId: artist.id } });
 }
 

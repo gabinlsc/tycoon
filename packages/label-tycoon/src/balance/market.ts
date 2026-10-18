@@ -27,3 +27,20 @@ export const TRENDS = {
   /** Le bruit reste dans cette plage. */
   noiseLimit: 15,
 } as const;
+
+/** Sous-genres émergents (GDD, 5.7). */
+export const SUBGENRES = {
+  /** Probabilité hebdomadaire de naissance d'un sous-genre. */
+  birthChance: 0.01,
+  /** Sous-genres vivants en même temps. */
+  maxAlive: 3,
+  /** Durée de vie en semaines (naissance → disparition). */
+  lifespan: { min: 104, max: 260 },
+  /** Popularité au pic. */
+  peak: { min: 70, max: 95 },
+  /** Audience du sous-genre, en part de celle du parent. */
+  audienceShare: 0.5,
+  /** Crédibilité gagnée par le premier label à y signer un artiste. */
+  firstSignerCredibility: 30,
+  prefixes: ['Néo', 'Hyper', 'Lo-fi', 'Cyber', 'Velours', 'Solaire', 'Nocturne', 'Brut'],
+} as const;
