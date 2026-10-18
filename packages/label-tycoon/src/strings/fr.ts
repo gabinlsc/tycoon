@@ -211,6 +211,7 @@ export const fr = {
     'pret-introuvable': () => "Ce prêt n'existe pas.",
     'trop-d-investisseurs': (p: { max: number }) => `Tu as déjà ${p.max} investisseurs actifs.`,
     'rival-introuvable': () => "Ce label rival n'existe pas.",
+    'strategie-inconnue': () => "Cette stratégie fiscale n'existe pas.",
     'suivi-introuvable': () => "Ce talent n'est pas dans ta liste de suivi.",
     'essai-deja-fait': () => 'Tu as déjà fait passer un essai à ce talent.',
   },

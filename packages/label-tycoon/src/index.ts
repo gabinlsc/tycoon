@@ -269,3 +269,11 @@ export {
   sellContract,
   weeksLeft,
 } from './bankruptcy';
+export {
+  type ChooseTaxAction,
+  type Fiscalite,
+  chooseTax,
+  initialTax,
+  taxDue,
+  taxWeek,
+} from './tax';
