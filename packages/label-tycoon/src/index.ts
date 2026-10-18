@@ -204,3 +204,12 @@ export {
   salaryFor,
   staffPhase,
 } from './staff';
+export {
+  type Cadre,
+  type ConfigureAction,
+  type DelegationDomain,
+  type Rapport,
+  chooseSource,
+  defaultCadre,
+  delegatedScouting,
+} from './delegation';

@@ -1,6 +1,7 @@
 import { type ActionHandler, type Phase, type Rng, cents, clamp, reject } from '@tycoon/core';
 import type { Action } from '@tycoon/core';
 import { STAFF, STAFF_ROLES, STAFF_TRAITS, type StaffRole, type StaffTrait } from './balance';
+import { delegatedScouting } from './delegation';
 import { spend } from './finance';
 import { generateRealName } from './naming';
 import type { LabelSignal } from './pipeline';
@@ -105,6 +106,7 @@ export const staffPhase: Phase<LabelState, LabelSignal> = {
       kept.push(m);
     }
     state.personnel = kept;
+    delegatedScouting(state, ctx.rng('reperage'), ctx.tick, ctx.emit);
     if (ctx.tick % STAFF.refreshEvery === 0) {
       if (state.candidats.length >= STAFF.poolSize) state.candidats.shift();
       while (state.candidats.length < STAFF.poolSize)
