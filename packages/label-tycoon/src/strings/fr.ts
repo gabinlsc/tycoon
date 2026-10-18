@@ -202,6 +202,13 @@ export const fr = {
     'festival-conflit': () => 'Cet artiste est déjà pris cette semaine-là.',
     'candidature-refusee': () => "L'artiste n'est pas assez connu pour ce festival.",
     'offre-introuvable': () => "Cette offre n'est plus valable.",
+    'montant-invalide': () => 'Le montant demandé est trop faible ou invalide.',
+    'duree-invalide': (p: { min: number; max: number }) =>
+      `La durée doit être comprise entre ${p.min} et ${p.max} semaines.`,
+    'trop-de-prets': (p: { max: number }) => `Tu as déjà ${p.max} prêts en cours.`,
+    'plafond-depasse': (p: { max: number }) =>
+      `Ta banque n'ira pas au-delà de ${p.max} centimes d'encours.`,
+    'pret-introuvable': () => "Ce prêt n'existe pas.",
     'suivi-introuvable': () => "Ce talent n'est pas dans ta liste de suivi.",
     'essai-deja-fait': () => 'Tu as déjà fait passer un essai à ce talent.',
   },
