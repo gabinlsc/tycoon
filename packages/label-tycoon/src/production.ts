@@ -10,6 +10,7 @@ import {
 } from './balance';
 import { labelShare } from './contracts';
 import { canAfford, earn, spend } from './finance';
+import { fansGained, viralStep } from './viral';
 import { weeklyStreams } from './formulas/streams';
 import { firstWeekStreams, hitPotential, marketingFactor } from './formulas/streams';
 import { trendMultiplier } from './market';
@@ -40,6 +41,10 @@ export interface Projet {
   sortieLe: number | null;
   /** Streams de la première semaine, fixés à la sortie. */
   s1: number;
+  /** Potentiel de hit fixé à la sortie. */
+  hit: number;
+  /** Emballement viral en cours (semaines restantes et multiplicateur). */
+  viral: { semaines: number; mult: number } | null;
   /** Cumul des streams depuis la sortie. */
   streams: number;
 }
@@ -117,6 +122,8 @@ export const launchProject: ActionHandler<LabelState, LaunchAction, LabelSignal>
       qualite: null,
       sortieLe: null,
       s1: 0,
+      hit: 0,
+      viral: null,
       streams: 0,
     });
     state.nextId += 1;
@@ -145,6 +152,7 @@ export const releaseProject: ActionHandler<LabelState, ReleaseAction, LabelSigna
         artist.hype,
         marketingFactor(0),
       ).value;
+      p.hit = hit;
       p.s1 = Math.round(firstWeekStreams(artist.fanbase, market?.audience ?? 0, hit));
       artist.hype = Math.min(100, artist.hype + 10 + (p.clip === 'gros' ? 10 : 0));
     }
@@ -188,10 +196,17 @@ export const productionPhase: Phase<LabelState, LabelSignal> = {
 export const streamsPhase: Phase<LabelState, LabelSignal> = {
   name: 'streams',
   run(state, ctx) {
+    const rng = ctx.rng('marche');
     for (const p of state.projets) {
       if (p.statut !== 'sortie' || p.sortieLe === null) continue;
-      const streams = Math.round(weeklyStreams(p.s1, p.qualite ?? 0, ctx.tick - p.sortieLe));
+      const artist = state.artistes.find((a) => a.id === p.artisteId);
+      const viral = artist ? viralStep(p, artist, rng) : null;
+      if (viral) ctx.emit({ kind: 'viral', payload: { projetId: p.id, artisteId: p.artisteId } });
+      const streams = Math.round(
+        weeklyStreams(p.s1, p.qualite ?? 0, ctx.tick - p.sortieLe) * (p.viral?.mult ?? 1),
+      );
       p.streams += streams;
+      if (artist) artist.fanbase += fansGained(streams, artist.charisme);
       const gross = cents(Math.round(streams * STREAMS.centsPerStream));
       if (gross <= 0) continue;
       const contract = state.contrats.find((c) => c.artisteId === p.artisteId);

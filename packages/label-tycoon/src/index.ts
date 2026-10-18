@@ -163,3 +163,4 @@ export {
   weeklyStreams,
 } from './formulas/streams';
 export { streamsPhase } from './production';
+export { fansGained, viralStep } from './viral';
