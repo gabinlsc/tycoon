@@ -309,3 +309,12 @@ export {
   type BotStrategy,
   runBot,
 } from './bots';
+export {
+  type GameResult,
+  type SimOptions,
+  type StrategySummary,
+  renderReport,
+  simulate,
+  simulateGame,
+  summarize,
+} from './sim-balance';
