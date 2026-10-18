@@ -31,6 +31,7 @@ import {
   VENUE_IDS,
   type AchievementFamily,
   type TaxStrategy,
+  GENERATIONS,
 } from './balance';
 import { buyoutAsk } from './rival-interactions';
 import { analystLevel } from './forecast';
@@ -41,6 +42,7 @@ import { festivalOffer } from './festivals';
 import { venueCost } from './tours';
 import { DEFI_SEMAINES, defiTermine, resultatDefi, texteResultat } from './defi';
 import { ereCourante, prochaineEre } from './eres';
+import { legendes } from './generations';
 import { debloque as debloqueInstitution, revenuMusee } from './institution';
 import {
   debloque as debloqueConglomerat,
@@ -644,6 +646,7 @@ export interface VueJeu {
   conglomerat: VueConglomerat;
   institution: VueInstitution;
   ere: VueEre;
+  generations: VueGenerations;
   scenario: VueScenario | null;
   defi: VueDefi | null;
   rapportsMensuels: VueRapportMensuel[];
@@ -1160,6 +1163,48 @@ function rapportsDe(state: LabelState): VueRapportMensuel[] {
     }));
 }
 
+/** Légendes du label, retraités et relève d'artistes célèbres. */
+export interface VueGenerations {
+  legendes: {
+    id: number;
+    nomScene: string;
+    genre: string;
+    ageRetraite: number;
+    fans: number;
+    mentoree: string | null;
+  }[];
+  retraites: number;
+  enfants: { id: number; nomScene: string; parent: string; sousContrat: boolean }[];
+  reputationParAn: number;
+  bonusAcademie: number;
+}
+
+function generationsDe(state: LabelState): VueGenerations {
+  const nom = (id: number): string => state.artistes.find((a) => a.id === id)?.nomScene ?? '';
+  const liste = legendes(state);
+  return {
+    legendes: liste.map((a) => ({
+      id: a.id,
+      nomScene: a.nomScene,
+      genre: a.genre,
+      ageRetraite: a.age,
+      fans: a.fanbase,
+      mentoree: nom(state.mentorats.find((m) => m.mentorId === a.id)?.protegeId ?? -1) || null,
+    })),
+    retraites: state.artistes.filter((a) => a.employeur === 'retraite').length,
+    enfants: state.artistes
+      .filter((a) => a.parentId !== undefined && a.employeur !== 'retraite')
+      .map((a) => ({
+        id: a.id,
+        nomScene: a.nomScene,
+        parent: nom(a.parentId ?? -1),
+        sousContrat: a.employeur === 'joueur',
+      })),
+    reputationParAn: liste.length * GENERATIONS.reputationPerLegendYear,
+    bonusAcademie: GENERATIONS.academyBonusPerLegend,
+  };
+}
+
 function ereDe(state: LabelState, tick: number): VueEre {
   const id = state.eres.courante;
   const r = ERES[id];
@@ -1506,6 +1551,7 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
     conglomerat: conglomeratDe(state),
     institution: institutionDe(state, tick),
     ere: ereDe(state, tick),
+    generations: generationsDe(state),
     partie: {
       mode: state.config.mode,
       scenarioId: state.config.scenarioId ?? null,

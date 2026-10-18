@@ -98,3 +98,4 @@ export { CADRE_STYLES, GROUPE, type CadreStyle } from './groupe';
 export { FESTIVALS_MAISON, PLATEFORME, STUDIOS_SYNCHRO } from './conglomerat';
 export { ACADEMIE, FONDATION, INFLUENCE, MUSEE } from './institution';
 export { ERA_SCHEDULE, ERES, ERE_IDS, type EreId, type EreRules } from './eres';
+export { GENERATIONS } from './generations';

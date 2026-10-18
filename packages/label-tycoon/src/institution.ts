@@ -1,8 +1,17 @@
 import { type ActionHandler, type Phase, Rng, cents, clamp, reject } from '@tycoon/core';
 import type { Action } from '@tycoon/core';
 import { generateArtist, takenStageNames } from './artists';
-import { ACADEMIE, FONDATION, INFLUENCE, MUSEE, RIVAL_INTERACTIONS, UNLOCKS } from './balance';
+import {
+  ACADEMIE,
+  FONDATION,
+  GENERATIONS,
+  INFLUENCE,
+  MUSEE,
+  RIVAL_INTERACTIONS,
+  UNLOCKS,
+} from './balance';
 import { rosterCap, rosterSize } from './contracts';
+import { legendesDuGenre } from './generations';
 import { canAfford, earn, spend } from './finance';
 import { genreKeys } from './market';
 import type { LabelSignal } from './pipeline';
@@ -239,6 +248,11 @@ function diplomer(
     { level: confirme ? 'confirme' : 'espoir', genre: academie.genre },
   );
   artiste.loyaute = Math.max(artiste.loyaute, ACADEMIE.minLoyalty);
+  // Les légendes du genre transmettent leur métier aux diplômés.
+  artiste.potentiel = Math.min(
+    100,
+    artiste.potentiel + legendesDuGenre(state, artiste.genre) * GENERATIONS.academyBonusPerLegend,
+  );
   artiste.employeur = 'joueur';
   state.artistes.push(artiste);
   state.contrats.push({

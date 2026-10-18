@@ -28,6 +28,8 @@ export function filVars(state: LabelState, payload: Payload): Record<string, str
   const artisteId = payload['artisteId'] ?? projet?.artisteId;
   const artist = state.artistes.find((a) => a.id === Number(artisteId));
   if (artist) vars['nom'] = artist.nomScene;
+  const parent = state.artistes.find((a) => a.id === Number(payload['parentId']));
+  if (parent) vars['parent'] = parent.nomScene;
   const rival = state.rivaux.find((r) => r.id === Number(payload['rivalId']));
   vars['rival'] = rival?.nom ?? 'Un label rival';
   if (typeof payload['categorie'] === 'string') vars['categorie'] = payload['categorie'];
