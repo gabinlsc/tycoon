@@ -1,0 +1,104 @@
+import { describe, expect, it } from 'vitest';
+import { type CommandeJeu, LabelPilot, type ReponseJeu } from './index';
+
+const vue = (r: ReponseJeu) => {
+  if (r.type !== 'vue') throw new Error(`vue attendue, reçu ${r.type}`);
+  return r;
+};
+
+describe('pilote sans worker', () => {
+  it('démarre une partie et renvoie une vue cohérente', () => {
+    const pilot = new LabelPilot();
+    const r = vue(pilot.handle({ type: 'nouvelle-partie', graine: 'p1' }));
+    expect(r.vue.semaine).toBe(0);
+    expect(r.vue.date).toEqual({ annee: 1, mois: 1, semaineDuMois: 1 });
+    expect(r.vue.label.palier).toBe('Home-studio');
+    expect(r.vue.finances.tresorerie).toBeGreaterThan(0);
+    expect(r.vue.roster).toEqual([]);
+  });
+
+  it('refuse toute commande sans partie, sans lever', () => {
+    const pilot = new LabelPilot();
+    for (const c of [
+      { type: 'vue' },
+      { type: 'avancer', semaines: 1 },
+      { type: 'sauvegarder' },
+    ] as CommandeJeu[])
+      expect(pilot.handle(c).type).toBe('erreur');
+  });
+
+  it('avance, renvoie les signaux et s’arrête sur une auto-pause', () => {
+    const pilot = new LabelPilot();
+    pilot.handle({ type: 'nouvelle-partie', graine: 'p2' });
+    const week = vue(pilot.handle({ type: 'avancer', semaines: 1 }));
+    expect(week.vue.semaine).toBe(1);
+    expect(week.semainesJouees).toBe(1);
+    const long = vue(pilot.handle({ type: 'avancer', semaines: 52 }));
+    expect(long.semainesJouees).toBeLessThanOrEqual(52);
+    if (long.interrompu) expect(long.signaux.some((s) => s.interrupt)).toBe(true);
+    const free = vue(pilot.handle({ type: 'avancer', semaines: 10, arretSurSignal: false }));
+    expect(free.semainesJouees).toBe(10);
+  });
+
+  it('applique une action, ou renvoie un refus traduit', () => {
+    const pilot = new LabelPilot();
+    pilot.handle({ type: 'nouvelle-partie', graine: 'p3' });
+    const ok = vue(
+      pilot.handle({ type: 'action', action: { type: 'reperer', source: 'candidature' } }),
+    );
+    expect(ok.vue.suivis.length).toBeGreaterThan(0);
+    const refused = pilot.handle({
+      type: 'action',
+      action: { type: 'reperer', source: 'zzz' as never },
+    });
+    expect(refused).toMatchObject({ type: 'refus', code: 'source-inconnue' });
+    expect(refused.type === 'refus' && refused.message.length).toBeGreaterThan(5);
+  });
+
+  it('ne montre que des fourchettes pour les talents suivis (jamais les attributs cachés)', () => {
+    const pilot = new LabelPilot();
+    pilot.handle({ type: 'nouvelle-partie', graine: 'p4' });
+    const r = vue(
+      pilot.handle({ type: 'action', action: { type: 'reperer', source: 'plateforme' } }),
+    );
+    for (const s of r.vue.suivis) {
+      expect(Object.keys(s.fourchettes).sort()).toEqual([
+        'charisme',
+        'flow',
+        'plume',
+        'scene',
+        'voix',
+      ]);
+      expect(JSON.stringify(s)).not.toMatch(/potentiel|ethique|loyaute/);
+    }
+  });
+
+  it('sauvegarde et recharge une partie à l’identique', () => {
+    const a = new LabelPilot();
+    a.handle({ type: 'nouvelle-partie', graine: 'p5' });
+    a.handle({ type: 'avancer', semaines: 20, arretSurSignal: false });
+    const save = a.handle({ type: 'sauvegarder' });
+    if (save.type !== 'sauvegarde') throw new Error('sauvegarde attendue');
+    const b = new LabelPilot();
+    expect(vue(b.handle({ type: 'charger', sauvegarde: save.sauvegarde })).vue).toEqual(
+      vue(a.handle({ type: 'vue' })).vue,
+    );
+    const next = (p: LabelPilot) =>
+      vue(p.handle({ type: 'avancer', semaines: 15, arretSurSignal: false })).vue;
+    expect(next(b)).toEqual(next(a));
+    expect(b.handle({ type: 'charger', sauvegarde: '{"x":1}' }).type).toBe('erreur');
+    expect(b.handle({ type: 'charger', sauvegarde: 'pas du json' }).type).toBe('erreur');
+  });
+
+  it('s’arrête de jouer une fois en faillite', () => {
+    const pilot = new LabelPilot();
+    pilot.handle({ type: 'nouvelle-partie', graine: 'p6' });
+    for (let i = 0; i < 40; i += 1)
+      pilot.handle({ type: 'avancer', semaines: 52, arretSurSignal: false });
+    const r = vue(pilot.handle({ type: 'vue' }));
+    if (r.vue.finances.faillite) {
+      const before = r.vue.semaine;
+      expect(vue(pilot.handle({ type: 'avancer', semaines: 5 })).vue.semaine).toBe(before);
+    }
+  });
+});

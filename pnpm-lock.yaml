@@ -35,6 +35,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@tycoon/label-tycoon':
+        specifier: workspace:*
+        version: link:../../packages/label-tycoon
       react:
         specifier: ^18.3.1
         version: 18.3.1
