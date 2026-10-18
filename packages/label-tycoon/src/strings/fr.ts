@@ -197,6 +197,10 @@ export const fr = {
     'tournee-en-cours': () => 'Cet artiste est déjà en tournée.',
     'artiste-au-repos': (p: { semaines: number }) =>
       `Cet artiste est au repos encore ${p.semaines} semaines.`,
+    'festival-introuvable': () => "Ce festival n'est plus ouvert aux candidatures.",
+    'festival-complet': () => 'Ce festival a déjà retenu un artiste de ton label.',
+    'festival-conflit': () => 'Cet artiste est déjà pris cette semaine-là.',
+    'candidature-refusee': () => "L'artiste n'est pas assez connu pour ce festival.",
     'suivi-introuvable': () => "Ce talent n'est pas dans ta liste de suivi.",
     'essai-deja-fait': () => 'Tu as déjà fait passer un essai à ce talent.',
   },
