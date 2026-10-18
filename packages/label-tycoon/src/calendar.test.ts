@@ -14,7 +14,7 @@ describe('sorties des rivaux', () => {
     const run = () => {
       const session = newGame('cal');
       session.engine.data.config.difficulty.rivalAggression = 3;
-      return labelGame.advance(session, 30).session.engine.data;
+      return labelGame.advance(session, 150).session.engine.data;
     };
     const a = run();
     expect(a.sortiesRivales.length).toBeGreaterThan(0);
@@ -25,8 +25,8 @@ describe('sorties des rivaux', () => {
   it('purgent les sorties trop anciennes', () => {
     const session = newGame('cal2');
     session.engine.data.config.difficulty.rivalAggression = 3;
-    const d = labelGame.advance(session, 80).session.engine.data;
-    expect(d.sortiesRivales.every((s) => s.semaine >= 80 - RIVAL_RELEASES.keepWeeks - 1)).toBe(
+    const d = labelGame.advance(session, 200).session.engine.data;
+    expect(d.sortiesRivales.every((s) => s.semaine >= 200 - RIVAL_RELEASES.keepWeeks - 1)).toBe(
       true,
     );
   });
@@ -42,6 +42,7 @@ describe('collision', () => {
       semaine: 10,
       poids: 8,
       annoncee: true,
+      artisteId: null,
     });
     expect(collisionFactor(d, 'rap', 10)).toBe(RIVAL_RELEASES.collisionFactor);
     expect(collisionFactor(d, 'rap', 11)).toBe(1);
@@ -89,6 +90,7 @@ describe('collision', () => {
           semaine: 0,
           poids: 8,
           annoncee: false,
+          artisteId: null,
         });
       const r = labelGame.dispatch(session, { type: 'sortir-projet', projetId: 500 });
       if (!r.ok) throw new Error('sortie attendue');

@@ -133,6 +133,7 @@ describe('variations appliquées par les systèmes', () => {
 describe('dans la simulation', () => {
   function withRoster() {
     const state = initialState('roster', defaultConfig());
+    state.config.difficulty.rivalAggression = 0;
     for (let i = 0; i < 5; i += 1) {
       state.artistes.push(
         generateArtist(

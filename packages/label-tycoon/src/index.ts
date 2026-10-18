@@ -169,7 +169,8 @@ export {
 } from './formulas/streams';
 export { streamsPhase } from './production';
 export { fansGained, viralStep } from './viral';
-export { type SortieRivale, announcedReleases, collisionFactor, rivalsPhase } from './calendar';
+export { type SortieRivale, announcedReleases, collisionFactor } from './calendar';
+export { rivalIncome, rivalsPhase, rosterOf, signingUtility } from './rival-ai';
 export {
   type ChartEntry,
   type ChartHistory,

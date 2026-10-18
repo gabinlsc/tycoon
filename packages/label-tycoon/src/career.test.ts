@@ -216,6 +216,7 @@ describe('retour en grâce et statut culte', () => {
 describe('dans la simulation', () => {
   function roster() {
     const state = initialState('carriere', defaultConfig());
+    state.config.difficulty.rivalAggression = 0;
     const rng = Rng.fromSeed('roster');
     for (let i = 0; i < 12; i += 1) {
       state.artistes.push(
