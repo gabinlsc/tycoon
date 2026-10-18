@@ -167,6 +167,12 @@ export const fr = {
     'negociation-rompue': () => "L'artiste ne veut plus négocier avec toi.",
     'contre-propositions-epuisees': () => 'Plus de contre-proposition possible : signe ou renonce.',
     'contrat-introuvable': () => "Cet artiste n'a pas de contrat avec ton label.",
+    'artiste-non-signe': () => "Cet artiste n'est pas signé chez toi.",
+    'projet-invalide': () => 'Les réglages de ce projet sont invalides.',
+    'studio-sature': (p: { max: number }) =>
+      `Le studio est saturé : ${p.max} projets en cours au maximum.`,
+    'projet-introuvable': () => "Ce projet n'existe pas.",
+    'projet-pas-pret': () => "Ce projet n'est pas encore terminé.",
     'suivi-introuvable': () => "Ce talent n'est pas dans ta liste de suivi.",
     'essai-deja-fait': () => 'Tu as déjà fait passer un essai à ce talent.',
   },

@@ -200,6 +200,7 @@ describe('pipeline', () => {
   it("le jeu enregistre les phases d'événements aux bonnes places", () => {
     expect(labelGame.simulation.definition.phases.map((p) => p.name)).toEqual([
       'echeances-evenements',
+      'production',
       'artistes',
       'finances',
       'tirage-evenements',

@@ -50,7 +50,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `feat/label-encheres` : enchères face aux rivaux
 - [x] `feat/label-fin-contrat` : renégociation, prolongation, départ, procès, rachat de clause
 - [x] `feat/label-production-qualite` : formule Q, producteurs, studio, mixage, featurings
-- [ ] `feat/label-production-projets` : types de sortie, durées, retards, planification, capacité
+- [x] `feat/label-production-projets` : types de sortie, durées, retards, planification, capacité
 - [ ] `feat/label-streams` : H, S(t), traîne longue en forme fermée, fenêtre active
 - [ ] `feat/label-viralite-fanbase` : viralité, conversion en fans, hype hebdomadaire
 - [ ] `feat/label-concurrence-calendrier` : collisions de sorties
@@ -180,7 +180,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 0     | 1     | 1      |
 | 1     | 13    | 13     |
 | 2     | 6     | 6      |
-| 3     | 18    | 9      |
+| 3     | 18    | 10     |
 | 4     | 16    | 0      |
 | 5     | 14    | 0      |
 | 6     | 14    | 0      |

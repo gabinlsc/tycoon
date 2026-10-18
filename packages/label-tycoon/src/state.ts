@@ -4,6 +4,7 @@ import type { Artist } from './artists';
 import type { FinanceState } from './finance';
 import type { Rival } from './auction';
 import type { Contrat } from './contracts';
+import type { Projet } from './production';
 import type { Negociation } from './negotiation';
 import type { Denicheur, Prospect } from './scouting';
 import type { GameConfig } from './config';
@@ -44,6 +45,8 @@ export interface LabelState {
   contrats: Contrat[];
   /** Labels rivaux. */
   rivaux: Rival[];
+  /** Projets de production et sorties. */
+  projets: Projet[];
   /** Négociations en cours ou rompues, une par artiste. */
   negociations: Negociation[];
   /** Prochain identifiant libre, partagé par toutes les entités (artistes, sorties, contrats…). */

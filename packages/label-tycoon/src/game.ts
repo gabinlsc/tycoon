@@ -17,6 +17,7 @@ import { initialCredibility, initialMarket } from './market';
 import { breakContract, releaseArtist, renegotiate } from './contract-end';
 import { auction, generateRivals } from './auction';
 import { sign } from './contracts';
+import { launchProject, productionPhase, releaseProject } from './production';
 import { propose } from './negotiation';
 import { dropProspect, fireScout, hireScout, scout, studioTrial } from './scouting';
 import { generateWorld } from './world';
@@ -58,6 +59,7 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
   phases: buildPipeline({
     'echeances-evenements': eventEngine.duePhase,
     artistes: artistsPhase,
+    production: productionPhase,
     finances: financePhase,
     'tirage-evenements': eventEngine.phase,
   }),
@@ -66,6 +68,8 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
     'renommer-label': renameLabel,
     reperer: scout,
     signer: sign,
+    'lancer-projet': launchProject,
+    'sortir-projet': releaseProject,
     renegocier: renegotiate,
     'rompre-contrat': breakContract,
     'liberer-artiste': releaseArtist,
@@ -123,6 +127,7 @@ export function initialState(seed: Seed, config: GameConfig): LabelState {
     contrats: [],
     rivaux: generateRivals(Rng.fromSeed(`${seed}:rivaux`)),
     negociations: [],
+    projets: [],
     nextId: 1,
   };
 }
