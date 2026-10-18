@@ -179,3 +179,43 @@
   align-items: center;
   gap: var(--sp-2);
 }
+
+.label-badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.6em;
+  padding: 0 var(--sp-2);
+  border: 3px solid var(--outline);
+  border-radius: 999px;
+  background: var(--red);
+  color: #fff;
+  font-size: var(--fs-small);
+}
+.label-decisions,
+.label-notifs {
+  display: grid;
+  gap: var(--sp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.label-decision,
+.label-notifs li {
+  padding: var(--sp-3) var(--sp-4);
+  border: var(--border) solid var(--outline);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+}
+.label-notifs li.is-new {
+  background: var(--gold);
+  color: var(--outline);
+}
+.label-decision__deadline {
+  color: var(--text-soft);
+  font-weight: 800;
+}
+.label-decision__choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}

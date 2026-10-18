@@ -5,6 +5,7 @@ export const ECRANS = [
   { id: 'reperage', titre: 'Repérage', description: 'Trouver de nouveaux talents' },
   { id: 'studio', titre: 'Studio', description: 'Produire des sorties' },
   { id: 'fil', titre: 'Le Fil', description: 'Les actus du label' },
+  { id: 'boite', titre: 'Boîte', description: 'Décisions et notifications' },
 ] as const;
 
 export type EcranId = (typeof ECRANS)[number]['id'];

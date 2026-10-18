@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ECRANS, type EcranId } from './ecrans';
 import { useLabel } from './LabelContext';
 import { BarreTemps } from './BarreTemps';
+import { BoiteReception, notificationsNonLues } from './BoiteReception';
 import { NouvellePartie } from './NouvellePartie';
 import { useRaccourcis } from './Raccourcis';
 
@@ -22,6 +23,7 @@ function Placeholder({ id }: { id: EcranId }) {
 export function Coquille() {
   const { etat, vue, erreur, refus } = useLabel();
   const [ecran, setEcran] = useState<EcranId>('qg');
+  const [dernierLu, setDernierLu] = useState(0);
   useRaccourcis(setEcran, vue !== null);
 
   if (etat === 'chargement') return <p className="stage__loading">Chargement du moteur…</p>;
@@ -32,6 +34,7 @@ export function Coquille() {
       </p>
     );
   if (!vue) return <NouvellePartie />;
+  const badges = vue.decisions.length + notificationsNonLues(vue.fil, dernierLu).length;
 
   return (
     <div className="label-shell">
@@ -60,6 +63,11 @@ export function Coquille() {
               {index + 1}
             </span>
             {e.titre}
+            {e.id === 'boite' && badges > 0 ? (
+              <span className="label-badge" aria-label={`${badges} à lire`}>
+                {badges}
+              </span>
+            ) : null}
           </button>
         ))}
       </nav>
@@ -69,7 +77,11 @@ export function Coquille() {
         </p>
       ) : null}
       <main className="label-main">
-        <Placeholder id={ecran} />
+        {ecran === 'boite' ? (
+          <BoiteReception dernierLu={dernierLu} onLu={setDernierLu} />
+        ) : (
+          <Placeholder id={ecran} />
+        )}
       </main>
     </div>
   );
