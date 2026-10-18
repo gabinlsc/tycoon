@@ -19,3 +19,17 @@ export const STREAMS = {
   marketingK: 0.5,
   marketingCap: 2,
 } as const;
+
+/** Viralité et conversion en fans (GDD, 5.6). */
+export const VIRALITY = {
+  /** Probabilité hebdomadaire de base, multipliée par H. */
+  baseChance: 0.01,
+  /** Multiplicateur de streams pendant un emballement. */
+  multiplier: { min: 5, max: 20 },
+  /** Durée d'un emballement en semaines. */
+  weeks: { min: 3, max: 6 },
+  /** Fans gagnés par stream, avant le facteur de charisme. */
+  fanConversion: 0.002,
+  /** Hype gagnée au déclenchement. */
+  hypeBoost: 25,
+} as const;
