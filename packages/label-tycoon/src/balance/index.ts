@@ -59,6 +59,7 @@ export {
 } from './production';
 export { STREAMS, VIRALITY } from './streams';
 export { CEREMONY, CERTIFICATIONS, CHARTS } from './charts';
+export { ACHIEVEMENT_THRESHOLDS, OBJECTIVES, type AchievementFamily } from './achievements';
 export {
   DELEGATION,
   STAFF,

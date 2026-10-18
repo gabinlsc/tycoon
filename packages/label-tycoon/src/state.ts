@@ -4,6 +4,7 @@ import type { Artist } from './artists';
 import type { FinanceState } from './finance';
 import type { Rival } from './auction';
 import type { Contrat } from './contracts';
+import type { Objectif, Stats } from './achievements';
 import type { RapportMensuel } from './monthly';
 import type { Actu } from './fil';
 import type { Ceremonie } from './ceremonies';
@@ -117,6 +118,11 @@ export interface LabelState {
   filMemoire: Record<string, number>;
   /** Rapports mensuels : ce qui a marché, raté, et pourquoi. */
   rapportsMensuels: RapportMensuel[];
+  /** Compteurs cumulés par type de signal, succès obtenus, objectifs en cours et records. */
+  stats: Stats;
+  succes: string[];
+  objectifs: Objectif[];
+  records: { clef: string; valeur: number; semaine: number }[];
   /** Négociations en cours ou rompues, une par artiste. */
   negociations: Negociation[];
   /** Prochain identifiant libre, partagé par toutes les entités (artistes, sorties, contrats…). */
