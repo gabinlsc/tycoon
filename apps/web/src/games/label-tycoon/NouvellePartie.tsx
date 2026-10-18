@@ -3,6 +3,8 @@ import {
   DIFFICULTY_BOUNDS,
   DIFFICULTY_PRESETS,
   EVENT_RATE_BOUNDS,
+  GRAINE_TUTORIEL,
+  configTutoriel,
   DEFI_SEMAINES,
   configDefi,
   dateDuDefi,
@@ -84,11 +86,12 @@ export const BAC_A_SABLE_PAR_DEFAUT: OptionsBacASable = {
 
 /** Réglages envoyés au moteur pour le mode et les options choisis. */
 export function configDepart(
-  mode: 'carriere' | 'bac-a-sable' | 'scenario' | 'defi',
+  mode: 'carriere' | 'bac-a-sable' | 'scenario' | 'defi' | 'tutoriel',
   difficulty: DifficultySettings,
   bac: OptionsBacASable,
   scenarioId?: string,
 ): GameConfig {
+  if (mode === 'tutoriel') return configTutoriel();
   if (mode === 'defi') return configDefi(dateDuDefi(new Date()));
   if (mode === 'scenario')
     return { ...defaultConfig('normal', 'scenario'), difficulty, scenarioId: scenarioId ?? '' };
@@ -110,7 +113,9 @@ export function NouvellePartie() {
     ...DIFFICULTY_PRESETS.normal,
   });
   const [avance, setAvance] = useState(false);
-  const [mode, setMode] = useState<'carriere' | 'bac-a-sable' | 'scenario' | 'defi'>('carriere');
+  const [mode, setMode] = useState<'carriere' | 'bac-a-sable' | 'scenario' | 'defi' | 'tutoriel'>(
+    'carriere',
+  );
   const [scenarioId, setScenarioId] = useState(ORDRE_SCENARIOS[0] ?? '');
   const [bac, setBac] = useState<OptionsBacASable>(BAC_A_SABLE_PAR_DEFAUT);
   const config = configDepart(mode, reglages, bac, scenarioId);
@@ -123,6 +128,18 @@ export function NouvellePartie() {
       <p>Une partie, un monde généré : repère des talents, signe-les, sors des hits.</p>
       <fieldset className="label-field">
         <legend>Mode de jeu</legend>
+        <label className="label-field--check">
+          <input
+            type="radio"
+            name="mode"
+            checked={mode === 'tutoriel'}
+            onChange={() => setMode('tutoriel')}
+          />
+          <span>
+            <strong>Tutoriel</strong> — « Ton premier signataire » : guidé pas à pas, 15 à 20
+            minutes, passable.
+          </span>
+        </label>
         <label className="label-field--check">
           <input
             type="radio"
@@ -234,7 +251,7 @@ export function NouvellePartie() {
           <p>Le temps peut aussi s’accélérer jusqu’à ×16 pendant la partie.</p>
         </fieldset>
       ) : null}
-      {mode !== 'scenario' && mode !== 'defi' ? (
+      {mode === 'carriere' || mode === 'bac-a-sable' ? (
         <>
           <fieldset className="label-field">
             <legend>Difficulté</legend>
@@ -276,7 +293,7 @@ export function NouvellePartie() {
           {probleme}
         </p>
       ) : null}
-      {mode !== 'scenario' && mode !== 'defi' ? (
+      {mode === 'carriere' || mode === 'bac-a-sable' ? (
         <label className="label-start__field">
           Graine (facultatif)
           <input
@@ -296,7 +313,9 @@ export function NouvellePartie() {
           void nouvellePartie(
             mode === 'defi'
               ? graineDuDefi(config.defiDate ?? '')
-              : graine.trim() || Date.now().toString(36),
+              : mode === 'tutoriel'
+                ? GRAINE_TUTORIEL
+                : graine.trim() || Date.now().toString(36),
             config,
           )
         }

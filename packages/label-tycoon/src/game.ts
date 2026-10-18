@@ -19,6 +19,7 @@ import {
 import type { DifficultyPreset, DifficultySettings, GameConfig, GameMode } from './config';
 import { type LabelSignal, buildPipeline } from './pipeline';
 import { artistsPhase } from './dynamics';
+import { GRAINE_TUTORIEL } from './tutoriel-graine';
 import { dateValide, graineDuDefi } from './defi-date';
 import { applyScenario, findScenario, scenarioPhase } from './scenarios/engine';
 import { initialFinance } from './finance';
@@ -281,6 +282,10 @@ export function newGame(seed: Seed, config: GameConfig = defaultConfig()): Label
       throw new RangeError(`Date de défi invalide : ${String(config.defiDate)}`);
     if (seed !== graineDuDefi(config.defiDate))
       throw new RangeError('La graine d’un défi découle de sa date.');
+  }
+  if (config.mode === 'tutoriel') {
+    // Le tutoriel impose son monde : les consignes en dépendent.
+    return labelGame.newSession(GRAINE_TUTORIEL, initialState(GRAINE_TUTORIEL, config));
   }
   if (config.mode !== 'scenario') return labelGame.newSession(seed, initialState(seed, config));
   const def = config.scenarioId ? findScenario(config.scenarioId) : undefined;
