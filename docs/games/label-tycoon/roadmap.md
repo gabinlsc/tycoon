@@ -102,7 +102,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `feat/label-ui-coquille` : montage dans `/jeux/label-tycoon`, alias `/label`, navigation entre écrans, raccourcis de base
 - [x] `feat/label-ui-temps` : barre de temps (pause, ×1, ×2, ×4, semaine), auto-pauses réglables
 - [x] `feat/label-ui-boite-reception` : notifications, décisions et échéances
-- [ ] `feat/label-ui-infobulles` : composant d'infobulle explicative branché sur `explain()` (+ glossaire)
+- [x] `feat/label-ui-infobulles` : composant d'infobulle explicative branché sur `explain()` (+ glossaire)
 - [ ] `feat/label-ui-graphiques` : bibliothèque de graphiques SVG maison (courbes, barres, aires, hit-parade)
 - [ ] `feat/label-ui-pochettes` : pochettes de vinyles générées en SVG
 - [ ] `feat/label-ecran-qg` : QG (tableau de bord)
@@ -183,7 +183,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 3     | 18    | 18     |
 | 4     | 16    | 16     |
 | 5     | 14    | 14     |
-| 6     | 14    | 4      |
+| 6     | 14    | 5      |
 | 7     | 13    | 0      |
 | 8     | 10    | 0      |
 | 9     | 5     | 0      |

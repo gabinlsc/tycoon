@@ -3,6 +3,7 @@ import { ECRANS, type EcranId } from './ecrans';
 import { useLabel } from './LabelContext';
 import { BarreTemps } from './BarreTemps';
 import { BoiteReception, notificationsNonLues } from './BoiteReception';
+import { InfobulleCalcul, Terme } from './Infobulle';
 import { NouvellePartie } from './NouvellePartie';
 import { useRaccourcis } from './Raccourcis';
 
@@ -40,12 +41,19 @@ export function Coquille() {
     <div className="label-shell">
       <header className="label-bar">
         <strong className="label-bar__name">{vue.label.nom}</strong>
-        <span className="label-bar__tier">{vue.label.palier}</span>
+        <span className="label-bar__tier">
+          <Terme id="palier">{vue.label.palier}</Terme>
+        </span>
         <span className="label-bar__date mono">
           An {vue.date.annee} · mois {vue.date.mois} · sem. {vue.date.semaineDuMois}
         </span>
         <span className="label-bar__cash mono" aria-label="Trésorerie">
-          {eur(vue.finances.tresorerie)}
+          <Terme id="tresorerie">{eur(vue.finances.tresorerie)}</Terme>
+        </span>
+        <span className="label-bar__value mono">
+          <InfobulleCalcul termes={vue.finances.termesValorisation} argent>
+            Valeur {eur(vue.finances.valorisation)}
+          </InfobulleCalcul>
         </span>
       </header>
       <BarreTemps />

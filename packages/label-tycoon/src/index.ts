@@ -367,3 +367,4 @@ export {
   type VueSuivi,
   buildView,
 } from './view';
+export { GLOSSAIRE } from './strings';
