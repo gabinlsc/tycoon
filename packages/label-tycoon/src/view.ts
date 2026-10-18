@@ -7,6 +7,9 @@ import { labelScore, valuation } from './valuation';
 import { VISIBLE_ATTRIBUTES, knownRange } from './scouting';
 import { bestCertification, certificationThreshold, equivalentSales } from './charts';
 import { type Clauses, fairAdvance } from './contracts';
+import { INTEL } from './balance';
+import { analystLevel } from './forecast';
+import { genreKeys, trendMultiplier } from './market';
 import { announcedReleases } from './calendar';
 import { objectiveProgress } from './achievements';
 
@@ -122,6 +125,27 @@ export interface VueHistoriqueClassement {
   position: number | null;
 }
 
+export interface VueGenre {
+  id: string;
+  nom: string;
+  popularite: number;
+  /** Multiplicateur de tendance appliqué au potentiel de hit. */
+  tendance: number;
+  audience: number;
+  credibilite: number;
+  /** Sous-genre fictif : semaine de naissance et durée de vie. */
+  sousGenre: { naissance: number; duree: number; premier: string | null } | null;
+}
+
+export interface VuePrevision {
+  genre: string;
+  nom: string;
+  faiteLe: number;
+  pour: number;
+  valeur: number;
+  marge: number;
+}
+
 export interface VueJeu {
   semaine: number;
   date: { annee: number; mois: number; semaineDuMois: number };
@@ -152,6 +176,15 @@ export interface VueJeu {
   historiqueTresorerie: number[];
   /** Sorties à venir du joueur et sorties annoncées des rivaux, triées par semaine. */
   calendrier: VueSortieCalendrier[];
+  /** Marché des genres, prévisions des études de marché et facteur de revenu par écoute. */
+  marche: {
+    genres: VueGenre[];
+    previsions: VuePrevision[];
+    facteurStreaming: number;
+    coutEtude: number;
+    horizons: number[];
+    analyste: number;
+  };
   /** Classements de la semaine (Top 50), certifications et historique des sorties du joueur. */
   classements: { singles: VueLigneClassement[]; albums: VueLigneClassement[] };
   certifications: VueCertification[];
@@ -331,6 +364,30 @@ function historiqueDe(state: LabelState): VueHistoriqueClassement[] {
   });
 }
 
+function marcheDe(state: LabelState): VueJeu['marche'] {
+  const genres = genreKeys(state.marche).map<VueGenre>((id) => {
+    const g = state.marche.genres[id];
+    const sub = state.sousGenres.find((s) => s.id === id);
+    return {
+      id,
+      nom: nomGenre(state, id),
+      popularite: Math.round(g?.popularite ?? 0),
+      tendance: Math.round(trendMultiplier(g?.popularite ?? 50) * 100) / 100,
+      audience: g?.audience ?? 0,
+      credibilite: Math.round(state.label.credibilite[id] ?? 0),
+      sousGenre: sub ? { naissance: sub.naissance, duree: sub.duree, premier: sub.premier } : null,
+    };
+  });
+  return {
+    genres,
+    previsions: state.previsions.map((p) => ({ ...p, nom: nomGenre(state, p.genre) })),
+    facteurStreaming: Math.round(state.marche.facteurStreaming * 100) / 100,
+    coutEtude: INTEL.studyCost,
+    horizons: [...INTEL.horizons],
+    analyste: analystLevel(state),
+  };
+}
+
 function lastReport(state: LabelState): VueJeu['rapport'] {
   const r = state.rapportsMensuels[state.rapportsMensuels.length - 1];
   return r
@@ -474,6 +531,7 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
       progression: objectiveProgress(state, o),
     })),
     calendrier: calendrier(state, tick),
+    marche: marcheDe(state),
     classements: {
       singles: ligneClassement(state, 'singles', tick),
       albums: ligneClassement(state, 'albums', tick),
