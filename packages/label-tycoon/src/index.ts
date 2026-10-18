@@ -364,6 +364,7 @@ export {
   type VueArtiste,
   type VueDecision,
   type VueEcheance,
+  type VueSortieCalendrier,
   type VueJeu,
   type VueSuivi,
   buildView,

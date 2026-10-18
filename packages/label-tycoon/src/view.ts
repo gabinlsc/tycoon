@@ -7,6 +7,7 @@ import { labelScore, valuation } from './valuation';
 import { VISIBLE_ATTRIBUTES, knownRange } from './scouting';
 import { bestCertification } from './charts';
 import { type Clauses, fairAdvance } from './contracts';
+import { announcedReleases } from './calendar';
 import { objectiveProgress } from './achievements';
 
 /**
@@ -85,6 +86,18 @@ export interface VueEcheance {
   semaine: number;
 }
 
+export interface VueSortieCalendrier {
+  /** `joueur` : projet du joueur ; `rival` : sortie annoncée d'un rival. */
+  origine: 'joueur' | 'rival';
+  nom: string;
+  genre: string;
+  genreNom: string;
+  semaine: number;
+  /** Poids de la sortie (type) pour les rivaux ; 0 pour le joueur. */
+  poids: number;
+  statut: string;
+}
+
 export interface VueJeu {
   semaine: number;
   date: { annee: number; mois: number; semaineDuMois: number };
@@ -113,6 +126,8 @@ export interface VueJeu {
   objectifs: { id: number; kind: string; cible: number; base: number; progression: number }[];
   /** Trésorerie de fin de semaine sur les dernières semaines (centimes), de la plus ancienne à la plus récente. */
   historiqueTresorerie: number[];
+  /** Sorties à venir du joueur et sorties annoncées des rivaux, triées par semaine. */
+  calendrier: VueSortieCalendrier[];
   /** Prochaines échéances : projets qui se terminent, contrats qui arrivent à terme. */
   echeances: VueEcheance[];
   /** Dernier rapport mensuel, s'il existe. */
@@ -164,6 +179,39 @@ function echeances(state: LabelState, tick: number): VueEcheance[] {
     .filter((e) => e.semaine >= tick)
     .sort((a, b) => a.semaine - b.semaine || a.artisteId - b.artisteId)
     .slice(0, NB_ECHEANCES);
+}
+
+function calendrier(state: LabelState, tick: number): VueSortieCalendrier[] {
+  const out: VueSortieCalendrier[] = [];
+  for (const p of state.projets) {
+    if (p.statut === 'sortie') continue;
+    const a = state.artistes.find((x) => x.id === p.artisteId);
+    out.push({
+      origine: 'joueur',
+      nom: a?.nomScene ?? 'Artiste',
+      genre: a?.genre ?? '',
+      genreNom: a ? nomGenre(state, a.genre) : '',
+      semaine: Math.max(tick, p.fin),
+      poids: 0,
+      statut: p.statut,
+    });
+  }
+  for (const s of announcedReleases(state, tick)) {
+    const rival = state.rivaux.find((r) => r.id === s.rivalId);
+    out.push({
+      origine: 'rival',
+      nom: rival?.nom ?? 'Un rival',
+      genre: s.genre,
+      genreNom: nomGenre(state, s.genre),
+      semaine: s.semaine,
+      poids: s.poids,
+      statut: 'annoncee',
+    });
+  }
+  return out.sort(
+    (a, b) =>
+      a.semaine - b.semaine || a.origine.localeCompare(b.origine) || a.nom.localeCompare(b.nom),
+  );
 }
 
 function lastReport(state: LabelState): VueJeu['rapport'] {
@@ -308,6 +356,7 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
       base: o.base,
       progression: objectiveProgress(state, o),
     })),
+    calendrier: calendrier(state, tick),
     historiqueTresorerie: state.finances.semaines.slice(-HISTORIQUE).map((r) => r.tresorerieFin),
     echeances: echeances(state, tick),
     rapport: lastReport(state),
