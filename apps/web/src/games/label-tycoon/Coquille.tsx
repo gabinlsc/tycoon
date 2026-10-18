@@ -6,6 +6,7 @@ import { BoiteReception, notificationsNonLues } from './BoiteReception';
 import { InfobulleCalcul, Terme } from './Infobulle';
 import { FicheArtiste } from './FicheArtiste';
 import { QG } from './QG';
+import { Negociation } from './Negociation';
 import { Reperage } from './Reperage';
 import { Roster } from './Roster';
 import { NouvellePartie } from './NouvellePartie';
@@ -102,14 +103,7 @@ export function Coquille() {
           )
         ) : ecran === 'reperage' ? (
           negociation !== null ? (
-            <section className="label-screen">
-              <p className="label-screen__soon">
-                La négociation avec le talent n° {negociation} arrive bientôt.
-              </p>
-              <button type="button" onClick={() => setNegociation(null)}>
-                Retour au repérage
-              </button>
-            </section>
+            <Negociation artisteId={negociation} retour={() => setNegociation(null)} />
           ) : (
             <Reperage onNegocier={setNegociation} />
           )
