@@ -79,7 +79,8 @@ export function buildingsWeek(
   state.batiments.travaux = pending;
   for (const id of BUILDING_IDS) {
     const levels = state.batiments.niveaux[id];
-    if (levels > 0) spend(state, 'entretien', cents(BUILDINGS[id].upkeep * levels));
+    const paid = levels - BUILDINGS[id].start;
+    if (paid > 0) spend(state, 'entretien', cents(BUILDINGS[id].upkeep * paid));
   }
 }
 

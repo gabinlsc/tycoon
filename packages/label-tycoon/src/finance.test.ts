@@ -2,7 +2,7 @@ import { type Cents, calendarOf, cents, hashState, money } from '@tycoon/core';
 import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
 import {
-  BUILDINGS,
+  START,
   EXPENSE_CATEGORIES,
   FINANCE,
   REVENUE_CATEGORIES,
@@ -21,8 +21,8 @@ import {
 
 const fresh = () => initialState('fin', defaultConfig());
 
-/** Frais courants d'une semaine de départ : base + entretien du studio et des bureaux de niveau 1. */
-const WEEKLY = FINANCE.weeklyBaseCost + BUILDINGS.studio.upkeep + BUILDINGS.bureaux.upkeep;
+/** Frais courants d'une semaine de départ : les bâtiments de départ n'ont pas d'entretien. */
+const WEEKLY = FINANCE.weeklyBaseCost;
 
 describe("mouvements d'argent", () => {
   it('encaisser augmente la trésorerie et alimente le compte de la semaine', () => {
@@ -56,8 +56,8 @@ describe("mouvements d'argent", () => {
 
   it('canAfford compare à la trésorerie, sauf en bac à sable', () => {
     const state = fresh();
-    expect(canAfford(state, money.euros(10_000))).toBe(true);
-    expect(canAfford(state, money.euros(10_001))).toBe(false);
+    expect(canAfford(state, START.cash)).toBe(true);
+    expect(canAfford(state, cents(START.cash + 1))).toBe(false);
     const sandbox = initialState('s', { ...defaultConfig('normal', 'bac-a-sable'), sandbox: true });
     sandbox.label.tresorerie = cents(0);
     expect(canAfford(sandbox, money.euros(5_000_000))).toBe(true);
@@ -181,7 +181,7 @@ describe('phase de fin de semaine', () => {
   it('prélève les frais courants chaque semaine et clôt les comptes', () => {
     const run = labelGame.advance(newGame('p'), 10).session.engine.data;
     expect(run.finances.semaines).toHaveLength(10);
-    expect(run.label.tresorerie).toBe(money.euros(10_000) - 10 * WEEKLY);
+    expect(run.label.tresorerie).toBe(START.cash - 10 * WEEKLY);
     expect(run.finances.semaines[0]?.depenses).toEqual({ entretien: WEEKLY });
   });
 

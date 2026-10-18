@@ -65,7 +65,7 @@ describe('action proposer', () => {
     session.engine.data.label.reputation = 60;
     const near = clauses({
       royaltiesArtisteBps: 3500,
-      avance: money.euros(2500),
+      avance: money.euros(900),
       exclusivite: false,
       part360Bps: 0,
       dureeAnnees: 3,

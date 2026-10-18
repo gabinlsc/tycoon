@@ -691,3 +691,21 @@
   color: var(--text);
   font: inherit;
 }
+
+/* Sauvegarde */
+.label-resume,
+.label-save {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+}
+.label-resume {
+  margin: var(--sp-4);
+  border: var(--border) solid var(--outline);
+  border-radius: var(--r-md);
+  background: var(--gold);
+  color: var(--outline);
+  font-weight: 800;
+}

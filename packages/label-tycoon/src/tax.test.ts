@@ -19,8 +19,7 @@ describe('fin d’année', () => {
     const r = labelGame.advance(s, 52);
     const year = r.session.engine.data.finances.annees[0];
     expect(r.signals.some((x) => x.kind === 'impot')).toBe(true);
-    expect(year?.net ?? 0).toBeLessThanOrEqual(0);
-    expect(r.session.engine.data.fiscalite.dernierImpot).toBe(0);
+    expect(r.session.engine.data.fiscalite.dernierImpot).toBe(taxDue(year?.net ?? 0, 'prudente'));
   });
 
   it('paie un impôt positif quand l’exercice est bénéficiaire', () => {

@@ -66,6 +66,7 @@ describe('construction', () => {
       rejection: { code: 'niveau-maximal' },
     });
     const poor = newGame('p');
+    poor.engine.data.label.tresorerie = money.euros(100);
     expect(labelGame.dispatch(poor, { type: 'construire', batiment: 'studio' })).toMatchObject({
       ok: false,
       rejection: { code: 'fonds-insuffisants' },
@@ -77,9 +78,7 @@ describe('construction', () => {
     s.engine.data.batiments.niveaux.repetition = 3;
     const t0 = s.engine.data.label.tresorerie;
     const after = labelGame.advance(s, 1).session.engine.data.label.tresorerie;
-    expect(t0 - after).toBeGreaterThanOrEqual(
-      BUILDINGS.studio.upkeep + BUILDINGS.bureaux.upkeep + 3 * BUILDINGS.repetition.upkeep,
-    );
+    expect(t0 - after).toBeGreaterThanOrEqual(3 * BUILDINGS.repetition.upkeep);
   });
 
   it('un studio modeste limite le niveau des sorties', () => {

@@ -15,10 +15,10 @@ export interface ReleaseProfile {
 }
 
 export const RELEASE_TYPES: Readonly<Record<ReleaseType, ReleaseProfile>> = {
-  single: { titres: 1, cout: money.euros(2000), semaines: 3, poids: 1 },
-  ep: { titres: 4, cout: money.euros(8000), semaines: 8, poids: 3 },
-  album: { titres: 10, cout: money.euros(25_000), semaines: 16, poids: 8 },
-  mixtape: { titres: 8, cout: money.euros(6000), semaines: 10, poids: 2 },
+  single: { titres: 1, cout: money.euros(900), semaines: 3, poids: 1 },
+  ep: { titres: 4, cout: money.euros(3500), semaines: 8, poids: 3 },
+  album: { titres: 10, cout: money.euros(11_000), semaines: 16, poids: 8 },
+  mixtape: { titres: 8, cout: money.euros(2800), semaines: 10, poids: 2 },
 };
 
 export const CLIPS: Readonly<Record<ClipSize, { cout: Cents; semaines: number }>> = {

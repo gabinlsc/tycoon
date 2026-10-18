@@ -2,6 +2,7 @@ import { hashState, money } from '@tycoon/core';
 import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
 import {
+  START,
   DIFFICULTY_BOUNDS,
   DIFFICULTY_PRESETS,
   LABEL_NAME_MAX,
@@ -27,7 +28,7 @@ describe('nouvelle partie', () => {
     expect(engine.data.label).toMatchObject({
       nom: 'Mon label',
       tier: 'home-studio',
-      tresorerie: money.euros(10_000),
+      tresorerie: START.cash,
       reputation: 5,
     });
     expect(engine.data.nextId).toBe(1);
@@ -60,8 +61,8 @@ describe('nouvelle partie', () => {
   it('la difficulté change le budget de départ, du plus facile au plus difficile', () => {
     const cash = (preset: 'facile' | 'normal' | 'difficile') =>
       initialState('t', defaultConfig(preset)).label.tresorerie;
-    expect(cash('facile')).toBe(money.euros(20_000));
-    expect(cash('difficile')).toBe(money.euros(5_000));
+    expect(cash('facile')).toBe(START.cash * 2);
+    expect(cash('difficile')).toBe(START.cash / 2);
     expect(cash('facile')).toBeGreaterThan(cash('normal'));
     expect(cash('normal')).toBeGreaterThan(cash('difficile'));
   });
