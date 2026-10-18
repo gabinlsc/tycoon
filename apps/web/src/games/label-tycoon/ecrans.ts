@@ -11,6 +11,7 @@ export const ECRANS = [
     titre: 'Calendrier',
     description: 'Sorties à venir, les tiennes et celles des rivaux',
   },
+  { id: 'classements', titre: 'Classements', description: 'Top 50 et certifications' },
 ] as const;
 
 export type EcranId = (typeof ECRANS)[number]['id'];

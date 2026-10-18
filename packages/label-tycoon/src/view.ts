@@ -5,7 +5,7 @@ import { describeEvent } from './strings';
 import type { LabelState } from './state';
 import { labelScore, valuation } from './valuation';
 import { VISIBLE_ATTRIBUTES, knownRange } from './scouting';
-import { bestCertification } from './charts';
+import { bestCertification, certificationThreshold, equivalentSales } from './charts';
 import { type Clauses, fairAdvance } from './contracts';
 import { announcedReleases } from './calendar';
 import { objectiveProgress } from './achievements';
@@ -98,6 +98,30 @@ export interface VueSortieCalendrier {
   statut: string;
 }
 
+export interface VueLigneClassement {
+  rang: number;
+  nom: string;
+  streams: number;
+  joueur: boolean;
+}
+
+export interface VueCertification {
+  projetId: number;
+  nom: string;
+  niveau: string | null;
+  ventes: number;
+  prochain: { niveau: string; seuil: number } | null;
+}
+
+export interface VueHistoriqueClassement {
+  projetId: number;
+  nom: string;
+  classement: 'singles' | 'albums';
+  meilleure: number;
+  semaines: number;
+  position: number | null;
+}
+
 export interface VueJeu {
   semaine: number;
   date: { annee: number; mois: number; semaineDuMois: number };
@@ -128,6 +152,10 @@ export interface VueJeu {
   historiqueTresorerie: number[];
   /** Sorties à venir du joueur et sorties annoncées des rivaux, triées par semaine. */
   calendrier: VueSortieCalendrier[];
+  /** Classements de la semaine (Top 50), certifications et historique des sorties du joueur. */
+  classements: { singles: VueLigneClassement[]; albums: VueLigneClassement[] };
+  certifications: VueCertification[];
+  historiqueClassements: VueHistoriqueClassement[];
   /** Prochaines échéances : projets qui se terminent, contrats qui arrivent à terme. */
   echeances: VueEcheance[];
   /** Dernier rapport mensuel, s'il existe. */
@@ -212,6 +240,95 @@ function calendrier(state: LabelState, tick: number): VueSortieCalendrier[] {
     (a, b) =>
       a.semaine - b.semaine || a.origine.localeCompare(b.origine) || a.nom.localeCompare(b.nom),
   );
+}
+
+const MOTS_A = [
+  'Nuit',
+  'Feu',
+  'Mirage',
+  'Cristal',
+  'Béton',
+  'Soleil',
+  'Néon',
+  'Velours',
+  'Orage',
+  'Fièvre',
+  'Horizon',
+  'Écho',
+];
+const MOTS_B = [
+  'blanche',
+  'sauvage',
+  'électrique',
+  'dorée',
+  'lente',
+  'urbaine',
+  'infinie',
+  'cassée',
+  'tropicale',
+  'secrète',
+  'brûlante',
+  'douce',
+];
+
+/** Titre fictif et stable d'une entrée du bruit de marché. */
+export function titreDeBruit(chart: string, rang: number, tick: number): string {
+  const h = (chart.length * 31 + rang * 17 + tick * 7) >>> 0;
+  return `${MOTS_A[h % MOTS_A.length] ?? 'Nuit'} ${MOTS_B[(h >>> 3) % MOTS_B.length] ?? 'douce'}`;
+}
+
+function ligneClassement(
+  state: LabelState,
+  chart: 'singles' | 'albums',
+  tick: number,
+): VueLigneClassement[] {
+  return state.classements[chart].map((e, i) => {
+    const p = e.projetId === null ? undefined : state.projets.find((x) => x.id === e.projetId);
+    const artiste = p && state.artistes.find((a) => a.id === p.artisteId);
+    return {
+      rang: i + 1,
+      nom: artiste
+        ? `${artiste.nomScene} — ${fr.typesDeSortie[p.type as keyof typeof fr.typesDeSortie] ?? p.type}`
+        : titreDeBruit(chart, i, tick),
+      streams: e.streams,
+      joueur: e.projetId !== null,
+    };
+  });
+}
+
+function certificationsDe(state: LabelState): VueCertification[] {
+  const niveaux = ['or', 'platine', 'diamant'] as const;
+  return state.projets
+    .filter((p) => p.statut === 'sortie')
+    .map((p) => {
+      const ventes = equivalentSales(p.streams);
+      const suivant = niveaux.find((n) => ventes < certificationThreshold(n, p.type));
+      return {
+        projetId: p.id,
+        nom: `${nomDe(state, p.artisteId)} — ${fr.typesDeSortie[p.type as keyof typeof fr.typesDeSortie] ?? p.type}`,
+        niveau: p.certification,
+        ventes,
+        prochain: suivant
+          ? { niveau: suivant, seuil: certificationThreshold(suivant, p.type) }
+          : null,
+      };
+    });
+}
+
+function historiqueDe(state: LabelState): VueHistoriqueClassement[] {
+  return Object.entries(state.classements.historique).map(([id, h]) => {
+    const p = state.projets.find((x) => x.id === Number(id));
+    return {
+      projetId: Number(id),
+      nom: p
+        ? `${nomDe(state, p.artisteId)} — ${fr.typesDeSortie[p.type as keyof typeof fr.typesDeSortie] ?? p.type}`
+        : `Sortie ${id}`,
+      classement: h.chart,
+      meilleure: h.meilleure,
+      semaines: h.semaines,
+      position: h.position,
+    };
+  });
 }
 
 function lastReport(state: LabelState): VueJeu['rapport'] {
@@ -357,6 +474,12 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
       progression: objectiveProgress(state, o),
     })),
     calendrier: calendrier(state, tick),
+    classements: {
+      singles: ligneClassement(state, 'singles', tick),
+      albums: ligneClassement(state, 'albums', tick),
+    },
+    certifications: certificationsDe(state),
+    historiqueClassements: historiqueDe(state),
     historiqueTresorerie: state.finances.semaines.slice(-HISTORIQUE).map((r) => r.tresorerieFin),
     echeances: echeances(state, tick),
     rapport: lastReport(state),
