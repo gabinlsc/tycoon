@@ -37,6 +37,26 @@ export function progressionMultiplier(artist: Artist, context: ProgressionContex
     .done();
 }
 
+/**
+ * Même valeur que `progressionMultiplier(...).value`, sans construire l'explication : appelée pour
+ * chaque artiste du monde chaque semaine, c'est un point chaud. Les facteurs se multiplient dans le
+ * même ordre, donc le résultat est identique au bit près.
+ */
+function progressionValue(artist: Artist, context: ProgressionContext): number {
+  const producer = context.producerLevel ?? PROGRESSION.neutralProducer;
+  const workload = context.workload ?? 1;
+  const traits = artist.traits.reduce((product, t) => product * (TRAITS[t].progression ?? 1), 1);
+  return (
+    1 *
+    (0.5 + artist.ethique / 100) *
+    (0.7 + (0.6 * producer) / 100) *
+    (0.6 + (0.8 * artist.moral) / 100) *
+    workloadEfficiency(workload) *
+    traits *
+    PROGRESSION.phaseMultiplier[artist.phase]
+  );
+}
+
 /** Années écoulées depuis le pic, au moins 0. */
 const yearsPastPeak = (artist: Artist): number => Math.max(0, artist.age - artist.agePic);
 
@@ -54,7 +74,7 @@ export function weeklyDecline(artist: Artist): number {
 /** Fait évoluer les compétences d'une semaine : progression vers le potentiel, ou déclin. */
 export function stepSkills(artist: Artist, context: ProgressionContext = {}): void {
   const decline = weeklyDecline(artist);
-  const rate = PROGRESSION.baseRate * progressionMultiplier(artist, context).value;
+  const rate = PROGRESSION.baseRate * progressionValue(artist, context);
   for (const skill of SKILLS) {
     const gap = artist.potentiel - artist[skill];
     let next = artist[skill];

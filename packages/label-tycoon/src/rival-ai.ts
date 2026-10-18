@@ -39,7 +39,7 @@ export function signingUtility(state: LabelState, rival: Rival, artist: Artist):
   return w.surete * surete + w.precoce * precoce + w.tendance * tendance + bonus - risk;
 }
 
-function spawnFreeArtist(state: LabelState, rival: Rival, rng: Rng): void {
+function spawnFreeArtist(state: LabelState, rival: Rival, rng: Rng): Artist {
   const artist = generateArtist(
     rng,
     {
@@ -51,6 +51,7 @@ function spawnFreeArtist(state: LabelState, rival: Rival, rng: Rng): void {
     rival.personnalite === 'pointu' ? { genre: rival.genreFetiche } : {},
   );
   state.artistes.push(artist);
+  return artist;
 }
 
 /** Semaines pendant lesquelles les rivaux ne jouent pas dans le tutoriel. */
@@ -65,6 +66,13 @@ export const rivalsPhase: Phase<LabelState, LabelSignal> = {
     const rng = ctx.rng('rivaux');
     const aggression = state.config.difficulty.rivalAggression;
     const genres = genreKeys(state.marche);
+    // Artistes libres, dans l'ordre du monde, tenus à jour au fil des signatures et des repérages :
+    // les recalculer pour chaque rival coûterait un parcours de tout le monde à chaque fois.
+    const libres = state.artistes.filter((a) => a.employeur === 'libre');
+    // Artistes qui ont déjà une sortie rivale annoncée ou à venir.
+    const avecSortie = new Set<number>();
+    for (const s of state.sortiesRivales)
+      if (s.artisteId !== null && s.semaine >= ctx.tick) avecSortie.add(s.artisteId);
     for (const rival of state.rivaux) {
       const roster = rosterOf(state, rival);
       rival.tresorerie +=
@@ -74,7 +82,7 @@ export const rivalsPhase: Phase<LabelState, LabelSignal> = {
 
       // 1. Signature : meilleur candidat libre par utilité, parmi un nombre borné
       if (rng.chance(Math.min(1, RIVAL_AI.signChance * aggression))) {
-        const free = state.artistes.filter((a) => a.employeur === 'libre');
+        const free = libres;
         const picks: Artist[] = [];
         for (let i = 0; i < Math.min(RIVAL_AI.candidates, free.length); i += 1) {
           const candidate = rng.pick(free);
@@ -90,6 +98,7 @@ export const rivalsPhase: Phase<LabelState, LabelSignal> = {
           if (cost <= rival.tresorerie * 0.5 && rival.tresorerie - cost >= RIVAL_AI.reserve) {
             rival.tresorerie -= cost;
             best.artist.employeur = `rival:${rival.id}`;
+            libres.splice(libres.indexOf(best.artist), 1);
             state.suivis = state.suivis.filter((p) => p.artisteId !== best?.artist.id);
             ctx.emit({
               kind: 'signature-rivale',
@@ -107,13 +116,12 @@ export const rivalsPhase: Phase<LabelState, LabelSignal> = {
         rng.chance(Math.min(1, scoutChance * aggression))
       ) {
         rival.tresorerie -= RIVAL_AI.scoutCost;
-        spawnFreeArtist(state, rival, rng);
+        libres.push(spawnFreeArtist(state, rival, rng));
       }
 
       // 3. Sorties : un artiste du roster sans sortie à venir en prépare une, selon la trésorerie
       for (const artist of roster) {
-        if (state.sortiesRivales.some((s) => s.artisteId === artist.id && s.semaine >= ctx.tick))
-          continue;
+        if (avecSortie.has(artist.id)) continue;
         if (!rng.chance(Math.min(1, RIVAL_RELEASES.weeklyChance * aggression))) continue;
         const affordable = RIVAL_RELEASES.weights.filter(
           (p) =>

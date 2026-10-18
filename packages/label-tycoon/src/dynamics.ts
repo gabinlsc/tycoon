@@ -78,11 +78,12 @@ export const artistsPhase: Phase<LabelState, LabelSignal> = {
     const yearEnd = calendarOf(ctx.tick).isYearEnd;
     if (yearEnd)
       state.label.reputation = Math.min(100, state.label.reputation + reputationDesLegendes(state));
+    const repetition = rehearsalRecovery(state);
     for (const artist of [...state.artistes]) {
       if (artist.employeur === 'retraite') continue;
       driftArtist(artist);
       if (artist.repos > 0) artist.repos -= 1;
-      artist.fatigue = Math.max(0, artist.fatigue - rehearsalRecovery(state));
+      artist.fatigue = Math.max(0, artist.fatigue - repetition);
       stepSkills(artist);
       updatePhase(artist);
       if (yearEnd) {
