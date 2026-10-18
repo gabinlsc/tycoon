@@ -16,6 +16,7 @@ const signed = (over: Partial<Clauses> = {}) => {
   const session = newGame('fin');
   session.engine.data.label.tresorerie = money.euros(500_000);
   for (const r of session.engine.data.rivaux) r.personnalite = 'major';
+  session.engine.data.config.difficulty.rivalAggression = 0;
   scoutTalents(session.engine.data, Rng.fromSeed('f'), 'plateforme', 0);
   const artist = session.engine.data.artistes[0];
   if (!artist) throw new Error('artiste attendu');

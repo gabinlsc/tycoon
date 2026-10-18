@@ -213,3 +213,80 @@ describe('estimation d’une sortie', () => {
     ).toBe('erreur');
   });
 });
+
+describe('jalon M1 : la boucle complète est jouable de bout en bout', () => {
+  it('repérer, signer, produire, sortir et encaisser, uniquement par commandes', () => {
+    const pilot = new LabelPilot();
+    pilot.handle({ type: 'nouvelle-partie', graine: 'jalon-m1' });
+    for (let i = 0; i < 3; i += 1)
+      pilot.handle({ type: 'action', action: { type: 'reperer', source: 'candidature' } });
+    const found = vue(pilot.handle({ type: 'vue' }));
+    expect(found.vue.suivis.length).toBeGreaterThan(0);
+    const target = found.vue.suivis[0];
+    if (!target) throw new Error('talent attendu');
+
+    // Signature (une contre-proposition est acceptée si besoin)
+    const clauses = {
+      avance: target.avanceIndicative + 100_000,
+      royaltiesArtisteBps: 6000,
+      dureeAnnees: 2,
+      exclusivite: false,
+      part360Bps: 0,
+      clauseRachat: 0,
+    } as never;
+    const signed = vue(
+      pilot.handle({ type: 'action', action: { type: 'signer', artisteId: target.id, clauses } }),
+    );
+    expect(signed.vue.roster.map((a) => a.id)).toContain(target.id);
+    expect(signed.vue.suivis.some((s) => s.id === target.id)).toBe(false);
+
+    // Production
+    const launched = vue(
+      pilot.handle({
+        type: 'action',
+        action: {
+          type: 'lancer-projet',
+          artisteId: target.id,
+          sortie: 'single',
+          clip: 'aucun',
+          studio: 20,
+          producteur: 40,
+          mixage: 30_000,
+        },
+      }),
+    );
+    expect(launched.vue.projets).toHaveLength(1);
+    let released = false;
+    let revenuAvant = launched.vue.finances.tresorerie;
+    for (let i = 0; i < 30 && !released; i += 1) {
+      const step = vue(pilot.handle({ type: 'avancer', semaines: 1, arretSurSignal: false }));
+      const ready = step.vue.projets.find((p) => p.statut === 'prete');
+      if (ready) {
+        const out = vue(
+          pilot.handle({ type: 'action', action: { type: 'sortir-projet', projetId: ready.id } }),
+        );
+        expect(out.vue.projets.find((p) => p.id === ready.id)?.statut).toBe('sortie');
+        released = true;
+        revenuAvant = out.vue.finances.tresorerie;
+      }
+    }
+    expect(released).toBe(true);
+
+    // Les écoutes rapportent, et l'histoire s'écrit dans le Fil
+    const later = vue(pilot.handle({ type: 'avancer', semaines: 12, arretSurSignal: false }));
+    expect(later.vue.fil.length).toBeGreaterThan(0);
+    expect(later.vue.historiqueTresorerie.length).toBeGreaterThan(5);
+    expect(later.vue.finances.tresorerie).not.toBe(revenuAvant);
+    expect(later.vue.objectifs).toHaveLength(3);
+  });
+
+  it('une partie passive finit par la faillite annoncée, jamais par une erreur', () => {
+    const pilot = new LabelPilot();
+    pilot.handle({ type: 'nouvelle-partie', graine: 'passif' });
+    let derniere = vue(pilot.handle({ type: 'vue' }));
+    for (let i = 0; i < 60 && !derniere.vue.finances.faillite; i += 1)
+      derniere = vue(pilot.handle({ type: 'avancer', semaines: 52, arretSurSignal: false }));
+    expect(derniere.vue.finances.faillite).toBe(true);
+    expect(derniere.vue.finances.semainesNegatives).toBeGreaterThanOrEqual(8);
+  });
+});

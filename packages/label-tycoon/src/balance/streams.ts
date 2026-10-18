@@ -1,9 +1,9 @@
 /** Streams d'une sortie (GDD, 5.6). Valeurs de départ à recaler par simulation. */
 export const STREAMS = {
   /** Écoutes de la première semaine par fan. */
-  listensPerFan: 3,
+  listensPerFan: 6,
   /** Part de l'audience du genre qui découvre la sortie. */
-  discoveryRate: 0.002,
+  discoveryRate: 0.05,
   /** Exposant de la qualité dans le potentiel de hit : H = (Q/100)^exposant × … */
   qualityExponent: 1.5,
   /** λ = lambdaBase − lambdaQuality × Q/100. */
@@ -14,7 +14,7 @@ export const STREAMS = {
   /** Fenêtre active (semaines) : au-delà, seule la traîne est comptée, en forme fermée. */
   activeWindow: 26,
   /** Revenu brut par stream, en centimes d'euro (fractions arrondies sur le total de la semaine). */
-  centsPerStream: 0.35,
+  centsPerStream: 2,
   /** Bonus de marketing : 1 + k × log10(1 + budget/1000 €), plafonné. */
   marketingK: 0.5,
   marketingCap: 2,

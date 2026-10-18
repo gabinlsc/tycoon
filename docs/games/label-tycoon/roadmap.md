@@ -111,7 +111,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `feat/label-ecran-reperage` : repérage
 - [x] `feat/label-ecran-negociation` : négociation, jauge de réaction, tampon encreur
 - [x] `feat/label-ecran-studio` : studio, console au trait, estimation de qualité
-- [ ] `feat/label-jalon-jouable` : **jalon M1** : nouvelle partie, boucle complète jouable de bout en bout, sauvegarde simple, session de test avec retours
+- [x] `feat/label-jalon-jouable` : **jalon M1** : nouvelle partie, boucle complète jouable de bout en bout, sauvegarde simple, session de test avec retours (la session de test avec retours reste à mener : voir `jalon-m1.md`)
 
 ## Phase 7 : les autres écrans
 
@@ -183,7 +183,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 3     | 18    | 18     |
 | 4     | 16    | 16     |
 | 5     | 14    | 14     |
-| 6     | 14    | 13     |
+| 6     | 14    | 14     |
 | 7     | 13    | 0      |
 | 8     | 10    | 0      |
 | 9     | 5     | 0      |

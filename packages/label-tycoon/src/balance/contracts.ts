@@ -8,8 +8,8 @@ export const CONTRACTS = {
   /** Part du label sur concerts, merch et synchro pour un contrat 360 (points de base). */
   share360Bps: { min: 0, max: 5000 },
   /** Valeur de référence : avance « juste » = plancher + notoriété × facteur. */
-  advanceFloor: money.euros(500) as Cents,
-  advancePerNotoriety: money.euros(60) as Cents,
+  advanceFloor: money.euros(300) as Cents,
+  advancePerNotoriety: money.euros(30) as Cents,
   /** Part de royalties jugée normale par un artiste (points de base). */
   fairRoyaltiesBps: 3500,
   /** Poids de chaque terme du modèle d'utilité. */
