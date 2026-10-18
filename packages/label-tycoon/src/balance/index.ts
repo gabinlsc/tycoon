@@ -26,7 +26,7 @@ export {
 } from './artists';
 export { CONTRACTS, CONTRACT_END, NEGOTIATION } from './contracts';
 export { WORLD } from './world';
-export { FINANCE, INVESTORS, LOANS } from './finance';
+export { BANKRUPTCY, FINANCE, INVESTORS, LOANS } from './finance';
 export { DYNAMICS } from './dynamics';
 export { COMEBACK, CULT, DECLINE, PROGRESSION } from './career';
 export {

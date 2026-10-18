@@ -1,4 +1,5 @@
 import type { Phase } from '@tycoon/core';
+import { bankruptcyWeek } from './bankruptcy';
 import { financePhase } from './finance';
 import { investorOffersWeek, investorsWeek } from './investors';
 import { loansWeek } from './loans';
@@ -13,5 +14,6 @@ export const ledgerPhase: Phase<LabelState, LabelSignal> = {
     investorOffersWeek(state, ctx.tick, ctx.rng('finances'), ctx.emit);
     investorsWeek(state, ctx.tick, ctx.emit);
     financePhase.run(state, ctx);
+    bankruptcyWeek(state, ctx.emit);
   },
 };
