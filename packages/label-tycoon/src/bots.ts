@@ -154,6 +154,8 @@ export function runBot(
   seed: string,
   weeks: number,
   config?: GameConfig,
+  /** Appelée après chaque semaine jouée, avec le nombre de semaines écoulées et l'état (lecture seule). */
+  observer?: (semaines: number, state: Readonly<LabelState>) => void,
 ): BotRun {
   let session = newGame(seed, config);
   const rng = RngClass.fromSeed(`bot:${strategy}:${seed}`);
@@ -172,6 +174,7 @@ export function runBot(
     }
     session = labelGame.advance(session, 1).session;
     const d = session.engine.data;
+    observer?.(tick + 1, d);
     if (d.faillite.terminee) {
       faillite = tick;
       break;
