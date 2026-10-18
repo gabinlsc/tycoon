@@ -15,7 +15,10 @@ import {
   PERSONALITIES,
   STAFF,
   TAX,
+  TOUR,
   UNLOCKS,
+  VENUES,
+  VENUE_IDS,
   type TaxStrategy,
 } from './balance';
 import { buyoutAsk } from './rival-interactions';
@@ -23,6 +26,8 @@ import { analystLevel } from './forecast';
 import { genreKeys, trendMultiplier } from './market';
 import { announcedReleases } from './calendar';
 import { objectiveProgress } from './achievements';
+import { festivalOffer } from './festivals';
+import { venueCost } from './tours';
 import { buildingLevel, teamCapacity } from './buildings';
 import { loanCap, loanRate, outstanding } from './loans';
 import { tierAtLeast } from './tiers';
@@ -300,6 +305,72 @@ export interface VueBatiment {
   travaux: { niveau: number; fin: number } | null;
 }
 
+export interface VueScene {
+  salles: {
+    id: string;
+    nom: string;
+    capacite: number;
+    cout: number;
+    prixRef: number;
+    notorieteRef: number;
+  }[];
+  /** Artistes du joueur et leur état de forme. */
+  artistes: {
+    id: number;
+    nom: string;
+    fans: number;
+    hype: number;
+    fatigue: number;
+    repos: number;
+  }[];
+  niveauSalleMaison: number;
+  concerts: {
+    id: number;
+    artiste: string;
+    salle: string;
+    prix: number;
+    date: number;
+    resolu: boolean;
+    spectateurs: number;
+    recette: number;
+    tournee: boolean;
+  }[];
+  tournees: {
+    id: number;
+    artiste: string;
+    dates: number;
+    tenues: number;
+    merchStock: number;
+    merchVendu: number;
+    annulee: boolean;
+  }[];
+  festivals: {
+    id: number;
+    nom: string;
+    semaine: number;
+    notorieteMin: number;
+    cachet: number;
+    artiste: string | null;
+    tete: boolean;
+    /** Artistes du joueur qui peuvent candidater, avec le cachet obtenu. */
+    eligibles: { artisteId: number; tete: boolean; cachet: number }[];
+  }[];
+  offresSynchro: {
+    id: number;
+    artiste: string;
+    type: string;
+    marque: string;
+    cachet: number;
+    expire: number;
+  }[];
+  tournee: {
+    dates: { min: number; max: number };
+    coutMerch: number;
+    prixMerch: number;
+    tauxMerch: number;
+  };
+}
+
 export interface VueJeu {
   semaine: number;
   date: { annee: number; mois: number; semaineDuMois: number };
@@ -334,6 +405,7 @@ export interface VueJeu {
   financesDetail: VueFinancesDetail;
   personnel: VuePersonnel;
   batiments: VueBatiment[];
+  scene: VueScene;
   /** Marché des genres, prévisions des études de marché et facteur de revenu par écoute. */
   marche: {
     genres: VueGenre[];
@@ -739,6 +811,83 @@ function batimentsDe(state: LabelState): VueBatiment[] {
   });
 }
 
+function sceneDe(state: LabelState): VueScene {
+  const nomArtiste = (id: number): string => state.artistes.find((a) => a.id === id)?.nom ?? '—';
+  const siens = state.artistes.filter((a) => a.employeur === 'joueur');
+  const maison = buildingLevel(state, 'concert');
+  return {
+    salles: VENUE_IDS.map((id) => ({
+      id,
+      nom: fr.salles[id],
+      capacite: VENUES[id].capacite,
+      cout: venueCost(state, id),
+      prixRef: VENUES[id].prixRef,
+      notorieteRef: VENUES[id].notorieteRef,
+    })),
+    artistes: siens.map((a) => ({
+      id: a.id,
+      nom: a.nom,
+      fans: a.fanbase,
+      hype: Math.round(a.hype),
+      fatigue: Math.round(a.fatigue),
+      repos: a.repos,
+    })),
+    niveauSalleMaison: maison,
+    concerts: state.concerts
+      .filter((c) => !c.resolu)
+      .concat(state.concerts.filter((c) => c.resolu).slice(-8))
+      .map((c) => ({
+        id: c.id,
+        artiste: nomArtiste(c.artisteId),
+        salle: fr.salles[c.salle],
+        prix: c.prix,
+        date: c.date,
+        resolu: c.resolu,
+        spectateurs: c.spectateurs,
+        recette: c.recette,
+        tournee: c.tourneeId !== null,
+      })),
+    tournees: state.tournees.slice(-6).map((t) => ({
+      id: t.id,
+      artiste: nomArtiste(t.artisteId),
+      dates: t.concertIds.length,
+      tenues: t.concertIds.filter((id) => state.concerts.find((c) => c.id === id)?.resolu).length,
+      merchStock: t.merchStock,
+      merchVendu: t.merchVendu,
+      annulee: t.annulee,
+    })),
+    festivals: state.festivals
+      .filter((f) => !f.tenu)
+      .map((f) => ({
+        id: f.id,
+        nom: f.nom,
+        semaine: f.semaine,
+        notorieteMin: f.notorieteMin,
+        cachet: f.cachet,
+        artiste: f.artisteId === null ? null : nomArtiste(f.artisteId),
+        tete: f.tete,
+        eligibles: siens.flatMap((a) => {
+          const o = festivalOffer(f, a.fanbase);
+          return o ? [{ artisteId: a.id, tete: o.tete, cachet: o.cachet }] : [];
+        }),
+      })),
+    offresSynchro: state.offresSynchro.map((o) => ({
+      id: o.id,
+      artiste: nomArtiste(state.projets.find((p) => p.id === o.projetId)?.artisteId ?? -1),
+      type: fr.synchros[o.type],
+      marque: o.marque,
+      cachet: o.cachet,
+      expire: o.expire,
+    })),
+    tournee: {
+      dates: { ...TOUR.dates },
+      coutMerch: TOUR.merchCost,
+      prixMerch: TOUR.merchPrice,
+      tauxMerch: TOUR.merchRate,
+    },
+  };
+}
+
 function lastReport(state: LabelState): VueJeu['rapport'] {
   const r = state.rapportsMensuels[state.rapportsMensuels.length - 1];
   return r
@@ -886,6 +1035,7 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
     financesDetail: financesDe(state),
     personnel: personnelDe(state),
     batiments: batimentsDe(state),
+    scene: sceneDe(state),
     marche: marcheDe(state),
     classements: {
       singles: ligneClassement(state, 'singles', tick),

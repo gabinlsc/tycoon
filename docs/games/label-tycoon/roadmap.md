@@ -122,7 +122,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `feat/label-ecran-finances` : finances, prêts, investisseurs
 - [x] `feat/label-ecran-personnel` : personnel
 - [x] `feat/label-ecran-batiments` : bâtiments
-- [ ] `feat/label-ecran-tournees` : tournées et merch (+)
+- [x] `feat/label-ecran-tournees` : tournées et merch (+)
 - [ ] `feat/label-ecran-fil` : Le Fil du label
 - [ ] `feat/label-ecran-parametres` : paramètres et raccourcis
 - [ ] `feat/label-ecran-rapport-mensuel` : rapport mensuel
@@ -184,7 +184,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 4     | 16    | 16     |
 | 5     | 14    | 14     |
 | 6     | 14    | 14     |
-| 7     | 13    | 7      |
+| 7     | 13    | 8      |
 | 8     | 10    | 0      |
 | 9     | 5     | 0      |
 | 10    | 12    | 0      |
