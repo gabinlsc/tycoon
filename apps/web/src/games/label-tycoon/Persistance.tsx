@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAccount, useGameSave } from '../../accounts/AccountContext';
 import { Button } from '../../components/arcade/ui/Button';
 import { useLabel } from './LabelContext';
+import { configDepuisPartie } from './partie';
 import { exporterFichier, importerFichier, nomFichier, validerPartie } from './sauvegardes/fichier';
 import {
   LIBELLES_EMPLACEMENT,
@@ -48,7 +49,7 @@ interface Props {
  */
 export function Persistance({ stockage: injecte }: Props) {
   const { status, account } = useAccount();
-  const { vue, envoyer } = useLabel();
+  const { vue, envoyer, nouvellePartie } = useLabel();
   const heritee = useGameSave<SauvegardeHeritee | MetadonneesCompte>('label-tycoon');
   const [stockage] = useState<StockageParties>(() => injecte ?? choisirStockage().stockage);
   const [contenu, setContenu] = useState<Contenu>({});
@@ -279,7 +280,7 @@ export function Persistance({ stockage: injecte }: Props) {
               type="button"
               tone="ghost"
               onClick={() => {
-                void envoyer({ type: 'nouvelle-partie', graine: Date.now().toString(36) });
+                void nouvellePartie(Date.now().toString(36), configDepuisPartie(vue.partie));
                 setConfirmer(false);
                 derniereAuto.current = -1;
               }}

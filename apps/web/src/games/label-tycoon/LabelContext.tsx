@@ -8,7 +8,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import type { CommandeJeu, ReponseJeu, SignalVue, VueJeu } from '@tycoon/label-tycoon';
+import type { CommandeJeu, GameConfig, ReponseJeu, SignalVue, VueJeu } from '@tycoon/label-tycoon';
 import { creerMoteur } from './engine/client';
 import type { MoteurLabel } from './engine/protocol';
 
@@ -25,7 +25,8 @@ export interface LabelContextValue {
   erreur: string | null;
   /** Envoie une commande et met à jour la vue ; renvoie la réponse brute. */
   envoyer(commande: CommandeJeu): Promise<ReponseJeu>;
-  nouvellePartie(graine: string): Promise<void>;
+  /** Fonde un nouveau label ; sans réglages, une carrière en difficulté normale. */
+  nouvellePartie(graine: string, config?: GameConfig): Promise<ReponseJeu>;
 }
 
 const Context = createContext<LabelContextValue | null>(null);
@@ -94,9 +95,10 @@ export function LabelProvider({
   }, []);
 
   const nouvellePartie = useCallback(
-    async (graine: string) => {
-      await envoyer({ type: 'nouvelle-partie', graine });
-    },
+    (graine: string, config?: GameConfig) =>
+      envoyer(
+        config ? { type: 'nouvelle-partie', graine, config } : { type: 'nouvelle-partie', graine },
+      ),
     [envoyer],
   );
 
