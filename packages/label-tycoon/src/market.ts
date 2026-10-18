@@ -26,6 +26,8 @@ export interface GenreMarket {
  */
 export interface MarketState {
   genres: Record<string, GenreMarket>;
+  /** Multiplicateur du revenu par stream (1 = normal) : modifié par les événements de marché. */
+  facteurStreaming: number;
 }
 
 export function initialMarket(): MarketState {
@@ -39,7 +41,7 @@ export function initialMarket(): MarketState {
       audience: def.audience,
     };
   }
-  return { genres };
+  return { genres, facteurStreaming: 1 };
 }
 
 export function initialCredibility(): Record<string, number> {
@@ -118,9 +120,9 @@ export function subgenrePopularity(sub: SousGenre, tick: number): number {
 }
 
 /** Naissance éventuelle d'un sous-genre fictif à partir d'un genre parent. */
-function spawnSubgenre(state: LabelState, rng: Rng, tick: number): void {
-  if (state.sousGenres.length >= SUBGENRES.maxAlive) return;
-  if (!rng.chance(SUBGENRES.birthChance)) return;
+export function spawnSubgenre(state: LabelState, rng: Rng, tick: number, force = false): boolean {
+  if (state.sousGenres.length >= SUBGENRES.maxAlive) return false;
+  if (!force && !rng.chance(SUBGENRES.birthChance)) return false;
   const parent = rng.pick(GENRE_IDS);
   const prefix = rng.pick(SUBGENRES.prefixes);
   const id = `sg-${state.nextId}`;
@@ -142,6 +144,7 @@ function spawnSubgenre(state: LabelState, rng: Rng, tick: number): void {
     audience: Math.round(audience * SUBGENRES.audienceShare),
   };
   state.label.credibilite[id] = 0;
+  return true;
 }
 
 /** Met à jour la popularité des sous-genres vivants et retire ceux qui ont disparu. */

@@ -114,6 +114,52 @@ export const EVENT_TEXTS: Readonly<Record<string, EventText>> = {
       'Le calendrier presse pour le projet de {nom}. On peut accélérer, au risque de la qualité.',
     choix: { accelerer: 'Accélérer', maintenir: 'Maintenir le calendrier' },
   },
+  'genre-en-hausse': {
+    titre: 'Un genre monte',
+    texte: 'Le {genre} est partout : les écoutes explosent et les labels s’y précipitent.',
+  },
+  'genre-en-berne': {
+    titre: 'Un genre s’essouffle',
+    texte: 'Le {genre} perd de son éclat : les écoutes reculent.',
+  },
+  'changement-remuneration': {
+    titre: 'Les plateformes changent leurs tarifs',
+    texte: 'Le revenu par écoute varie de {pct} % sur les plateformes.',
+  },
+  'saison-des-festivals': {
+    titre: 'Saison des festivals',
+    texte: 'Deux nouveaux festivals ouvrent leurs candidatures cette année.',
+  },
+  'nouveau-sous-genre': {
+    titre: 'Un sous-genre émerge',
+    texte: 'Une scène naissante invente un nouveau son : les premiers à y signer en profiteront.',
+  },
+  'crise-economique': {
+    titre: 'Crise économique',
+    texte: 'Le public dépense moins : tous les genres reculent et les plateformes paient moins.',
+  },
+  'phenomene-viral': {
+    titre: 'Phénomène viral',
+    texte: 'Une tendance virale propulse le {genre} sur les réseaux.',
+  },
+  'vague-de-nostalgie': {
+    titre: 'Vague de nostalgie',
+    texte: 'Le public se tourne vers la variété d’hier.',
+  },
+  'saturation-du-marche': {
+    titre: 'Saturation',
+    texte: 'Trop de sorties dans le {genre} : le public se lasse.',
+  },
+  'algorithme-plateforme': {
+    titre: 'Nouvel algorithme',
+    texte:
+      'Une plateforme change son algorithme. Un budget de {budget} centimes aide les artistes à s’y adapter.',
+    choix: { investir: 'Investir', ignorer: 'Ignorer' },
+  },
+  'buzz-ville': {
+    titre: 'Buzz à {ville}',
+    texte: 'Une scène locale à {ville} fait parler du {genre}.',
+  },
   'collaboration-spontanee': {
     titre: 'Collaboration spontanée',
     texte: '{nom} et {autre} improvisent un titre ensemble. Les fans adorent.',
