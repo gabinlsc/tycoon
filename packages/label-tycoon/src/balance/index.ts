@@ -6,7 +6,7 @@ export { DIFFICULTY_BOUNDS, DIFFICULTY_PRESETS } from './difficulty';
 export { EVENTS } from './events';
 export { INTEL, MARKET, START_CREDIBILITY, SUBGENRES, TRENDS } from './market';
 export { LABEL_NAME_MAX, SANDBOX_CASH, START } from './start';
-export { type CertificationLevel, TIERS, type TierId, type TierRule } from './tiers';
+export { type CertificationLevel, TIERS, UNLOCKS, type TierId, type TierRule } from './tiers';
 export {
   DYNAMIC_START,
   EGO_PER_NOTORIETY_10,

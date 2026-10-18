@@ -16,6 +16,7 @@ import { initialFinance } from './finance';
 import { initialCredibility, initialMarket, marketPhase } from './market';
 import { breakContract, releaseArtist, renegotiate } from './contract-end';
 import { chartsPhase, emptyCharts } from './charts';
+import { tiersPhase } from './tiers';
 import { mentor } from './relations';
 import { chooseTax, initialTax } from './tax';
 import { sellContract } from './bankruptcy';
@@ -85,6 +86,7 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
     classements: chartsPhase,
     tournees: livePhase,
     finances: ledgerPhase,
+    paliers: tiersPhase,
     'tirage-evenements': eventEngine.phase,
   }),
   actions: {

@@ -1,12 +1,20 @@
 import { type ActionHandler, type Phase, type Rng, cents, clamp, reject } from '@tycoon/core';
 import type { Action } from '@tycoon/core';
-import { STAFF, STAFF_ROLES, STAFF_TRAITS, type StaffRole, type StaffTrait } from './balance';
+import {
+  STAFF,
+  STAFF_ROLES,
+  STAFF_TRAITS,
+  UNLOCKS,
+  type StaffRole,
+  type StaffTrait,
+} from './balance';
 import { buildingsWeek, teamCapacity } from './buildings';
 import { delegatedScouting } from './delegation';
 import { spend } from './finance';
 import { generateRealName } from './naming';
 import type { LabelSignal } from './pipeline';
 import { type LabelState, newId } from './state';
+import { tierAtLeast } from './tiers';
 
 export interface Membre {
   id: number;
@@ -59,8 +67,13 @@ export interface FireAction extends Action {
 
 export const hire: ActionHandler<LabelState, HireAction, LabelSignal> = {
   validate(state, action) {
-    if (!state.candidats.some((c) => c.id === action.membreId))
-      return reject('candidat-introuvable');
+    const candidate = state.candidats.find((c) => c.id === action.membreId);
+    if (!candidate) return reject('candidat-introuvable');
+    if (
+      candidate.role === 'directeur-financier' &&
+      !tierAtLeast(state, UNLOCKS['directeur-financier'])
+    )
+      return reject('palier-insuffisant');
     return state.personnel.length >= teamCapacity(state)
       ? reject('equipe-pleine', { max: teamCapacity(state) })
       : null;

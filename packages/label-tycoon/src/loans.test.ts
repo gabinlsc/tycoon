@@ -19,6 +19,7 @@ describe('taux et plafond', () => {
 describe('emprunt', () => {
   it('crédite la trésorerie, prélève intérêts et capital chaque semaine, puis solde', () => {
     const s = newGame('loan');
+    s.engine.data.label.tier = 'independant';
     const before = s.engine.data.label.tresorerie;
     const r = labelGame.dispatch(s, {
       type: 'emprunter',
@@ -39,6 +40,7 @@ describe('emprunt', () => {
 
   it('refuse un montant trop faible, une durée hors bornes, le dépassement du plafond et trop de prêts', () => {
     const s = newGame('loan2');
+    s.engine.data.label.tier = 'independant';
     expect(labelGame.dispatch(s, { type: 'emprunter', montant: 10, semaines: 20 })).toMatchObject({
       ok: false,
       rejection: { code: 'montant-invalide' },
@@ -64,6 +66,7 @@ describe('emprunt', () => {
 
   it('un impayé est signalé, compté, et renchérit le prochain taux', () => {
     const s = newGame('loan3');
+    s.engine.data.label.tier = 'independant';
     const r = labelGame.dispatch(s, {
       type: 'emprunter',
       montant: money.euros(10_000),
@@ -78,6 +81,7 @@ describe('emprunt', () => {
 
   it('le remboursement anticipé solde le prêt', () => {
     const s = newGame('loan4');
+    s.engine.data.label.tier = 'independant';
     const r = labelGame.dispatch(s, {
       type: 'emprunter',
       montant: money.euros(5000),

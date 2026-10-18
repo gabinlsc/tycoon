@@ -39,3 +39,10 @@ export const TIERS: readonly TierRule[] = [
     requiredCertification: 'diamant',
   },
 ];
+
+/** Palier minimal requis pour débloquer une fonctionnalité (GDD, 5.1). */
+export const UNLOCKS = {
+  emprunter: 'independant',
+  investisseurs: 'etabli',
+  'directeur-financier': 'etabli',
+} as const satisfies Record<string, TierId>;
