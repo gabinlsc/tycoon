@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ECRANS, type EcranId } from './ecrans';
 import { useLabel } from './LabelContext';
+import { ECRANS_SIMPLES } from './ecransSimples';
 import { BarreTemps } from './BarreTemps';
 import { BoiteReception, notificationsNonLues } from './BoiteReception';
 import { InfobulleCalcul, Terme } from './Infobulle';
@@ -14,6 +15,11 @@ import { NouvellePartie } from './NouvellePartie';
 import { useRaccourcis } from './Raccourcis';
 
 const eur = (cents: number): string => `${Math.round(cents / 100).toLocaleString('fr-FR')} €`;
+
+function EcranSimple({ id }: { id: EcranId }) {
+  const Ecran = ECRANS_SIMPLES[id];
+  return Ecran ? <Ecran /> : <Placeholder id={id} />;
+}
 
 function Placeholder({ id }: { id: EcranId }) {
   const ecran = ECRANS.find((e) => e.id === id);
@@ -113,7 +119,7 @@ export function Coquille() {
         ) : ecran === 'boite' ? (
           <BoiteReception dernierLu={dernierLu} onLu={setDernierLu} />
         ) : (
-          <Placeholder id={ecran} />
+          <EcranSimple id={ecran} />
         )}
       </main>
     </div>

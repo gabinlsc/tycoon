@@ -709,3 +709,39 @@
   color: var(--outline);
   font-weight: 800;
 }
+
+/* Calendrier */
+.label-calendar {
+  display: grid;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.label-calendar__week {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: var(--sp-3);
+  align-items: start;
+  padding: var(--sp-2) var(--sp-3);
+  border: var(--border) solid var(--outline);
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+}
+.label-calendar__week ul {
+  display: grid;
+  gap: var(--sp-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.label-calendar .is-mine {
+  color: var(--green-text);
+  font-weight: 800;
+}
+.label-calendar .is-rival {
+  color: var(--red-text);
+}
+.label-calendar__empty {
+  color: var(--text-soft);
+}

@@ -115,7 +115,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 
 ## Phase 7 : les autres écrans
 
-- [ ] `feat/label-ecran-calendrier` : calendrier des sorties
+- [x] `feat/label-ecran-calendrier` : calendrier des sorties
 - [ ] `feat/label-ecran-classements` : classements et certifications
 - [ ] `feat/label-ecran-marche` : marché et prévisions
 - [ ] `feat/label-ecran-concurrence` : concurrence
@@ -184,7 +184,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 4     | 16    | 16     |
 | 5     | 14    | 14     |
 | 6     | 14    | 14     |
-| 7     | 13    | 0      |
+| 7     | 13    | 1      |
 | 8     | 10    | 0      |
 | 9     | 5     | 0      |
 | 10    | 12    | 0      |
