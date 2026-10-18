@@ -9,6 +9,7 @@ import {
   type ReleaseType,
 } from './balance';
 import type { CertificationLevel } from './balance/tiers';
+import { productionCapacity, studioCap } from './buildings';
 import { labelShare } from './contracts';
 import { canAfford, earn, spend } from './finance';
 import { fansGained, viralStep } from './viral';
@@ -92,8 +93,10 @@ export const launchProject: ActionHandler<LabelState, LaunchAction, LabelSignal>
       if (!Number.isInteger(level) || level < 0 || level > 100) return reject('projet-invalide');
     if (!Number.isInteger(action.mixage) || action.mixage < 0) return reject('projet-invalide');
     const active = state.projets.filter((p) => p.statut === 'production');
-    if (active.length >= PRODUCTION.capacity)
-      return reject('studio-sature', { max: PRODUCTION.capacity });
+    if (active.length >= productionCapacity(state))
+      return reject('studio-sature', { max: productionCapacity(state) });
+    if (action.studio > studioCap(state))
+      return reject('studio-trop-modeste', { max: studioCap(state) });
     const cost = projectCost(action.sortie, action.clip, action.studio, action.mixage);
     return canAfford(state, cost) ? null : reject('fonds-insuffisants', { besoin: cost });
   },

@@ -4,6 +4,7 @@ import type { Artist } from './artists';
 import type { FinanceState } from './finance';
 import type { Rival } from './auction';
 import type { Contrat } from './contracts';
+import type { BatimentsState } from './buildings';
 import type { Cadre, DelegationDomain, Rapport } from './delegation';
 import type { Membre } from './staff';
 import type { Prevision } from './forecast';
@@ -67,6 +68,8 @@ export interface LabelState {
   /** Cadres de délégation fixés par le joueur, et rapports des décisions prises. */
   delegation: Partial<Record<DelegationDomain, Cadre>>;
   rapports: Rapport[];
+  /** Bâtiments du label. */
+  batiments: BatimentsState;
   /** Négociations en cours ou rompues, une par artiste. */
   negociations: Negociation[];
   /** Prochain identifiant libre, partagé par toutes les entités (artistes, sorties, contrats…). */

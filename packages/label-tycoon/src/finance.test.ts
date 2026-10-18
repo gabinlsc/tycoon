@@ -2,6 +2,7 @@ import { type Cents, calendarOf, cents, hashState, money } from '@tycoon/core';
 import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
 import {
+  BUILDINGS,
   EXPENSE_CATEGORIES,
   FINANCE,
   REVENUE_CATEGORIES,
@@ -19,6 +20,9 @@ import {
 } from './index';
 
 const fresh = () => initialState('fin', defaultConfig());
+
+/** Frais courants d'une semaine de départ : base + entretien du studio et des bureaux de niveau 1. */
+const WEEKLY = FINANCE.weeklyBaseCost + BUILDINGS.studio.upkeep + BUILDINGS.bureaux.upkeep;
 
 describe("mouvements d'argent", () => {
   it('encaisser augmente la trésorerie et alimente le compte de la semaine', () => {
@@ -177,13 +181,13 @@ describe('phase de fin de semaine', () => {
   it('prélève les frais courants chaque semaine et clôt les comptes', () => {
     const run = labelGame.advance(newGame('p'), 10).session.engine.data;
     expect(run.finances.semaines).toHaveLength(10);
-    expect(run.label.tresorerie).toBe(money.euros(10_000) - 10 * FINANCE.weeklyBaseCost);
-    expect(run.finances.semaines[0]?.depenses).toEqual({ entretien: FINANCE.weeklyBaseCost });
+    expect(run.label.tresorerie).toBe(money.euros(10_000) - 10 * WEEKLY);
+    expect(run.finances.semaines[0]?.depenses).toEqual({ entretien: WEEKLY });
   });
 
   it('alerte une seule fois quand la trésorerie passe sous zéro, avec auto-pause', () => {
     let session = newGame('alerte');
-    session.engine.data.label.tresorerie = cents(FINANCE.weeklyBaseCost + 50);
+    session.engine.data.label.tresorerie = cents(WEEKLY + 50);
     const first = labelGame.advance(session, 1);
     expect(first.signals.filter((s) => s.kind === 'tresorerie-negative')).toHaveLength(0);
     session = first.session;

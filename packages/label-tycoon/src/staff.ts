@@ -1,6 +1,7 @@
 import { type ActionHandler, type Phase, type Rng, cents, clamp, reject } from '@tycoon/core';
 import type { Action } from '@tycoon/core';
 import { STAFF, STAFF_ROLES, STAFF_TRAITS, type StaffRole, type StaffTrait } from './balance';
+import { buildingsWeek, teamCapacity } from './buildings';
 import { delegatedScouting } from './delegation';
 import { spend } from './finance';
 import { generateRealName } from './naming';
@@ -60,8 +61,8 @@ export const hire: ActionHandler<LabelState, HireAction, LabelSignal> = {
   validate(state, action) {
     if (!state.candidats.some((c) => c.id === action.membreId))
       return reject('candidat-introuvable');
-    return state.personnel.length >= STAFF.maxTeam
-      ? reject('equipe-pleine', { max: STAFF.maxTeam })
+    return state.personnel.length >= teamCapacity(state)
+      ? reject('equipe-pleine', { max: teamCapacity(state) })
       : null;
   },
   apply(state, action) {
@@ -106,6 +107,7 @@ export const staffPhase: Phase<LabelState, LabelSignal> = {
       kept.push(m);
     }
     state.personnel = kept;
+    buildingsWeek(state, ctx.tick, ctx.emit);
     delegatedScouting(state, ctx.rng('reperage'), ctx.tick, ctx.emit);
     if (ctx.tick % STAFF.refreshEvery === 0) {
       if (state.candidats.length >= STAFF.poolSize) state.candidats.shift();

@@ -1,5 +1,6 @@
 import { type Phase, calendarOf, clamp } from '@tycoon/core';
 import { stepSkills, updatePhase, yearlyDeclineRoll } from './career';
+import { rehearsalRecovery } from './buildings';
 import { contractsWeek } from './contract-end';
 import { observeProspects, payScouts, rivalsPoach } from './scouting';
 import type { Artist } from './artists';
@@ -74,6 +75,7 @@ export const artistsPhase: Phase<LabelState, LabelSignal> = {
     const yearEnd = calendarOf(ctx.tick).isYearEnd;
     for (const artist of state.artistes) {
       driftArtist(artist);
+      artist.fatigue = Math.max(0, artist.fatigue - rehearsalRecovery(state));
       stepSkills(artist);
       updatePhase(artist);
       if (yearEnd) {

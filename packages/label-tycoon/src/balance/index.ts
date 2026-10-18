@@ -57,3 +57,10 @@ export {
   type StaffRole,
   type StaffTrait,
 } from './staff';
+export {
+  BUILDINGS,
+  BUILDING_EFFECTS,
+  BUILDING_IDS,
+  type BuildingId,
+  type BuildingRule,
+} from './buildings';

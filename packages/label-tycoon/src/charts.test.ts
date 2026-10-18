@@ -22,6 +22,7 @@ describe('classements dans la simulation', () => {
     const session = newGame('chart');
     const d = session.engine.data;
     d.label.tresorerie = money.euros(500_000);
+    d.batiments.niveaux.studio = 5;
     scoutTalents(d, Rng.fromSeed('c'), 'plateforme', 0);
     const artist = d.artistes[0];
     if (!artist) throw new Error('artiste attendu');
