@@ -179,6 +179,12 @@ export const fr = {
     'membre-introuvable': () => "Ce membre n'est pas dans ton équipe.",
     'domaine-inconnu': () => 'Ce domaine ne peut pas être délégué.',
     'cadre-invalide': () => 'Le cadre de délégation est invalide.',
+    'batiment-inconnu': () => "Ce bâtiment n'existe pas.",
+    'travaux-en-cours': () => 'Des travaux sont déjà en cours sur ce bâtiment.',
+    'niveau-maximal': () => 'Ce bâtiment est déjà au niveau maximal.',
+    'palier-insuffisant': () => "Ton label n'a pas encore atteint le palier requis.",
+    'studio-trop-modeste': (p: { max: number }) =>
+      `Ton studio ne permet pas plus de ${p.max} de niveau.`,
     'suivi-introuvable': () => "Ce talent n'est pas dans ta liste de suivi.",
     'essai-deja-fait': () => 'Tu as déjà fait passer un essai à ce talent.',
   },

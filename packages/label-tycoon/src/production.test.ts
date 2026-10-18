@@ -1,11 +1,19 @@
 import { Rng, cents, money } from '@tycoon/core';
 import { describe, expect, it } from 'vitest';
-import { PRODUCTION, RELEASE_TYPES, labelGame, newGame, projectCost, scoutTalents } from './index';
+import {
+  productionCapacity,
+  RELEASE_TYPES,
+  labelGame,
+  newGame,
+  projectCost,
+  scoutTalents,
+} from './index';
 import type { LabelAction } from './index';
 
 const signedArtist = () => {
   const session = newGame('prod');
   session.engine.data.label.tresorerie = money.euros(500_000);
+  session.engine.data.batiments.niveaux.studio = 5;
   scoutTalents(session.engine.data, Rng.fromSeed('p'), 'plateforme', 0);
   const artist = session.engine.data.artistes[0];
   if (!artist) throw new Error('artiste attendu');
@@ -47,7 +55,7 @@ describe('lancement de projet', () => {
     });
     if (art) art.employeur = 'joueur';
     let s = session;
-    for (let i = 0; i < PRODUCTION.capacity; i += 1) {
+    for (let i = 0; i < productionCapacity(session.engine.data); i += 1) {
       const r = labelGame.dispatch(s, launch(id));
       if (r.ok) s = r.session;
     }
