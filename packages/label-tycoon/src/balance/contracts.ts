@@ -26,3 +26,19 @@ export const CONTRACTS = {
   /** Utilité minimale pour qu'un artiste accepte. */
   acceptThreshold: 0,
 } as const;
+
+/** Négociation (GDD, 5.4). */
+export const NEGOTIATION = {
+  /** Contre-propositions maximum par artiste. */
+  maxCounters: 3,
+  /** Utilité en dessous de laquelle l'offre est insultante (seuil − cette marge). */
+  insultMargin: 25,
+  /** Affinité perdue après une offre insultante (pour toute la partie). */
+  insultAffinityLoss: 15,
+  /** Utilité sous le seuil jugée « hésitante » (jauge) et au-dessus pour « enthousiaste ». */
+  hesitantMargin: 10,
+  enthusiasticMargin: 12,
+  /** Pas utilisé par la contre-proposition (points de base de royalties / part de l'avance juste). */
+  counterRoyaltiesStep: 500,
+  counterAdvanceStepShare: 0.25,
+} as const;

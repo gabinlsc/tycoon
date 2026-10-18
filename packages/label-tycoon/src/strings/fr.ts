@@ -164,6 +164,8 @@ export const fr = {
     'artiste-indisponible': () => 'Cet artiste est déjà sous contrat ailleurs.',
     'clauses-invalides': () => 'Ces clauses sortent des limites autorisées.',
     'offre-refusee': () => "L'artiste refuse cette offre : revois les clauses.",
+    'negociation-rompue': () => "L'artiste ne veut plus négocier avec toi.",
+    'contre-propositions-epuisees': () => 'Plus de contre-proposition possible : signe ou renonce.',
     'suivi-introuvable': () => "Ce talent n'est pas dans ta liste de suivi.",
     'essai-deja-fait': () => 'Tu as déjà fait passer un essai à ce talent.',
   },

@@ -122,3 +122,11 @@ export {
   labelShare,
   utilityOf,
 } from './contracts';
+export {
+  type Negociation,
+  type ProposeAction,
+  type Reaction,
+  counterOffer,
+  evaluateOffer,
+  gaugeOf,
+} from './negotiation';

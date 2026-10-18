@@ -2,6 +2,7 @@ import { type Action, type ActionHandler, type ResolveEventAction, reject } from
 import { LABEL_NAME_MAX } from './balance';
 import type { LabelSignal } from './pipeline';
 import type { SignAction } from './contracts';
+import type { ProposeAction } from './negotiation';
 import type {
   DropProspectAction,
   FireScoutAction,
@@ -25,7 +26,8 @@ export type LabelAction =
   | TrialAction
   | HireScoutAction
   | FireScoutAction
-  | SignAction;
+  | SignAction
+  | ProposeAction;
 
 export const renameLabel: ActionHandler<LabelState, RenameLabelAction, LabelSignal> = {
   validate(_state, action) {

@@ -14,6 +14,7 @@ import { artistsPhase } from './dynamics';
 import { financePhase, initialFinance } from './finance';
 import { initialCredibility, initialMarket } from './market';
 import { sign } from './contracts';
+import { propose } from './negotiation';
 import { dropProspect, fireScout, hireScout, scout, studioTrial } from './scouting';
 import { generateWorld } from './world';
 import type { LabelState } from './state';
@@ -62,6 +63,7 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
     'renommer-label': renameLabel,
     reperer: scout,
     signer: sign,
+    proposer: propose,
     'recruter-denicheur': hireScout,
     'renvoyer-denicheur': fireScout,
     'abandonner-suivi': dropProspect,
@@ -112,6 +114,7 @@ export function initialState(seed: Seed, config: GameConfig): LabelState {
     suivis: [],
     denicheurs: [],
     contrats: [],
+    negociations: [],
     nextId: 1,
   };
 }
