@@ -6,6 +6,7 @@ import type { LabelState } from './state';
 import { labelScore, valuation } from './valuation';
 import { VISIBLE_ATTRIBUTES, knownRange } from './scouting';
 import { bestCertification } from './charts';
+import { objectiveProgress } from './achievements';
 
 /**
  * Vue du jeu pour l'interface : un instantané sérialisable et plat, calculé à partir de l'état.
@@ -57,6 +58,13 @@ export interface VueActu {
   kind: string;
 }
 
+export interface VueEcheance {
+  type: 'projet' | 'contrat';
+  artisteId: number;
+  nom: string;
+  semaine: number;
+}
+
 export interface VueJeu {
   semaine: number;
   date: { annee: number; mois: number; semaineDuMois: number };
@@ -82,11 +90,64 @@ export interface VueJeu {
   }[];
   decisions: VueDecision[];
   fil: VueActu[];
-  objectifs: { id: number; kind: string; cible: number; base: number }[];
+  objectifs: { id: number; kind: string; cible: number; base: number; progression: number }[];
+  /** Trésorerie de fin de semaine sur les dernières semaines (centimes), de la plus ancienne à la plus récente. */
+  historiqueTresorerie: number[];
+  /** Prochaines échéances : projets qui se terminent, contrats qui arrivent à terme. */
+  echeances: VueEcheance[];
+  /** Dernier rapport mensuel, s'il existe. */
+  rapport: {
+    semaine: number;
+    net: number;
+    variation: number;
+    reussites: number;
+    echecs: number;
+  } | null;
   succes: number;
 }
 
 const FIL_VISIBLE = 40;
+const HISTORIQUE = 26;
+const NB_ECHEANCES = 6;
+
+const nomDe = (state: LabelState, id: number): string =>
+  state.artistes.find((a) => a.id === id)?.nomScene ?? 'Artiste';
+
+function echeances(state: LabelState, tick: number): VueEcheance[] {
+  const list: VueEcheance[] = [];
+  for (const p of state.projets)
+    if (p.statut === 'production')
+      list.push({
+        type: 'projet',
+        artisteId: p.artisteId,
+        nom: nomDe(state, p.artisteId),
+        semaine: p.fin,
+      });
+  for (const c of state.contrats)
+    list.push({
+      type: 'contrat',
+      artisteId: c.artisteId,
+      nom: nomDe(state, c.artisteId),
+      semaine: c.echeance,
+    });
+  return list
+    .filter((e) => e.semaine >= tick)
+    .sort((a, b) => a.semaine - b.semaine || a.artisteId - b.artisteId)
+    .slice(0, NB_ECHEANCES);
+}
+
+function lastReport(state: LabelState): VueJeu['rapport'] {
+  const r = state.rapportsMensuels[state.rapportsMensuels.length - 1];
+  return r
+    ? {
+        semaine: r.semaine,
+        net: r.net,
+        variation: r.variation,
+        reussites: r.reussites.length,
+        echecs: r.echecs.length,
+      }
+    : null;
+}
 
 /** Instantané de la partie à la semaine `tick`. */
 /** Aides fournies par le moteur d'événements (disponibilité des choix, choix par défaut). */
@@ -204,7 +265,11 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
       kind: o.kind,
       cible: o.cible,
       base: o.base,
+      progression: objectiveProgress(state, o),
     })),
+    historiqueTresorerie: state.finances.semaines.slice(-HISTORIQUE).map((r) => r.tresorerieFin),
+    echeances: echeances(state, tick),
+    rapport: lastReport(state),
     succes: state.succes.length,
   };
 }

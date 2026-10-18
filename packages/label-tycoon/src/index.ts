@@ -363,6 +363,7 @@ export {
   type VueActu,
   type VueArtiste,
   type VueDecision,
+  type VueEcheance,
   type VueJeu,
   type VueSuivi,
   buildView,
