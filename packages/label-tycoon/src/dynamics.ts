@@ -1,5 +1,6 @@
 import { type Phase, calendarOf, clamp } from '@tycoon/core';
 import { stepSkills, updatePhase, yearlyDeclineRoll } from './career';
+import { contractsWeek } from './contract-end';
 import { observeProspects, payScouts, rivalsPoach } from './scouting';
 import type { Artist } from './artists';
 import { DYNAMICS } from './balance';
@@ -68,6 +69,7 @@ export const artistsPhase: Phase<LabelState, LabelSignal> = {
   run(state, ctx) {
     observeProspects(state);
     payScouts(state);
+    contractsWeek(state, ctx.tick, ctx.rng('contrats'), ctx.emit);
     rivalsPoach(state, ctx.rng('rivaux'), ctx.emit);
     const yearEnd = calendarOf(ctx.tick).isYearEnd;
     for (const artist of state.artistes) {

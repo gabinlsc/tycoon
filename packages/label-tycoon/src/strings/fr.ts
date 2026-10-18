@@ -166,6 +166,7 @@ export const fr = {
     'offre-refusee': () => "L'artiste refuse cette offre : revois les clauses.",
     'negociation-rompue': () => "L'artiste ne veut plus négocier avec toi.",
     'contre-propositions-epuisees': () => 'Plus de contre-proposition possible : signe ou renonce.',
+    'contrat-introuvable': () => "Cet artiste n'a pas de contrat avec ton label.",
     'suivi-introuvable': () => "Ce talent n'est pas dans ta liste de suivi.",
     'essai-deja-fait': () => 'Tu as déjà fait passer un essai à ce talent.',
   },
