@@ -6,6 +6,7 @@ import { BoiteReception, notificationsNonLues } from './BoiteReception';
 import { InfobulleCalcul, Terme } from './Infobulle';
 import { FicheArtiste } from './FicheArtiste';
 import { QG } from './QG';
+import { Reperage } from './Reperage';
 import { Roster } from './Roster';
 import { NouvellePartie } from './NouvellePartie';
 import { useRaccourcis } from './Raccourcis';
@@ -29,6 +30,7 @@ export function Coquille() {
   const [ecran, setEcran] = useState<EcranId>('qg');
   const [dernierLu, setDernierLu] = useState(0);
   const [fiche, setFiche] = useState<number | null>(null);
+  const [negociation, setNegociation] = useState<number | null>(null);
   useRaccourcis(setEcran, vue !== null);
 
   if (etat === 'chargement') return <p className="stage__loading">Chargement du moteur…</p>;
@@ -97,6 +99,19 @@ export function Coquille() {
             <FicheArtiste artiste={ficheArtiste} retour={() => setFiche(null)} vers={setEcran} />
           ) : (
             <Roster ouvrir={setFiche} />
+          )
+        ) : ecran === 'reperage' ? (
+          negociation !== null ? (
+            <section className="label-screen">
+              <p className="label-screen__soon">
+                La négociation avec le talent n° {negociation} arrive bientôt.
+              </p>
+              <button type="button" onClick={() => setNegociation(null)}>
+                Retour au repérage
+              </button>
+            </section>
+          ) : (
+            <Reperage onNegocier={setNegociation} />
           )
         ) : ecran === 'boite' ? (
           <BoiteReception dernierLu={dernierLu} onLu={setDernierLu} />
