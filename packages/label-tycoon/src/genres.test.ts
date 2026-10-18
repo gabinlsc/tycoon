@@ -86,6 +86,8 @@ describe('marché de départ', () => {
     for (const id of GENRE_IDS) {
       expect(market.genres[id]).toEqual({
         popularite: GENRES[id].popularite,
+        base: GENRES[id].popularite,
+        bruit: 0,
         audience: GENRES[id].audience,
       });
     }

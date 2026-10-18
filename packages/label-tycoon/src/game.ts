@@ -13,7 +13,7 @@ import type { DifficultyPreset, DifficultySettings, GameConfig, GameMode } from 
 import { type LabelSignal, buildPipeline } from './pipeline';
 import { artistsPhase } from './dynamics';
 import { financePhase, initialFinance } from './finance';
-import { initialCredibility, initialMarket } from './market';
+import { initialCredibility, initialMarket, marketPhase } from './market';
 import { breakContract, releaseArtist, renegotiate } from './contract-end';
 import { chartsPhase, emptyCharts } from './charts';
 import { rivalsPhase } from './calendar';
@@ -61,6 +61,7 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
   phases: buildPipeline({
     'echeances-evenements': eventEngine.duePhase,
     artistes: artistsPhase,
+    marche: marketPhase,
     rivaux: rivalsPhase,
     production: productionPhase,
     streams: streamsPhase,
