@@ -39,8 +39,16 @@ describe('écran Personnel', () => {
     await screen.findByRole('heading', { name: 'Personnel' });
     expect(screen.getByText('Aucun candidat pour l’instant.')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: /Semaine ▶/ }));
-    const embaucher = await screen.findAllByRole('button', { name: /^Embaucher / });
-    fireEvent.click(embaucher[0] as HTMLElement);
+    const embaucher = await screen.findAllByRole(
+      'button',
+      { name: /^Embaucher / },
+      { timeout: 5000 },
+    );
+    // Un directeur financier exige un palier que le label de départ n'a pas.
+    const possible = embaucher.find(
+      (bouton) => !bouton.closest('li')?.textContent?.includes('Directeur financier'),
+    );
+    fireEvent.click(possible as HTMLElement);
     const licencier = await screen.findByRole('button', { name: /^Licencier / });
     fireEvent.click(licencier);
     await waitFor(() => expect(screen.queryByRole('button', { name: /^Licencier / })).toBeNull());
