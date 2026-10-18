@@ -31,6 +31,8 @@ export interface Contrat {
   signeLe: number;
   /** Semaine d'échéance. */
   echeance: number;
+  /** Revenus supplémentaires (centimes) apportés au label par la clause 360 depuis la signature. */
+  recette360: number;
 }
 
 export interface UtilityTerm {
@@ -140,6 +142,7 @@ export function concludeSigning(
     clauses: { ...clauses },
     signeLe: tick,
     echeance: tick + clauses.dureeAnnees * 52,
+    recette360: 0,
   });
   if (claimSubgenre(state, artist.genre, 'joueur'))
     emit({ kind: 'premier-sous-genre', payload: { genre: artist.genre } });
@@ -149,4 +152,25 @@ export function concludeSigning(
 /** Part des royalties revenant au label pour un montant brut. */
 export function labelShare(clauses: Clauses, gross: Cents): Cents {
   return cents(gross - money.applyBps(gross, clauses.royaltiesArtisteBps));
+}
+
+/** Source de revenu live soumise à la clause 360. */
+export type Source360 = 'concerts' | 'merch' | 'synchro';
+
+/**
+ * Part du label sur un revenu live : sa part de base (commission) plus, si le contrat est 360, la
+ * part négociée. L'apport de la clause 360 est cumulé dans le contrat (`recette360`).
+ */
+export function liveShare(
+  state: LabelState,
+  artisteId: number,
+  gross: number,
+  baseBps: number,
+): number {
+  const contract = state.contrats.find((k) => k.artisteId === artisteId);
+  const extraBps = contract?.clauses.part360Bps ?? 0;
+  const total = Math.min(10_000, baseBps + extraBps);
+  if (contract && extraBps > 0)
+    contract.recette360 += Math.round((gross * (total - baseBps)) / 10_000);
+  return Math.round((gross * total) / 10_000);
 }

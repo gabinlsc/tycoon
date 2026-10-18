@@ -1,6 +1,7 @@
 import { type ActionHandler, type Rng, cents, clamp, reject } from '@tycoon/core';
 import type { Action } from '@tycoon/core';
 import { SYNC, type SyncKind } from './balance';
+import { liveShare } from './contracts';
 import { earn } from './finance';
 import type { LabelSignal } from './pipeline';
 import type { LabelState } from './state';
@@ -59,9 +60,12 @@ export const answerSync: ActionHandler<LabelState, SyncAnswerAction, LabelSignal
     if (action.type === 'refuser-synchro') return;
     const projet = state.projets.find((p) => p.id === offer.projetId);
     const artist = projet && state.artistes.find((a) => a.id === projet.artisteId);
-    const contract = projet && state.contrats.find((k) => k.artisteId === projet.artisteId);
-    const bps = Math.min(10_000, SYNC.labelBps + (contract?.clauses.part360Bps ?? 0));
-    earn(state, 'synchro', cents(Math.round((offer.cachet * bps) / 10_000)));
+    if (projet)
+      earn(
+        state,
+        'synchro',
+        cents(liveShare(state, projet.artisteId, offer.cachet, SYNC.labelBps)),
+      );
     if (!artist) return;
     const kind = SYNC.kinds[offer.type];
     artist.hype = clamp(artist.hype + kind.hype, 0, 100);

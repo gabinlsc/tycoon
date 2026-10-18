@@ -3,6 +3,7 @@ import type { Action } from '@tycoon/core';
 import { notoriety } from './artists';
 import { CONCERTS, VENUES, type VenueId } from './balance';
 import { buildingLevel } from './buildings';
+import { liveShare } from './contracts';
 import { afterTourDate } from './tours';
 import { canAfford, earn, spend } from './finance';
 import type { LabelSignal } from './pipeline';
@@ -93,9 +94,7 @@ export function concertsWeek(
     );
     c.spectateurs = Math.round(venue.capacite * fill);
     const gross = cents(c.spectateurs * c.prix * 100);
-    const contract = state.contrats.find((k) => k.artisteId === artist.id);
-    const labelBps = CONCERTS.commissionBps + (contract?.clauses.part360Bps ?? 0);
-    c.recette = Math.round((gross * Math.min(10_000, labelBps)) / 10_000);
+    c.recette = liveShare(state, artist.id, gross, CONCERTS.commissionBps);
     if (c.recette > 0) earn(state, 'concerts', cents(c.recette));
     artist.fatigue = clamp(artist.fatigue + CONCERTS.fatigue, 0, 100);
     artist.fanbase += Math.round(c.spectateurs * CONCERTS.fansPerSpectator * (artist.scene / 50));
