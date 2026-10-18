@@ -8,7 +8,14 @@ import {
   money,
 } from '@tycoon/core';
 import { type LabelAction, renameLabel } from './actions';
-import { DIFFICULTY_BOUNDS, DIFFICULTY_PRESETS, EVENTS, SANDBOX_CASH, START } from './balance';
+import {
+  DIFFICULTY_BOUNDS,
+  EVENT_RATE_BOUNDS,
+  DIFFICULTY_PRESETS,
+  EVENTS,
+  SANDBOX_CASH,
+  START,
+} from './balance';
 import type { DifficultyPreset, DifficultySettings, GameConfig, GameMode } from './config';
 import { type LabelSignal, buildPipeline } from './pipeline';
 import { artistsPhase } from './dynamics';
@@ -73,7 +80,7 @@ export const eventEngine = createEventEngine<LabelState>({
   events: LABEL_EVENTS,
   getState: (state) => state.events,
   stream: 'evenements',
-  chance: EVENTS.chancePerWeek,
+  chance: (state) => Math.min(1, EVENTS.chancePerWeek * (state.config.eventRate ?? 1)),
   maxPerTick: EVENTS.maxPerWeek,
   maxPending: EVENTS.maxPending,
   maxChainDepth: EVENTS.maxChainDepth,
@@ -175,6 +182,12 @@ export function validateConfig(config: GameConfig): string | null {
       return `Réglage « ${key} » hors bornes (${min} à ${max}) : ${String(value)}`;
     }
   }
+  const rate = config.eventRate;
+  if (
+    rate !== undefined &&
+    (!Number.isFinite(rate) || rate < EVENT_RATE_BOUNDS.min || rate > EVENT_RATE_BOUNDS.max)
+  )
+    return `Fréquence des événements hors bornes (${EVENT_RATE_BOUNDS.min} à ${EVENT_RATE_BOUNDS.max}) : ${String(rate)}`;
   return null;
 }
 
@@ -250,6 +263,8 @@ function structuredConfig(config: GameConfig): GameConfig {
   const copy: GameConfig = { mode: config.mode, difficulty: { ...config.difficulty } };
   if (config.scenarioId !== undefined) copy.scenarioId = config.scenarioId;
   if (config.sandbox !== undefined) copy.sandbox = config.sandbox;
+  if (config.bankruptcyOff !== undefined) copy.bankruptcyOff = config.bankruptcyOff;
+  if (config.eventRate !== undefined) copy.eventRate = config.eventRate;
   return copy;
 }
 

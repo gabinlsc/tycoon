@@ -1,9 +1,21 @@
 /** Vitesses du temps : 0 = pause, sinon semaines par seconde. */
 export const VITESSES = [0, 1, 2, 4] as const;
-export type Vitesse = (typeof VITESSES)[number];
+/** Vitesses supplémentaires du bac à sable. */
+export const VITESSES_BAC_A_SABLE = [8, 16] as const;
+export type Vitesse = (typeof VITESSES)[number] | (typeof VITESSES_BAC_A_SABLE)[number];
+
+/** Vitesses proposées dans la barre de temps. */
+export const vitessesDisponibles = (bacASable: boolean): readonly Vitesse[] =>
+  bacASable ? [...VITESSES, ...VITESSES_BAC_A_SABLE] : VITESSES;
 
 /** Délai entre deux semaines simulées, en millisecondes, pour chaque vitesse. */
-export const DELAI_MS: Readonly<Record<Exclude<Vitesse, 0>, number>> = { 1: 1000, 2: 500, 4: 250 };
+export const DELAI_MS: Readonly<Record<Exclude<Vitesse, 0>, number>> = {
+  1: 1000,
+  2: 500,
+  4: 250,
+  8: 125,
+  16: 60,
+};
 
 /** Types d'événements qui peuvent déclencher une auto-pause, réglables un par un. */
 export const CATEGORIES_PAUSE = [

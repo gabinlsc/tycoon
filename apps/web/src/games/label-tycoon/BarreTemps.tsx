@@ -1,12 +1,21 @@
 import { useEffect } from 'react';
 import { useTemps } from './useTemps';
-import { CATEGORIES_PAUSE, LIBELLES_PAUSE, VITESSES, type Vitesse } from './temps';
+import { useLabel } from './LabelContext';
+import { CATEGORIES_PAUSE, LIBELLES_PAUSE, type Vitesse, vitessesDisponibles } from './temps';
 
-const LIBELLE: Record<Vitesse, string> = { 0: 'Pause', 1: '×1', 2: '×2', 4: '×4' };
+const LIBELLE: Record<Vitesse, string> = {
+  0: 'Pause',
+  1: '×1',
+  2: '×2',
+  4: '×4',
+  8: '×8',
+  16: '×16',
+};
 
 /** Barre de temps : pause, vitesses, semaine par semaine, réglage des auto-pauses. */
 export function BarreTemps() {
   const { vitesse, reglages, motif, regler, pause, semaine, basculer } = useTemps();
+  const { vue } = useLabel();
 
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
@@ -33,7 +42,7 @@ export function BarreTemps() {
   return (
     <section className="label-time" aria-label="Temps">
       <div className="label-time__speeds" role="group" aria-label="Vitesse du temps">
-        {VITESSES.map((v) => (
+        {vitessesDisponibles(vue?.partie.mode === 'bac-a-sable').map((v) => (
           <button
             key={v}
             type="button"

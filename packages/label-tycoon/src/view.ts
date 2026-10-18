@@ -440,6 +440,9 @@ export interface VuePartie {
   mode: string;
   scenarioId: string | null;
   bacASable: boolean;
+  faillitePossible: boolean;
+  /** Fréquence des événements (1 = normal). */
+  frequenceEvenements: number;
   difficulte: {
     capitalDepart: number;
     agressiviteRivaux: number;
@@ -1151,6 +1154,8 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
       mode: state.config.mode,
       scenarioId: state.config.scenarioId ?? null,
       bacASable: state.config.sandbox === true,
+      faillitePossible: !state.config.sandbox && !state.config.bankruptcyOff,
+      frequenceEvenements: state.config.eventRate ?? 1,
       difficulte: {
         capitalDepart: state.config.difficulty.startingCash,
         agressiviteRivaux: state.config.difficulty.rivalAggression,

@@ -25,7 +25,7 @@ export const isBankrupt = (state: LabelState): boolean => state.faillite.termine
  */
 export function bankruptcyWeek(state: LabelState, emit: (s: LabelSignal) => void): void {
   if (state.faillite.terminee) return;
-  if (state.label.tresorerie >= 0 || state.config.sandbox) {
+  if (state.label.tresorerie >= 0 || state.config.sandbox || state.config.bankruptcyOff) {
     state.faillite.semaines = 0;
     return;
   }
