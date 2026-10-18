@@ -90,3 +90,30 @@ export const PERSONALITIES: Readonly<Record<RivalPersonality, PersonalityProfile
 };
 
 export const PERSONALITY_IDS = ['major', 'pointu', 'copieur', 'predateur', 'declin'] as const;
+
+/** Décisions hebdomadaires des rivaux, par utilité (GDD, 5.12). */
+export const RIVAL_AI = {
+  /** Talents libres examinés par semaine (action candidate bornée). */
+  candidates: 4,
+  /** Utilité minimale pour signer. */
+  signThreshold: 0.35,
+  /** Probabilité hebdomadaire d'envisager une signature, avant l'agressivité. */
+  signChance: 0.3,
+  /** Bonus d'utilité quand le talent est du genre fétiche du rival. */
+  genreBonus: 0.25,
+  /** Pénalité de risque : coût de l'avance rapporté à la trésorerie du rival. */
+  riskWeight: 0.6,
+  /** Repérage maison : probabilité hebdomadaire (× agressivité), coût, et multiplicateur pour l'indé pointu. */
+  scoutChance: 0.1,
+  scoutCost: money.euros(400) as Cents,
+  scoutPointuFactor: 3,
+  /** Trésorerie minimale conservée après une signature, une sortie ou un repérage. */
+  reserve: money.euros(15_000) as Cents,
+  /** Frais fixes hebdomadaires et salaire par artiste du roster. */
+  weeklyOverhead: money.euros(300) as Cents,
+  salaryPerArtist: money.euros(20) as Cents,
+  /** Part des écoutes hebdomadaires des fans transformée en revenu pour le rival. */
+  revenueShare: 1,
+  /** Coût d'une sortie pour un rival, par poids. */
+  releaseCostPerWeight: money.euros(1500) as Cents,
+} as const;

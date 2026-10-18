@@ -34,7 +34,7 @@ import { build, initialBuildings } from './buildings';
 import { configureDelegation } from './delegation';
 import { fire, hire, staffPhase } from './staff';
 import { marketStudy } from './forecast';
-import { rivalsPhase } from './calendar';
+import { rivalsPhase } from './rival-ai';
 import { auction, generateRivals } from './auction';
 import { sign } from './contracts';
 import { launchProject, productionPhase, releaseProject, streamsPhase } from './production';
