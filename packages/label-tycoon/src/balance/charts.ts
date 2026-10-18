@@ -10,3 +10,16 @@ export const CHARTS = {
   /** Types de sortie qui comptent pour le classement des singles ; les autres vont aux albums. */
   singleTypes: ['single'] as readonly string[],
 } as const;
+
+/** Certifications (GDD, 5.6). */
+export const CERTIFICATIONS = {
+  /** Streams qui équivalent à une vente. */
+  streamsPerSale: 150,
+  /** Seuils en ventes équivalentes, pour un single ; les albums valent `albumFactor` fois plus. */
+  thresholds: { or: 20_000, platine: 40_000, diamant: 200_000 },
+  albumFactor: 2,
+  /** Facteur d'ère sur les seuils (1 = ère actuelle ; un disque d'or est plus facile en streaming de masse). */
+  eraFactor: 1,
+  /** Réputation gagnée à chaque niveau obtenu. */
+  reputationGain: { or: 1, platine: 3, diamant: 8 },
+} as const;

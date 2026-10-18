@@ -21,6 +21,7 @@ const projet = (hit: number): Projet => ({
   hit,
   viral: null,
   derniers: 0,
+  certification: null,
   streams: 0,
 });
 

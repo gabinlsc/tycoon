@@ -1,5 +1,6 @@
 import type { Phase, Rng } from '@tycoon/core';
-import { CHARTS } from './balance';
+import { CERTIFICATIONS, CHARTS } from './balance';
+import type { CertificationLevel } from './balance/tiers';
 import type { LabelSignal } from './pipeline';
 import type { LabelState } from './state';
 
@@ -52,6 +53,7 @@ export function marketNoise(rng: Rng, chart: ChartId): ChartEntry[] {
 export const chartsPhase: Phase<LabelState, LabelSignal> = {
   name: 'classements',
   run(state, ctx) {
+    certify(state, ctx.emit);
     const rng = ctx.rng('marche');
     const charts = state.classements;
     for (const chart of ['singles', 'albums'] as const) {
@@ -86,3 +88,54 @@ export const chartsPhase: Phase<LabelState, LabelSignal> = {
     }
   },
 };
+
+const LEVELS: readonly CertificationLevel[] = ['or', 'platine', 'diamant'];
+
+/** Ventes équivalentes d'une sortie : streams cumulés convertis. */
+export const equivalentSales = (streams: number): number =>
+  Math.floor(streams / CERTIFICATIONS.streamsPerSale);
+
+/** Seuil de ventes équivalentes pour un niveau et un type de sortie. */
+export function certificationThreshold(level: CertificationLevel, type: string): number {
+  const base = CERTIFICATIONS.thresholds[level] * CERTIFICATIONS.eraFactor;
+  return Math.round(chartOf(type) === 'albums' ? base * CERTIFICATIONS.albumFactor : base);
+}
+
+/** Meilleur niveau atteint par une sortie, ou `null`. */
+export function certificationFor(streams: number, type: string): CertificationLevel | null {
+  const sales = equivalentSales(streams);
+  let best: CertificationLevel | null = null;
+  for (const level of LEVELS) if (sales >= certificationThreshold(level, type)) best = level;
+  return best;
+}
+
+/** Plus haute certification parmi les sorties du joueur. */
+export function bestCertification(state: LabelState): CertificationLevel | null {
+  let best = -1;
+  for (const p of state.projets) {
+    const rank = p.certification ? LEVELS.indexOf(p.certification) : -1;
+    if (rank > best) best = rank;
+  }
+  return best < 0 ? null : (LEVELS[best] ?? null);
+}
+
+/** Décerne les certifications méritées : réputation gagnée et signal pour chaque nouveau niveau. */
+export function certify(state: LabelState, emit: (s: LabelSignal) => void): void {
+  for (const p of state.projets) {
+    if (p.statut !== 'sortie') continue;
+    const level = certificationFor(p.streams, p.type);
+    if (!level) continue;
+    const from = p.certification ? LEVELS.indexOf(p.certification) : -1;
+    const to = LEVELS.indexOf(level);
+    for (let i = from + 1; i <= to; i += 1) {
+      const gained = LEVELS[i];
+      if (!gained) continue;
+      state.label.reputation = Math.min(
+        100,
+        state.label.reputation + CERTIFICATIONS.reputationGain[gained],
+      );
+      emit({ kind: 'certification', payload: { projetId: p.id, niveau: gained } });
+    }
+    p.certification = level;
+  }
+}

@@ -8,6 +8,7 @@ import {
   type ClipSize,
   type ReleaseType,
 } from './balance';
+import type { CertificationLevel } from './balance/tiers';
 import { labelShare } from './contracts';
 import { canAfford, earn, spend } from './finance';
 import { fansGained, viralStep } from './viral';
@@ -50,6 +51,8 @@ export interface Projet {
   streams: number;
   /** Streams de la dernière semaine (alimente les classements). */
   derniers: number;
+  /** Meilleure certification obtenue. */
+  certification: CertificationLevel | null;
 }
 
 /** Coût total d'un projet. */
@@ -129,6 +132,7 @@ export const launchProject: ActionHandler<LabelState, LaunchAction, LabelSignal>
       viral: null,
       streams: 0,
       derniers: 0,
+      certification: null,
     });
     state.nextId += 1;
     if (retard > 0)
