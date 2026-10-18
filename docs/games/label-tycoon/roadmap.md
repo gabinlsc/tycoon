@@ -99,7 +99,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 ## Phase 6 : coquille d'interface et premier jalon jouable
 
 - [x] `feat/label-worker` : Web Worker, protocole commandes et vues, pilote sans worker pour les tests
-- [ ] `feat/label-ui-coquille` : montage dans `/jeux/label-tycoon`, alias `/label`, navigation entre écrans, raccourcis de base
+- [x] `feat/label-ui-coquille` : montage dans `/jeux/label-tycoon`, alias `/label`, navigation entre écrans, raccourcis de base
 - [ ] `feat/label-ui-temps` : barre de temps (pause, ×1, ×2, ×4, semaine), auto-pauses réglables
 - [ ] `feat/label-ui-boite-reception` : notifications, décisions et échéances
 - [ ] `feat/label-ui-infobulles` : composant d'infobulle explicative branché sur `explain()` (+ glossaire)
@@ -183,7 +183,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 3     | 18    | 18     |
 | 4     | 16    | 16     |
 | 5     | 14    | 14     |
-| 6     | 14    | 1      |
+| 6     | 14    | 2      |
 | 7     | 13    | 0      |
 | 8     | 10    | 0      |
 | 9     | 5     | 0      |

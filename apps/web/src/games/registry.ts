@@ -1,4 +1,4 @@
-import type { ComponentType, LazyExoticComponent } from 'react';
+import { lazy, type ComponentType, type LazyExoticComponent } from 'react';
 
 /** Props reçues par chaque jeu. Un jeu lit et écrit sa sauvegarde avec `useGameSave(slug)`. */
 export interface GameProps {
@@ -15,4 +15,6 @@ export interface GameProps {
  *   3. passer son statut à « Disponible » dans `data/games.ts`.
  */
 export const GAME_MODULES: Partial<Record<string, LazyExoticComponent<ComponentType<GameProps>>>> =
-  {};
+  {
+    'label-tycoon': lazy(() => import('./label-tycoon')),
+  };
