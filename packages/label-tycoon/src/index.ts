@@ -193,3 +193,14 @@ export {
   expectedPopularity,
   forecastError,
 } from './forecast';
+export {
+  type FireAction,
+  type HireAction,
+  type Membre,
+  fire as fireStaff,
+  generateCandidate,
+  hire as hireStaff,
+  roleLevel,
+  salaryFor,
+  staffPhase,
+} from './staff';

@@ -206,6 +206,7 @@ describe('pipeline', () => {
       'streams',
       'classements',
       'artistes',
+      'personnel',
       'finances',
       'tirage-evenements',
     ]);
