@@ -6,6 +6,7 @@ import { type Clauses, clausesValid, utilityOf } from './contracts';
 import { type Reaction, evaluateOffer, gaugeOf } from './negotiation';
 import type { GameConfig } from './config';
 import { DEFI_SEMAINES, defiTermine } from './defi';
+import { type SoumissionDefi, soumissionDe } from './defi-validation';
 import { type LabelSession, eventEngine, labelGame, newGame } from './game';
 import { describeRejection } from './strings';
 import type { LabelSignal } from './pipeline';
@@ -28,7 +29,9 @@ export type CommandeJeu =
       producteur: number;
       mixage: number;
     }
-  | { type: 'vue' };
+  | { type: 'vue' }
+  /** Prépare l'envoi du défi terminé au serveur (journal et score annoncé). */
+  | { type: 'soumettre-defi'; pseudo?: string };
 
 /** Signal simplifié pour l'interface. */
 export interface SignalVue {
@@ -51,6 +54,7 @@ export type ReponseJeu =
     }
   | { type: 'refus'; code: string; message: string }
   | { type: 'sauvegarde'; sauvegarde: string }
+  | { type: 'soumission'; soumission: SoumissionDefi }
   | { type: 'erreur'; message: string };
 
 const defaultChoiceOf = (eventId: string): string =>
@@ -120,6 +124,13 @@ export class LabelPilot {
           : { type: 'erreur', message: 'Aucune partie en cours.' };
       case 'vue':
         return this.view();
+      case 'soumettre-defi': {
+        if (!this.session) return { type: 'erreur', message: 'Aucune partie en cours.' };
+        const soumission = soumissionDe(this.session, commande.pseudo);
+        return soumission
+          ? { type: 'soumission', soumission }
+          : { type: 'erreur', message: 'Le défi n’est pas terminé.' };
+      }
       case 'estimer-sortie': {
         if (!this.session) return { type: 'erreur', message: 'Aucune partie en cours.' };
         const state = this.session.engine.data;
