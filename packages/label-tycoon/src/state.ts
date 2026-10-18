@@ -4,6 +4,7 @@ import type { Artist } from './artists';
 import type { FinanceState } from './finance';
 import type { Rival } from './auction';
 import type { Contrat } from './contracts';
+import type { RapportMensuel } from './monthly';
 import type { Actu } from './fil';
 import type { Ceremonie } from './ceremonies';
 import type { OffreRachat } from './rival-interactions';
@@ -114,6 +115,8 @@ export interface LabelState {
   /** Le Fil du label (actus générées) et mémoire des gabarits déjà utilisés. */
   fil: Actu[];
   filMemoire: Record<string, number>;
+  /** Rapports mensuels : ce qui a marché, raté, et pourquoi. */
+  rapportsMensuels: RapportMensuel[];
   /** Négociations en cours ou rompues, une par artiste. */
   negociations: Negociation[];
   /** Prochain identifiant libre, partagé par toutes les entités (artistes, sorties, contrats…). */

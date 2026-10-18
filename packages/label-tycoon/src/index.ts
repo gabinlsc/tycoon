@@ -334,3 +334,10 @@ export {
 } from './ceremonies';
 export { FIL_LIMIT, type Actu, composeActu, filPhase, filVars } from './fil';
 export { FIL_TEMPLATES, type FilTemplate } from './strings';
+export {
+  type LigneRapport,
+  type RapportMensuel,
+  buildMonthlyReport,
+  causesOfRelease,
+  monthlyPhase,
+} from './monthly';
