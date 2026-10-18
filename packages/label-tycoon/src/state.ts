@@ -4,6 +4,7 @@ import type { Artist } from './artists';
 import type { FinanceState } from './finance';
 import type { Rival } from './auction';
 import type { Contrat } from './contracts';
+import type { Actu } from './fil';
 import type { Ceremonie } from './ceremonies';
 import type { OffreRachat } from './rival-interactions';
 import type { Mentorat, Relation } from './relations';
@@ -110,6 +111,9 @@ export interface LabelState {
   remplacements: number[];
   /** Cérémonie de l'année en cours (nominations, gagnants). */
   ceremonie: Ceremonie | null;
+  /** Le Fil du label (actus générées) et mémoire des gabarits déjà utilisés. */
+  fil: Actu[];
+  filMemoire: Record<string, number>;
   /** Négociations en cours ou rompues, une par artiste. */
   negociations: Negociation[];
   /** Prochain identifiant libre, partagé par toutes les entités (artistes, sorties, contrats…). */

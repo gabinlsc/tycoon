@@ -18,6 +18,7 @@ import { GENRE_IDS } from './content/genres';
 import { initialCredibility, initialMarket, marketPhase } from './market';
 import { breakContract, releaseArtist, renegotiate } from './contract-end';
 import { chartsPhase, emptyCharts } from './charts';
+import { filPhase } from './fil';
 import { ceremonyWeek } from './ceremonies';
 import { tiersPhase } from './tiers';
 import { mentor } from './relations';
@@ -90,6 +91,7 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
     classements: chartsPhase,
     tournees: livePhase,
     finances: ledgerPhase,
+    fil: filPhase,
     paliers: {
       name: 'paliers',
       run(state, ctx) {
@@ -222,6 +224,8 @@ export function initialState(seed: Seed, config: GameConfig): LabelState {
     offresRachat: [],
     remplacements: [],
     ceremonie: null,
+    fil: [],
+    filMemoire: {},
     nextId: 1,
   };
 }

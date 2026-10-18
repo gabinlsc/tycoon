@@ -211,6 +211,7 @@ describe('pipeline', () => {
       'finances',
       'tirage-evenements',
       'paliers',
+      'fil',
     ]);
   });
 });
