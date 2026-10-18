@@ -177,6 +177,8 @@ export const fr = {
     'candidat-introuvable': () => "Ce candidat n'est plus disponible.",
     'equipe-pleine': (p: { max: number }) => `Ton équipe compte déjà ${p.max} membres.`,
     'membre-introuvable': () => "Ce membre n'est pas dans ton équipe.",
+    'domaine-inconnu': () => 'Ce domaine ne peut pas être délégué.',
+    'cadre-invalide': () => 'Le cadre de délégation est invalide.',
     'suivi-introuvable': () => "Ce talent n'est pas dans ta liste de suivi.",
     'essai-deja-fait': () => 'Tu as déjà fait passer un essai à ce talent.',
   },

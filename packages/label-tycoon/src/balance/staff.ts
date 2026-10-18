@@ -39,3 +39,13 @@ export const STAFF = {
   ambitiousLeaveMoral: 40,
   ambitiousLeaveChance: 0.03,
 } as const;
+
+/** Délégation de décisions (GDD, 5.8). */
+export const DELEGATION = {
+  /** Période entre deux décisions déléguées (semaines). */
+  every: 4,
+  /** Rapports conservés. */
+  keepReports: 24,
+  /** En dessous de ce niveau d'analyste, la décision déléguée est médiocre (open-mic au lieu de plateforme). */
+  goodLevel: 45,
+} as const;

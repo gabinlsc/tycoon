@@ -16,6 +16,7 @@ import { financePhase, initialFinance } from './finance';
 import { initialCredibility, initialMarket, marketPhase } from './market';
 import { breakContract, releaseArtist, renegotiate } from './contract-end';
 import { chartsPhase, emptyCharts } from './charts';
+import { configureDelegation } from './delegation';
 import { fire, hire, staffPhase } from './staff';
 import { marketStudy } from './forecast';
 import { rivalsPhase } from './calendar';
@@ -77,6 +78,7 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
     'renommer-label': renameLabel,
     reperer: scout,
     signer: sign,
+    'configurer-delegation': configureDelegation,
     embaucher: hire,
     licencier: fire,
     'etude-marche': marketStudy,
@@ -146,6 +148,8 @@ export function initialState(seed: Seed, config: GameConfig): LabelState {
     previsions: [],
     personnel: [],
     candidats: [],
+    delegation: {},
+    rapports: [],
     nextId: 1,
   };
 }
