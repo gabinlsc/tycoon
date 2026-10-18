@@ -37,3 +37,4 @@ export {
   type ScoutSource,
   type SourceProfile,
 } from './scouting';
+export { RIVALS, type RivalStyle } from './rivals';
