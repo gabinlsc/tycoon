@@ -7,13 +7,23 @@ import { labelScore, valuation } from './valuation';
 import { VISIBLE_ATTRIBUTES, knownRange } from './scouting';
 import { bestCertification, certificationThreshold, equivalentSales } from './charts';
 import { type Clauses, fairAdvance } from './contracts';
-import { INTEL, LOANS, PERSONALITIES, STAFF, TAX, UNLOCKS, type TaxStrategy } from './balance';
+import {
+  BUILDINGS,
+  BUILDING_IDS,
+  INTEL,
+  LOANS,
+  PERSONALITIES,
+  STAFF,
+  TAX,
+  UNLOCKS,
+  type TaxStrategy,
+} from './balance';
 import { buyoutAsk } from './rival-interactions';
 import { analystLevel } from './forecast';
 import { genreKeys, trendMultiplier } from './market';
 import { announcedReleases } from './calendar';
 import { objectiveProgress } from './achievements';
-import { teamCapacity } from './buildings';
+import { buildingLevel, teamCapacity } from './buildings';
 import { loanCap, loanRate, outstanding } from './loans';
 import { tierAtLeast } from './tiers';
 
@@ -274,6 +284,22 @@ export interface VuePersonnel {
   genres: { id: string; nom: string }[];
 }
 
+export interface VueBatiment {
+  id: string;
+  nom: string;
+  effet: string;
+  niveau: number;
+  niveauMax: number;
+  /** Coût du prochain niveau (centimes), ou `null` au niveau maximal. */
+  coutSuivant: number | null;
+  semainesTravaux: number;
+  entretien: number;
+  palierRequis: string;
+  palierAtteint: boolean;
+  /** Fin des travaux en cours (semaine) et niveau visé. */
+  travaux: { niveau: number; fin: number } | null;
+}
+
 export interface VueJeu {
   semaine: number;
   date: { annee: number; mois: number; semaineDuMois: number };
@@ -307,6 +333,7 @@ export interface VueJeu {
   concurrence: VueConcurrence;
   financesDetail: VueFinancesDetail;
   personnel: VuePersonnel;
+  batiments: VueBatiment[];
   /** Marché des genres, prévisions des études de marché et facteur de revenu par écoute. */
   marche: {
     genres: VueGenre[];
@@ -691,6 +718,27 @@ function personnelDe(state: LabelState): VuePersonnel {
   };
 }
 
+function batimentsDe(state: LabelState): VueBatiment[] {
+  return BUILDING_IDS.map((id) => {
+    const regle = BUILDINGS[id];
+    const niveau = buildingLevel(state, id);
+    const travaux = state.batiments.travaux.find((t) => t.batiment === id);
+    return {
+      id,
+      nom: fr.batiments[id].nom,
+      effet: fr.batiments[id].effet,
+      niveau,
+      niveauMax: regle.maxLevel,
+      coutSuivant: niveau >= regle.maxLevel ? null : (regle.cost[niveau] ?? 0),
+      semainesTravaux: regle.weeks,
+      entretien: Math.max(0, niveau - regle.start) * regle.upkeep,
+      palierRequis: fr.tiers[regle.tier],
+      palierAtteint: tierAtLeast(state, regle.tier),
+      travaux: travaux ? { niveau: travaux.niveau, fin: travaux.fin } : null,
+    };
+  });
+}
+
 function lastReport(state: LabelState): VueJeu['rapport'] {
   const r = state.rapportsMensuels[state.rapportsMensuels.length - 1];
   return r
@@ -837,6 +885,7 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
     concurrence: concurrenceDe(state),
     financesDetail: financesDe(state),
     personnel: personnelDe(state),
+    batiments: batimentsDe(state),
     marche: marcheDe(state),
     classements: {
       singles: ligneClassement(state, 'singles', tick),
