@@ -16,6 +16,7 @@ import { financePhase, initialFinance } from './finance';
 import { initialCredibility, initialMarket, marketPhase } from './market';
 import { breakContract, releaseArtist, renegotiate } from './contract-end';
 import { chartsPhase, emptyCharts } from './charts';
+import { applyFestival } from './festivals';
 import { launchTour } from './tours';
 import { organiseConcert } from './concerts';
 import { livePhase } from './live-phase';
@@ -84,6 +85,7 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
     'renommer-label': renameLabel,
     reperer: scout,
     signer: sign,
+    'candidater-festival': applyFestival,
     'lancer-tournee': launchTour,
     'organiser-concert': organiseConcert,
     presser: press,
@@ -164,6 +166,7 @@ export function initialState(seed: Seed, config: GameConfig): LabelState {
     commandes: [],
     concerts: [],
     tournees: [],
+    festivals: [],
     nextId: 1,
   };
 }

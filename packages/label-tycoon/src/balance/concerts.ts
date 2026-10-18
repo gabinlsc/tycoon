@@ -57,3 +57,36 @@ export const TOUR = {
   /** Chaque niveau du tourneur réduit le coût des salles (part). */
   tourerDiscountPerLevel: 0.004,
 } as const;
+
+/** Festivals (GDD, 5.10) : candidatures en saison, cachets, effets de hype. */
+export const FESTIVALS = {
+  /** Semaine de l'année où les candidatures s'ouvrent, et fenêtre de l'été où ils se tiennent. */
+  openWeek: 8,
+  summer: { min: 22, max: 34 },
+  /** Festivals proposés chaque année. */
+  perYear: 4,
+  /** Notoriété minimale (min..max tirée) et cachet de base selon le rang. */
+  minNotoriety: { min: 15, max: 70 },
+  baseFee: money.euros(1500) as Cents,
+  feePerNotoriety: money.euros(250) as Cents,
+  /** Un artiste dont la notoriété dépasse le minimum de cette marge passe en tête d'affiche. */
+  headlinerMargin: 20,
+  headlinerFeeFactor: 2.5,
+  /** Part du cachet gardée par le label. */
+  labelBps: 3500,
+  hype: 12,
+  headlinerHype: 25,
+  headlinerCredibility: 3,
+  fatigue: 6,
+  names: [
+    'Sunset',
+    'Horizon',
+    'Nova',
+    'Terra',
+    'Électrik',
+    'Mirage',
+    'Boréal',
+    'Éclipse',
+  ] as readonly string[],
+  suffixes: ['Fest', 'Open Air', 'Live', 'Sessions'] as readonly string[],
+} as const;
