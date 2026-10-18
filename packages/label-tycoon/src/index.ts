@@ -369,6 +369,8 @@ export {
   type VueFinancesDetail,
   type VueBatiment,
   type VueLigneFinance,
+  type VueRecord,
+  type VueSucces,
   type VueLigneRapport,
   type VueRapportMensuel,
   type VueScene,
