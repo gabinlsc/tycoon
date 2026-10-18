@@ -1,7 +1,9 @@
 import { type Rejection } from '@tycoon/core';
+import { EVENT_TEXTS, fillTemplate } from './evenements';
 import { type Strings, fr } from './fr';
 
 export { fr, type Strings };
+export { EVENT_TEXTS, type EventText, fillTemplate } from './evenements';
 
 /** Chaînes actives. Une seule langue pour la V1 ; l'indirection prépare la traduction. */
 export const strings: Strings = fr;
@@ -19,4 +21,18 @@ export function describeRejection(rejection: Rejection, s: Strings = strings): s
 export function termLabel(key: string, s: Strings = strings): string {
   const table = s.explications as Record<string, string | undefined>;
   return table[key] ?? key;
+}
+
+/** Titre, texte et libellés de choix d'un événement, variables remplies. */
+export function describeEvent(
+  id: string,
+  vars: Readonly<Record<string, string | number>>,
+): { titre: string; texte: string; choix: Record<string, string> } | undefined {
+  const text = EVENT_TEXTS[id];
+  if (!text) return undefined;
+  return {
+    titre: fillTemplate(text.titre, vars),
+    texte: fillTemplate(text.texte, vars),
+    choix: { ...text.choix },
+  };
 }

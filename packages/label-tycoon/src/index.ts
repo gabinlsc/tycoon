@@ -318,3 +318,5 @@ export {
   simulateGame,
   summarize,
 } from './sim-balance';
+export { EVENT_TEXTS, type EventText, describeEvent, fillTemplate } from './strings';
+export { LABEL_EVENTS } from './content/events';

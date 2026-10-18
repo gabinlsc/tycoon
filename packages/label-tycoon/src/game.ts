@@ -13,6 +13,7 @@ import type { DifficultyPreset, DifficultySettings, GameConfig, GameMode } from 
 import { type LabelSignal, buildPipeline } from './pipeline';
 import { artistsPhase } from './dynamics';
 import { initialFinance } from './finance';
+import { LABEL_EVENTS } from './content/events';
 import { GENRE_IDS } from './content/genres';
 import { initialCredibility, initialMarket, marketPhase } from './market';
 import { breakContract, releaseArtist, renegotiate } from './contract-end';
@@ -64,7 +65,7 @@ export type LabelSession = Session<LabelState, LabelAction>;
 
 /** Moteur d'événements du jeu. Le contenu (les événements eux-mêmes) s'ajoute dans `content/`. */
 export const eventEngine = createEventEngine<LabelState>({
-  events: [],
+  events: LABEL_EVENTS,
   getState: (state) => state.events,
   stream: 'evenements',
   chance: EVENTS.chancePerWeek,

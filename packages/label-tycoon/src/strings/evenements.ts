@@ -1,0 +1,75 @@
+/**
+ * Textes des événements, par identifiant. Les variables entre accolades (`{nom}`, `{montant}`) sont
+ * remplacées par celles de l'événement. Les choix sont identifiés par leur id.
+ */
+export interface EventText {
+  titre: string;
+  texte: string;
+  choix?: Readonly<Record<string, string>>;
+}
+
+export const EVENT_TEXTS: Readonly<Record<string, EventText>> = {
+  caprice: {
+    titre: 'Un caprice de star',
+    texte: '{nom} exige un cadeau pour « rester inspiré·e » : un budget de {montant} centimes.',
+    choix: { payer: 'Payer', refuser: 'Refuser' },
+  },
+  'menace-burnout': {
+    titre: 'Épuisement en vue',
+    texte: '{nom} est à bout de forces. Ses proches te demandent de lever le pied.',
+    choix: { repos: 'Quatre semaines de repos', forcer: 'Maintenir le rythme' },
+  },
+  'conflit-interne': {
+    titre: 'Tension dans le roster',
+    texte: '{nom} et {autre} ne se supportent plus. Il faut trancher avant que ça déborde.',
+    choix: { mediation: 'Organiser une médiation', ignorer: 'Laisser couler' },
+  },
+  'demande-augmentation': {
+    titre: 'Demande d’augmentation',
+    texte: '{nom} réclame une meilleure part de royalties, forte·e de son succès.',
+    choix: { accepter: 'Accepter la hausse', refuser: 'Refuser' },
+  },
+  'vol-idee': {
+    titre: 'Accusation de plagiat',
+    texte: '{nom} est accusé·e d’avoir repris une idée d’un autre artiste du label.',
+    choix: { defendre: 'Défendre publiquement', calmer: 'Calmer le jeu' },
+  },
+  'retour-inattendu': {
+    titre: 'Retour inattendu',
+    texte: '{nom} signe un come-back que personne n’attendait : la presse s’emballe.',
+  },
+  inspiration: {
+    titre: 'Un coup d’inspiration',
+    texte: '{nom} traverse une période créative exceptionnelle et écrit mieux que jamais.',
+  },
+  'blessure-voix': {
+    titre: 'Voix en danger',
+    texte: '{nom} perd la voix après une série de dates. Repos forcé.',
+  },
+  'fan-devoue': {
+    titre: 'Un fan devient viral',
+    texte: 'Une vidéo d’un fan de {nom} fait le tour des réseaux : l’audience grimpe.',
+  },
+  'bonheur-prive': {
+    titre: 'Bonne nouvelle personnelle',
+    texte: '{nom} vit une très belle période privée, et ça s’entend dans le studio.',
+  },
+  'depart-envisage': {
+    titre: 'Départ envisagé',
+    texte:
+      '{nom} songe à quitter le label. Une prime de fidélité de {prime} centimes pourrait le·la retenir.',
+    choix: { retenir: 'Verser la prime', laisser: 'Le·la laisser partir' },
+  },
+  'collaboration-spontanee': {
+    titre: 'Collaboration spontanée',
+    texte: '{nom} et {autre} improvisent un titre ensemble. Les fans adorent.',
+  },
+};
+
+/** Remplace les `{variable}` d'un texte. */
+export function fillTemplate(
+  template: string,
+  vars: Readonly<Record<string, string | number>>,
+): string {
+  return template.replace(/\{(\w+)\}/g, (_, key: string) => String(vars[key] ?? ''));
+}
