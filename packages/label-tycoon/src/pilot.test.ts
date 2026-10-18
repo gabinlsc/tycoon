@@ -155,3 +155,61 @@ describe('évaluation d’une offre', () => {
     for (const s of found.vue.suivis) expect(s.avanceIndicative % 50_000).toBe(0);
   });
 });
+
+describe('estimation d’une sortie', () => {
+  const signed = () => {
+    const source = new LabelPilot();
+    source.handle({ type: 'nouvelle-partie', graine: 'est' });
+    source.handle({ type: 'action', action: { type: 'reperer', source: 'plateforme' } });
+    const save = source.handle({ type: 'sauvegarder' });
+    if (save.type !== 'sauvegarde') throw new Error('sauvegarde attendue');
+    const s = JSON.parse(save.sauvegarde) as {
+      engine: { data: { artistes: { id: number; employeur: string }[] } };
+    };
+    const a = s.engine.data.artistes[0];
+    if (!a) throw new Error('artiste attendu');
+    a.employeur = 'joueur';
+    const pilot = new LabelPilot();
+    pilot.handle({ type: 'charger', sauvegarde: JSON.stringify(s) });
+    return { pilot, id: a.id };
+  };
+
+  it('donne une fourchette de qualité, un coût et une durée, qui croissent avec le budget', () => {
+    const { pilot, id } = signed();
+    const ask = (over: Record<string, unknown>) => {
+      const r = pilot.handle({
+        type: 'estimer-sortie',
+        artisteId: id,
+        sortie: 'single',
+        clip: 'aucun',
+        studio: 20,
+        producteur: 40,
+        mixage: 50_000,
+        ...over,
+      } as never);
+      if (r.type !== 'estimation') throw new Error(`estimation attendue, reçu ${r.type}`);
+      return r;
+    };
+    const base = ask({});
+    expect(base.qualite[0]).toBeLessThanOrEqual(base.qualite[1]);
+    expect(base.qualite[0]).toBeGreaterThanOrEqual(0);
+    expect(base.qualite[1]).toBeLessThanOrEqual(100);
+    expect(base.capacite).toBeGreaterThan(0);
+    const mieux = ask({ producteur: 90, mixage: 150_000 });
+    expect(mieux.qualite[1]).toBeGreaterThan(base.qualite[1]);
+    expect(mieux.cout).toBeGreaterThan(base.cout);
+    expect(ask({ sortie: 'album' }).semaines).toBeGreaterThan(base.semaines);
+    expect(ask({ clip: 'gros' }).cout).toBeGreaterThan(base.cout);
+    expect(
+      pilot.handle({
+        type: 'estimer-sortie',
+        artisteId: 99999,
+        sortie: 'single',
+        clip: 'aucun',
+        studio: 1,
+        producteur: 1,
+        mixage: 0,
+      }).type,
+    ).toBe('erreur');
+  });
+});

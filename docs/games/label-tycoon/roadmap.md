@@ -110,7 +110,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `feat/label-ecran-fiche-artiste` : fiche artiste
 - [x] `feat/label-ecran-reperage` : repérage
 - [x] `feat/label-ecran-negociation` : négociation, jauge de réaction, tampon encreur
-- [ ] `feat/label-ecran-studio` : studio, console au trait, estimation de qualité
+- [x] `feat/label-ecran-studio` : studio, console au trait, estimation de qualité
 - [ ] `feat/label-jalon-jouable` : **jalon M1** : nouvelle partie, boucle complète jouable de bout en bout, sauvegarde simple, session de test avec retours
 
 ## Phase 7 : les autres écrans
@@ -183,7 +183,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 3     | 18    | 18     |
 | 4     | 16    | 16     |
 | 5     | 14    | 14     |
-| 6     | 14    | 12     |
+| 6     | 14    | 13     |
 | 7     | 13    | 0      |
 | 8     | 10    | 0      |
 | 9     | 5     | 0      |

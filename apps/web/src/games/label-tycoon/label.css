@@ -670,3 +670,24 @@
     animation: none;
   }
 }
+
+/* Studio */
+.label-console {
+  width: min(100%, 22rem);
+  height: auto;
+  margin-block-end: var(--sp-3);
+}
+.label-estimate {
+  padding: var(--sp-3) var(--sp-4);
+  border: var(--border) solid var(--outline);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+}
+.label-field select {
+  padding: var(--sp-2);
+  border: var(--border) solid var(--outline);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}

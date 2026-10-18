@@ -1,5 +1,7 @@
 import { type Rejection, type Seed } from '@tycoon/core';
 import type { LabelAction } from './actions';
+import { estimateRelease } from './estimate';
+import type { ClipSize, ReleaseType } from './balance';
 import { type Clauses, clausesValid, utilityOf } from './contracts';
 import { type Reaction, evaluateOffer, gaugeOf } from './negotiation';
 import type { GameConfig } from './config';
@@ -16,6 +18,15 @@ export type CommandeJeu =
   | { type: 'avancer'; semaines: number; arretSurSignal?: boolean }
   | { type: 'action'; action: LabelAction }
   | { type: 'evaluer-offre'; artisteId: number; clauses: Clauses }
+  | {
+      type: 'estimer-sortie';
+      artisteId: number;
+      sortie: ReleaseType;
+      clip: ClipSize;
+      studio: number;
+      producteur: number;
+      mixage: number;
+    }
   | { type: 'vue' };
 
 /** Signal simplifié pour l'interface. */
@@ -28,6 +39,15 @@ export interface SignalVue {
 export type ReponseJeu =
   | { type: 'vue'; vue: VueJeu; signaux: SignalVue[]; semainesJouees: number; interrompu: boolean }
   | { type: 'reaction'; reaction: Reaction; verdict: 'accepte' | 'contre' | 'insulte' }
+  | {
+      type: 'estimation';
+      qualite: readonly [number, number];
+      cout: number;
+      semaines: number;
+      studioMax: number;
+      capacite: number;
+      enCours: number;
+    }
   | { type: 'refus'; code: string; message: string }
   | { type: 'sauvegarde'; sauvegarde: string }
   | { type: 'erreur'; message: string };
@@ -99,6 +119,13 @@ export class LabelPilot {
           : { type: 'erreur', message: 'Aucune partie en cours.' };
       case 'vue':
         return this.view();
+      case 'estimer-sortie': {
+        if (!this.session) return { type: 'erreur', message: 'Aucune partie en cours.' };
+        const state = this.session.engine.data;
+        const artist = state.artistes.find((a) => a.id === commande.artisteId);
+        if (!artist) return { type: 'erreur', message: 'Artiste introuvable.' };
+        return { type: 'estimation', ...estimateRelease(state, artist, commande) };
+      }
       case 'evaluer-offre': {
         if (!this.session) return { type: 'erreur', message: 'Aucune partie en cours.' };
         const state = this.session.engine.data;
