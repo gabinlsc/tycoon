@@ -414,3 +414,12 @@ export {
   scoreDefi,
   texteResultat,
 } from './defi';
+export {
+  JOURNAL_MAX,
+  VERSION_CONTRAT_DEFI,
+  type CodeRefus,
+  type ReponseValidation,
+  type SoumissionDefi,
+  soumissionDe,
+  validerSoumission,
+} from './defi-validation';

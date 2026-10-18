@@ -1,15 +1,19 @@
 // @vitest-environment jsdom
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import type { ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { VueDefi } from '@tycoon/label-tycoon';
+import type { CommandeJeu, VueDefi } from '@tycoon/label-tycoon';
 import { BandeauDefi } from './BandeauDefi';
 import { Coquille } from './Coquille';
 import { enregistrerScore, lireMeilleurScore } from './defi';
 import { creerMoteurLocal } from './engine/local';
-import { LabelProvider } from './LabelContext';
+import { LabelProvider, useLabel } from './LabelContext';
 
 beforeEach(() => window.localStorage.clear());
 afterEach(cleanup);
+
+const rendre = (ui: ReactNode) =>
+  render(<LabelProvider fabrique={() => Promise.resolve(creerMoteurLocal())}>{ui}</LabelProvider>);
 
 const defi: VueDefi = {
   date: '2026-10-18',
@@ -31,7 +35,7 @@ describe('meilleur score du jour', () => {
 
 describe('bandeau du défi', () => {
   it('affiche les semaines restantes pendant le défi', () => {
-    render(<BandeauDefi defi={defi} />);
+    rendre(<BandeauDefi defi={defi} />);
     expect(screen.getByText(/Semaines restantes/).textContent).toContain('12');
     expect(screen.queryByRole('button', { name: 'Copier le résultat' })).toBeNull();
   });
@@ -42,7 +46,7 @@ describe('bandeau du défi', () => {
       configurable: true,
     });
     enregistrerScore('2026-10-18', 99_999);
-    render(<BandeauDefi defi={{ ...defi, termine: true, semainesRestantes: 0 }} />);
+    rendre(<BandeauDefi defi={{ ...defi, termine: true, semainesRestantes: 0 }} />);
     expect(screen.getByRole('status').textContent).toContain('ton meilleur score du jour');
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: 'Copier le résultat' }));
@@ -67,4 +71,33 @@ describe('écran de départ : défi du jour', () => {
     const bandeau = await screen.findByLabelText(/^Défi du \d{4}-\d{2}-\d{2}$/);
     expect(bandeau.textContent).toContain('Semaines restantes : 52');
   });
+});
+
+describe('validation du score', () => {
+  it('rejoue la partie, valide le score et affiche le classement du jour', async () => {
+    let envoyerMoteur: ((c: CommandeJeu) => Promise<unknown>) | null = null;
+    function Sonde() {
+      envoyerMoteur = useLabel().envoyer;
+      return null;
+    }
+    render(
+      <LabelProvider fabrique={() => Promise.resolve(creerMoteurLocal())}>
+        <Sonde />
+        <Coquille />
+      </LabelProvider>,
+    );
+    const b = await screen.findByRole('button', { name: 'Nouvelle partie' });
+    await waitFor(() => expect((b as HTMLButtonElement).disabled).toBe(false));
+    fireEvent.click(screen.getByRole('radio', { name: /Défi du jour/ }));
+    fireEvent.click(b);
+    await screen.findByLabelText(/^Défi du \d{4}-\d{2}-\d{2}$/);
+    await act(async () => {
+      await envoyerMoteur?.({ type: 'avancer', semaines: 52, arretSurSignal: false });
+    });
+    fireEvent.click(await screen.findByRole('button', { name: 'Valider mon score' }));
+    await screen.findByText(/Score validé par rejeu/, undefined, { timeout: 5000 });
+    expect((await screen.findByLabelText('Classement du jour')).querySelectorAll('li').length).toBe(
+      1,
+    );
+  }, 20_000);
 });
