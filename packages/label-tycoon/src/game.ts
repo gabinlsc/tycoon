@@ -17,7 +17,7 @@ import { initialCredibility, initialMarket } from './market';
 import { breakContract, releaseArtist, renegotiate } from './contract-end';
 import { auction, generateRivals } from './auction';
 import { sign } from './contracts';
-import { launchProject, productionPhase, releaseProject } from './production';
+import { launchProject, productionPhase, releaseProject, streamsPhase } from './production';
 import { propose } from './negotiation';
 import { dropProspect, fireScout, hireScout, scout, studioTrial } from './scouting';
 import { generateWorld } from './world';
@@ -60,6 +60,7 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
     'echeances-evenements': eventEngine.duePhase,
     artistes: artistsPhase,
     production: productionPhase,
+    streams: streamsPhase,
     finances: financePhase,
     'tirage-evenements': eventEngine.phase,
   }),
