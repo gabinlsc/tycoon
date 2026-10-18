@@ -251,6 +251,7 @@ export const fr = {
 
   /** Refus d'actions, par code (voir `Rejection.code` du moteur). */
   refus: {
+    'defi-termine': () => 'Le défi est terminé : ses 52 semaines sont jouées.',
     'action-inconnue': (p: { type: string }) => `Action inconnue : ${p.type}.`,
     'nom-vide': () => 'Donne un nom à ton label.',
     'nom-trop-long': (p: { max: number }) =>

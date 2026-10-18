@@ -1,10 +1,11 @@
-import { type Rejection, type Seed } from '@tycoon/core';
+import { type Rejection, type Seed, reject } from '@tycoon/core';
 import type { LabelAction } from './actions';
 import { estimateRelease } from './estimate';
 import type { ClipSize, ReleaseType } from './balance';
 import { type Clauses, clausesValid, utilityOf } from './contracts';
 import { type Reaction, evaluateOffer, gaugeOf } from './negotiation';
 import type { GameConfig } from './config';
+import { DEFI_SEMAINES, defiTermine } from './defi';
 import { type LabelSession, eventEngine, labelGame, newGame } from './game';
 import { describeRejection } from './strings';
 import type { LabelSignal } from './pipeline';
@@ -147,7 +148,11 @@ export class LabelPilot {
       case 'avancer': {
         if (!this.session) return { type: 'erreur', message: 'Aucune partie en cours.' };
         if (this.session.engine.data.faillite.terminee) return this.view();
-        const weeks = Math.max(1, Math.min(52, Math.floor(commande.semaines)));
+        const { tick, data } = this.session.engine;
+        // Le défi du jour s'arrête à 52 semaines : on ne joue pas au-delà.
+        const restant = data.config.mode === 'defi' ? DEFI_SEMAINES - tick : 52;
+        if (restant <= 0) return this.view();
+        const weeks = Math.max(1, Math.min(52, restant, Math.floor(commande.semaines)));
         const result = labelGame.advance(this.session, weeks, {
           stopOnInterrupt: commande.arretSurSignal ?? true,
         });
@@ -156,6 +161,8 @@ export class LabelPilot {
       }
       case 'action': {
         if (!this.session) return { type: 'erreur', message: 'Aucune partie en cours.' };
+        if (defiTermine(this.session.engine.data, this.session.engine.tick))
+          return this.refus(reject('defi-termine'));
         const result = labelGame.dispatch(this.session, commande.action);
         if (!result.ok) return this.refus(result.rejection);
         this.session = result.session;

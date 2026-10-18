@@ -19,6 +19,7 @@ import {
 import type { DifficultyPreset, DifficultySettings, GameConfig, GameMode } from './config';
 import { type LabelSignal, buildPipeline } from './pipeline';
 import { artistsPhase } from './dynamics';
+import { dateValide, graineDuDefi } from './defi-date';
 import { applyScenario, findScenario, scenarioPhase } from './scenarios/engine';
 import { initialFinance } from './finance';
 import { LABEL_EVENTS } from './content/events';
@@ -267,6 +268,7 @@ function structuredConfig(config: GameConfig): GameConfig {
   const copy: GameConfig = { mode: config.mode, difficulty: { ...config.difficulty } };
   if (config.scenarioId !== undefined) copy.scenarioId = config.scenarioId;
   if (config.sandbox !== undefined) copy.sandbox = config.sandbox;
+  if (config.defiDate !== undefined) copy.defiDate = config.defiDate;
   if (config.bankruptcyOff !== undefined) copy.bankruptcyOff = config.bankruptcyOff;
   if (config.eventRate !== undefined) copy.eventRate = config.eventRate;
   return copy;
@@ -274,6 +276,12 @@ function structuredConfig(config: GameConfig): GameConfig {
 
 /** Nouvelle partie. Même graine et mêmes réglages : même partie, au bit près. */
 export function newGame(seed: Seed, config: GameConfig = defaultConfig()): LabelSession {
+  if (config.mode === 'defi') {
+    if (!config.defiDate || !dateValide(config.defiDate))
+      throw new RangeError(`Date de défi invalide : ${String(config.defiDate)}`);
+    if (seed !== graineDuDefi(config.defiDate))
+      throw new RangeError('La graine d’un défi découle de sa date.');
+  }
   if (config.mode !== 'scenario') return labelGame.newSession(seed, initialState(seed, config));
   const def = config.scenarioId ? findScenario(config.scenarioId) : undefined;
   if (!def) throw new RangeError(`Scénario inconnu : ${String(config.scenarioId)}`);

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { graineDuDefi } from '@tycoon/label-tycoon';
 import { useAccount, useGameSave } from '../../accounts/AccountContext';
 import { Button } from '../../components/arcade/ui/Button';
 import { useLabel } from './LabelContext';
@@ -280,7 +281,12 @@ export function Persistance({ stockage: injecte }: Props) {
               type="button"
               tone="ghost"
               onClick={() => {
-                void nouvellePartie(Date.now().toString(36), configDepuisPartie(vue.partie));
+                void nouvellePartie(
+                  vue.partie.defiDate !== null
+                    ? graineDuDefi(vue.partie.defiDate)
+                    : Date.now().toString(36),
+                  configDepuisPartie(vue.partie),
+                );
                 setConfirmer(false);
                 derniereAuto.current = -1;
               }}

@@ -28,6 +28,8 @@ export interface GameConfig {
   sandbox?: boolean;
   /** Faillite désactivée même sans argent illimité (bac à sable). */
   bankruptcyOff?: boolean;
+  /** Date du défi du jour (AAAA-MM-JJ, UTC) : la graine en découle (mode défi). */
+  defiDate?: string;
   /** Fréquence des événements : 1 = normal, 0 = aucun événement tiré, 3 = triple. */
   eventRate?: number;
 }

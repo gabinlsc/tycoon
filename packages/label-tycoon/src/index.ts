@@ -368,6 +368,7 @@ export {
   type VueEcheance,
   type VueFinancesDetail,
   type VueBatiment,
+  type VueDefi,
   type VueLigneFinance,
   type VueScenario,
   type VuePartie,
@@ -402,3 +403,14 @@ export { signerArtisteDeDepart } from './scenarios/depart';
 export { ORDRE_SCENARIOS } from './scenarios/catalogue';
 export { texteCondition } from './scenarios/textes';
 export type { Condition, ScenarioDef, ScenarioState, StatutScenario } from './scenarios/types';
+export { dateDuDefi, dateValide, graineDuDefi } from './defi-date';
+export {
+  DEFI_SEMAINES,
+  type ResultatDefi,
+  configDefi,
+  defiTermine,
+  nouveauDefi,
+  resultatDefi,
+  scoreDefi,
+  texteResultat,
+} from './defi';

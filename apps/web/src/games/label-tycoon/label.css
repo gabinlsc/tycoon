@@ -834,3 +834,14 @@
     margin-block-start: var(--sp-1);
   }
 }
+
+/* Défi du jour : texte à partager */
+.label-share {
+  margin: 0;
+  padding: var(--sp-3) var(--sp-4);
+  border: var(--border) solid var(--outline);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  font-family: var(--font-mono, monospace);
+  white-space: pre-wrap;
+}
