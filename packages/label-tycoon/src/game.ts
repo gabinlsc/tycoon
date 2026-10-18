@@ -18,6 +18,7 @@ import { GENRE_IDS } from './content/genres';
 import { initialCredibility, initialMarket, marketPhase } from './market';
 import { breakContract, releaseArtist, renegotiate } from './contract-end';
 import { chartsPhase, emptyCharts } from './charts';
+import { achievementsPhase } from './achievements';
 import { monthlyPhase } from './monthly';
 import { filPhase } from './fil';
 import { ceremonyWeek } from './ceremonies';
@@ -62,6 +63,7 @@ export const LABEL_STREAMS = [
   'personnel',
   'tournees',
   'carrieres',
+  'objectifs',
 ] as const;
 
 export type LabelSession = Session<LabelState, LabelAction>;
@@ -112,6 +114,7 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
           },
           ctx.emit,
         );
+        achievementsPhase.run(state, ctx);
       },
     },
     'tirage-evenements': eventEngine.phase,
@@ -234,6 +237,10 @@ export function initialState(seed: Seed, config: GameConfig): LabelState {
     fil: [],
     filMemoire: {},
     rapportsMensuels: [],
+    stats: {},
+    succes: [],
+    objectifs: [],
+    records: [],
     nextId: 1,
   };
 }

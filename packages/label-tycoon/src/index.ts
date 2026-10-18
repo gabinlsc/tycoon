@@ -341,3 +341,19 @@ export {
   causesOfRelease,
   monthlyPhase,
 } from './monthly';
+export {
+  SUCCES,
+  type Objectif,
+  type ObjectiveKind,
+  type Stats,
+  type Succes,
+  achievementsPhase,
+  familyValue,
+  isReached,
+  newlyUnlocked,
+  objectiveDone,
+  objectiveProgress,
+  proposeObjective,
+  updateRecords,
+} from './achievements';
+export { OBJECTIF_TEXTES, RECORD_TEXTES, SUCCES_TEXTES } from './strings';

@@ -94,7 +94,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `feat/label-ceremonies` : remise de prix annuelle, nominations, gagnants simulés (≥ 8 événements)
 - [x] `feat/label-fil-actus` : générateur d'actus pour Le Fil du label
 - [x] `feat/label-rapport-mensuel` : données du rapport mensuel (ce qui a marché, raté, pourquoi)
-- [ ] `feat/label-succes-objectifs` : succès, objectifs dynamiques, records (+)
+- [x] `feat/label-succes-objectifs` : succès, objectifs dynamiques, records (+)
 
 ## Phase 6 : coquille d'interface et premier jalon jouable
 
@@ -182,7 +182,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 2     | 6     | 6      |
 | 3     | 18    | 18     |
 | 4     | 16    | 16     |
-| 5     | 14    | 13     |
+| 5     | 14    | 14     |
 | 6     | 14    | 0      |
 | 7     | 13    | 0      |
 | 8     | 10    | 0      |
