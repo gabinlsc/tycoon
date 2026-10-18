@@ -85,3 +85,13 @@ export const TAX = {
   /** Réputation perdue après un contrôle sanctionné. */
   auditReputationLoss: 4,
 } as const;
+
+/** Valorisation du label (score principal, GDD 5.1). */
+export const VALUATION = {
+  /** Horizon d'extrapolation de la traîne d'une sortie (semaines). */
+  catalogHorizon: 156,
+  /** Taux d'actualisation annuel (points de base). */
+  discountRateBps: 1000,
+  /** Valeur d'un contrat : avance juste × années restantes × ce facteur. */
+  contractFactor: 0.5,
+} as const;
