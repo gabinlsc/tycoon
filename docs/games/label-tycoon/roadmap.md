@@ -144,7 +144,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 
 ## Phase 9 : équilibrage
 
-- [ ] `feat/label-sim-balance-v2` : rapports complets (faillite, premier disque d'or, valorisation à 5 et 10 ans, genres dominants, stratégie gagnante)
+- [x] `feat/label-sim-balance-v2` : rapports complets (faillite, premier disque d'or, valorisation à 5 et 10 ans, genres dominants, stratégie gagnante)
 - [ ] `chore/label-equilibrage-1` : passe d'équilibrage économie et production
 - [ ] `chore/label-equilibrage-2` : passe d'équilibrage marché, rivaux, personnel
 - [ ] `chore/label-equilibrage-3` : cibles atteintes (aucune stratégie dominante, faillite an 1 < 2 %, premier disque d'or entre la 2e et la 4e année)
@@ -186,7 +186,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 6     | 14    | 14     |
 | 7     | 13    | 13     |
 | 8     | 10    | 10     |
-| 9     | 5     | 0      |
+| 9     | 5     | 1      |
 | 10    | 12    | 0      |
 | 11    | 5     | 0      |
 

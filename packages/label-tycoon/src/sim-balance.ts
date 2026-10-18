@@ -1,4 +1,7 @@
 import { BOT_STRATEGIES, type BotStrategy, runBot } from './bots';
+import { TIERS } from './balance';
+import type { LabelState } from './state';
+import { tierRank } from './tiers';
 import { labelScore } from './valuation';
 
 export interface SimOptions {
@@ -10,41 +13,66 @@ export interface SimOptions {
   seedPrefix: string;
 }
 
+export const ONE_YEAR = 52;
+export const FIVE_YEARS = 260;
+export const TEN_YEARS = 520;
+
 export interface GameResult {
   strategie: BotStrategy;
   graine: string;
+  /** Semaine de la faillite, ou `null`. */
   faillite: number | null;
+  /** Première semaine de disque d'or, ou `null`. */
   premierOr: number | null;
+  /** Valorisation (centimes) à 1, 5 et 10 ans ; 0 si la partie s'est arrêtée avant, par faillite. */
+  valorisation1an: number;
   valorisation5ans: number;
+  valorisation10ans: number;
   valorisationFinale: number;
   genreDominant: string | null;
+  /** Rang du palier atteint (0 = Home-studio) et nombre de certifications à la fin. */
+  palier: number;
+  certifications: number;
 }
 
 export interface StrategySummary {
   strategie: BotStrategy;
   parties: number;
   tauxFaillite: number;
+  /** Part des parties en faillite avant la fin de la première année. */
+  tauxFaillitePremiereAnnee: number;
+  medianFaillite: number | null;
+  /** Part des parties qui décrochent un disque d'or, et médiane de la semaine. */
+  tauxPremierOr: number;
   medianPremierOr: number | null;
   medianValorisation5ans: number;
+  medianValorisation10ans: number;
+  quartilesValorisation10ans: [number, number];
   medianValorisationFinale: number;
+  palierMedian: number;
 }
 
-const median = (values: readonly number[]): number => {
+export const quantile = (values: readonly number[], q: number): number => {
   if (values.length === 0) return 0;
   const sorted = [...values].sort((a, b) => a - b);
-  const mid = Math.floor(sorted.length / 2);
-  return sorted.length % 2 === 1
-    ? (sorted[mid] ?? 0)
-    : ((sorted[mid - 1] ?? 0) + (sorted[mid] ?? 0)) / 2;
+  const position = (sorted.length - 1) * q;
+  const bas = Math.floor(position);
+  const haut = Math.ceil(position);
+  const a = sorted[bas] ?? 0;
+  const b = sorted[haut] ?? 0;
+  return a + (b - a) * (position - bas);
 };
+const median = (values: readonly number[]): number => quantile(values, 0.5);
 
-export const FIVE_YEARS = 260;
-
-/** Joue une partie d'un bot et en extrait les indicateurs d'équilibrage. */
+/** Joue une partie d'un bot en une seule passe et relève les indicateurs d'équilibrage. */
 export function simulateGame(strategie: BotStrategy, graine: string, weeks: number): GameResult {
-  const horizon5 = Math.min(weeks, FIVE_YEARS);
-  const mid = runBot(strategie, graine, horizon5);
-  const run = weeks > horizon5 ? runBot(strategie, graine, weeks) : mid;
+  const marques = new Map<number, number>();
+  let dernier: LabelState | null = null;
+  const run = runBot(strategie, graine, weeks, undefined, (semaines, state) => {
+    dernier = state as LabelState;
+    if (semaines === ONE_YEAR || semaines === FIVE_YEARS || semaines === TEN_YEARS)
+      marques.set(semaines, Math.max(0, labelScore(state as LabelState, semaines)));
+  });
   const d = run.session.engine.data;
   const roster = d.artistes.filter((a) => a.employeur === 'joueur');
   const byGenre = new Map<string, number>();
@@ -52,14 +80,19 @@ export function simulateGame(strategie: BotStrategy, graine: string, weeks: numb
   const dominant = [...byGenre.entries()].sort(
     (x, y) => y[1] - x[1] || x[0].localeCompare(y[0]),
   )[0];
+  const fin: LabelState = dernier ?? d;
   return {
     strategie,
     graine,
     faillite: run.faillite,
     premierOr: run.premierOr,
-    valorisation5ans: labelScore(mid.session.engine.data, horizon5),
-    valorisationFinale: labelScore(d, weeks),
+    valorisation1an: marques.get(ONE_YEAR) ?? 0,
+    valorisation5ans: marques.get(FIVE_YEARS) ?? 0,
+    valorisation10ans: marques.get(TEN_YEARS) ?? 0,
+    valorisationFinale: Math.max(0, labelScore(d, run.session.engine.tick)),
     genreDominant: dominant?.[0] ?? null,
+    palier: tierRank(fin.label.tier),
+    certifications: fin.projets.filter((p) => p.certification !== null).length,
   };
 }
 
@@ -75,51 +108,178 @@ export function simulate(options: SimOptions): GameResult[] {
 export function summarize(results: readonly GameResult[]): StrategySummary[] {
   return BOT_STRATEGIES.map((strategie) => {
     const games = results.filter((r) => r.strategie === strategie);
+    const n = games.length;
+    const part = (pred: (g: GameResult) => boolean): number =>
+      n === 0 ? 0 : games.filter(pred).length / n;
     const golds = games.map((g) => g.premierOr).filter((x): x is number => x !== null);
+    const faillites = games.map((g) => g.faillite).filter((x): x is number => x !== null);
+    const v10 = games.map((g) => g.valorisation10ans);
     return {
       strategie,
-      parties: games.length,
-      tauxFaillite:
-        games.length === 0 ? 0 : games.filter((g) => g.faillite !== null).length / games.length,
+      parties: n,
+      tauxFaillite: part((g) => g.faillite !== null),
+      tauxFaillitePremiereAnnee: part((g) => g.faillite !== null && g.faillite < ONE_YEAR),
+      medianFaillite: faillites.length === 0 ? null : median(faillites),
+      tauxPremierOr: part((g) => g.premierOr !== null),
       medianPremierOr: golds.length === 0 ? null : median(golds),
       medianValorisation5ans: median(games.map((g) => g.valorisation5ans)),
+      medianValorisation10ans: median(v10),
+      quartilesValorisation10ans: [quantile(v10, 0.25), quantile(v10, 0.75)],
       medianValorisationFinale: median(games.map((g) => g.valorisationFinale)),
+      palierMedian: median(games.map((g) => g.palier)),
     };
   });
 }
 
+/**
+ * Cibles de l'équilibrage (GDD, section 12 et roadmap, phase 9). Elles portent sur les stratégies
+ * « sérieuses » : le bot aléatoire n'est qu'une référence plancher.
+ */
+export const CIBLES = {
+  /** Part maximale de parties en faillite avant la fin de la première année. */
+  faillitePremiereAnneeMax: 0.02,
+  /** Fenêtre du premier disque d'or (médiane, en semaines) : entre la 2e et la 4e année. */
+  premierOrFenetre: [104, 208] as const,
+  /** Une stratégie est dominante si sa valorisation médiane dépasse celle de la suivante de ce facteur. */
+  dominanceMax: 1.5,
+  /** Un genre est dominant s'il l'emporte dans plus de cette part des parties. */
+  genreDominantMax: 0.4,
+} as const;
+
+export const STRATEGIES_SERIEUSES: readonly BotStrategy[] = BOT_STRATEGIES.filter(
+  (s) => s !== 'aleatoire',
+);
+
+export interface Verdict {
+  libelle: string;
+  atteinte: boolean;
+  mesure: string;
+}
+
+export interface Analyse {
+  resume: StrategySummary[];
+  gagnante: BotStrategy | null;
+  /** Rapport entre la valorisation médiane de la gagnante et celle de la deuxième (10 ans). */
+  ecartGagnante: number;
+  genres: { genre: string; parties: number; part: number }[];
+  verdicts: Verdict[];
+}
+
+const pct = (x: number): string => `${(x * 100).toFixed(1)} %`;
+const semaineAnnee = (s: number): string => `semaine ${Math.round(s)} (an ${(s / 52).toFixed(1)})`;
+
+/** Lit les résultats : stratégie gagnante, genres dominants et verdict sur chaque cible. */
+export function analyser(results: readonly GameResult[]): Analyse {
+  const resume = summarize(results);
+  const serieux = resume.filter((s) => STRATEGIES_SERIEUSES.includes(s.strategie));
+  const classees = [...resume].sort(
+    (a, b) => b.medianValorisation10ans - a.medianValorisation10ans,
+  );
+  const gagnante = classees[0] ?? null;
+  const deuxieme = classees[1];
+  const ecart =
+    gagnante && deuxieme && deuxieme.medianValorisation10ans > 0
+      ? gagnante.medianValorisation10ans / deuxieme.medianValorisation10ans
+      : gagnante && gagnante.medianValorisation10ans > 0
+        ? Infinity
+        : 1;
+
+  const parGenre = new Map<string, number>();
+  for (const r of results)
+    if (r.genreDominant) parGenre.set(r.genreDominant, (parGenre.get(r.genreDominant) ?? 0) + 1);
+  const genres = [...parGenre.entries()]
+    .map(([genre, parties]) => ({
+      genre,
+      parties,
+      part: results.length === 0 ? 0 : parties / results.length,
+    }))
+    .sort((a, b) => b.parties - a.parties || a.genre.localeCompare(b.genre));
+
+  const faillitesAn1 =
+    serieux.length === 0 ? 0 : Math.max(...serieux.map((s) => s.tauxFaillitePremiereAnnee));
+  const ors = serieux.map((s) => s.medianPremierOr).filter((x): x is number => x !== null);
+  const [orMin, orMax] = CIBLES.premierOrFenetre;
+  const orMedian = ors.length === 0 ? null : median(ors);
+  const genreTete = genres[0];
+
+  const verdicts: Verdict[] = [
+    {
+      libelle: `Faillite la première année sous ${pct(CIBLES.faillitePremiereAnneeMax)} (stratégies sérieuses)`,
+      atteinte: faillitesAn1 < CIBLES.faillitePremiereAnneeMax,
+      mesure: `pire stratégie : ${pct(faillitesAn1)}`,
+    },
+    {
+      libelle: `Premier disque d’or entre la 2e et la 4e année (médiane des stratégies sérieuses)`,
+      atteinte: orMedian !== null && orMedian >= orMin && orMedian <= orMax,
+      mesure: orMedian === null ? 'jamais atteint' : semaineAnnee(orMedian),
+    },
+    {
+      libelle: `Aucune stratégie dominante (écart de valorisation médiane à 10 ans sous ×${CIBLES.dominanceMax})`,
+      atteinte: ecart < CIBLES.dominanceMax,
+      mesure: `${gagnante?.strategie ?? 'aucune'} devant de ×${Number.isFinite(ecart) ? ecart.toFixed(2) : '∞'}`,
+    },
+    {
+      libelle: `Aucun genre dominant (moins de ${pct(CIBLES.genreDominantMax)} des parties)`,
+      atteinte: !genreTete || genreTete.part < CIBLES.genreDominantMax,
+      mesure: genreTete ? `${genreTete.genre} : ${pct(genreTete.part)}` : 'aucun genre',
+    },
+  ];
+  return { resume, gagnante: gagnante?.strategie ?? null, ecartGagnante: ecart, genres, verdicts };
+}
+
 const eur = (cents: number): string => `${Math.round(cents / 100).toLocaleString('fr-FR')} €`;
 
-/** Rapport Markdown : faillites, premier disque d'or, valorisation, genres dominants, stratégie gagnante. */
+/** Rapport Markdown complet : faillites, premier disque d'or, valorisations, genres, stratégie gagnante, cibles. */
 export function renderReport(results: readonly GameResult[], options: SimOptions): string {
-  const summary = summarize(results);
-  const winner = [...summary].sort(
-    (a, b) => b.medianValorisationFinale - a.medianValorisationFinale,
-  )[0];
-  const genres = new Map<string, number>();
-  for (const r of results)
-    if (r.genreDominant) genres.set(r.genreDominant, (genres.get(r.genreDominant) ?? 0) + 1);
+  const a = analyser(results);
+  const palierNom = (rang: number): string => TIERS[Math.round(rang)]?.id ?? '?';
   const lines = [
     '# Rapport d’équilibrage',
     '',
     `${options.games} parties par stratégie, ${options.weeks} semaines, graines « ${options.seedPrefix}-n ».`,
     '',
-    '| Stratégie | Faillites | 1er disque d’or (médiane) | Valorisation à 5 ans | Valorisation finale |',
-    '| --- | --- | --- | --- | --- |',
-    ...summary.map(
+    '## Faillites',
+    '',
+    '| Stratégie | Faillites | Dont 1re année | Semaine médiane |',
+    '| --- | --- | --- | --- |',
+    ...a.resume.map(
       (s) =>
-        `| ${s.strategie} | ${(s.tauxFaillite * 100).toFixed(0)} % | ${s.medianPremierOr === null ? 'jamais' : `semaine ${s.medianPremierOr}`} | ${eur(s.medianValorisation5ans)} | ${eur(s.medianValorisationFinale)} |`,
+        `| ${s.strategie} | ${pct(s.tauxFaillite)} | ${pct(s.tauxFaillitePremiereAnnee)} | ${s.medianFaillite === null ? '—' : Math.round(s.medianFaillite)} |`,
+    ),
+    '',
+    '## Premier disque d’or',
+    '',
+    '| Stratégie | Parties avec un disque d’or | Semaine médiane |',
+    '| --- | --- | --- |',
+    ...a.resume.map(
+      (s) =>
+        `| ${s.strategie} | ${pct(s.tauxPremierOr)} | ${s.medianPremierOr === null ? 'jamais' : semaineAnnee(s.medianPremierOr)} |`,
+    ),
+    '',
+    '## Valorisation du label (médiane)',
+    '',
+    '| Stratégie | À 5 ans | À 10 ans | Quartiles à 10 ans | Palier médian |',
+    '| --- | --- | --- | --- | --- |',
+    ...a.resume.map(
+      (s) =>
+        `| ${s.strategie} | ${eur(s.medianValorisation5ans)} | ${eur(s.medianValorisation10ans)} | ${eur(s.quartilesValorisation10ans[0])} à ${eur(s.quartilesValorisation10ans[1])} | ${palierNom(s.palierMedian)} |`,
     ),
     '',
     '## Genres dominants',
     '',
-    ...[...genres.entries()]
-      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-      .map(([g, n]) => `- ${g} : ${n} parties`),
+    ...a.genres.map((g) => `- ${g.genre} : ${g.parties} parties (${pct(g.part)})`),
     '',
-    `## Stratégie gagnante : ${winner?.strategie ?? 'aucune'}`,
+    `## Stratégie gagnante : ${a.gagnante ?? 'aucune'}`,
     '',
-    'Valeurs de départ : ce rapport sert à repérer les déséquilibres, pas à fixer les réglages.',
+    `Plus forte valorisation médiane à 10 ans, devant la suivante de ×${Number.isFinite(a.ecartGagnante) ? a.ecartGagnante.toFixed(2) : '∞'}.`,
+    '',
+    '## Cibles',
+    '',
+    '| Cible | Atteinte | Mesure |',
+    '| --- | --- | --- |',
+    ...a.verdicts.map((v) => `| ${v.libelle} | ${v.atteinte ? '✔' : '✘'} | ${v.mesure} |`),
+    '',
+    'Les stratégies sérieuses sont prudent, agressif et spécialiste ; le bot aléatoire sert de plancher. Ce rapport repère les déséquilibres, il ne fixe pas les réglages.',
     '',
   ];
   return lines.join('\n');

@@ -310,9 +310,15 @@ export {
   runBot,
 } from './bots';
 export {
+  type Analyse,
+  CIBLES,
   type GameResult,
   type SimOptions,
+  STRATEGIES_SERIEUSES,
   type StrategySummary,
+  type Verdict,
+  analyser,
+  quantile,
   renderReport,
   simulate,
   simulateGame,
