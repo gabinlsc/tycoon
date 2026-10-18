@@ -1,0 +1,122 @@
+/* Label Tycoon : coquille du jeu, dans la direction arcade (tokens de tokens.css). */
+.label-shell {
+  display: grid;
+  gap: var(--sp-4);
+  padding: var(--sp-4);
+}
+.label-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border: var(--border) solid var(--outline);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  box-shadow: var(--pop-sm);
+}
+.label-bar__name {
+  font-family: var(--font-display);
+  font-size: var(--fs-lead);
+}
+.label-bar__tier {
+  padding: 0 var(--sp-3);
+  border: var(--border) solid var(--outline);
+  border-radius: 999px;
+  background: var(--gold);
+  color: var(--outline);
+  font-weight: 800;
+}
+.label-bar__date {
+  margin-inline-start: auto;
+}
+.label-bar__cash {
+  color: var(--green-text);
+  font-family: var(--font-display);
+  font-size: var(--fs-lead);
+}
+.label-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+.label-nav__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  border: var(--border) solid var(--outline);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-display);
+  cursor: pointer;
+  box-shadow: var(--pop-sm);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.label-nav__item[aria-current='page'] {
+  background: var(--purple);
+  color: #fff;
+  transform: translateY(2px);
+  box-shadow: none;
+}
+.label-nav__item:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+}
+.label-nav__key {
+  display: inline-grid;
+  place-items: center;
+  width: 1.6em;
+  height: 1.6em;
+  border-radius: 50%;
+  background: var(--outline);
+  color: #fff;
+  font-size: var(--fs-small);
+}
+.label-refus,
+.label-error {
+  padding: var(--sp-3) var(--sp-4);
+  border: var(--border) solid var(--outline);
+  border-radius: var(--r-md);
+  background: var(--red);
+  color: #fff;
+  font-weight: 800;
+}
+.label-main {
+  min-height: 16rem;
+}
+.label-screen {
+  padding: var(--sp-5);
+  border: var(--border) solid var(--outline);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  box-shadow: var(--pop);
+}
+.label-screen__soon {
+  color: var(--text-soft);
+}
+.label-start {
+  display: grid;
+  gap: var(--sp-4);
+  justify-items: start;
+  padding: var(--sp-6);
+}
+.label-start__title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+}
+.label-start__field {
+  display: grid;
+  gap: var(--sp-2);
+  font-weight: 800;
+}
+.label-start__field input {
+  min-width: min(100%, 22rem);
+  padding: var(--sp-2) var(--sp-3);
+  border: var(--border) solid var(--outline);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}

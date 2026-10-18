@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { Layout } from './components/layout/Layout';
 import { AccountPage } from './pages/AccountPage';
 import { GamePage } from './pages/GamePage';
@@ -14,6 +14,7 @@ export function App() {
         <Route index element={<HomePage />} />
         <Route path="jeux" element={<GamesPage />} />
         <Route path="jeux/:slug" element={<GamePage />} />
+        <Route path="label" element={<Navigate to="/jeux/label-tycoon" replace />} />
         <Route path="compte" element={<AccountPage />} />
         <Route path="mentions-legales" element={<LegalPage title="Mentions légales" />} />
         <Route path="confidentialite" element={<LegalPage title="Confidentialité" />} />
