@@ -54,6 +54,11 @@ export function Parametres() {
                 ? ' (les rivaux ne jouent pas tout à fait avec les mêmes moyens que toi)'
                 : ' (aucun : les rivaux jouent avec les mêmes règles que toi)'}
             </li>
+            <li>Faillite : {vue.partie.faillitePossible ? 'possible' : 'désactivée'}</li>
+            <li>
+              Fréquence des événements : ×{' '}
+              <span className="mono">{vue.partie.frequenceEvenements}</span>
+            </li>
           </ul>
         </>
       ) : null}

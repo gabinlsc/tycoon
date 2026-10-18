@@ -5,7 +5,7 @@ import { DIFFICULTY_PRESETS } from '@tycoon/label-tycoon';
 import { Coquille } from './Coquille';
 import { creerMoteurLocal } from './engine/local';
 import { LabelProvider } from './LabelContext';
-import { presetCorrespondant } from './NouvellePartie';
+import { BAC_A_SABLE_PAR_DEFAUT, configDepart, presetCorrespondant } from './NouvellePartie';
 import { configDepuisPartie } from './partie';
 
 afterEach(cleanup);
@@ -15,11 +15,25 @@ describe('aides de la nouvelle partie', () => {
     expect(presetCorrespondant({ ...DIFFICULTY_PRESETS.difficile })).toBe('difficile');
     expect(presetCorrespondant({ ...DIFFICULTY_PRESETS.normal, startingCash: 1.5 })).toBeNull();
   });
+  it('compose les réglages du bac à sable', () => {
+    const d = { ...DIFFICULTY_PRESETS.normal };
+    expect(configDepart('carriere', d, BAC_A_SABLE_PAR_DEFAUT).sandbox).toBeUndefined();
+    expect(configDepart('bac-a-sable', d, BAC_A_SABLE_PAR_DEFAUT)).toMatchObject({
+      mode: 'bac-a-sable',
+      sandbox: true,
+      bankruptcyOff: true,
+    });
+    expect(
+      configDepart('bac-a-sable', d, { argentIllimite: false, faillite: false, frequence: 2 }),
+    ).toEqual({ mode: 'bac-a-sable', difficulty: d, eventRate: 2 });
+  });
   it('reconstruit les réglages d’une partie en cours', () => {
     const config = configDepuisPartie({
       mode: 'bac-a-sable',
       scenarioId: null,
       bacASable: true,
+      faillitePossible: false,
+      frequenceEvenements: 1,
       difficulte: {
         capitalDepart: 2,
         agressiviteRivaux: 0.7,
@@ -55,6 +69,18 @@ describe('écran de départ', () => {
     await screen.findByRole('heading', { name: 'Ta partie' });
     expect(screen.getByText(/Mode :/).textContent).toContain('Carrière');
     expect(screen.getByText(/Bonus de trésorerie des rivaux/).textContent).toContain('25');
+  });
+  it('lance un bac à sable : vitesses ×8 et ×16, faillite désactivée', async () => {
+    const b = await ouvrir();
+    expect(screen.queryByRole('button', { name: '×16' })).toBeNull();
+    fireEvent.click(screen.getByRole('radio', { name: /Bac à sable/ }));
+    fireEvent.click(b);
+    expect(await screen.findByRole('button', { name: '×16' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: '×8' })).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: /Paramètres/ }));
+    await screen.findByRole('heading', { name: 'Ta partie' });
+    expect(screen.getByText(/Mode :/).textContent).toContain('Bac à sable');
+    expect(screen.getByText(/Faillite :/).textContent).toContain('désactivée');
   });
   it('bloque le lancement quand un réglage sort des bornes', async () => {
     const b = await ouvrir();

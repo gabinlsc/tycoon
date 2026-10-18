@@ -24,6 +24,10 @@ export interface GameConfig {
   difficulty: DifficultySettings;
   /** Identifiant du scénario (mode scénario ou tutoriel). */
   scenarioId?: string;
-  /** Argent illimité, faillite désactivée (bac à sable). */
+  /** Argent illimité (bac à sable) : rien n'est jamais refusé faute de fonds, la faillite est impossible. */
   sandbox?: boolean;
+  /** Faillite désactivée même sans argent illimité (bac à sable). */
+  bankruptcyOff?: boolean;
+  /** Fréquence des événements : 1 = normal, 0 = aucun événement tiré, 3 = triple. */
+  eventRate?: number;
 }

@@ -135,7 +135,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `feat/label-sauvegarde-export` : export et import JSON, validation `zod`, sauvegarde corrompue sans blocage
 - [x] `feat/label-sauvegarde-compte` : métadonnées de sauvegarde remontées dans la page de compte (+)
 - [x] `feat/label-mode-carriere` : carrière et réglages de difficulté
-- [ ] `feat/label-mode-bac-a-sable` : bac à sable
+- [x] `feat/label-mode-bac-a-sable` : bac à sable
 - [ ] `feat/label-scenarios-moteur` : moteur de scénarios (objectifs, limite de temps, états de départ)
 - [ ] `feat/label-scenarios-contenu` : 6 à 8 scénarios
 - [ ] `feat/label-defi-du-jour` : seed du jour, 52 semaines, score, résultat partageable
@@ -185,7 +185,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 5     | 14    | 14     |
 | 6     | 14    | 14     |
 | 7     | 13    | 13     |
-| 8     | 10    | 4      |
+| 8     | 10    | 5      |
 | 9     | 5     | 0      |
 | 10    | 12    | 0      |
 | 11    | 5     | 0      |

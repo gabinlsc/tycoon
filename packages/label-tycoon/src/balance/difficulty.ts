@@ -21,3 +21,6 @@ export const DIFFICULTY_BOUNDS = {
   marketVolatility: { min: 0.25, max: 3 },
   rivalCashBonus: { min: 0, max: 2 },
 } as const satisfies Record<keyof DifficultySettings, { min: number; max: number }>;
+
+/** Bornes de la fréquence des événements (bac à sable). */
+export const EVENT_RATE_BOUNDS = { min: 0, max: 3 } as const;

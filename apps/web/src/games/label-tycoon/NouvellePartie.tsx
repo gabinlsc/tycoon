@@ -2,6 +2,7 @@ import { useState } from 'react';
 import {
   DIFFICULTY_BOUNDS,
   DIFFICULTY_PRESETS,
+  EVENT_RATE_BOUNDS,
   defaultConfig,
   validateConfig,
 } from '@tycoon/label-tycoon';
@@ -61,7 +62,35 @@ export function presetCorrespondant(d: DifficultySettings): DifficultyPreset | n
   return trouve ?? null;
 }
 
-/** Écran de départ : choisir une graine (facultatif), la difficulté, et lancer une carrière. */
+export interface OptionsBacASable {
+  argentIllimite: boolean;
+  faillite: boolean;
+  frequence: number;
+}
+
+export const BAC_A_SABLE_PAR_DEFAUT: OptionsBacASable = {
+  argentIllimite: true,
+  faillite: true,
+  frequence: 1,
+};
+
+/** Réglages envoyés au moteur pour le mode et les options choisis. */
+export function configDepart(
+  mode: 'carriere' | 'bac-a-sable',
+  difficulty: DifficultySettings,
+  bac: OptionsBacASable,
+): GameConfig {
+  if (mode === 'carriere') return { ...defaultConfig('normal', 'carriere'), difficulty };
+  return {
+    ...defaultConfig('normal', 'bac-a-sable'),
+    difficulty,
+    ...(bac.argentIllimite ? { sandbox: true } : {}),
+    ...(bac.faillite ? { bankruptcyOff: true } : {}),
+    ...(bac.frequence !== 1 ? { eventRate: bac.frequence } : {}),
+  };
+}
+
+/** Écran de départ : mode, difficulté, graine (facultative), puis lancement de la partie. */
 export function NouvellePartie() {
   const { nouvellePartie, etat } = useLabel();
   const [graine, setGraine] = useState('');
@@ -69,7 +98,9 @@ export function NouvellePartie() {
     ...DIFFICULTY_PRESETS.normal,
   });
   const [avance, setAvance] = useState(false);
-  const config: GameConfig = { ...defaultConfig('normal'), difficulty: reglages };
+  const [mode, setMode] = useState<'carriere' | 'bac-a-sable'>('carriere');
+  const [bac, setBac] = useState<OptionsBacASable>(BAC_A_SABLE_PAR_DEFAUT);
+  const config = configDepart(mode, reglages, bac);
   const probleme = validateConfig(config);
   const preset = presetCorrespondant(reglages);
 
@@ -77,6 +108,64 @@ export function NouvellePartie() {
     <div className="label-start">
       <h2 className="label-start__title">Fonde ton label</h2>
       <p>Une partie, un monde généré : repère des talents, signe-les, sors des hits.</p>
+      <fieldset className="label-field">
+        <legend>Mode de jeu</legend>
+        <label className="label-field--check">
+          <input
+            type="radio"
+            name="mode"
+            checked={mode === 'carriere'}
+            onChange={() => setMode('carriere')}
+          />
+          <span>
+            <strong>Carrière</strong> — devenir la première major du pays.
+          </span>
+        </label>
+        <label className="label-field--check">
+          <input
+            type="radio"
+            name="mode"
+            checked={mode === 'bac-a-sable'}
+            onChange={() => setMode('bac-a-sable')}
+          />
+          <span>
+            <strong>Bac à sable</strong> — argent illimité et tous les réglages en main.
+          </span>
+        </label>
+      </fieldset>
+      {mode === 'bac-a-sable' ? (
+        <fieldset className="label-field">
+          <legend>Réglages du bac à sable</legend>
+          <label className="label-field--check">
+            <input
+              type="checkbox"
+              checked={bac.argentIllimite}
+              onChange={(e) => setBac({ ...bac, argentIllimite: e.target.checked })}
+            />
+            Argent illimité
+          </label>
+          <label className="label-field--check">
+            <input
+              type="checkbox"
+              checked={bac.faillite}
+              onChange={(e) => setBac({ ...bac, faillite: e.target.checked })}
+            />
+            Faillite désactivée
+          </label>
+          <label className="label-field">
+            Fréquence des événements <small>(1 = normal, 0 = aucun)</small>
+            <input
+              type="number"
+              min={EVENT_RATE_BOUNDS.min}
+              max={EVENT_RATE_BOUNDS.max}
+              step={0.1}
+              value={bac.frequence}
+              onChange={(e) => setBac({ ...bac, frequence: Number(e.target.value) })}
+            />
+          </label>
+          <p>Le temps peut aussi s’accélérer jusqu’à ×16 pendant la partie.</p>
+        </fieldset>
+      ) : null}
       <fieldset className="label-field">
         <legend>Difficulté</legend>
         {PRESETS.map((p) => (

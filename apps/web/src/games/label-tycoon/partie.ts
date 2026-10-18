@@ -12,6 +12,8 @@ export function configDepuisPartie(p: VuePartie): GameConfig {
     },
     ...(p.scenarioId !== null ? { scenarioId: p.scenarioId } : {}),
     ...(p.bacASable ? { sandbox: true } : {}),
+    ...(!p.bacASable && !p.faillitePossible ? { bankruptcyOff: true } : {}),
+    ...(p.frequenceEvenements !== 1 ? { eventRate: p.frequenceEvenements } : {}),
   };
 }
 

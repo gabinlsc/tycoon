@@ -2,7 +2,7 @@
  * Point d'entrée de l'équilibrage. Une seule source de vérité : tout nombre qui pèse sur le jeu
  * est défini dans ce dossier, jamais dans le code des règles.
  */
-export { DIFFICULTY_BOUNDS, DIFFICULTY_PRESETS } from './difficulty';
+export { DIFFICULTY_BOUNDS, DIFFICULTY_PRESETS, EVENT_RATE_BOUNDS } from './difficulty';
 export { EVENTS } from './events';
 export { INTEL, MARKET, START_CREDIBILITY, SUBGENRES, TRENDS } from './market';
 export { LABEL_NAME_MAX, SANDBOX_CASH, START } from './start';
