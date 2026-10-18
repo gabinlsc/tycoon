@@ -58,7 +58,7 @@ export {
   type ReleaseType,
 } from './production';
 export { STREAMS, VIRALITY } from './streams';
-export { CERTIFICATIONS, CHARTS } from './charts';
+export { CEREMONY, CERTIFICATIONS, CHARTS } from './charts';
 export {
   DELEGATION,
   STAFF,

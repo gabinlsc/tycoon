@@ -4,6 +4,7 @@ import type { Artist } from './artists';
 import type { FinanceState } from './finance';
 import type { Rival } from './auction';
 import type { Contrat } from './contracts';
+import type { Ceremonie } from './ceremonies';
 import type { OffreRachat } from './rival-interactions';
 import type { Mentorat, Relation } from './relations';
 import type { Fiscalite } from './tax';
@@ -107,6 +108,8 @@ export interface LabelState {
   /** Offres de rachat de rivaux, et semaines où de nouveaux rivaux doivent apparaître. */
   offresRachat: OffreRachat[];
   remplacements: number[];
+  /** Cérémonie de l'année en cours (nominations, gagnants). */
+  ceremonie: Ceremonie | null;
   /** Négociations en cours ou rompues, une par artiste. */
   negociations: Negociation[];
   /** Prochain identifiant libre, partagé par toutes les entités (artistes, sorties, contrats…). */

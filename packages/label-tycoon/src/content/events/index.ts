@@ -1,4 +1,5 @@
 import { ARTIST_EVENTS } from './artistes';
+import { CEREMONY_EVENTS } from './ceremonies';
 import { BUSINESS_EVENTS } from './business';
 import { MEDIA_EVENTS } from './medias';
 import { MARKET_EVENTS } from './marche';
@@ -12,6 +13,7 @@ export const LABEL_EVENTS: readonly LabelEvent[] = [
   ...MARKET_EVENTS,
   ...MEDIA_EVENTS,
   ...BUSINESS_EVENTS,
+  ...CEREMONY_EVENTS,
 ];
 
 export type { LabelEvent };

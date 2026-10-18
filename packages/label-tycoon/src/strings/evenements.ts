@@ -264,6 +264,42 @@ export const EVENT_TEXTS: Readonly<Record<string, EventText>> = {
     titre: 'Hausse du loyer',
     texte: 'Le propriétaire révise le loyer à la hausse : un rappel est dû.',
   },
+  'nomination-recue': {
+    titre: 'Nomination !',
+    texte: '{nom} est nommé·e dans la catégorie « {categorie} » : le label est en effervescence.',
+  },
+  'tapis-rouge': {
+    titre: 'Le tapis rouge',
+    texte:
+      '{nom} foule le tapis rouge. Une tenue de luxe coûte {tenue} centimes mais fait sensation.',
+    choix: { luxe: 'Tenue de luxe', sobre: 'Rester sobre' },
+  },
+  'prix-remporte': {
+    titre: 'Prix remporté !',
+    texte: '{nom} remporte le prix « {categorie} ». Toute la salle se lève.',
+  },
+  'discours-gagnant': {
+    titre: 'Le discours',
+    texte: '{nom} monte sur scène pour remercier. Quel ton adopter ?',
+    choix: { sincere: 'Sincère et touchant', provocateur: 'Provocateur' },
+  },
+  'prix-perdu': {
+    titre: 'Reparti·e les mains vides',
+    texte: '{nom} n’a pas été récompensé·e dans la catégorie « {categorie} ». L’amertume pèse.',
+  },
+  boycott: {
+    titre: 'Cérémonie boudée',
+    texte: '{nom} refuse de se déplacer : la presse y voit un coup de com ou un caprice.',
+  },
+  'after-party': {
+    titre: 'After-party',
+    texte: 'La soirée s’éternise. Louer une salle pour {nom} coûte {budget} centimes.',
+    choix: { 'faire-la-fete': 'Faire la fête', rentrer: 'Rentrer se reposer' },
+  },
+  'label-de-l-annee': {
+    titre: 'Label de l’année',
+    texte: 'Le label est sacré par la profession : une reconnaissance qui compte.',
+  },
   'collaboration-spontanee': {
     titre: 'Collaboration spontanée',
     texte: '{nom} et {autre} improvisent un titre ensemble. Les fans adorent.',
