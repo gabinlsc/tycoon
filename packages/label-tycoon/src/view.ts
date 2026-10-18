@@ -43,6 +43,7 @@ import { venueCost } from './tours';
 import { DEFI_SEMAINES, defiTermine, resultatDefi, texteResultat } from './defi';
 import { ereCourante, prochaineEre } from './eres';
 import { legendes } from './generations';
+import { type BilanRegne, bilanDeRegne, regneClosable } from './heritage';
 import { debloque as debloqueInstitution, revenuMusee } from './institution';
 import {
   debloque as debloqueConglomerat,
@@ -647,6 +648,7 @@ export interface VueJeu {
   institution: VueInstitution;
   ere: VueEre;
   generations: VueGenerations;
+  heritage: VueHeritage;
   scenario: VueScenario | null;
   defi: VueDefi | null;
   rapportsMensuels: VueRapportMensuel[];
@@ -1163,6 +1165,13 @@ function rapportsDe(state: LabelState): VueRapportMensuel[] {
     }));
 }
 
+/** Héritage : bilan du règne en cours et possibilité de le clore. */
+export interface VueHeritage {
+  /** Vrai quand le règne peut être clos (palier élevé ou longue carrière, en mode carrière). */
+  closable: boolean;
+  bilan: BilanRegne;
+}
+
 /** Légendes du label, retraités et relève d'artistes célèbres. */
 export interface VueGenerations {
   legendes: {
@@ -1552,6 +1561,7 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
     institution: institutionDe(state, tick),
     ere: ereDe(state, tick),
     generations: generationsDe(state),
+    heritage: { closable: regneClosable(state, tick), bilan: bilanDeRegne(state, tick) },
     partie: {
       mode: state.config.mode,
       scenarioId: state.config.scenarioId ?? null,

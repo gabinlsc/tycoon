@@ -1,5 +1,7 @@
 /** Réglages d'une partie. Ils font partie de l'état : ils sont donc sauvegardés, rejoués et hachés. */
 
+import type { HeritageBonusId } from './balance/heritage';
+
 export type GameMode = 'carriere' | 'scenario' | 'bac-a-sable' | 'defi' | 'tutoriel';
 
 /** Curseurs de difficulté, appliqués comme multiplicateurs sur les valeurs de `balance/`. */
@@ -19,6 +21,17 @@ export interface DifficultySettings {
 
 export type DifficultyPreset = 'facile' | 'normal' | 'difficile';
 
+/** Ce qu'un règne précédent transmet à une partie « Héritage ». */
+export interface HeritageDepart {
+  /** Rang du règne (1 = première partie, 2 = premier héritier…). */
+  generation: number;
+  /** Nom du label du règne précédent. */
+  ancetre: string;
+  /** Réputation transmise (points ajoutés à celle de départ). */
+  reputation: number;
+  bonus: HeritageBonusId[];
+}
+
 export interface GameConfig {
   mode: GameMode;
   difficulty: DifficultySettings;
@@ -32,4 +45,6 @@ export interface GameConfig {
   defiDate?: string;
   /** Fréquence des événements : 1 = normal, 0 = aucun événement tiré, 3 = triple. */
   eventRate?: number;
+  /** Héritage d'un règne précédent (mode carrière uniquement). */
+  heritage?: HeritageDepart;
 }

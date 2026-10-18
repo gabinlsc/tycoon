@@ -81,6 +81,7 @@ import { sign } from './contracts';
 import { launchProject, productionPhase, releaseProject, streamsPhase } from './production';
 import { propose } from './negotiation';
 import { dropProspect, fireScout, hireScout, scout, studioTrial } from './scouting';
+import { appliquerHeritage, validerHeritage } from './heritage';
 import { generateWorld } from './world';
 import type { LabelState } from './state';
 
@@ -247,6 +248,11 @@ export function validateConfig(config: GameConfig): string | null {
     (!Number.isFinite(rate) || rate < EVENT_RATE_BOUNDS.min || rate > EVENT_RATE_BOUNDS.max)
   )
     return `Fréquence des événements hors bornes (${EVENT_RATE_BOUNDS.min} à ${EVENT_RATE_BOUNDS.max}) : ${String(rate)}`;
+  if (config.heritage) {
+    if (config.mode !== 'carriere' || config.sandbox)
+      return 'L’héritage ne s’applique qu’à une carrière.';
+    return validerHeritage(config.heritage);
+  }
   return null;
 }
 
@@ -257,7 +263,7 @@ export function initialState(seed: Seed, config: GameConfig): LabelState {
   const cash = config.sandbox
     ? SANDBOX_CASH
     : money.applyRate(START.cash, config.difficulty.startingCash);
-  return {
+  const state: LabelState = {
     config: structuredConfig(config),
     label: {
       nom: START.defaultLabelName,
@@ -322,6 +328,8 @@ export function initialState(seed: Seed, config: GameConfig): LabelState {
     cadres: [],
     nextId: 1,
   };
+  if (config.heritage) appliquerHeritage(state, config.heritage);
+  return state;
 }
 
 /**
@@ -346,6 +354,8 @@ function structuredConfig(config: GameConfig): GameConfig {
   if (config.defiDate !== undefined) copy.defiDate = config.defiDate;
   if (config.bankruptcyOff !== undefined) copy.bankruptcyOff = config.bankruptcyOff;
   if (config.eventRate !== undefined) copy.eventRate = config.eventRate;
+  if (config.heritage !== undefined)
+    copy.heritage = { ...config.heritage, bonus: [...config.heritage.bonus] };
   return copy;
 }
 
