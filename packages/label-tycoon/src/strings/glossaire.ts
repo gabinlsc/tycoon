@@ -102,4 +102,54 @@ export const GLOSSAIRE: Readonly<Record<string, { terme: string; definition: str
     definition:
       'La relation d’un artiste avec ton label. Une offre insultante la fait chuter pour toute la partie.',
   },
+  ere: {
+    terme: 'Ère',
+    definition:
+      'Une longue période qui change les règles économiques (streaming, plateforme dominante, direct-to-fan, virale). Des signaux annoncent le changement.',
+  },
+  saison: {
+    terme: 'Saison de contenu',
+    definition:
+      'Une période (festivals, rentrée, fêtes, turbulences, révolution technologique) qui apporte ses propres événements.',
+  },
+  legende: {
+    terme: 'Légende',
+    definition:
+      'Un artiste de ton label retraité mais toujours célèbre. Il parraine les jeunes talents et inspire les diplômés de ton académie.',
+  },
+  heritage: {
+    terme: 'Héritage',
+    definition:
+      'Clore un règne l’inscrit au Panthéon et permet de repartir avec une réputation réduite et des bonus gagnés par tes accomplissements.',
+  },
+  pantheon: {
+    terme: 'Panthéon',
+    definition:
+      'Le palmarès local des dix meilleurs règnes de cet appareil, classés par valorisation.',
+  },
+  influence: {
+    terme: 'Influence',
+    definition:
+      'Le poids de ton institution sur le marché (0 à 100). Elle se dépense pour infléchir les règles.',
+  },
+  penetration: {
+    terme: 'Pénétration',
+    definition:
+      'La part du public d’un pays que ton label touche. Elle monte avec les campagnes et retombe sans budget.',
+  },
+  scene: {
+    terme: 'Scène locale',
+    definition:
+      'Le profil musical d’une ville : un genre dominant, un genre secondaire et une chaleur qui évolue. Repérer dans une scène émergente donne de meilleurs talents.',
+  },
+  surveillance: {
+    terme: 'Surveillance',
+    definition:
+      'La pression des autorités de la concurrence quand ta part de marché dépasse 35 %. À 100, une amende tombe.',
+  },
+  piratage: {
+    terme: 'Piratage',
+    definition:
+      'Des vagues qui font perdre une part des écoutes pendant quelques semaines. Une veille payante en réduit les dégâts.',
+  },
 };
