@@ -7,12 +7,14 @@ import { labelScore, valuation } from './valuation';
 import { VISIBLE_ATTRIBUTES, knownRange } from './scouting';
 import { bestCertification, certificationThreshold, equivalentSales } from './charts';
 import { type Clauses, fairAdvance } from './contracts';
-import { INTEL, PERSONALITIES } from './balance';
+import { INTEL, LOANS, PERSONALITIES, TAX, UNLOCKS, type TaxStrategy } from './balance';
 import { buyoutAsk } from './rival-interactions';
 import { analystLevel } from './forecast';
 import { genreKeys, trendMultiplier } from './market';
 import { announcedReleases } from './calendar';
 import { objectiveProgress } from './achievements';
+import { loanCap, loanRate, outstanding } from './loans';
+import { tierAtLeast } from './tiers';
 
 /**
  * Vue du jeu pour l'interface : un instantané sérialisable et plat, calculé à partir de l'état.
@@ -176,6 +178,60 @@ export interface VueConcurrence {
   affrontements: VueActu[];
 }
 
+export interface VueLigneFinance {
+  cle: string;
+  nom: string;
+  montant: number;
+}
+
+export interface VueFinancesDetail {
+  /** Résultat des derniers mois clos, du plus ancien au plus récent. */
+  mois: { debut: number; fin: number; revenus: number; depenses: number; net: number }[];
+  /** Détail par catégorie du dernier mois clos (ou de la semaine en cours à défaut). */
+  revenus: VueLigneFinance[];
+  depenses: VueLigneFinance[];
+  periode: 'mois' | 'semaine';
+  prets: {
+    id: number;
+    capital: number;
+    restant: number;
+    tauxBps: number;
+    semainesRestantes: number;
+  }[];
+  emprunt: {
+    debloque: boolean;
+    encours: number;
+    plafond: number;
+    tauxBps: number;
+    minimum: number;
+    semaines: { min: number; max: number };
+  };
+  offresInvestisseurs: {
+    id: number;
+    nom: string;
+    apport: number;
+    partBps: number;
+    objectifCA: number;
+    expire: number;
+  }[];
+  investisseurs: {
+    id: number;
+    nom: string;
+    apport: number;
+    partBps: number;
+    objectifCA: number;
+    echeance: number;
+    statut: string;
+  }[];
+  investisseursDebloques: boolean;
+  fiscalite: {
+    strategie: TaxStrategy;
+    dernierImpot: number;
+    controles: number;
+    options: { id: TaxStrategy; tauxBps: number; risque: number }[];
+  };
+}
+
 export interface VueJeu {
   semaine: number;
   date: { annee: number; mois: number; semaineDuMois: number };
@@ -207,6 +263,7 @@ export interface VueJeu {
   /** Sorties à venir du joueur et sorties annoncées des rivaux, triées par semaine. */
   calendrier: VueSortieCalendrier[];
   concurrence: VueConcurrence;
+  financesDetail: VueFinancesDetail;
   /** Marché des genres, prévisions des études de marché et facteur de revenu par écoute. */
   marche: {
     genres: VueGenre[];
@@ -486,6 +543,62 @@ function concurrenceDe(state: LabelState): VueConcurrence {
   };
 }
 
+function lignes(noms: Record<string, string>, valeurs: Record<string, number>): VueLigneFinance[] {
+  return Object.keys(noms)
+    .map((cle) => ({ cle, nom: noms[cle] ?? cle, montant: valeurs[cle] ?? 0 }))
+    .filter((l) => l.montant > 0)
+    .sort((a, b) => b.montant - a.montant || a.cle.localeCompare(b.cle));
+}
+
+function financesDe(state: LabelState): VueFinancesDetail {
+  const f = state.finances;
+  const dernier = f.mois[f.mois.length - 1];
+  const source = dernier ?? {
+    revenus: f.semaine.revenus,
+    depenses: f.semaine.depenses,
+  };
+  return {
+    mois: f.mois.slice(-12).map((m) => ({
+      debut: m.debut,
+      fin: m.fin,
+      revenus: m.totalRevenus,
+      depenses: m.totalDepenses,
+      net: m.net,
+    })),
+    revenus: lignes(fr.categoriesRevenus, source.revenus),
+    depenses: lignes(fr.categoriesDepenses, source.depenses),
+    periode: dernier ? 'mois' : 'semaine',
+    prets: state.prets.map((p) => ({
+      id: p.id,
+      capital: p.capital,
+      restant: p.restant,
+      tauxBps: p.tauxBps,
+      semainesRestantes: p.semainesRestantes,
+    })),
+    emprunt: {
+      debloque: tierAtLeast(state, UNLOCKS.emprunter),
+      encours: outstanding(state),
+      plafond: loanCap(state),
+      tauxBps: loanRate(state.label.reputation, state.credit.impayes),
+      minimum: LOANS.minAmount,
+      semaines: { min: LOANS.weeks.min, max: LOANS.weeks.max },
+    },
+    offresInvestisseurs: state.offresInvest.map((o) => ({ ...o })),
+    investisseurs: state.investisseurs.map((i) => ({ ...i })),
+    investisseursDebloques: tierAtLeast(state, UNLOCKS.investisseurs),
+    fiscalite: {
+      strategie: state.fiscalite.strategie,
+      dernierImpot: state.fiscalite.dernierImpot,
+      controles: state.fiscalite.controles,
+      options: (Object.keys(TAX.strategies) as TaxStrategy[]).map((id) => ({
+        id,
+        tauxBps: TAX.strategies[id].rateBps,
+        risque: TAX.strategies[id].auditChance,
+      })),
+    },
+  };
+}
+
 function lastReport(state: LabelState): VueJeu['rapport'] {
   const r = state.rapportsMensuels[state.rapportsMensuels.length - 1];
   return r
@@ -630,6 +743,7 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
     })),
     calendrier: calendrier(state, tick),
     concurrence: concurrenceDe(state),
+    financesDetail: financesDe(state),
     marche: marcheDe(state),
     classements: {
       singles: ligneClassement(state, 'singles', tick),

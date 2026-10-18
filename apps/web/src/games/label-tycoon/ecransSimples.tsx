@@ -4,6 +4,7 @@ import type { EcranId } from './ecrans';
 import { Classements } from './Classements';
 import { Marche } from './Marche';
 import { Concurrence } from './Concurrence';
+import { Finances } from './Finances';
 
 /** Écrans sans état de navigation propre : un composant par identifiant. */
 export const ECRANS_SIMPLES: Partial<Record<EcranId, ComponentType>> = {
@@ -11,4 +12,5 @@ export const ECRANS_SIMPLES: Partial<Record<EcranId, ComponentType>> = {
   classements: Classements,
   marche: Marche,
   concurrence: Concurrence,
+  finances: Finances,
 };
