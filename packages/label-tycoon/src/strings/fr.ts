@@ -283,6 +283,7 @@ export const fr = {
     'genre-inconnu': () => "Ce genre n'existe pas.",
     'artiste-introuvable': () => "Cet artiste n'existe pas.",
     'artiste-indisponible': () => 'Cet artiste est déjà sous contrat ailleurs.',
+    'scene-introuvable': () => "Cette ville n'a pas de scène connue.",
     'pays-inconnu': () => "Ce pays n'existe pas.",
     'marche-deja-ouvert': () => 'Tu as déjà un bureau dans ce pays.',
     'marche-ferme': () => "Ouvre d'abord un bureau dans ce pays.",

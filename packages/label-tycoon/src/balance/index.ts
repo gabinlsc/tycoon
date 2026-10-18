@@ -101,3 +101,4 @@ export { ERA_SCHEDULE, ERES, ERE_IDS, type EreId, type EreRules } from './eres';
 export { GENERATIONS } from './generations';
 export { HERITAGE, HERITAGE_BONUS_IDS, type HeritageBonusId } from './heritage';
 export { INTERNATIONAL, PAYS, PAYS_IDS, type PaysId, type PaysRules } from './international';
+export { SCENES } from './scenes';

@@ -1,6 +1,6 @@
 /**
  * Gabarits du Fil du label : plusieurs titres et accroches par type de signal, pour éviter la
- * répétition. Variables : `{nom}` (artiste), `{rival}`, `{genre}`, `{categorie}`, `{palier}`,
+ * répétition. Variables : `{nom}` (artiste), `{rival}`, `{genre}`, `{ville}`, `{categorie}`, `{palier}`,
  * `{niveau}`, `{n}`.
  */
 export interface FilTemplate {
@@ -324,6 +324,19 @@ export const FIL_TEMPLATES: Readonly<Record<string, FilTemplate>> = {
       'Un bureau local ouvre : reste à conquérir le public.',
       'Les premiers contacts locaux sont prometteurs.',
       'Les goûts diffèrent d’un pays à l’autre : choisis bien tes artistes.',
+    ],
+  },
+  'scene-emergente': {
+    importance: 2,
+    titres: [
+      'Une scène s’embrase à {ville}',
+      '{ville} : la scène {genre} décolle',
+      'Tous les regards sont tournés vers {ville}',
+    ],
+    textes: [
+      'Les salles se remplissent : c’est le moment d’aller y repérer des talents.',
+      'Des artistes {genre} y éclosent chaque semaine.',
+      'Les labels rivaux commencent à y envoyer leurs dénicheurs.',
     ],
   },
   'changement-ere': {

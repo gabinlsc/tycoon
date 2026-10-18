@@ -22,6 +22,7 @@ import type { Plateforme } from './conglomerat';
 import type { ErasState } from './eres';
 import type { InstitutionState } from './institution';
 import type { InternationalState } from './international';
+import type { SceneLocale } from './scenes';
 import type { Dirigeant, SousLabel } from './groupe';
 import type { ScenarioState } from './scenarios/types';
 import type { Commande } from './pressing';
@@ -137,6 +138,8 @@ export interface LabelState {
   institution: InstitutionState;
   /** Marchés internationaux : bureaux locaux et campagnes (palier Major). */
   international: InternationalState;
+  /** Scènes musicales des villes : profil de genres et chaleur. */
+  scenes: SceneLocale[];
   /** Palier Conglomérat : plateforme maison, niveau des studios de synchro et festivals possédés. */
   plateforme: Plateforme | null;
   studiosSynchro: number;

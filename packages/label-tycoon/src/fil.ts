@@ -39,6 +39,12 @@ export function filVars(state: LabelState, payload: Payload): Record<string, str
   if (typeof payload['texte'] === 'string') vars['texte'] = payload['texte'];
   if (typeof payload['ere'] === 'string')
     vars['ere'] = ERES[payload['ere'] as keyof typeof ERES]?.nom ?? payload['ere'];
+  if (typeof payload['ville'] === 'string') vars['ville'] = payload['ville'];
+  if (typeof payload['genre'] === 'string')
+    vars['genre'] =
+      (fr.genres as Record<string, string | undefined>)[payload['genre']] ??
+      state.sousGenres.find((g) => g.id === payload['genre'])?.nom ??
+      payload['genre'];
   const n = payload['spectateurs'] ?? payload['restantes'];
   if (typeof n === 'number') vars['n'] = n;
   vars['nom'] ??= 'Un artiste du label';

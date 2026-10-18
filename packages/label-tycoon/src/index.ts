@@ -391,6 +391,7 @@ export {
   type VueGenerations,
   type VueHeritage,
   type VueInternational,
+  type VueSceneVille,
   type VuePays,
   type VueGroupe,
   type VueInstitution,
@@ -546,3 +547,12 @@ export {
   initialInternational,
   internationalPhase,
 } from './international';
+
+export {
+  type SceneLocale,
+  type ScoutSceneAction,
+  estEmergente,
+  initialScenes,
+  scenesPhase,
+  scoutScene,
+} from './scenes';

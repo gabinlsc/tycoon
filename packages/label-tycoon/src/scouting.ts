@@ -83,6 +83,35 @@ function pickLevel(rng: Rng, source: ScoutSource): TalentLevel {
   return rng.pickWeighted(Object.keys(weights) as TalentLevel[], (l) => weights[l]);
 }
 
+/** Ajoute un talent à la liste de suivi, avec les décalages fixes qui rendent ses fourchettes imprécises. */
+export function suivre(
+  state: LabelState,
+  rng: Rng,
+  artist: Artist,
+  source: ScoutSource,
+  tick: number,
+  denicheurId: number | null,
+): void {
+  const profile = SOURCES[source];
+  const decalages: Record<string, number> = {};
+  for (const attribute of [...VISIBLE_ATTRIBUTES, ...HIDDEN_ATTRIBUTES]) {
+    const hidden = (HIDDEN_ATTRIBUTES as readonly string[]).includes(attribute);
+    const initial = profile.width * (hidden ? SCOUTING.hiddenWidthFactor : 1);
+    const limit = initial * SCOUTING.maxOffsetShare;
+    decalages[attribute] =
+      Math.round(clamp(rng.gaussian(0, initial / 3), -limit, limit) * 100) / 100;
+  }
+  state.suivis.push({
+    artisteId: artist.id,
+    source,
+    depuis: tick,
+    denicheurId,
+    observations: 0,
+    essai: false,
+    decalages,
+  });
+}
+
 /** Découvre `count` nouveaux talents via une source : ils rejoignent le monde (libres) et la liste de suivi. */
 export function scoutTalents(
   state: LabelState,
@@ -108,23 +137,7 @@ export function scoutTalents(
       options,
     );
     state.artistes.push(artist);
-    const decalages: Record<string, number> = {};
-    for (const attribute of [...VISIBLE_ATTRIBUTES, ...HIDDEN_ATTRIBUTES]) {
-      const hidden = (HIDDEN_ATTRIBUTES as readonly string[]).includes(attribute);
-      const initial = profile.width * (hidden ? SCOUTING.hiddenWidthFactor : 1);
-      const limit = initial * SCOUTING.maxOffsetShare;
-      decalages[attribute] =
-        Math.round(clamp(rng.gaussian(0, initial / 3), -limit, limit) * 100) / 100;
-    }
-    state.suivis.push({
-      artisteId: artist.id,
-      source,
-      depuis: tick,
-      denicheurId: denicheur?.id ?? null,
-      observations: 0,
-      essai: false,
-      decalages,
-    });
+    suivre(state, rng, artist, source, tick, denicheur?.id ?? null);
     found.push(artist);
   }
   return found;
