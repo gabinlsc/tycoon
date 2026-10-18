@@ -436,6 +436,18 @@ export interface VueRecord {
   semaine: number;
 }
 
+export interface VuePartie {
+  mode: string;
+  scenarioId: string | null;
+  bacASable: boolean;
+  difficulte: {
+    capitalDepart: number;
+    agressiviteRivaux: number;
+    volatiliteMarche: number;
+    bonusTresorerieRivaux: number;
+  };
+}
+
 export interface VueJeu {
   semaine: number;
   date: { annee: number; mois: number; semaineDuMois: number };
@@ -477,6 +489,7 @@ export interface VueJeu {
   personnel: VuePersonnel;
   batiments: VueBatiment[];
   scene: VueScene;
+  partie: VuePartie;
   rapportsMensuels: VueRapportMensuel[];
   tousSucces: VueSucces[];
   records: VueRecord[];
@@ -1134,6 +1147,17 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
     personnel: personnelDe(state),
     batiments: batimentsDe(state),
     scene: sceneDe(state),
+    partie: {
+      mode: state.config.mode,
+      scenarioId: state.config.scenarioId ?? null,
+      bacASable: state.config.sandbox === true,
+      difficulte: {
+        capitalDepart: state.config.difficulty.startingCash,
+        agressiviteRivaux: state.config.difficulty.rivalAggression,
+        volatiliteMarche: state.config.difficulty.marketVolatility,
+        bonusTresorerieRivaux: state.config.difficulty.rivalCashBonus,
+      },
+    },
     rapportsMensuels: rapportsDe(state),
     tousSucces: SUCCES.map((s) => ({
       id: s.id,
