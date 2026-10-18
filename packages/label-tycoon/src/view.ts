@@ -7,7 +7,7 @@ import type { LabelState } from './state';
 import { labelScore, valuation } from './valuation';
 import { VISIBLE_ATTRIBUTES, knownRange } from './scouting';
 import { bestCertification, certificationThreshold, equivalentSales } from './charts';
-import { type Clauses, fairAdvance } from './contracts';
+import { type Clauses, fairAdvance, rosterCap } from './contracts';
 import {
   BUILDINGS,
   BUILDING_IDS,
@@ -495,6 +495,8 @@ export interface VueJeu {
   };
   certification: string | null;
   roster: VueArtiste[];
+  /** Nombre maximal d'artistes sous contrat au palier actuel (`null` en bac à sable). */
+  plafondRoster: number | null;
   suivis: VueSuivi[];
   projets: {
     id: number;
@@ -1185,6 +1187,7 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
     },
     certification: bestCertification(state),
     roster,
+    plafondRoster: state.config.sandbox ? null : rosterCap(state),
     suivis,
     projets: state.projets.map((p) => ({
       id: p.id,

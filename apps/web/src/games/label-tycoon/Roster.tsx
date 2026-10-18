@@ -12,6 +12,12 @@ const COLONNES: { cle: CleTri; titre: string; terme?: string }[] = [
   { cle: 'echeance', titre: 'Contrat' },
 ];
 
+/** Effectif du roster face au plafond de son palier (aucun plafond en bac à sable). */
+export const texteEffectif = (n: number, plafond: number | null): string =>
+  plafond === null
+    ? `${n} artiste${n > 1 ? 's' : ''} sous contrat.`
+    : `${n} artiste${n > 1 ? 's' : ''} sous contrat sur ${plafond} possibles à ton palier${n >= plafond ? ' : le roster est plein, monte de palier pour signer davantage' : ''}.`;
+
 /** Roster : les artistes du label, triables et filtrables, avec leurs alertes. */
 export function Roster({ ouvrir }: { ouvrir: (artisteId: number) => void }) {
   const { vue } = useLabel();
@@ -45,6 +51,7 @@ export function Roster({ ouvrir }: { ouvrir: (artisteId: number) => void }) {
     return (
       <section className="label-screen" aria-labelledby="roster-titre">
         <h2 id="roster-titre">Roster</h2>
+        <p>{texteEffectif(roster.length, vue.plafondRoster)}</p>
         <p className="label-screen__soon">
           Ton roster est vide. Repère des talents (touche 3) et signe-les pour bâtir ton label.
         </p>
@@ -54,6 +61,7 @@ export function Roster({ ouvrir }: { ouvrir: (artisteId: number) => void }) {
   return (
     <section className="label-screen" aria-labelledby="roster-titre">
       <h2 id="roster-titre">Roster</h2>
+      <p>{texteEffectif(roster.length, vue.plafondRoster)}</p>
       <div className="label-filters">
         <label>
           Recherche

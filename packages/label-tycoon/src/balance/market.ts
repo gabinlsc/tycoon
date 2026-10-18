@@ -57,3 +57,18 @@ export const INTEL = {
   /** Prévisions conservées. */
   keep: 12,
 } as const;
+
+/**
+ * Crédibilité du label dans un genre (0-100) : elle se gagne par les certifications, les festivals,
+ * les cérémonies et en étant le premier sur un sous-genre ; elle sert à la fois à la musique du label
+ * (plus de chances de hit dans ce genre) et à son pouvoir d'attraction (les artistes du genre signent
+ * plus volontiers).
+ */
+export const CREDIBILITY = {
+  /** Bonus de potentiel de hit à crédibilité 100 (proportionnel en dessous). */
+  hitBonus: 0.25,
+  /** Points de réputation « équivalents » par point de crédibilité, dans l'attrait pour un artiste du genre. */
+  prestigeWeight: 0.25,
+  /** Crédibilité gagnée dans le genre à chaque niveau de certification obtenu. */
+  certificationGain: { or: 3, platine: 5, diamant: 8 },
+} as const;

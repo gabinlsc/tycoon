@@ -2,8 +2,14 @@
 export const STREAMS = {
   /** Écoutes de la première semaine par fan. */
   listensPerFan: 6,
+  /**
+   * Fans « actifs » : au-delà de ce seuil, l'engagement par fan s'érode (les très gros publics sont plus
+   * occasionnels). Le nombre de fans pris en compte vaut seuil × (fans / seuil)^exposant.
+   */
+  fanKnee: 200_000,
+  fanExponent: 0.75,
   /** Part de l'audience du genre qui découvre la sortie. */
-  discoveryRate: 0.05,
+  discoveryRate: 0.08,
   /** Exposant de la qualité dans le potentiel de hit : H = (Q/100)^exposant × … */
   qualityExponent: 1.5,
   /** λ = lambdaBase − lambdaQuality × Q/100. */

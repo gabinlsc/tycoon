@@ -2,7 +2,16 @@ import { type ActionHandler, cents, clamp, reject } from '@tycoon/core';
 import type { Action } from '@tycoon/core';
 import type { Artist } from './artists';
 import { CONTRACTS, NEGOTIATION } from './balance';
-import { type Clauses, clausesValid, concludeSigning, fairAdvance, utilityOf } from './contracts';
+import {
+  type Clauses,
+  clausesValid,
+  concludeSigning,
+  fairAdvance,
+  prestigeFor,
+  rosterCap,
+  rosterFull,
+  utilityOf,
+} from './contracts';
 import { canAfford } from './finance';
 import type { LabelSignal } from './pipeline';
 import type { LabelState } from './state';
@@ -93,13 +102,14 @@ export const propose: ActionHandler<LabelState, ProposeAction, LabelSignal> = {
     const artist = state.artistes.find((a) => a.id === action.artisteId);
     if (!artist) return reject('artiste-introuvable');
     if (artist.employeur !== 'libre') return reject('artiste-indisponible');
+    if (rosterFull(state)) return reject('roster-plein', { max: rosterCap(state) });
     if (!clausesValid(action.clauses)) return reject('clauses-invalides');
     const n = negotiationOf(state, artist.id);
     if (n?.rompue) return reject('negociation-rompue');
     if (
       n &&
       n.contres >= NEGOTIATION.maxCounters &&
-      evaluateOffer(artist, action.clauses, state.label.reputation) !== 'accepte'
+      evaluateOffer(artist, action.clauses, prestigeFor(state, artist)) !== 'accepte'
     )
       return reject('contre-propositions-epuisees');
     if (!canAfford(state, action.clauses.avance))
@@ -109,7 +119,7 @@ export const propose: ActionHandler<LabelState, ProposeAction, LabelSignal> = {
   apply(state, action, ctx) {
     const artist = state.artistes.find((a) => a.id === action.artisteId);
     if (!artist) return;
-    const reputation = state.label.reputation;
+    const reputation = prestigeFor(state, artist);
     const verdict = evaluateOffer(artist, action.clauses, reputation);
     if (verdict === 'accepte') {
       concludeSigning(state, artist.id, action.clauses, ctx.tick, ctx.emit);

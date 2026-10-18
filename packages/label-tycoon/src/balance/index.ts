@@ -4,9 +4,16 @@
  */
 export { DIFFICULTY_BOUNDS, DIFFICULTY_PRESETS, EVENT_RATE_BOUNDS } from './difficulty';
 export { EVENTS } from './events';
-export { INTEL, MARKET, START_CREDIBILITY, SUBGENRES, TRENDS } from './market';
+export { CREDIBILITY, INTEL, MARKET, START_CREDIBILITY, SUBGENRES, TRENDS } from './market';
 export { LABEL_NAME_MAX, SANDBOX_CASH, START } from './start';
-export { type CertificationLevel, TIERS, UNLOCKS, type TierId, type TierRule } from './tiers';
+export {
+  type CertificationLevel,
+  ROSTER_CAP,
+  TIERS,
+  UNLOCKS,
+  type TierId,
+  type TierRule,
+} from './tiers';
 export {
   DYNAMIC_START,
   EGO_PER_NOTORIETY_10,

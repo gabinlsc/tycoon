@@ -8,7 +8,16 @@ import {
   type RivalPersonality,
   type RivalStyle,
 } from './balance';
-import { type Clauses, clausesValid, concludeSigning, fairAdvance, utilityOf } from './contracts';
+import {
+  type Clauses,
+  clausesValid,
+  concludeSigning,
+  fairAdvance,
+  prestigeFor,
+  rosterCap,
+  rosterFull,
+  utilityOf,
+} from './contracts';
 import { canAfford } from './finance';
 import type { LabelSignal } from './pipeline';
 import type { LabelState } from './state';
@@ -60,6 +69,7 @@ export const auction: ActionHandler<LabelState, AuctionAction, LabelSignal> = {
     const artist = state.artistes.find((a) => a.id === action.artisteId);
     if (!artist) return reject('artiste-introuvable');
     if (artist.employeur !== 'libre') return reject('artiste-indisponible');
+    if (rosterFull(state)) return reject('roster-plein', { max: rosterCap(state) });
     if (!clausesValid(action.clauses)) return reject('clauses-invalides');
     if (!canAfford(state, action.clauses.avance))
       return reject('fonds-insuffisants', { besoin: action.clauses.avance });
@@ -69,7 +79,7 @@ export const auction: ActionHandler<LabelState, AuctionAction, LabelSignal> = {
     const artist = state.artistes.find((a) => a.id === action.artisteId);
     if (!artist) return;
     const rng = ctx.rng('rivaux');
-    const rep = state.label.reputation;
+    const rep = prestigeFor(state, artist);
     const aggression = state.config.difficulty.rivalAggression;
     let best: { who: string; utility: number; clauses: Clauses } = {
       who: 'joueur',

@@ -46,3 +46,15 @@ export const UNLOCKS = {
   investisseurs: 'etabli',
   'directeur-financier': 'etabli',
 } as const satisfies Record<string, TierId>;
+
+/**
+ * Artistes sous contrat au maximum, par palier : à la taille d'un label correspond ce qu'une équipe
+ * peut vraiment accompagner. Sans plafond, empiler les signatures bon marché écrase toute autre
+ * façon de jouer.
+ */
+export const ROSTER_CAP: Readonly<Record<TierId, number>> = {
+  'home-studio': 6,
+  independant: 12,
+  etabli: 24,
+  major: 48,
+};
