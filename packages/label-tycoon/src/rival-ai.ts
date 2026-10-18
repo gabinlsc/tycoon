@@ -2,15 +2,14 @@ import type { Phase, Rng } from '@tycoon/core';
 import { type Artist, generateArtist, notoriety, takenStageNames } from './artists';
 import { PERSONALITIES, RIVAL_AI, RIVAL_RELEASES, STREAMS } from './balance';
 import { fairAdvance } from './contracts';
+import { rivalInteractions, rosterOf } from './rival-interactions';
+
+export { rosterOf };
 import type { Rival } from './auction';
 import { genreKeys, trendMultiplier } from './market';
 import type { LabelSignal } from './pipeline';
 import type { LabelState } from './state';
 import { newId } from './state';
-
-/** Artistes sous contrat avec ce rival. */
-export const rosterOf = (state: LabelState, rival: Rival): Artist[] =>
-  state.artistes.filter((a) => a.employeur === `rival:${rival.id}`);
 
 /** Revenu hebdomadaire du roster d'un rival, avec les mêmes constantes de streaming que le joueur. */
 export function rivalIncome(roster: readonly Artist[]): number {
@@ -131,6 +130,7 @@ export const rivalsPhase: Phase<LabelState, LabelSignal> = {
         ctx.emit({ kind: 'sortie-rivale', payload: { rivalId: rival.id, artisteId: artist.id } });
       }
     }
+    rivalInteractions(state, ctx.tick, rng, ctx.emit);
     state.sortiesRivales = state.sortiesRivales.filter(
       (s) => s.semaine >= ctx.tick - RIVAL_RELEASES.keepWeeks,
     );

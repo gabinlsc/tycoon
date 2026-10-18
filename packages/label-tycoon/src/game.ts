@@ -34,6 +34,7 @@ import { build, initialBuildings } from './buildings';
 import { configureDelegation } from './delegation';
 import { fire, hire, staffPhase } from './staff';
 import { marketStudy } from './forecast';
+import { answerBuyout, buyRivalArtist } from './rival-interactions';
 import { rivalsPhase } from './rival-ai';
 import { auction, generateRivals } from './auction';
 import { sign } from './contracts';
@@ -95,6 +96,9 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
     'renommer-label': renameLabel,
     reperer: scout,
     signer: sign,
+    'accepter-rachat': answerBuyout,
+    'refuser-rachat': answerBuyout,
+    'racheter-artiste': buyRivalArtist,
     parrainer: mentor,
     'choisir-fiscalite': chooseTax,
     'vendre-contrat': sellContract,
@@ -199,6 +203,8 @@ export function initialState(seed: Seed, config: GameConfig): LabelState {
     fiscalite: initialTax(),
     relations: [],
     mentorats: [],
+    offresRachat: [],
+    remplacements: [],
     nextId: 1,
   };
 }

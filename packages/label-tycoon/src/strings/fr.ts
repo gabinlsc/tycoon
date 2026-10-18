@@ -216,6 +216,8 @@ export const fr = {
     'deja-parraine': () => 'Cet artiste a déjà un mentor.',
     'trop-de-mentorats': (p: { max: number }) =>
       `Tu ne peux pas suivre plus de ${p.max} mentorats.`,
+    'pas-un-artiste-rival': () => "Cet artiste n'est pas sous contrat chez un rival.",
+    'rachat-refuse': () => 'Ce rival refuse de te vendre son artiste.',
     'suivi-introuvable': () => "Ce talent n'est pas dans ta liste de suivi.",
     'essai-deja-fait': () => 'Tu as déjà fait passer un essai à ce talent.',
   },

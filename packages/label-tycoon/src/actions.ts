@@ -3,6 +3,7 @@ import { LABEL_NAME_MAX } from './balance';
 import type { LabelSignal } from './pipeline';
 import type { BreakAction, ReleaseAction, RenegotiateAction } from './contract-end';
 import type { LaunchAction, ReleaseAction as ReleaseProjectAction } from './production';
+import type { BuyRivalArtistAction, BuyoutAnswerAction } from './rival-interactions';
 import type { MentorAction } from './relations';
 import type { ChooseTaxAction } from './tax';
 import type { SellContractAction } from './bankruptcy';
@@ -66,7 +67,9 @@ export type LabelAction =
   | InvestorAnswerAction
   | SellContractAction
   | ChooseTaxAction
-  | MentorAction;
+  | MentorAction
+  | BuyoutAnswerAction
+  | BuyRivalArtistAction;
 
 export const renameLabel: ActionHandler<LabelState, RenameLabelAction, LabelSignal> = {
   validate(_state, action) {

@@ -42,6 +42,7 @@ export {
   PERSONALITY_IDS,
   RIVALS,
   RIVAL_AI,
+  RIVAL_INTERACTIONS,
   RIVAL_RELEASES,
   type PersonalityProfile,
   type RivalPersonality,
