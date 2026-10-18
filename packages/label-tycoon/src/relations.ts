@@ -1,6 +1,6 @@
 import { type ActionHandler, clamp, reject } from '@tycoon/core';
 import type { Action } from '@tycoon/core';
-import { RELATIONS } from './balance';
+import { GENERATIONS, RELATIONS } from './balance';
 import type { LabelSignal } from './pipeline';
 import type { LabelState } from './state';
 
@@ -19,6 +19,10 @@ export interface Mentorat {
   protegeId: number;
   depuis: number;
 }
+
+/** Vrai pour un artiste retraité qui était chez le joueur : une légende du label. */
+export const estLegende = (a: { employeur: string; retraite?: { chezJoueur: boolean } }): boolean =>
+  a.employeur === 'retraite' && a.retraite?.chezJoueur === true;
 
 export const kindOf = (value: number): RelationKind =>
   value <= RELATIONS.rivalryBelow
@@ -84,7 +88,7 @@ function mentorshipsWeek(state: LabelState, tick: number, emit: (s: LabelSignal)
     const over =
       !mentor ||
       !protege ||
-      mentor.employeur !== 'joueur' ||
+      !(mentor.employeur === 'joueur' || estLegende(mentor)) ||
       protege.employeur !== 'joueur' ||
       tick - m.depuis >= RELATIONS.mentorWeeks ||
       protege.phase === 'pic';
@@ -92,9 +96,15 @@ function mentorshipsWeek(state: LabelState, tick: number, emit: (s: LabelSignal)
       emit({ kind: 'mentorat-termine', payload: { mentorId: m.mentorId, protegeId: m.protegeId } });
       continue;
     }
+    // Une légende du label transmet bien davantage qu'un mentor encore en activité.
+    const facteur = estLegende(mentor) ? GENERATIONS.legendMentorFactor : 1;
     for (const skill of SKILLS)
-      protege[skill] = Math.min(protege.potentiel, protege[skill] + RELATIONS.mentorSkillBonus);
-    mentor.loyaute = Math.min(100, mentor.loyaute + RELATIONS.mentorLoyaltyBonus);
+      protege[skill] = Math.min(
+        protege.potentiel,
+        protege[skill] + RELATIONS.mentorSkillBonus * facteur,
+      );
+    if (!estLegende(mentor))
+      mentor.loyaute = Math.min(100, mentor.loyaute + RELATIONS.mentorLoyaltyBonus);
     kept.push(m);
   }
   state.mentorats = kept;
@@ -111,9 +121,11 @@ export const mentor: ActionHandler<LabelState, MentorAction, LabelSignal> = {
     const m = state.artistes.find((a) => a.id === action.mentorId);
     const p = state.artistes.find((a) => a.id === action.protegeId);
     if (!m || !p) return reject('artiste-introuvable');
-    if (m.employeur !== 'joueur' || p.employeur !== 'joueur') return reject('artiste-non-signe');
+    if (p.employeur !== 'joueur' || !(m.employeur === 'joueur' || estLegende(m)))
+      return reject('artiste-non-signe');
     if (m.id === p.id || m.genre !== p.genre) return reject('mentorat-invalide');
-    if (m.phase !== 'pic' && m.phase !== 'plateau') return reject('mentorat-invalide');
+    if (!estLegende(m) && m.phase !== 'pic' && m.phase !== 'plateau')
+      return reject('mentorat-invalide');
     if (p.phase !== 'emergent' && p.phase !== 'montee') return reject('mentorat-invalide');
     if (state.mentorats.some((x) => x.protegeId === p.id)) return reject('deja-parraine');
     return state.mentorats.length >= RELATIONS.maxMentorships

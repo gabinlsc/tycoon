@@ -15,6 +15,7 @@ import { Succes } from './Succes';
 import { Groupe } from './Groupe';
 import { Conglomerat } from './Conglomerat';
 import { Institution } from './Institution';
+import { Generations } from './Generations';
 
 /** Écrans sans état de navigation propre : un composant par identifiant. */
 export const ECRANS_SIMPLES: Partial<Record<EcranId, ComponentType>> = {
@@ -33,4 +34,5 @@ export const ECRANS_SIMPLES: Partial<Record<EcranId, ComponentType>> = {
   groupe: Groupe,
   conglomerat: Conglomerat,
   institution: Institution,
+  generations: Generations,
 };

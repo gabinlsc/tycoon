@@ -83,6 +83,10 @@ export interface Artist {
   employeur: string;
   /** Semaines de repos forcé restantes (après un burnout) : pas de concert ni de tournée. */
   repos: number;
+  /** Retraite prise (employeur `retraite`) : semaine, et vrai s'il était chez le joueur (légende du label). */
+  retraite?: { semaine: number; chezJoueur: boolean };
+  /** Parent célèbre, pour un enfant d'artiste. */
+  parentId?: number;
 }
 
 /** Notoriété (0-100), échelle logarithmique de la fanbase : 0 sans fan, 100 à `NOTORIETY_MAX_FANS`. */

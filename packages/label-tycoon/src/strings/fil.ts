@@ -291,6 +291,28 @@ export const FIL_TEMPLATES: Readonly<Record<string, FilTemplate>> = {
       'Les initiés l’ont remarqué : {texte}',
     ],
   },
+  retraite: {
+    importance: 3,
+    titres: ['{nom} prend sa retraite', 'Fin de carrière pour {nom}', '{nom} range le micro'],
+    textes: [
+      'Le catalogue reste au label, la légende continue.',
+      'Une page se tourne, les fans sont émus.',
+      'Un parcours qui laissera une trace dans le label.',
+    ],
+  },
+  'enfant-d-artiste': {
+    importance: 2,
+    titres: [
+      'La relève de {parent} : {nom} débarque',
+      '{nom} marche dans les pas de {parent}',
+      'Un nom connu revient : {nom}',
+    ],
+    textes: [
+      'Le public attend de voir si le talent se transmet.',
+      'Un héritage lourd à porter, une curiosité immédiate.',
+      'On dit que le talent est de famille.',
+    ],
+  },
   'changement-ere': {
     importance: 3,
     titres: ['Une nouvelle ère commence', '{ere} : le marché a basculé', 'Les règles changent'],

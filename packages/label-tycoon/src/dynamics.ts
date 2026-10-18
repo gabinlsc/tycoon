@@ -5,6 +5,7 @@ import { rehearsalRecovery } from './buildings';
 import { contractsWeek } from './contract-end';
 import { observeProspects, payScouts, rivalsPoach } from './scouting';
 import type { Artist } from './artists';
+import { bilanDeGeneration, reputationDesLegendes } from './generations';
 import { DYNAMICS } from './balance';
 import type { LabelSignal } from './pipeline';
 import type { LabelState } from './state';
@@ -75,7 +76,10 @@ export const artistsPhase: Phase<LabelState, LabelSignal> = {
     contractsWeek(state, ctx.tick, ctx.rng('contrats'), ctx.emit);
     rivalsPoach(state, ctx.rng('rivaux'), ctx.emit);
     const yearEnd = calendarOf(ctx.tick).isYearEnd;
-    for (const artist of state.artistes) {
+    if (yearEnd)
+      state.label.reputation = Math.min(100, state.label.reputation + reputationDesLegendes(state));
+    for (const artist of [...state.artistes]) {
+      if (artist.employeur === 'retraite') continue;
       driftArtist(artist);
       if (artist.repos > 0) artist.repos -= 1;
       artist.fatigue = Math.max(0, artist.fatigue - rehearsalRecovery(state));
@@ -84,6 +88,10 @@ export const artistsPhase: Phase<LabelState, LabelSignal> = {
       if (yearEnd) {
         artist.age += 1;
         updatePhase(artist);
+        if (artist.employeur !== 'retraite') {
+          bilanDeGeneration(state, artist, ctx.tick, ctx.rng('carrieres'), ctx.emit);
+          if (artist.employeur === 'retraite') continue;
+        }
         const outcome = yearlyDeclineRoll(artist, ctx.rng('carrieres'));
         if (outcome) {
           ctx.emit({

@@ -382,6 +382,7 @@ export {
   type VueDefi,
   type VueConglomerat,
   type VueEre,
+  type VueGenerations,
   type VueGroupe,
   type VueInstitution,
   type VueLigneFinance,
@@ -504,3 +505,13 @@ export {
   programmeDEres,
   prochaineEre,
 } from './eres';
+
+export {
+  bilanDeGeneration,
+  legendes,
+  legendesDuGenre,
+  naissanceEnfant,
+  prendreRetraite,
+  reputationDesLegendes,
+  retraiteChance,
+} from './generations';
