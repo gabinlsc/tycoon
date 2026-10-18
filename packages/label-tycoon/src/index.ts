@@ -321,3 +321,4 @@ export {
 export { EVENT_TEXTS, type EventText, describeEvent, fillTemplate } from './strings';
 export { LABEL_EVENTS } from './content/events';
 export { mitigated } from './content/events/helpers';
+export { legalCost } from './content/events/helpers';

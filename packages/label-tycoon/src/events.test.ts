@@ -7,6 +7,7 @@ import {
   eventEngine,
   fillTemplate,
   labelGame,
+  legalCost,
   mitigated,
   newGame,
   scoutTalents,
@@ -42,6 +43,10 @@ describe('contenu des événements', () => {
 
   it('comptent au moins dix événements médias', () => {
     expect(LABEL_EVENTS.filter((e) => e.category === 'medias').length).toBeGreaterThanOrEqual(10);
+  });
+
+  it('comptent au moins dix événements business', () => {
+    expect(LABEL_EVENTS.filter((e) => e.category === 'business').length).toBeGreaterThanOrEqual(10);
   });
 
   it('remplit les variables des textes', () => {
@@ -169,5 +174,29 @@ describe('événements médias', () => {
     });
     expect(mitigated(plain, -10)).toBe(-5);
     expect(mitigated(plain, 10)).toBe(10);
+  });
+});
+
+describe('événements business', () => {
+  it('surviennent sur une longue partie ; un juriste réduit les coûts juridiques', () => {
+    const d = labelGame.advance(roster(2), 600).session.engine.data;
+    const business = new Set(
+      LABEL_EVENTS.filter((e) => e.category === 'business').map((e) => e.id),
+    );
+    expect(d.events.history.some((h) => business.has(h.eventId))).toBe(true);
+    const plain = newGame('jur').engine.data;
+    expect(legalCost(plain, 1000)).toBe(1000);
+    plain.personnel.push({
+      id: 1,
+      nom: 'J',
+      role: 'juriste',
+      niveau: 100,
+      specialite: null,
+      salaire: 0,
+      moral: 60,
+      trait: 'loyal',
+      experience: 0,
+    });
+    expect(legalCost(plain, 1000)).toBe(500);
   });
 });

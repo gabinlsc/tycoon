@@ -90,7 +90,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `feat/label-evenements-production` : événements production (≥ 10)
 - [x] `feat/label-evenements-marche` : événements marché (≥ 10)
 - [x] `feat/label-evenements-medias` : événements médias (≥ 10)
-- [ ] `feat/label-evenements-business` : événements business (≥ 10)
+- [x] `feat/label-evenements-business` : événements business (≥ 10)
 - [ ] `feat/label-ceremonies` : remise de prix annuelle, nominations, gagnants simulés (≥ 8 événements)
 - [ ] `feat/label-fil-actus` : générateur d'actus pour Le Fil du label
 - [ ] `feat/label-rapport-mensuel` : données du rapport mensuel (ce qui a marché, raté, pourquoi)
@@ -182,7 +182,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 2     | 6     | 6      |
 | 3     | 18    | 18     |
 | 4     | 16    | 16     |
-| 5     | 14    | 9      |
+| 5     | 14    | 10     |
 | 6     | 14    | 0      |
 | 7     | 13    | 0      |
 | 8     | 10    | 0      |
