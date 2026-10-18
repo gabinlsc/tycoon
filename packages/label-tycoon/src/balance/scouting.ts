@@ -66,7 +66,7 @@ export const SCOUTS = {
 /** Concurrence des rivaux sur les talents libres suivis (GDD, 5.3). */
 export const RIVAL_SCOUTING = {
   /** Probabilité hebdomadaire de base qu'un rival signe un talent libre suivi (à agressivité 1). */
-  weeklyBase: 0.004,
+  weeklyBase: 0.002,
   /** Multiplicateur à notoriété maximale : les talents connus partent plus vite. */
   notorietyBoost: 6,
 } as const;
