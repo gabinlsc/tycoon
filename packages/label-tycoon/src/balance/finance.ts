@@ -60,3 +60,11 @@ export const INVESTORS = {
     'Groupe Verdier',
   ] as readonly string[],
 } as const;
+
+/** Faillite (GDD, 5.11). */
+export const BANKRUPTCY = {
+  /** Semaines consécutives de trésorerie négative qui terminent la partie. */
+  weeks: 8,
+  /** Prix de vente d'un contrat à un rival : valeur de l'avance juste × années restantes × ce facteur. */
+  contractSaleFactor: 1.5,
+} as const;

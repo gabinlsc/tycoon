@@ -4,6 +4,7 @@ import type { Artist } from './artists';
 import type { FinanceState } from './finance';
 import type { Rival } from './auction';
 import type { Contrat } from './contracts';
+import type { Faillite } from './bankruptcy';
 import type { Investisseur, OffreInvestisseur } from './investors';
 import type { Credit, Pret } from './loans';
 import type { OffreSynchro } from './sync';
@@ -93,6 +94,8 @@ export interface LabelState {
   /** Offres d'investisseurs en attente et investisseurs entrés au capital. */
   offresInvest: OffreInvestisseur[];
   investisseurs: Investisseur[];
+  /** Compteur de faillite. */
+  faillite: Faillite;
   /** Négociations en cours ou rompues, une par artiste. */
   negociations: Negociation[];
   /** Prochain identifiant libre, partagé par toutes les entités (artistes, sorties, contrats…). */

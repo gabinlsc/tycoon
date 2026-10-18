@@ -210,6 +210,7 @@ export const fr = {
       `Ta banque n'ira pas au-delà de ${p.max} centimes d'encours.`,
     'pret-introuvable': () => "Ce prêt n'existe pas.",
     'trop-d-investisseurs': (p: { max: number }) => `Tu as déjà ${p.max} investisseurs actifs.`,
+    'rival-introuvable': () => "Ce label rival n'existe pas.",
     'suivi-introuvable': () => "Ce talent n'est pas dans ta liste de suivi.",
     'essai-deja-fait': () => 'Tu as déjà fait passer un essai à ce talent.',
   },
