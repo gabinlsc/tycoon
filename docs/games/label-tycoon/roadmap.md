@@ -126,7 +126,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `feat/label-ecran-fil` : Le Fil du label
 - [x] `feat/label-ecran-parametres` : paramètres et raccourcis
 - [x] `feat/label-ecran-rapport-mensuel` : rapport mensuel
-- [ ] `feat/label-ecran-succes` : succès et records (+)
+- [x] `feat/label-ecran-succes` : succès et records (+)
 - [ ] `feat/label-ui-responsive` : écrans en onglets et listes pour tablette et mobile
 
 ## Phase 8 : sauvegarde, modes de jeu
@@ -184,7 +184,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 4     | 16    | 16     |
 | 5     | 14    | 14     |
 | 6     | 14    | 14     |
-| 7     | 13    | 11     |
+| 7     | 13    | 12     |
 | 8     | 10    | 0      |
 | 9     | 5     | 0      |
 | 10    | 12    | 0      |

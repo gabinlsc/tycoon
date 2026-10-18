@@ -2,6 +2,7 @@ import { calendarOf } from '@tycoon/core';
 import { notoriety } from './artists';
 import { fr } from './strings/fr';
 import { describeEvent } from './strings';
+import { RECORD_TEXTES, SUCCES_TEXTES } from './strings/succes';
 import type { LabelState } from './state';
 import { labelScore, valuation } from './valuation';
 import { VISIBLE_ATTRIBUTES, knownRange } from './scouting';
@@ -19,13 +20,14 @@ import {
   UNLOCKS,
   VENUES,
   VENUE_IDS,
+  type AchievementFamily,
   type TaxStrategy,
 } from './balance';
 import { buyoutAsk } from './rival-interactions';
 import { analystLevel } from './forecast';
 import { genreKeys, trendMultiplier } from './market';
 import { announcedReleases } from './calendar';
-import { objectiveProgress } from './achievements';
+import { SUCCES, familyValue, objectiveProgress } from './achievements';
 import { festivalOffer } from './festivals';
 import { venueCost } from './tours';
 import { buildingLevel, teamCapacity } from './buildings';
@@ -389,6 +391,51 @@ export interface VueRapportMensuel {
   echecs: VueLigneRapport[];
 }
 
+/** Unité d'affichage de la valeur courante d'une famille de succès. */
+const UNITES_SUCCES: Record<
+  AchievementFamily,
+  'nombre' | 'argent' | 'rang' | 'semaines' | 'palier'
+> = {
+  signatures: 'nombre',
+  sorties: 'nombre',
+  concerts: 'nombre',
+  certifications: 'nombre',
+  prix: 'nombre',
+  nominations: 'nombre',
+  viral: 'nombre',
+  festivals: 'nombre',
+  debauchages: 'nombre',
+  evenements: 'nombre',
+  anciennete: 'semaines',
+  tresorerie: 'argent',
+  valorisation: 'argent',
+  palier: 'palier',
+  credibilite: 'nombre',
+  classement: 'rang',
+  equipe: 'nombre',
+  studio: 'nombre',
+  retours: 'nombre',
+  enchere: 'nombre',
+};
+
+export interface VueSucces {
+  id: string;
+  titre: string;
+  description: string;
+  unite: string;
+  seuil: number;
+  obtenu: boolean;
+  /** Valeur actuelle de la famille (pour la barre de progression). */
+  valeur: number;
+}
+
+export interface VueRecord {
+  clef: string;
+  nom: string;
+  valeur: number;
+  semaine: number;
+}
+
 export interface VueJeu {
   semaine: number;
   date: { annee: number; mois: number; semaineDuMois: number };
@@ -414,7 +461,13 @@ export interface VueJeu {
   }[];
   decisions: VueDecision[];
   fil: VueActu[];
-  objectifs: { id: number; kind: string; cible: number; base: number; progression: number }[];
+  objectifs: {
+    id: number;
+    kind: string;
+    cible: number;
+    base: number;
+    progression: number;
+  }[];
   /** Trésorerie de fin de semaine sur les dernières semaines (centimes), de la plus ancienne à la plus récente. */
   historiqueTresorerie: number[];
   /** Sorties à venir du joueur et sorties annoncées des rivaux, triées par semaine. */
@@ -425,6 +478,8 @@ export interface VueJeu {
   batiments: VueBatiment[];
   scene: VueScene;
   rapportsMensuels: VueRapportMensuel[];
+  tousSucces: VueSucces[];
+  records: VueRecord[];
   /** Marché des genres, prévisions des études de marché et facteur de revenu par écoute. */
   marche: {
     genres: VueGenre[];
@@ -1080,6 +1135,23 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
     batiments: batimentsDe(state),
     scene: sceneDe(state),
     rapportsMensuels: rapportsDe(state),
+    tousSucces: SUCCES.map((s) => ({
+      id: s.id,
+      titre: SUCCES_TEXTES[s.famille].titre(s.seuil),
+      description: SUCCES_TEXTES[s.famille].description(s.seuil),
+      unite: UNITES_SUCCES[s.famille],
+      seuil: s.seuil,
+      obtenu: state.succes.includes(s.id),
+      valeur: Number.isFinite(familyValue(state, s.famille, tick))
+        ? Math.round(familyValue(state, s.famille, tick))
+        : 0,
+    })),
+    records: state.records.map((r) => ({
+      clef: r.clef,
+      nom: (RECORD_TEXTES as Record<string, string>)[r.clef] ?? r.clef,
+      valeur: r.valeur,
+      semaine: r.semaine,
+    })),
     marche: marcheDe(state),
     classements: {
       singles: ligneClassement(state, 'singles', tick),
