@@ -120,7 +120,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `feat/label-ecran-marche` : marché et prévisions
 - [x] `feat/label-ecran-concurrence` : concurrence
 - [x] `feat/label-ecran-finances` : finances, prêts, investisseurs
-- [ ] `feat/label-ecran-personnel` : personnel
+- [x] `feat/label-ecran-personnel` : personnel
 - [ ] `feat/label-ecran-batiments` : bâtiments
 - [ ] `feat/label-ecran-tournees` : tournées et merch (+)
 - [ ] `feat/label-ecran-fil` : Le Fil du label
@@ -184,7 +184,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 4     | 16    | 16     |
 | 5     | 14    | 14     |
 | 6     | 14    | 14     |
-| 7     | 13    | 5      |
+| 7     | 13    | 6      |
 | 8     | 10    | 0      |
 | 9     | 5     | 0      |
 | 10    | 12    | 0      |

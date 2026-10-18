@@ -7,12 +7,13 @@ import { labelScore, valuation } from './valuation';
 import { VISIBLE_ATTRIBUTES, knownRange } from './scouting';
 import { bestCertification, certificationThreshold, equivalentSales } from './charts';
 import { type Clauses, fairAdvance } from './contracts';
-import { INTEL, LOANS, PERSONALITIES, TAX, UNLOCKS, type TaxStrategy } from './balance';
+import { INTEL, LOANS, PERSONALITIES, STAFF, TAX, UNLOCKS, type TaxStrategy } from './balance';
 import { buyoutAsk } from './rival-interactions';
 import { analystLevel } from './forecast';
 import { genreKeys, trendMultiplier } from './market';
 import { announcedReleases } from './calendar';
 import { objectiveProgress } from './achievements';
+import { teamCapacity } from './buildings';
 import { loanCap, loanRate, outstanding } from './loans';
 import { tierAtLeast } from './tiers';
 
@@ -232,6 +233,47 @@ export interface VueFinancesDetail {
   };
 }
 
+export interface VuePersonnel {
+  equipe: {
+    id: number;
+    nom: string;
+    role: string;
+    niveau: number;
+    specialite: string | null;
+    salaire: number;
+    moral: number;
+    trait: string;
+    experience: number;
+  }[];
+  candidats: {
+    id: number;
+    nom: string;
+    role: string;
+    niveau: number;
+    specialite: string | null;
+    salaire: number;
+    trait: string;
+  }[];
+  capacite: number;
+  masseSalariale: number;
+  experiencePourNiveau: number;
+  delegation: {
+    actif: boolean;
+    budgetMax: number;
+    seuilAlerte: number;
+    genres: string[];
+    denicheurs: number;
+    rapports: {
+      semaine: number;
+      decision: string | null;
+      cout: number;
+      retenus: number;
+      ecartes: number;
+    }[];
+  };
+  genres: { id: string; nom: string }[];
+}
+
 export interface VueJeu {
   semaine: number;
   date: { annee: number; mois: number; semaineDuMois: number };
@@ -264,6 +306,7 @@ export interface VueJeu {
   calendrier: VueSortieCalendrier[];
   concurrence: VueConcurrence;
   financesDetail: VueFinancesDetail;
+  personnel: VuePersonnel;
   /** Marché des genres, prévisions des études de marché et facteur de revenu par écoute. */
   marche: {
     genres: VueGenre[];
@@ -599,6 +642,55 @@ function financesDe(state: LabelState): VueFinancesDetail {
   };
 }
 
+function personnelDe(state: LabelState): VuePersonnel {
+  const roles = fr.rolesPersonnel as Record<string, string>;
+  const traits = fr.traitsPersonnel as Record<string, string>;
+  const cadre = state.delegation.reperage;
+  return {
+    equipe: state.personnel.map((m) => ({
+      id: m.id,
+      nom: m.nom,
+      role: roles[m.role] ?? m.role,
+      niveau: m.niveau,
+      specialite: m.specialite ? nomGenre(state, m.specialite) : null,
+      salaire: m.salaire,
+      moral: Math.round(m.moral),
+      trait: traits[m.trait] ?? m.trait,
+      experience: Math.round(m.experience),
+    })),
+    candidats: state.candidats.map((c) => ({
+      id: c.id,
+      nom: c.nom,
+      role: roles[c.role] ?? c.role,
+      niveau: c.niveau,
+      specialite: c.specialite ? nomGenre(state, c.specialite) : null,
+      salaire: c.salaire,
+      trait: traits[c.trait] ?? c.trait,
+    })),
+    capacite: teamCapacity(state),
+    masseSalariale: state.personnel.reduce((somme, m) => somme + m.salaire, 0),
+    experiencePourNiveau: STAFF.expPerLevel,
+    delegation: {
+      actif: cadre?.actif ?? false,
+      budgetMax: cadre?.budgetMax ?? 0,
+      seuilAlerte: cadre?.seuilAlerte ?? 0,
+      genres: [...(cadre?.genres ?? [])],
+      denicheurs: state.denicheurs.length,
+      rapports: state.rapports
+        .slice(-10)
+        .reverse()
+        .map((r) => ({
+          semaine: r.semaine,
+          decision: r.decision,
+          cout: r.cout,
+          retenus: r.retenus,
+          ecartes: r.ecartes,
+        })),
+    },
+    genres: genreKeys(state.marche).map((id) => ({ id, nom: nomGenre(state, id) })),
+  };
+}
+
 function lastReport(state: LabelState): VueJeu['rapport'] {
   const r = state.rapportsMensuels[state.rapportsMensuels.length - 1];
   return r
@@ -744,6 +836,7 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
     calendrier: calendrier(state, tick),
     concurrence: concurrenceDe(state),
     financesDetail: financesDe(state),
+    personnel: personnelDe(state),
     marche: marcheDe(state),
     classements: {
       singles: ligneClassement(state, 'singles', tick),
