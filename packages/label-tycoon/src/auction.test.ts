@@ -25,20 +25,15 @@ const setup = (seed = 'ench') => {
 describe('rivaux de départ', () => {
   it('sont générés avec la partie, de façon déterministe', () => {
     const a = newGame('r1').engine.data.rivaux;
-    expect(a).toHaveLength(RIVALS.count);
+    expect(a.length).toBeGreaterThanOrEqual(RIVALS.count.min);
+    expect(a.length).toBeLessThanOrEqual(RIVALS.count.max);
     expect(newGame('r1').engine.data.rivaux).toEqual(a);
   });
   it('un rival sans budget ne surenchérit pas', () => {
     const { session, artist } = setup();
-    const rival = {
-      ...(session.engine.data.rivaux[0] as never as {
-        id: number;
-        nom: string;
-        style: 'prudent';
-        tresorerie: number;
-      }),
-      tresorerie: 10,
-    };
+    const first = session.engine.data.rivaux[0];
+    if (!first) throw new Error('rival attendu');
+    const rival = { ...first, tresorerie: 10 };
     expect(rivalBid(rival, artist, clauses())).toBeNull();
   });
 });

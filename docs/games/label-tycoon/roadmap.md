@@ -81,7 +81,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 
 ## Phase 5 : rivaux, événements, fil d'actus, premières simulations
 
-- [ ] `feat/label-rivaux-generation` : 3 à 5 rivaux, personnalités, mêmes règles que le joueur
+- [x] `feat/label-rivaux-generation` : 3 à 5 rivaux, personnalités, mêmes règles que le joueur
 - [ ] `feat/label-rivaux-decisions` : décisions par utilitaire, signatures, sorties, enchères
 - [ ] `feat/label-rivaux-interactions` : débauchage, clashs, offres de rachat, évolution des rivaux
 - [ ] `feat/label-bots` : bots de stratégie (prudent, agressif, spécialiste, aléatoire)
@@ -182,7 +182,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 2     | 6     | 6      |
 | 3     | 18    | 18     |
 | 4     | 16    | 16     |
-| 5     | 14    | 0      |
+| 5     | 14    | 1      |
 | 6     | 14    | 0      |
 | 7     | 13    | 0      |
 | 8     | 10    | 0      |

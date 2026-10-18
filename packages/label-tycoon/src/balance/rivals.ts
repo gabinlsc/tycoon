@@ -4,7 +4,7 @@ import { type Cents, money } from '@tycoon/core';
 export type RivalStyle = 'predateur' | 'prudent' | 'flambeur';
 
 export const RIVALS = {
-  count: 3,
+  count: { min: 3, max: 5 },
   startCash: money.euros(60_000) as Cents,
   /** Probabilité qu'un rival participe à une enchère, par style (× agressivité). */
   interest: { predateur: 0.7, prudent: 0.4, flambeur: 0.55 } as Readonly<
@@ -20,6 +20,8 @@ export const RIVALS = {
   >,
   /** Part de sa trésorerie qu'un rival accepte de risquer sur une avance. */
   maxCashShare: 0.3,
+  /** Semaines de trésorerie négative après lesquelles un rival disparaît. */
+  collapseWeeks: 12,
   styles: ['predateur', 'prudent', 'flambeur'] as readonly RivalStyle[],
 } as const;
 
@@ -40,3 +42,51 @@ export const RIVAL_RELEASES = {
   /** Semaines pendant lesquelles on garde les sorties passées. */
   keepWeeks: 8,
 } as const;
+
+/** Personnalités des rivaux (GDD, 5.12). Chaque rival décide par utilitaire pondéré par ces traits. */
+export type RivalPersonality = 'major' | 'pointu' | 'copieur' | 'predateur' | 'declin';
+
+export interface PersonalityProfile {
+  nom: string;
+  /** Style d'enchère associé. */
+  style: RivalStyle;
+  /** Multiple de la trésorerie de départ. */
+  cash: number;
+  /** Poids des critères d'utilité : valeur sûre, talent précoce, tendance du moment, débauchage. */
+  poids: { surete: number; precoce: number; tendance: number; debauchage: number };
+}
+
+export const PERSONALITIES: Readonly<Record<RivalPersonality, PersonalityProfile>> = {
+  major: {
+    nom: 'La major conservatrice',
+    style: 'prudent',
+    cash: 4,
+    poids: { surete: 1, precoce: 0.1, tendance: 0.3, debauchage: 0.3 },
+  },
+  pointu: {
+    nom: "L'indé pointu",
+    style: 'prudent',
+    cash: 0.8,
+    poids: { surete: 0.2, precoce: 1, tendance: 0.2, debauchage: 0.1 },
+  },
+  copieur: {
+    nom: 'Le copieur',
+    style: 'flambeur',
+    cash: 1.2,
+    poids: { surete: 0.4, precoce: 0.2, tendance: 1, debauchage: 0.3 },
+  },
+  predateur: {
+    nom: 'Le prédateur',
+    style: 'predateur',
+    cash: 1.5,
+    poids: { surete: 0.5, precoce: 0.2, tendance: 0.4, debauchage: 1 },
+  },
+  declin: {
+    nom: 'Le label en déclin',
+    style: 'prudent',
+    cash: 0.6,
+    poids: { surete: 0.8, precoce: 0, tendance: 0, debauchage: 0 },
+  },
+};
+
+export const PERSONALITY_IDS = ['major', 'pointu', 'copieur', 'predateur', 'declin'] as const;

@@ -1,6 +1,13 @@
-import { type ActionHandler, cents, reject } from '@tycoon/core';
+import { type ActionHandler, type Rng, cents, reject } from '@tycoon/core';
 import type { Action } from '@tycoon/core';
-import { CONTRACTS, RIVALS, type RivalStyle } from './balance';
+import {
+  CONTRACTS,
+  PERSONALITIES,
+  PERSONALITY_IDS,
+  RIVALS,
+  type RivalPersonality,
+  type RivalStyle,
+} from './balance';
 import { type Clauses, clausesValid, concludeSigning, fairAdvance, utilityOf } from './contracts';
 import { canAfford } from './finance';
 import type { LabelSignal } from './pipeline';
@@ -9,8 +16,14 @@ import type { LabelState } from './state';
 export interface Rival {
   id: number;
   nom: string;
+  personnalite: RivalPersonality;
   style: RivalStyle;
   tresorerie: number;
+  /** Genre de prédilection (id de genre). */
+  genreFetiche: string;
+  reputation: number;
+  /** Semaines consécutives de trésorerie négative (le rival disparaît au bout de `RIVALS.collapseWeeks`). */
+  semainesNegatives: number;
 }
 
 /** Offre d'un rival pour un artiste, selon son style et son budget. */
@@ -87,13 +100,46 @@ export const auction: ActionHandler<LabelState, AuctionAction, LabelSignal> = {
   },
 };
 
-/** Rivaux de départ, tirés avec le flux dédié. */
-export function generateRivals(rng: { pick<T>(list: readonly T[]): T }): Rival[] {
-  const names = ['Atlas Records', 'Maison Vertigo', 'Nova Sound', 'Bleu Cobalt', 'Panthéon Music'];
-  return Array.from({ length: RIVALS.count }, (_, i) => ({
-    id: i + 1,
-    nom: names[i] ?? `Rival ${i + 1}`,
-    style: rng.pick(RIVALS.styles),
-    tresorerie: RIVALS.startCash,
-  }));
+const RIVAL_NAMES = [
+  'Atlas Records',
+  'Maison Vertigo',
+  'Nova Sound',
+  'Bleu Cobalt',
+  'Panthéon Music',
+  'Écho Bureau',
+  'Studio Mirage',
+  'Fréquence Nord',
+] as const;
+
+/** Un rival, tiré avec le flux dédié : personnalité, genre fétiche et trésorerie liés. */
+export function generateRival(
+  rng: Rng,
+  id: number,
+  genres: readonly string[],
+  cashBonus: number,
+  taken: ReadonlySet<string> = new Set(),
+): Rival {
+  const personnalite = rng.pick(PERSONALITY_IDS);
+  const profile = PERSONALITIES[personnalite];
+  const available = RIVAL_NAMES.filter((n) => !taken.has(n));
+  return {
+    id,
+    nom: rng.pick(available.length > 0 ? available : RIVAL_NAMES),
+    personnalite,
+    style: profile.style,
+    tresorerie: Math.round(RIVALS.startCash * profile.cash * (1 + cashBonus)),
+    genreFetiche: rng.pick(genres),
+    reputation: personnalite === 'major' ? 55 : personnalite === 'declin' ? 35 : 20,
+    semainesNegatives: 0,
+  };
+}
+
+/** Rivaux de départ (3 à 5), tirés avec le flux dédié. */
+export function generateRivals(rng: Rng, genres: readonly string[], cashBonus = 0): Rival[] {
+  const count = rng.int(RIVALS.count.min, RIVALS.count.max);
+  const rivals: Rival[] = [];
+  for (let i = 0; i < count; i += 1) {
+    rivals.push(generateRival(rng, i + 1, genres, cashBonus, new Set(rivals.map((r) => r.nom))));
+  }
+  return rivals;
 }

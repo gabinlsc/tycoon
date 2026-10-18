@@ -13,6 +13,7 @@ import type { DifficultyPreset, DifficultySettings, GameConfig, GameMode } from 
 import { type LabelSignal, buildPipeline } from './pipeline';
 import { artistsPhase } from './dynamics';
 import { initialFinance } from './finance';
+import { GENRE_IDS } from './content/genres';
 import { initialCredibility, initialMarket, marketPhase } from './market';
 import { breakContract, releaseArtist, renegotiate } from './contract-end';
 import { chartsPhase, emptyCharts } from './charts';
@@ -169,7 +170,11 @@ export function initialState(seed: Seed, config: GameConfig): LabelState {
     suivis: [],
     denicheurs: [],
     contrats: [],
-    rivaux: generateRivals(Rng.fromSeed(`${seed}:rivaux`)),
+    rivaux: generateRivals(
+      Rng.fromSeed(`${seed}:rivaux`),
+      GENRE_IDS,
+      config.difficulty.rivalCashBonus,
+    ),
     negociations: [],
     projets: [],
     sortiesRivales: [],
