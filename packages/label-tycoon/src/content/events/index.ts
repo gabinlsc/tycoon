@@ -4,6 +4,7 @@ import { BUSINESS_EVENTS } from './business';
 import { MEDIA_EVENTS } from './medias';
 import { MARKET_EVENTS } from './marche';
 import { PRODUCTION_EVENTS } from './production';
+import { SEASON_EVENTS } from './saisons';
 import type { LabelEvent } from './helpers';
 
 /** Tous les événements du jeu, par catégorie. */
@@ -14,6 +15,7 @@ export const LABEL_EVENTS: readonly LabelEvent[] = [
   ...MEDIA_EVENTS,
   ...BUSINESS_EVENTS,
   ...CEREMONY_EVENTS,
+  ...SEASON_EVENTS,
 ];
 
 export type { LabelEvent };
