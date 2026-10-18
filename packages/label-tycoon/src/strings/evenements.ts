@@ -1,3 +1,5 @@
+import { TEXTES_SAISONNIERS } from '../content/events/saisons/specs';
+
 /**
  * Textes des événements, par identifiant. Les variables entre accolades (`{nom}`, `{montant}`) sont
  * remplacées par celles de l'événement. Les choix sont identifiés par leur id.
@@ -304,6 +306,7 @@ export const EVENT_TEXTS: Readonly<Record<string, EventText>> = {
     titre: 'Collaboration spontanée',
     texte: '{nom} et {autre} improvisent un titre ensemble. Les fans adorent.',
   },
+  ...TEXTES_SAISONNIERS,
 };
 
 /** Remplace les `{variable}` d'un texte. */

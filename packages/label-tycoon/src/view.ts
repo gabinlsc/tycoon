@@ -49,6 +49,7 @@ import { DEFI_SEMAINES, defiTermine, resultatDefi, texteResultat } from './defi'
 import { ereCourante, prochaineEre } from './eres';
 import { legendes } from './generations';
 import { estEmergente } from './scenes';
+import { SAISONS, saisonsActives } from './saisons';
 import {
   active as regulationActive,
   chanceDeResister,
@@ -671,6 +672,8 @@ export interface VueJeu {
   international: VueInternational;
   scenesVilles: VueSceneVille[];
   regulation: VueRegulation;
+  /** Saisons de contenu en cours. */
+  saisons: { id: string; nom: string; description: string }[];
   heritage: VueHeritage;
   scenario: VueScenario | null;
   defi: VueDefi | null;
@@ -1738,6 +1741,11 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
     international: internationalDe(state, tick),
     scenesVilles: scenesDe(state),
     regulation: regulationDe(state, tick),
+    saisons: saisonsActives(state, tick).map((id) => ({
+      id,
+      nom: SAISONS[id].nom,
+      description: SAISONS[id].description,
+    })),
     heritage: { closable: regneClosable(state, tick), bilan: bilanDeRegne(state, tick) },
     partie: {
       mode: state.config.mode,

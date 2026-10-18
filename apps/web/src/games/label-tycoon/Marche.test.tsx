@@ -61,6 +61,8 @@ describe('écran Marché', () => {
     fireEvent.click(await screen.findByRole('button', { name: /Marché/ }));
     await screen.findByRole('heading', { name: 'Marché' });
     expect(screen.getByRole('heading', { name: 'Ère du streaming' })).toBeTruthy();
+    // Une partie démarre hors saison : rien n’est annoncé.
+    expect(screen.queryByRole('heading', { name: 'Saisons en cours' })).toBeNull();
     expect(document.querySelectorAll('.label-table tbody tr').length).toBeGreaterThanOrEqual(10);
     expect(screen.getByText('Aucune étude pour l’instant.')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: /Commander une étude/ }));

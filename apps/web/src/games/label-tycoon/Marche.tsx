@@ -61,6 +61,18 @@ export function Marche() {
           </p>
         ) : null}
       </section>
+      {vue.saisons.length > 0 ? (
+        <section aria-labelledby="saisons-titre" className="label-card">
+          <h3 id="saisons-titre">Saisons en cours</h3>
+          <ul className="label-list">
+            {vue.saisons.map((s) => (
+              <li key={s.id}>
+                <strong>{s.nom}</strong> — {s.description}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
       <GraphBarres
         titre="Popularité des genres (0 à 100)"
         etiquettes={tries.map((g) => g.nom.slice(0, 8))}
