@@ -154,3 +154,12 @@ export {
   productionPhase,
   projectCost,
 } from './production';
+export {
+  cumulativeStreams,
+  decayRate,
+  firstWeekStreams,
+  hitPotential,
+  marketingFactor,
+  weeklyStreams,
+} from './formulas/streams';
+export { streamsPhase } from './production';

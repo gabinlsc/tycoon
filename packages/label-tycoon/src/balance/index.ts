@@ -47,3 +47,4 @@ export {
   type ReleaseProfile,
   type ReleaseType,
 } from './production';
+export { STREAMS } from './streams';

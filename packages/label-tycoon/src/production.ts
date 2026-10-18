@@ -1,7 +1,18 @@
 import { type ActionHandler, type Phase, cents, clamp, reject } from '@tycoon/core';
 import type { Action } from '@tycoon/core';
-import { CLIPS, PRODUCTION, RELEASE_TYPES, type ClipSize, type ReleaseType } from './balance';
-import { canAfford, spend } from './finance';
+import {
+  CLIPS,
+  PRODUCTION,
+  STREAMS,
+  RELEASE_TYPES,
+  type ClipSize,
+  type ReleaseType,
+} from './balance';
+import { labelShare } from './contracts';
+import { canAfford, earn, spend } from './finance';
+import { weeklyStreams } from './formulas/streams';
+import { firstWeekStreams, hitPotential, marketingFactor } from './formulas/streams';
+import { trendMultiplier } from './market';
 import { trackQuality } from './formulas/quality';
 import type { LabelSignal } from './pipeline';
 import type { LabelState } from './state';
@@ -27,6 +38,10 @@ export interface Projet {
   /** Qualité réelle, connue seulement une fois le projet prêt. */
   qualite: number | null;
   sortieLe: number | null;
+  /** Streams de la première semaine, fixés à la sortie. */
+  s1: number;
+  /** Cumul des streams depuis la sortie. */
+  streams: number;
 }
 
 /** Coût total d'un projet. */
@@ -101,6 +116,8 @@ export const launchProject: ActionHandler<LabelState, LaunchAction, LabelSignal>
       statut: 'production',
       qualite: null,
       sortieLe: null,
+      s1: 0,
+      streams: 0,
     });
     state.nextId += 1;
     if (retard > 0)
@@ -117,8 +134,20 @@ export const releaseProject: ActionHandler<LabelState, ReleaseAction, LabelSigna
   apply(state, action, ctx) {
     const p = state.projets.find((x) => x.id === action.projetId);
     if (!p) return;
+    const artist = state.artistes.find((a) => a.id === p.artisteId);
+    const market = artist ? state.marche.genres[artist.genre] : undefined;
     p.statut = 'sortie';
     p.sortieLe = ctx.tick;
+    if (artist) {
+      const hit = hitPotential(
+        p.qualite ?? 0,
+        trendMultiplier(market?.popularite ?? 50),
+        artist.hype,
+        marketingFactor(0),
+      ).value;
+      p.s1 = Math.round(firstWeekStreams(artist.fanbase, market?.audience ?? 0, hit));
+      artist.hype = Math.min(100, artist.hype + 10 + (p.clip === 'gros' ? 10 : 0));
+    }
     ctx.emit({ kind: 'sortie', payload: { projetId: p.id, artisteId: p.artisteId } });
   },
 };
@@ -151,6 +180,22 @@ export const productionPhase: Phase<LabelState, LabelSignal> = {
         payload: { projetId: projet.id, artisteId: projet.artisteId },
         interrupt: true,
       });
+    }
+  },
+};
+
+/** Phase « streams » : chaque sortie rapporte ses écoutes de la semaine, partagées selon le contrat. */
+export const streamsPhase: Phase<LabelState, LabelSignal> = {
+  name: 'streams',
+  run(state, ctx) {
+    for (const p of state.projets) {
+      if (p.statut !== 'sortie' || p.sortieLe === null) continue;
+      const streams = Math.round(weeklyStreams(p.s1, p.qualite ?? 0, ctx.tick - p.sortieLe));
+      p.streams += streams;
+      const gross = cents(Math.round(streams * STREAMS.centsPerStream));
+      if (gross <= 0) continue;
+      const contract = state.contrats.find((c) => c.artisteId === p.artisteId);
+      earn(state, 'streaming', contract ? labelShare(contract.clauses, gross) : gross);
     }
   },
 };
