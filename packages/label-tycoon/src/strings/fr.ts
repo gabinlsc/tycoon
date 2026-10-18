@@ -99,6 +99,32 @@ export const fr = {
     latine: 'Amérique latine',
   } satisfies Record<Origin, string>,
 
+  evenementsRapport: {
+    certification: 'Certification obtenue',
+    'prix-remporte': 'Prix remporté',
+    'entree-classement': 'Entrée au classement',
+    viral: 'Emballement viral',
+    'retour-en-grace': 'Retour en grâce',
+    'artiste-signe': 'Artiste signé',
+    burnout: 'Burnout',
+    debauchage: 'Artiste débauché',
+    'alerte-faillite': 'Alerte de faillite',
+    proces: 'Procès',
+    'pret-impaye': 'Prêt impayé',
+    'objectif-investisseur-manque': 'Objectif d’investisseur manqué',
+    'controle-fiscal': 'Contrôle fiscal',
+  } as Record<string, string>,
+
+  causesRapport: {
+    qualite: 'qualité de la sortie',
+    tendance: 'tendance du genre',
+    hype: 'hype',
+    fatigue: 'fatigue accumulée',
+    tournee: 'enchaînement de tournées',
+    loyaute: 'loyauté trop basse',
+    contrat: 'contrat peu attractif',
+  } as Record<string, string>,
+
   salles: {
     bar: 'Bar',
     club: 'Club',
