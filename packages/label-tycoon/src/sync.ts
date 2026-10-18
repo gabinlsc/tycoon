@@ -1,6 +1,7 @@
 import { type ActionHandler, type Rng, cents, clamp, reject } from '@tycoon/core';
 import type { Action } from '@tycoon/core';
 import { SYNC, type SyncKind } from './balance';
+import { synchroCachet, synchroChance } from './conglomerat';
 import { liveShare } from './contracts';
 import { earn } from './finance';
 import type { LabelSignal } from './pipeline';
@@ -28,14 +29,19 @@ export function syncOffersWeek(
   for (const p of state.projets) {
     if (p.statut !== 'sortie' || (p.qualite ?? 0) < SYNC.minQuality) continue;
     if (state.offresSynchro.length >= SYNC.maxPending) break;
-    if (!rng.chance(SYNC.weeklyChance * ((p.qualite ?? 0) / 100) * 2)) continue;
+    if (
+      !rng.chance(
+        Math.min(1, SYNC.weeklyChance * ((p.qualite ?? 0) / 100) * 2 * synchroChance(state)),
+      )
+    )
+      continue;
     const type = rng.pick(KINDS);
     state.offresSynchro.push({
       id: state.nextId,
       projetId: p.id,
       type,
       marque: rng.pick(SYNC.brands),
-      cachet: Math.round(SYNC.kinds[type].cachet * rng.range(0.7, 1.4)),
+      cachet: Math.round(SYNC.kinds[type].cachet * rng.range(0.7, 1.4) * synchroCachet(state)),
       expire: tick + SYNC.validWeeks,
     });
     state.nextId += 1;

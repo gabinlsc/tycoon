@@ -95,3 +95,4 @@ export {
   type VenueId,
 } from './concerts';
 export { CADRE_STYLES, GROUPE, type CadreStyle } from './groupe';
+export { FESTIVALS_MAISON, PLATEFORME, STUDIOS_SYNCHRO } from './conglomerat';

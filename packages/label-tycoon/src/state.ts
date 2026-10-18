@@ -18,6 +18,7 @@ import type { OffreSynchro } from './sync';
 import type { Festival } from './festivals';
 import type { Tournee } from './tours';
 import type { Concert } from './concerts';
+import type { Plateforme } from './conglomerat';
 import type { Dirigeant, SousLabel } from './groupe';
 import type { ScenarioState } from './scenarios/types';
 import type { Commande } from './pressing';
@@ -127,6 +128,10 @@ export interface LabelState {
   records: { clef: string; valeur: number; semaine: number }[];
   /** Négociations en cours ou rompues, une par artiste. */
   negociations: Negociation[];
+  /** Palier Conglomérat : plateforme maison, niveau des studios de synchro et festivals possédés. */
+  plateforme: Plateforme | null;
+  studiosSynchro: number;
+  festivalsPossedes: number;
   /** Palier Groupe : sous-labels et cadres (embauchés ou candidats). */
   sousLabels: SousLabel[];
   cadres: Dirigeant[];
