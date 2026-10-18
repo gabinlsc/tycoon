@@ -32,6 +32,7 @@ import {
   type AchievementFamily,
   type TaxStrategy,
   GENERATIONS,
+  SCENES,
   INTERNATIONAL,
   PAYS,
   PAYS_IDS,
@@ -46,6 +47,7 @@ import { venueCost } from './tours';
 import { DEFI_SEMAINES, defiTermine, resultatDefi, texteResultat } from './defi';
 import { ereCourante, prochaineEre } from './eres';
 import { legendes } from './generations';
+import { estEmergente } from './scenes';
 import {
   type LigneClassement,
   affinite,
@@ -659,6 +661,7 @@ export interface VueJeu {
   ere: VueEre;
   generations: VueGenerations;
   international: VueInternational;
+  scenesVilles: VueSceneVille[];
   heritage: VueHeritage;
   scenario: VueScenario | null;
   defi: VueDefi | null;
@@ -1176,6 +1179,36 @@ function rapportsDe(state: LabelState): VueRapportMensuel[] {
     }));
 }
 
+/** Scène musicale d'une ville. */
+export interface VueSceneVille {
+  ville: string;
+  genre: string;
+  genreNom: string;
+  secondaireNom: string;
+  chaleur: number;
+  emergente: boolean;
+  /** Artistes originaires de la ville que le label accompagne. */
+  artistes: number;
+  /** Coût d'une session de repérage sur place. */
+  cout: number;
+}
+
+function scenesDe(state: LabelState): VueSceneVille[] {
+  return state.scenes
+    .map((s) => ({
+      ville: s.ville,
+      genre: s.genre,
+      genreNom: nomGenre(state, s.genre),
+      secondaireNom: nomGenre(state, s.secondaire),
+      chaleur: Math.round(s.chaleur),
+      emergente: estEmergente(s),
+      artistes: state.artistes.filter((a) => a.ville === s.ville && a.employeur === 'joueur')
+        .length,
+      cout: SCENES.scoutCost,
+    }))
+    .sort((a, b) => b.chaleur - a.chaleur || a.ville.localeCompare(b.ville, 'fr'));
+}
+
 /** Un pays où le label peut s'implanter : goûts, présence et classement local. */
 export interface VuePays {
   id: string;
@@ -1631,6 +1664,7 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
     ere: ereDe(state, tick),
     generations: generationsDe(state),
     international: internationalDe(state, tick),
+    scenesVilles: scenesDe(state),
     heritage: { closable: regneClosable(state, tick), bilan: bilanDeRegne(state, tick) },
     partie: {
       mode: state.config.mode,

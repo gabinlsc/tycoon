@@ -82,6 +82,7 @@ import { launchProject, productionPhase, releaseProject, streamsPhase } from './
 import { propose } from './negotiation';
 import { dropProspect, fireScout, hireScout, scout, studioTrial } from './scouting';
 import { initialInternational, internationalPhase, openMarket, setCampaign } from './international';
+import { initialScenes, scenesPhase, scoutScene } from './scenes';
 import { appliquerHeritage, validerHeritage } from './heritage';
 import { generateWorld } from './world';
 import type { LabelState } from './state';
@@ -101,6 +102,7 @@ export const LABEL_STREAMS = [
   'tournees',
   'carrieres',
   'objectifs',
+  'scenes',
 ] as const;
 
 export type LabelSession = Session<LabelState, LabelAction>;
@@ -129,6 +131,7 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
       run(state, ctx) {
         erasPhase.run(state, ctx);
         marketPhase.run(state, ctx);
+        scenesPhase.run(state, ctx);
       },
     },
     rivaux: rivalsPhase,
@@ -205,6 +208,7 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
     'acheter-studio-synchro': buySyncStudio,
     'acheter-festival': buyFestival,
     'ouvrir-marche': openMarket,
+    'reperer-scene': scoutScene,
     'regler-campagne': setCampaign,
     'regler-fondation': setDonation,
     'ameliorer-academie': upgradeAcademy,
@@ -326,6 +330,7 @@ export function initialState(seed: Seed, config: GameConfig): LabelState {
     eres: initialEras(seed),
     institution: initialInstitution(),
     international: initialInternational(),
+    scenes: initialScenes(seed, generateWorld(seed).villes),
     plateforme: null,
     studiosSynchro: 0,
     festivalsPossedes: 0,
@@ -349,6 +354,7 @@ export function completerEtat(state: LabelState): void {
   state.festivalsPossedes ??= 0;
   state.institution ??= initialInstitution();
   state.international ??= initialInternational();
+  state.scenes ??= initialScenes('scenes-heritees', state.villes);
   state.eres ??= initialEras('ere-heritee');
 }
 

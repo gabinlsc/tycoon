@@ -18,6 +18,7 @@ import { Institution } from './Institution';
 import { Generations } from './Generations';
 import { Heritage } from './Heritage';
 import { International } from './International';
+import { Scenes } from './Scenes';
 
 /** Écrans sans état de navigation propre : un composant par identifiant. */
 export const ECRANS_SIMPLES: Partial<Record<EcranId, ComponentType>> = {
@@ -39,4 +40,5 @@ export const ECRANS_SIMPLES: Partial<Record<EcranId, ComponentType>> = {
   generations: Generations,
   heritage: Heritage,
   international: International,
+  scenes: Scenes,
 };

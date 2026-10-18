@@ -41,6 +41,7 @@ import type {
   CreatePlatformAction,
   SetPlatformAction,
 } from './conglomerat';
+import type { ScoutSceneAction } from './scenes';
 import type { OpenMarketAction, SetCampaignAction } from './international';
 import type {
   AppointExecutiveAction,
@@ -106,7 +107,8 @@ export type LabelAction =
   | UpgradeMuseumAction
   | InfluenceAction
   | OpenMarketAction
-  | SetCampaignAction;
+  | SetCampaignAction
+  | ScoutSceneAction;
 
 export const renameLabel: ActionHandler<LabelState, RenameLabelAction, LabelSignal> = {
   validate(_state, action) {

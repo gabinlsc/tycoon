@@ -24,6 +24,7 @@ export const ECRANS = [
   { id: 'groupe', titre: 'Groupe', description: 'Sous-labels, cadres et rachats' },
   { id: 'conglomerat', titre: 'Conglomérat', description: 'Plateforme, synchro et festivals' },
   { id: 'institution', titre: 'Institution', description: 'Fondation, académie et musée' },
+  { id: 'scenes', titre: 'Scènes', description: 'Scènes locales et repérage par ville' },
   {
     id: 'international',
     titre: 'International',
