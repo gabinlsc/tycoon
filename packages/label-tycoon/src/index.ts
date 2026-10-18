@@ -322,3 +322,13 @@ export { EVENT_TEXTS, type EventText, describeEvent, fillTemplate } from './stri
 export { LABEL_EVENTS } from './content/events';
 export { mitigated } from './content/events/helpers';
 export { legalCost } from './content/events/helpers';
+export {
+  CEREMONY_CATEGORIES,
+  type Candidat,
+  type CategorieCeremonie,
+  type Ceremonie,
+  type CeremonyCategory,
+  buildNominations,
+  ceremonyWeek,
+  drawWinner,
+} from './ceremonies';

@@ -23,3 +23,28 @@ export const CERTIFICATIONS = {
   /** Réputation gagnée à chaque niveau obtenu. */
   reputationGain: { or: 1, platine: 3, diamant: 8 },
 } as const;
+
+/** Remise de prix annuelle (GDD, 5.13 : cérémonies). */
+export const CEREMONY = {
+  /** Semaine de l'année des nominations et de la remise. */
+  nominationWeek: 36,
+  awardWeek: 40,
+  /** Nombre de nommés par catégorie, dont ceux issus du bruit de marché. */
+  nominees: 5,
+  noiseNominees: 4,
+  /** Score des nommés fictifs (tirage uniforme). */
+  noiseScore: { min: 35, max: 80 },
+  /** Le tirage du gagnant pondère par score à cette puissance (plus haut = plus déterministe). */
+  winnerPower: 3,
+  /** Plafond du bonus de streams dans le score d'une sortie. */
+  streamsBonusCap: 30,
+  /** Récompenses pour un prix remporté. */
+  winnerHype: 20,
+  winnerReputation: 2,
+  winnerCredibility: 4,
+  /** Probabilité du label de l'année = réputation / ce diviseur. */
+  labelOfYearDivisor: 250,
+  labelOfYearReputation: 3,
+  /** Un nommé dont l'ego dépasse ce seuil boude la cérémonie. */
+  boycottEgo: 85,
+} as const;
