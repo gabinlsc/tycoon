@@ -339,6 +339,80 @@ export const FIL_TEMPLATES: Readonly<Record<string, FilTemplate>> = {
       'Les labels rivaux commencent à y envoyer leurs dénicheurs.',
     ],
   },
+  'avertissement-concentration': {
+    importance: 3,
+    titres: [
+      'Les autorités de la concurrence vous scrutent',
+      'Concentration : un premier avertissement',
+      'Votre part de marché inquiète',
+    ],
+    textes: [
+      'Une enquête est en vue : plaider ou rééquilibrer ton catalogue.',
+      'Un label aussi dominant attire l’attention des régulateurs.',
+      'Si la pression monte encore, une amende tombera.',
+    ],
+  },
+  'amende-concentration': {
+    importance: 3,
+    titres: [
+      'Amende pour position dominante',
+      'Les autorités sanctionnent le label',
+      'Concentration excessive : l’amende tombe',
+    ],
+    textes: [
+      'Le régulateur réclame {montant} pour abus de position dominante.',
+      'Une amende de {montant} : le label doit rééquilibrer son activité.',
+      '{montant} versés aux autorités de la concurrence.',
+    ],
+  },
+  'vague-piratage': {
+    importance: 3,
+    titres: [
+      'Une vague de piratage frappe le catalogue',
+      'Fuites et copies : les écoutes s’effondrent',
+      'Piratage massif signalé',
+    ],
+    textes: [
+      '{severite} % des écoutes se perdent pendant {semaines} semaines.',
+      'Une veille anti-piratage limiterait les dégâts.',
+      'Les revenus d’écoute reculent de {severite} % pendant {semaines} semaines.',
+    ],
+  },
+  'fin-piratage': {
+    importance: 1,
+    titres: ['La vague de piratage retombe', 'Fin de la vague de piratage', 'Le piratage reflue'],
+    textes: [
+      'Les écoutes reviennent à la normale.',
+      'Les revenus d’écoute se rétablissent.',
+      'Le calme revient sur les plateformes.',
+    ],
+  },
+  'plateformes-renegocient': {
+    importance: 3,
+    titres: [
+      'Les plateformes renégocient leurs tarifs',
+      'Nouveaux tarifs de streaming annoncés',
+      'Les plateformes serrent la vis',
+    ],
+    textes: [
+      'Une baisse de {baisse} % du revenu par écoute est annoncée, dans {preavis} semaines.',
+      'Tu peux tenter de résister avant leur entrée en vigueur : {baisse} % de baisse en jeu.',
+      'Les nouveaux tarifs rogneront {baisse} % de tes écoutes pendant un an.',
+    ],
+  },
+  'resistance-plateformes': {
+    importance: 2,
+    titres: [
+      'Bras de fer avec les plateformes',
+      'Négociation tendue avec les plateformes',
+      'Le label tient tête aux plateformes',
+    ],
+    textes: [
+      'Le résultat de la négociation se lira sur les prochains tarifs.',
+      'Les plateformes ont entendu le label.',
+      'Les discussions ont porté sur les tarifs à venir.',
+    ],
+  },
   'changement-ere': {
     importance: 3,
     titres: ['Une nouvelle ère commence', '{ere} : le marché a basculé', 'Les règles changent'],

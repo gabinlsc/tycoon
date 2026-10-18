@@ -17,6 +17,7 @@ import { weeklyStreams } from './formulas/streams';
 import { collisionFactor } from './calendar';
 import { repartirStreaming } from './conglomerat';
 import { ereCourante } from './eres';
+import { facteurRegulation } from './regulation';
 import { bonusRemuneration } from './institution';
 import { firstWeekStreams, hitPotential, marketingFactor } from './formulas/streams';
 import { trendMultiplier } from './market';
@@ -232,7 +233,8 @@ export const streamsPhase: Phase<LabelState, LabelSignal> = {
             STREAMS.centsPerStream *
             state.marche.facteurStreaming *
             bonusRemuneration(state, ctx.tick) *
-            ereCourante(state).streaming,
+            ereCourante(state).streaming *
+            facteurRegulation(state, ctx.tick),
         ),
       );
       if (gross <= 0) continue;

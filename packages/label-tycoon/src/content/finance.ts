@@ -30,6 +30,7 @@ export const EXPENSE_CATEGORIES = [
   'filiales',
   'plateforme',
   'export',
+  'regulation',
   'institution',
   'autres',
 ] as const;
