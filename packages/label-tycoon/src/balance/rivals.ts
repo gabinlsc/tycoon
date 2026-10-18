@@ -98,7 +98,7 @@ export const RIVAL_AI = {
   /** Utilité minimale pour signer. */
   signThreshold: 0.35,
   /** Probabilité hebdomadaire d'envisager une signature, avant l'agressivité. */
-  signChance: 0.3,
+  signChance: 0.2,
   /** Bonus d'utilité quand le talent est du genre fétiche du rival. */
   genreBonus: 0.25,
   /** Pénalité de risque : coût de l'avance rapporté à la trésorerie du rival. */
