@@ -24,13 +24,24 @@ type Payload = Readonly<Record<string, unknown>>;
 /** Variables d'un gabarit, résolues à partir de la charge du signal et de l'état. */
 export function filVars(state: LabelState, payload: Payload): Record<string, string | number> {
   const vars: Record<string, string | number> = {};
-  const projet = state.projets.find((p) => p.id === Number(payload['projetId']));
+  // Les recherches ne se font que pour les clés présentes : la plupart des signaux n'en portent pas.
+  const projet =
+    payload['projetId'] === undefined
+      ? undefined
+      : state.projets.find((p) => p.id === Number(payload['projetId']));
   const artisteId = payload['artisteId'] ?? projet?.artisteId;
-  const artist = state.artistes.find((a) => a.id === Number(artisteId));
+  const artist =
+    artisteId === undefined ? undefined : state.artistes.find((a) => a.id === Number(artisteId));
   if (artist) vars['nom'] = artist.nomScene;
-  const parent = state.artistes.find((a) => a.id === Number(payload['parentId']));
+  const parent =
+    payload['parentId'] === undefined
+      ? undefined
+      : state.artistes.find((a) => a.id === Number(payload['parentId']));
   if (parent) vars['parent'] = parent.nomScene;
-  const rival = state.rivaux.find((r) => r.id === Number(payload['rivalId']));
+  const rival =
+    payload['rivalId'] === undefined
+      ? undefined
+      : state.rivaux.find((r) => r.id === Number(payload['rivalId']));
   vars['rival'] = rival?.nom ?? 'Un label rival';
   if (typeof payload['categorie'] === 'string') vars['categorie'] = payload['categorie'];
   if (typeof payload['niveau'] === 'string') vars['niveau'] = payload['niveau'];

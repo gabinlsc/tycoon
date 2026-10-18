@@ -45,15 +45,19 @@ export function relationsWeek(
   emit: (s: LabelSignal) => void,
 ): void {
   const roster = state.artistes.filter((a) => a.employeur === 'joueur').sort((p, q) => p.id - q.id);
+  // Index des relations existantes : une recherche linéaire par paire ferait grimper le coût au carré.
+  const index = new Map<string, Relation>();
+  for (const r of state.relations) index.set(`${r.a}:${r.b}`, r);
   for (let i = 0; i < roster.length; i += 1) {
     for (let j = i + 1; j < roster.length; j += 1) {
       const p = roster[i];
       const q = roster[j];
       if (!p || !q) continue;
-      let rel = relationOf(state, p.id, q.id);
+      let rel = index.get(`${p.id}:${q.id}`);
       if (!rel) {
         rel = { a: p.id, b: q.id, valeur: 0, type: 'neutre' };
         state.relations.push(rel);
+        index.set(`${p.id}:${q.id}`, rel);
       }
       const same = p.genre === q.genre;
       const ego = 1 + Math.max(p.ego, q.ego) / 100;
