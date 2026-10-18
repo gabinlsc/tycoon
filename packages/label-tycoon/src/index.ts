@@ -164,3 +164,4 @@ export {
 } from './formulas/streams';
 export { streamsPhase } from './production';
 export { fansGained, viralStep } from './viral';
+export { type SortieRivale, announcedReleases, collisionFactor, rivalsPhase } from './calendar';

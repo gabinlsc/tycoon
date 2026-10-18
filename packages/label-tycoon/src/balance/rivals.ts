@@ -22,3 +22,21 @@ export const RIVALS = {
   maxCashShare: 0.3,
   styles: ['predateur', 'prudent', 'flambeur'] as readonly RivalStyle[],
 } as const;
+
+/** Sorties des rivaux et concurrence de calendrier (GDD, 5.5). */
+export const RIVAL_RELEASES = {
+  /** Probabilité hebdomadaire qu'un rival planifie une sortie (× agressivité). */
+  weeklyChance: 0.08,
+  /** Délai de planification en semaines. */
+  leadWeeks: { min: 2, max: 6 },
+  /** Poids d'une sortie rivale (comme les types de sortie). */
+  weights: [1, 3, 8, 2] as readonly number[],
+  /** Probabilité qu'une sortie soit annoncée à l'avance. */
+  announceChance: 0.5,
+  /** À partir de ce poids, une sortie rivale est « grosse ». */
+  bigWeight: 3,
+  /** Facteur appliqué à l'exposition de la semaine 1 en cas de collision avec une grosse sortie. */
+  collisionFactor: 0.5,
+  /** Semaines pendant lesquelles on garde les sorties passées. */
+  keepWeeks: 8,
+} as const;

@@ -53,7 +53,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `feat/label-production-projets` : types de sortie, durées, retards, planification, capacité
 - [x] `feat/label-streams` : H, S(t), traîne longue en forme fermée, fenêtre active
 - [x] `feat/label-viralite-fanbase` : viralité, conversion en fans, hype hebdomadaire
-- [ ] `feat/label-concurrence-calendrier` : collisions de sorties
+- [x] `feat/label-concurrence-calendrier` : collisions de sorties
 - [ ] `feat/label-classements` : Top 50 singles et albums, bruit de marché, historique
 - [ ] `feat/label-certifications` : or, platine, diamant
 - [ ] `feat/label-tendances` : popularité des genres (marche aléatoire, retour à la moyenne, cycles)
@@ -180,7 +180,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 0     | 1     | 1      |
 | 1     | 13    | 13     |
 | 2     | 6     | 6      |
-| 3     | 18    | 12     |
+| 3     | 18    | 13     |
 | 4     | 16    | 0      |
 | 5     | 14    | 0      |
 | 6     | 14    | 0      |

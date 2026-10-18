@@ -15,6 +15,7 @@ import { artistsPhase } from './dynamics';
 import { financePhase, initialFinance } from './finance';
 import { initialCredibility, initialMarket } from './market';
 import { breakContract, releaseArtist, renegotiate } from './contract-end';
+import { rivalsPhase } from './calendar';
 import { auction, generateRivals } from './auction';
 import { sign } from './contracts';
 import { launchProject, productionPhase, releaseProject, streamsPhase } from './production';
@@ -59,6 +60,7 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
   phases: buildPipeline({
     'echeances-evenements': eventEngine.duePhase,
     artistes: artistsPhase,
+    rivaux: rivalsPhase,
     production: productionPhase,
     streams: streamsPhase,
     finances: financePhase,
@@ -129,6 +131,7 @@ export function initialState(seed: Seed, config: GameConfig): LabelState {
     rivaux: generateRivals(Rng.fromSeed(`${seed}:rivaux`)),
     negociations: [],
     projets: [],
+    sortiesRivales: [],
     nextId: 1,
   };
 }
