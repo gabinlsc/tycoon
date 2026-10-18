@@ -14,6 +14,7 @@ export const ECRANS = [
   { id: 'classements', titre: 'Classements', description: 'Top 50 et certifications' },
   { id: 'marche', titre: 'Marché', description: 'Genres, tendances et prévisions' },
   { id: 'concurrence', titre: 'Concurrence', description: 'Les labels rivaux' },
+  { id: 'finances', titre: 'Finances', description: 'Comptes, prêts et investisseurs' },
 ] as const;
 
 export type EcranId = (typeof ECRANS)[number]['id'];

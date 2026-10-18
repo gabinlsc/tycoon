@@ -366,6 +366,8 @@ export {
   type VueCertification,
   type VueConcurrence,
   type VueEcheance,
+  type VueFinancesDetail,
+  type VueLigneFinance,
   type VueOffreRachat,
   type VueRival,
   type VueGenre,
