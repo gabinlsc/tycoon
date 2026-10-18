@@ -174,3 +174,10 @@ export {
   chartsPhase,
   marketNoise,
 } from './charts';
+export {
+  bestCertification,
+  certificationFor,
+  certificationThreshold,
+  certify,
+  equivalentSales,
+} from './charts';

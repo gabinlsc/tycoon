@@ -48,4 +48,4 @@ export {
   type ReleaseType,
 } from './production';
 export { STREAMS, VIRALITY } from './streams';
-export { CHARTS } from './charts';
+export { CERTIFICATIONS, CHARTS } from './charts';
