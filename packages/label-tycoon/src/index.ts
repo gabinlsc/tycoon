@@ -224,3 +224,12 @@ export {
   studioCap,
   teamCapacity,
 } from './buildings';
+export {
+  type Commande,
+  type PressAction,
+  physicalWeek,
+  pressingWeeks,
+  stockOf,
+  unitCost,
+} from './pressing';
+export { livePhase } from './live-phase';

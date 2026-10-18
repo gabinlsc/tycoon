@@ -64,3 +64,4 @@ export {
   type BuildingId,
   type BuildingRule,
 } from './buildings';
+export { FORMATS, PRESSING, type PhysicalFormat } from './pressing';

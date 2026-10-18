@@ -205,6 +205,7 @@ describe('pipeline', () => {
       'production',
       'streams',
       'classements',
+      'tournees',
       'artistes',
       'personnel',
       'finances',

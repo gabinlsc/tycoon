@@ -185,6 +185,10 @@ export const fr = {
     'palier-insuffisant': () => "Ton label n'a pas encore atteint le palier requis.",
     'studio-trop-modeste': (p: { max: number }) =>
       `Ton studio ne permet pas plus de ${p.max} de niveau.`,
+    'pas-de-pressage': () => 'Il te faut un bâtiment de pressage pour commander du physique.',
+    'format-inconnu': () => "Ce format physique n'existe pas.",
+    'quantite-invalide': (p: { min: number; max: number }) =>
+      `La quantité doit être comprise entre ${p.min} et ${p.max} exemplaires.`,
     'suivi-introuvable': () => "Ce talent n'est pas dans ta liste de suivi.",
     'essai-deja-fait': () => 'Tu as déjà fait passer un essai à ce talent.',
   },
