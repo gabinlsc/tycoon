@@ -251,3 +251,12 @@ export {
   repay,
 } from './loans';
 export { ledgerPhase } from './ledger-phase';
+export {
+  type InvestorAnswerAction,
+  type Investisseur,
+  type OffreInvestisseur,
+  answerInvestor,
+  investorOffersWeek,
+  investorShareBps,
+  investorsWeek,
+} from './investors';

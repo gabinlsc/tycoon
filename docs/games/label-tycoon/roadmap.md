@@ -72,7 +72,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `feat/label-synchro` : offres de synchronisation
 - [x] `feat/label-contrat-360` : parts sur concerts, merch, synchro
 - [x] `feat/label-prets` : prêts bancaires, taux selon la réputation
-- [ ] `feat/label-investisseurs` : apport, parts, objectifs
+- [x] `feat/label-investisseurs` : apport, parts, objectifs
 - [ ] `feat/label-faillite` : compteur de 8 semaines, alerte, options de sauvetage, vente de contrats
 - [ ] `feat/label-fiscalite` : impôt annuel et contrôle (+)
 - [ ] `feat/label-relations-artistes` : rivalités, amitiés, mentorat (+)
@@ -181,7 +181,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 1     | 13    | 13     |
 | 2     | 6     | 6      |
 | 3     | 18    | 18     |
-| 4     | 16    | 10     |
+| 4     | 16    | 11     |
 | 5     | 14    | 0      |
 | 6     | 14    | 0      |
 | 7     | 13    | 0      |

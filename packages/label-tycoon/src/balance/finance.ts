@@ -27,3 +27,36 @@ export const LOANS = {
   /** Nombre maximal de prêts en cours. */
   maxActive: 3,
 } as const;
+
+/** Investisseurs (GDD, 5.11) : apport de cash contre une part de la valorisation et des objectifs. */
+export const INVESTORS = {
+  /** Réputation minimale pour attirer des offres, et probabilité hebdomadaire d'en recevoir une. */
+  minReputation: 15,
+  weeklyChance: 0.01,
+  /** Offres en attente et investisseurs actifs maximum. */
+  maxPending: 2,
+  maxActive: 2,
+  /** Validité d'une offre (semaines). */
+  validWeeks: 8,
+  /** Apport : multiple du chiffre d'affaires annuel, avec plancher. */
+  advanceFloor: money.euros(50_000) as Cents,
+  advanceRevenueMultiple: 0.8,
+  /** Part de la valorisation finale cédée (points de base), tirée dans cette plage. */
+  shareBps: { min: 500, max: 2000 },
+  /** Objectif de chiffre d'affaires annuel : multiple du CA actuel, avec plancher, à tenir sous `deadlineWeeks`. */
+  goalMultiple: 1.5,
+  goalFloor: money.euros(100_000) as Cents,
+  deadlineWeeks: 104,
+  /** Objectif manqué : pénalité (part de l'apport) et part supplémentaire cédée. */
+  penaltyShare: 0.2,
+  extraShareBps: 1000,
+  /** Objectif tenu : réputation gagnée. */
+  reputationGain: 3,
+  names: [
+    'Capital Horizon',
+    'Fonds Atlas',
+    'Nova Ventures',
+    'Maison Delcourt',
+    'Groupe Verdier',
+  ] as readonly string[],
+} as const;

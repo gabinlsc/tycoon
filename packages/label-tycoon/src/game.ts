@@ -16,6 +16,7 @@ import { initialFinance } from './finance';
 import { initialCredibility, initialMarket, marketPhase } from './market';
 import { breakContract, releaseArtist, renegotiate } from './contract-end';
 import { chartsPhase, emptyCharts } from './charts';
+import { answerInvestor } from './investors';
 import { ledgerPhase } from './ledger-phase';
 import { borrow, repay } from './loans';
 import { answerSync } from './sync';
@@ -88,6 +89,8 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
     'renommer-label': renameLabel,
     reperer: scout,
     signer: sign,
+    'accepter-investisseur': answerInvestor,
+    'refuser-investisseur': answerInvestor,
     emprunter: borrow,
     'rembourser-pret': repay,
     'accepter-synchro': answerSync,
@@ -177,6 +180,8 @@ export function initialState(seed: Seed, config: GameConfig): LabelState {
     offresSynchro: [],
     prets: [],
     credit: { impayes: 0, rembourses: 0 },
+    offresInvest: [],
+    investisseurs: [],
     nextId: 1,
   };
 }
