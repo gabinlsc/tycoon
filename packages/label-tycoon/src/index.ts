@@ -300,3 +300,12 @@ export {
   buyoutOffer,
   rivalInteractions,
 } from './rival-interactions';
+export {
+  BOTS,
+  BOT_STRATEGIES,
+  type Bot,
+  type BotContext,
+  type BotRun,
+  type BotStrategy,
+  runBot,
+} from './bots';
