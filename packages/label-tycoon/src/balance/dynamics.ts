@@ -16,3 +16,22 @@ export const DYNAMICS = {
   /** Plafond de fatigue au-delà duquel le risque de burnout devient maximal. */
   fatigueMax: 100,
 } as const;
+
+/** Relations entre artistes et mentorat (GDD, 5.4 bis). */
+export const RELATIONS = {
+  /** Dérive hebdomadaire de la relation : même genre (rivalité) ou genres différents (amitié). */
+  sameGenreDrift: -0.3,
+  otherGenreDrift: 0.1,
+  /** Un ego élevé amplifie la rivalité (facteur = 1 + ego/100). */
+  /** Seuils de bascule en rivalité ou en amitié. */
+  rivalryBelow: -40,
+  friendshipAbove: 40,
+  /** Moral gagné ou perdu par semaine selon la relation. */
+  friendMoral: 0.3,
+  rivalMoral: -0.5,
+  /** Mentorat : bonus hebdomadaire de compétences du protégé, loyauté du mentor, durée maximale. */
+  mentorSkillBonus: 0.06,
+  mentorLoyaltyBonus: 0.05,
+  mentorWeeks: 104,
+  maxMentorships: 3,
+} as const;

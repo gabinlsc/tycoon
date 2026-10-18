@@ -4,6 +4,7 @@ import type { Artist } from './artists';
 import type { FinanceState } from './finance';
 import type { Rival } from './auction';
 import type { Contrat } from './contracts';
+import type { Mentorat, Relation } from './relations';
 import type { Fiscalite } from './tax';
 import type { Faillite } from './bankruptcy';
 import type { Investisseur, OffreInvestisseur } from './investors';
@@ -99,6 +100,9 @@ export interface LabelState {
   faillite: Faillite;
   /** Stratégie fiscale et historique. */
   fiscalite: Fiscalite;
+  /** Relations entre artistes du roster et mentorats. */
+  relations: Relation[];
+  mentorats: Mentorat[];
   /** Négociations en cours ou rompues, une par artiste. */
   negociations: Negociation[];
   /** Prochain identifiant libre, partagé par toutes les entités (artistes, sorties, contrats…). */

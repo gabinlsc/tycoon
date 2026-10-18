@@ -277,3 +277,13 @@ export {
   taxDue,
   taxWeek,
 } from './tax';
+export {
+  type Mentorat,
+  type MentorAction,
+  type Relation,
+  type RelationKind,
+  kindOf,
+  mentor as mentorAction,
+  relationOf,
+  relationsWeek,
+} from './relations';
