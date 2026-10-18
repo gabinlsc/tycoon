@@ -4,6 +4,7 @@ import { useLabel } from './LabelContext';
 import { BarreTemps } from './BarreTemps';
 import { BoiteReception, notificationsNonLues } from './BoiteReception';
 import { InfobulleCalcul, Terme } from './Infobulle';
+import { FicheArtiste } from './FicheArtiste';
 import { QG } from './QG';
 import { Roster } from './Roster';
 import { NouvellePartie } from './NouvellePartie';
@@ -38,6 +39,7 @@ export function Coquille() {
       </p>
     );
   if (!vue) return <NouvellePartie />;
+  const ficheArtiste = vue.roster.find((a) => a.id === fiche) ?? null;
   const badges = vue.decisions.length + notificationsNonLues(vue.fil, dernierLu).length;
 
   return (
@@ -87,16 +89,15 @@ export function Coquille() {
           {refus}
         </p>
       ) : null}
-      {fiche !== null ? (
-        <p role="status" className="label-screen__soon">
-          La fiche de l’artiste n° {fiche} arrive bientôt.
-        </p>
-      ) : null}
       <main className="label-main">
         {ecran === 'qg' ? (
           <QG allerA={setEcran} />
         ) : ecran === 'roster' ? (
-          <Roster ouvrir={setFiche} />
+          ficheArtiste ? (
+            <FicheArtiste artiste={ficheArtiste} retour={() => setFiche(null)} vers={setEcran} />
+          ) : (
+            <Roster ouvrir={setFiche} />
+          )
         ) : ecran === 'boite' ? (
           <BoiteReception dernierLu={dernierLu} onLu={setDernierLu} />
         ) : (

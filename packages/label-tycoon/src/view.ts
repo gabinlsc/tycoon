@@ -19,6 +19,9 @@ export interface VueArtiste {
   /** Nom affichable du genre (sous-genres fictifs compris). */
   genreNom: string;
   phaseNom: string;
+  ville: string;
+  /** Traits connus (libellés), pour un artiste signé. */
+  traits: string[];
   age: number;
   phase: string;
   employeur: string;
@@ -183,6 +186,8 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
       genre: a.genre,
       genreNom: nomGenre(state, a.genre),
       phaseNom: fr.phasesDeCarriere[a.phase],
+      ville: a.ville,
+      traits: a.traits.map((t) => (fr.traits as Record<string, string | undefined>)[t] ?? t),
       age: a.age,
       phase: a.phase,
       employeur: a.employeur,

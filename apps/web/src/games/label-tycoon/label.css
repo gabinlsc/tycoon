@@ -483,3 +483,50 @@
   color: var(--red-text);
   font-weight: 800;
 }
+
+/* Fiche artiste */
+.label-fiche__head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-4);
+  align-items: center;
+}
+.label-fiche__cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: var(--sp-4);
+}
+.label-fiche__traits {
+  color: var(--text-soft);
+  font-weight: 800;
+}
+.label-fiche__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  margin-block-start: var(--sp-4);
+}
+.label-meter {
+  display: grid;
+  grid-template-columns: 7rem 1fr 2.5rem;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-block-end: var(--sp-1);
+  font-weight: 800;
+}
+.label-meter meter {
+  width: 100%;
+  height: 1rem;
+}
+.label-projects {
+  display: grid;
+  gap: var(--sp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.label-projects li {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
