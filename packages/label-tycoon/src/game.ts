@@ -16,6 +16,7 @@ import { financePhase, initialFinance } from './finance';
 import { initialCredibility, initialMarket, marketPhase } from './market';
 import { breakContract, releaseArtist, renegotiate } from './contract-end';
 import { chartsPhase, emptyCharts } from './charts';
+import { fire, hire, staffPhase } from './staff';
 import { marketStudy } from './forecast';
 import { rivalsPhase } from './calendar';
 import { auction, generateRivals } from './auction';
@@ -61,6 +62,7 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
   streams: LABEL_STREAMS,
   phases: buildPipeline({
     'echeances-evenements': eventEngine.duePhase,
+    personnel: staffPhase,
     artistes: artistsPhase,
     marche: marketPhase,
     rivaux: rivalsPhase,
@@ -75,6 +77,8 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
     'renommer-label': renameLabel,
     reperer: scout,
     signer: sign,
+    embaucher: hire,
+    licencier: fire,
     'etude-marche': marketStudy,
     'lancer-projet': launchProject,
     'sortir-projet': releaseProject,
@@ -140,6 +144,8 @@ export function initialState(seed: Seed, config: GameConfig): LabelState {
     classements: emptyCharts(),
     sousGenres: [],
     previsions: [],
+    personnel: [],
+    candidats: [],
     nextId: 1,
   };
 }

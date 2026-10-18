@@ -49,3 +49,4 @@ export {
 } from './production';
 export { STREAMS, VIRALITY } from './streams';
 export { CERTIFICATIONS, CHARTS } from './charts';
+export { STAFF, STAFF_ROLES, STAFF_TRAITS, type StaffRole, type StaffTrait } from './staff';
