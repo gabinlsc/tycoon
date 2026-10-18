@@ -117,3 +117,27 @@ export const RIVAL_AI = {
   /** Coût d'une sortie pour un rival, par poids. */
   releaseCostPerWeight: money.euros(1500) as Cents,
 } as const;
+
+/** Interactions entre le joueur et les rivaux : débauchage, clashs, offres de rachat, évolution. */
+export const RIVAL_INTERACTIONS = {
+  /** Débauchage par un prédateur pendant la période de grâce d'un contrat arrivé à échéance. */
+  poachChance: 0.5,
+  /** Clash public entre un artiste du joueur et un artiste rival du même genre. */
+  clashChance: 0.01,
+  clashHype: 10,
+  clashMoral: 5,
+  clashFans: 0.02,
+  /** Offre de rachat d'un rival sur un artiste notoire du joueur. */
+  buyoutChance: 0.01,
+  buyoutMinNotoriety: 55,
+  buyoutValidWeeks: 6,
+  buyoutMaxPending: 2,
+  /** Multiple de l'avance juste proposé par un rival, et exigé par un rival pour vendre un artiste. */
+  buyoutOfferMultiple: 3,
+  buyoutAskMultiple: 4,
+  /** Contrat standard accordé au joueur après un rachat. */
+  buyoutContract: { royaltiesBps: 4000, years: 2 },
+  /** Évolution : un rival très riche devient une major ; un rival ruiné disparaît puis est remplacé. */
+  majorCashMultiple: 5,
+  replacementDelay: 26,
+} as const;

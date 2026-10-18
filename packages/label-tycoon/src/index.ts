@@ -290,3 +290,13 @@ export {
 } from './relations';
 export { nextTier, tierAtLeast, tierRank, tiersPhase } from './tiers';
 export { contractsValue, discount, labelScore, releaseValue, valuation } from './valuation';
+export {
+  type BuyRivalArtistAction,
+  type BuyoutAnswerAction,
+  type OffreRachat,
+  answerBuyout,
+  buyRivalArtist,
+  buyoutAsk,
+  buyoutOffer,
+  rivalInteractions,
+} from './rival-interactions';
