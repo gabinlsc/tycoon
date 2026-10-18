@@ -3,6 +3,7 @@ import { ECRANS, type EcranId } from './ecrans';
 import { useLabel } from './LabelContext';
 import { ECRANS_SIMPLES } from './ecransSimples';
 import { BandeauDefi } from './BandeauDefi';
+import { Tutoriel } from './Tutoriel';
 import { BandeauScenario } from './BandeauScenario';
 import { BarreTemps } from './BarreTemps';
 import { BoiteReception, notificationsNonLues } from './BoiteReception';
@@ -83,6 +84,7 @@ export function Coquille() {
       <BarreTemps />
       {vue.scenario ? <BandeauScenario scenario={vue.scenario} /> : null}
       {vue.defi ? <BandeauDefi defi={vue.defi} /> : null}
+      <Tutoriel allerA={setEcran} />
       <nav className="label-nav" aria-label="Écrans du jeu">
         {ECRANS.map((e, index) => (
           <button

@@ -845,3 +845,23 @@
   font-family: var(--font-mono, monospace);
   white-space: pre-wrap;
 }
+
+/* Tutoriel guidé */
+.label-tuto {
+  display: grid;
+  gap: var(--sp-2);
+  background: var(--surface-2);
+}
+.label-tuto h2,
+.label-tuto p {
+  margin: 0;
+}
+.label-tuto__etape {
+  color: var(--text-soft);
+  font-weight: 800;
+}
+.label-tuto__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}

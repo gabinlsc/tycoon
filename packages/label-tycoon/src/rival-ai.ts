@@ -53,10 +53,15 @@ function spawnFreeArtist(state: LabelState, rival: Rival, rng: Rng): void {
   state.artistes.push(artist);
 }
 
+/** Semaines pendant lesquelles les rivaux ne jouent pas dans le tutoriel. */
+export const TUTORIEL_SANS_RIVAUX = 16;
+
 /** Phase « rivaux » : revenus, dépenses, signatures, repérage et sorties, par utilité et dans la limite de candidats. */
 export const rivalsPhase: Phase<LabelState, LabelSignal> = {
   name: 'rivaux',
   run(state, ctx) {
+    // Tutoriel : les rivaux laissent le temps d'apprendre, sinon les talents repérés leur échappent.
+    if (state.config.mode === 'tutoriel' && ctx.tick < TUTORIEL_SANS_RIVAUX) return;
     const rng = ctx.rng('rivaux');
     const aggression = state.config.difficulty.rivalAggression;
     const genres = genreKeys(state.marche);

@@ -423,3 +423,11 @@ export {
   soumissionDe,
   validerSoumission,
 } from './defi-validation';
+export {
+  type Acquittements,
+  ETAPES_TUTORIEL,
+  type EtapeTutoriel,
+  GRAINE_TUTORIEL,
+  configTutoriel,
+  etapeCourante,
+} from './tutoriel';

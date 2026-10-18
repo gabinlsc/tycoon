@@ -140,7 +140,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `feat/label-scenarios-contenu` : 6 à 8 scénarios
 - [x] `feat/label-defi-du-jour` : seed du jour, 52 semaines, score, résultat partageable
 - [x] `feat/label-defi-validation` : contrat d'API (format du journal d'actions et de la réponse), validation par replay, backend mocké
-- [ ] `feat/label-tutoriel` : « Ton premier signataire », guidé et passable
+- [x] `feat/label-tutoriel` : « Ton premier signataire », guidé et passable
 
 ## Phase 9 : équilibrage
 
@@ -185,7 +185,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 5     | 14    | 14     |
 | 6     | 14    | 14     |
 | 7     | 13    | 13     |
-| 8     | 10    | 9      |
+| 8     | 10    | 10     |
 | 9     | 5     | 0      |
 | 10    | 12    | 0      |
 | 11    | 5     | 0      |
