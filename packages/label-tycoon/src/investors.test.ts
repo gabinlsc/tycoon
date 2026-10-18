@@ -16,6 +16,7 @@ describe('offres', () => {
     const run = (rep: number) => {
       const d = newGame('inv').engine.data;
       d.label.reputation = rep;
+      d.label.tier = 'etabli';
       const sigs: string[] = [];
       for (let t = 1; t <= 800; t += 1)
         investorOffersWeek(d, t, Rng.fromSeed(`i${t}`), (x) => sigs.push(x.kind));

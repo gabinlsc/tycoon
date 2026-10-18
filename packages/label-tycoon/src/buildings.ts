@@ -1,13 +1,7 @@
 import { type ActionHandler, cents, reject } from '@tycoon/core';
 import type { Action } from '@tycoon/core';
-import {
-  BUILDINGS,
-  BUILDING_EFFECTS,
-  BUILDING_IDS,
-  PRODUCTION,
-  TIERS,
-  type BuildingId,
-} from './balance';
+import { BUILDINGS, BUILDING_EFFECTS, BUILDING_IDS, PRODUCTION, type BuildingId } from './balance';
+import { tierAtLeast } from './tiers';
 import { canAfford, spend } from './finance';
 import type { LabelSignal } from './pipeline';
 import type { LabelState } from './state';
@@ -27,8 +21,6 @@ export function initialBuildings(): BatimentsState {
     travaux: [],
   };
 }
-
-const tierRank = (tier: string): number => TIERS.findIndex((t) => t.id === tier);
 
 export const buildingLevel = (state: LabelState, id: BuildingId): number =>
   state.batiments.niveaux[id];
@@ -59,7 +51,7 @@ export const build: ActionHandler<LabelState, BuildAction, LabelSignal> = {
       return reject('travaux-en-cours');
     const next = buildingLevel(state, action.batiment) + 1;
     if (next > rule.maxLevel) return reject('niveau-maximal');
-    if (tierRank(state.label.tier) < tierRank(rule.tier)) return reject('palier-insuffisant');
+    if (!tierAtLeast(state, rule.tier)) return reject('palier-insuffisant');
     const cost = rule.cost[next - 1] ?? cents(0);
     return canAfford(state, cost) ? null : reject('fonds-insuffisants', { besoin: cost });
   },

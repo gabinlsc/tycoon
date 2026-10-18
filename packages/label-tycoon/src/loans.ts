@@ -1,8 +1,9 @@
 import { type ActionHandler, cents, reject } from '@tycoon/core';
 import type { Action } from '@tycoon/core';
-import { LOANS } from './balance';
+import { LOANS, UNLOCKS } from './balance';
 import { annualRevenue, canAfford, spend } from './finance';
 import type { LabelSignal } from './pipeline';
+import { tierAtLeast } from './tiers';
 import type { LabelState } from './state';
 
 export interface Pret {
@@ -56,6 +57,7 @@ export interface RepayAction extends Action {
 
 export const borrow: ActionHandler<LabelState, BorrowAction, LabelSignal> = {
   validate(state, action) {
+    if (!tierAtLeast(state, UNLOCKS.emprunter)) return reject('palier-insuffisant');
     if (!Number.isInteger(action.montant) || action.montant < LOANS.minAmount)
       return reject('montant-invalide');
     if (

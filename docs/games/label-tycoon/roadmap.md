@@ -76,7 +76,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 - [x] `feat/label-faillite` : compteur de 8 semaines, alerte, options de sauvetage, vente de contrats
 - [x] `feat/label-fiscalite` : impôt annuel et contrôle (+)
 - [x] `feat/label-relations-artistes` : rivalités, amitiés, mentorat (+)
-- [ ] `feat/label-paliers` : les 4 paliers, déblocages, changement de nature du jeu
+- [x] `feat/label-paliers` : les 4 paliers, déblocages, changement de nature du jeu
 - [ ] `feat/label-valorisation` : score principal, valeur du catalogue actualisée
 
 ## Phase 5 : rivaux, événements, fil d'actus, premières simulations
@@ -181,7 +181,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 | 1     | 13    | 13     |
 | 2     | 6     | 6      |
 | 3     | 18    | 18     |
-| 4     | 16    | 14     |
+| 4     | 16    | 15     |
 | 5     | 14    | 0      |
 | 6     | 14    | 0      |
 | 7     | 13    | 0      |

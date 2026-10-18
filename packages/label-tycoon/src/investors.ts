@@ -1,8 +1,9 @@
 import { type ActionHandler, type Rng, cents, reject } from '@tycoon/core';
 import type { Action } from '@tycoon/core';
-import { INVESTORS } from './balance';
+import { INVESTORS, UNLOCKS } from './balance';
 import { annualRevenue, spend } from './finance';
 import type { LabelSignal } from './pipeline';
+import { tierAtLeast } from './tiers';
 import type { LabelState } from './state';
 
 export interface OffreInvestisseur {
@@ -43,6 +44,7 @@ export function investorOffersWeek(
 ): void {
   state.offresInvest = state.offresInvest.filter((o) => o.expire > tick);
   if (
+    !tierAtLeast(state, UNLOCKS.investisseurs) ||
     state.label.reputation < INVESTORS.minReputation ||
     state.offresInvest.length >= INVESTORS.maxPending ||
     !rng.chance(INVESTORS.weeklyChance)

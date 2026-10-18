@@ -287,3 +287,4 @@ export {
   relationOf,
   relationsWeek,
 } from './relations';
+export { nextTier, tierAtLeast, tierRank, tiersPhase } from './tiers';
