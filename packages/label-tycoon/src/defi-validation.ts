@@ -1,7 +1,7 @@
 import { type JournalEntry, ReplayError } from '@tycoon/core';
 import type { LabelAction } from './actions';
 import { DEFI_SEMAINES, configDefi, scoreDefi } from './defi';
-import { dateValide, graineDuDefi } from './defi-date';
+import { graineDuDefi, identifiantDefiValide } from './defi-date';
 import { initialState, labelGame, type LabelSession } from './game';
 
 /** Version du contrat d'échange avec le serveur de défis. */
@@ -73,8 +73,8 @@ export function validerSoumission(brut: unknown): ReponseValidation {
   if (brut['version'] !== VERSION_CONTRAT_DEFI)
     return refus('version', `Version du contrat non prise en charge : ${String(brut['version'])}.`);
   const { date, semaines, scoreAnnonce, journal } = brut;
-  if (typeof date !== 'string' || !dateValide(date))
-    return refus('date', 'Date de défi invalide (AAAA-MM-JJ attendu).');
+  if (typeof date !== 'string' || !identifiantDefiValide(date))
+    return refus('date', 'Identifiant de défi invalide (AAAA-MM-JJ ou AAAA-Snn attendu).');
   if (semaines !== DEFI_SEMAINES)
     return refus('semaines', `Un défi compte exactement ${DEFI_SEMAINES} semaines.`);
   if (typeof scoreAnnonce !== 'number' || !Number.isFinite(scoreAnnonce))

@@ -8,6 +8,9 @@ import {
   DEFI_SEMAINES,
   configDefi,
   dateDuDefi,
+  semaineDuDefi,
+  contrainteDeLaSemaine,
+  CONTRAINTES,
   graineDuDefi,
   ORDRE_SCENARIOS,
   SCENARIOS,
@@ -84,15 +87,19 @@ export const BAC_A_SABLE_PAR_DEFAUT: OptionsBacASable = {
   frequence: 1,
 };
 
+export type ModeDepart =
+  'carriere' | 'bac-a-sable' | 'scenario' | 'defi' | 'defi-hebdo' | 'tutoriel';
+
 /** Réglages envoyés au moteur pour le mode et les options choisis. */
 export function configDepart(
-  mode: 'carriere' | 'bac-a-sable' | 'scenario' | 'defi' | 'tutoriel',
+  mode: ModeDepart,
   difficulty: DifficultySettings,
   bac: OptionsBacASable,
   scenarioId?: string,
 ): GameConfig {
   if (mode === 'tutoriel') return configTutoriel();
   if (mode === 'defi') return configDefi(dateDuDefi(new Date()));
+  if (mode === 'defi-hebdo') return configDefi(semaineDuDefi(new Date()));
   if (mode === 'scenario')
     return { ...defaultConfig('normal', 'scenario'), difficulty, scenarioId: scenarioId ?? '' };
   if (mode === 'carriere') return { ...defaultConfig('normal', 'carriere'), difficulty };
@@ -113,9 +120,7 @@ export function NouvellePartie() {
     ...DIFFICULTY_PRESETS.normal,
   });
   const [avance, setAvance] = useState(false);
-  const [mode, setMode] = useState<'carriere' | 'bac-a-sable' | 'scenario' | 'defi' | 'tutoriel'>(
-    'carriere',
-  );
+  const [mode, setMode] = useState<ModeDepart>('carriere');
   const [scenarioId, setScenarioId] = useState(ORDRE_SCENARIOS[0] ?? '');
   const [bac, setBac] = useState<OptionsBacASable>(BAC_A_SABLE_PAR_DEFAUT);
   const config = configDepart(mode, reglages, bac, scenarioId);
@@ -178,6 +183,18 @@ export function NouvellePartie() {
           <input
             type="radio"
             name="mode"
+            checked={mode === 'defi-hebdo'}
+            onChange={() => setMode('defi-hebdo')}
+          />
+          <span>
+            <strong>Défi de la semaine</strong> — le même monde pour tous toute la semaine, avec une
+            contrainte spéciale.
+          </span>
+        </label>
+        <label className="label-field--check">
+          <input
+            type="radio"
+            name="mode"
             checked={mode === 'bac-a-sable'}
             onChange={() => setMode('bac-a-sable')}
           />
@@ -193,6 +210,16 @@ export function NouvellePartie() {
             ? ` Ton meilleur score du jour : ${(lireMeilleurScore(dateDuDefi(new Date())) ?? 0).toLocaleString('fr-FR')} €.`
             : ''}{' '}
           Un seul monde par jour : rejoue autant que tu veux, seul ton meilleur score compte.
+        </p>
+      ) : null}
+      {mode === 'defi-hebdo' ? (
+        <p>
+          Défi de la semaine {semaineDuDefi(new Date())} :{' '}
+          <strong>{CONTRAINTES[contrainteDeLaSemaine(semaineDuDefi(new Date())).id].nom}</strong> —{' '}
+          {CONTRAINTES[contrainteDeLaSemaine(semaineDuDefi(new Date())).id].description}
+          {lireMeilleurScore(semaineDuDefi(new Date())) !== null
+            ? ` Ton meilleur score de la semaine : ${(lireMeilleurScore(semaineDuDefi(new Date())) ?? 0).toLocaleString('fr-FR')} €.`
+            : ''}
         </p>
       ) : null}
       {mode === 'scenario' ? (
@@ -311,7 +338,7 @@ export function NouvellePartie() {
         disabled={etat !== 'pret' || probleme !== null}
         onClick={() =>
           void nouvellePartie(
-            mode === 'defi'
+            mode === 'defi' || mode === 'defi-hebdo'
               ? graineDuDefi(config.defiDate ?? '')
               : mode === 'tutoriel'
                 ? GRAINE_TUTORIEL

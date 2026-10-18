@@ -45,6 +45,8 @@ import { announcedReleases } from './calendar';
 import { SUCCES, familyValue, objectiveProgress } from './achievements';
 import { festivalOffer } from './festivals';
 import { venueCost } from './tours';
+import { estDefiHebdo } from './defi-date';
+import { CONTRAINTES, contrainteActive } from './defi-hebdo';
 import { DEFI_SEMAINES, defiTermine, resultatDefi, texteResultat } from './defi';
 import { ereCourante, prochaineEre } from './eres';
 import { legendes } from './generations';
@@ -524,7 +526,11 @@ export interface VueScenario {
 }
 
 export interface VueDefi {
+  /** Jour (`AAAA-MM-JJ`) ou semaine (`AAAA-Snn`) du défi. */
   date: string;
+  type: 'jour' | 'semaine';
+  /** Contrainte spéciale d'un défi de la semaine. */
+  contrainte: { id: string; nom: string; description: string } | null;
   semainesRestantes: number;
   termine: boolean;
   score: number;
@@ -1550,8 +1556,20 @@ function groupeDe(state: LabelState, tick: number): VueGroupe {
 function defiDe(state: LabelState, tick: number): VueDefi | null {
   const r = resultatDefi(state, tick);
   if (!r) return null;
+  const c = contrainteActive(state);
   return {
     date: r.date,
+    type: estDefiHebdo(r.date) ? 'semaine' : 'jour',
+    contrainte: c
+      ? {
+          id: c.id,
+          nom: CONTRAINTES[c.id].nom,
+          description:
+            c.id === 'un-genre'
+              ? `${CONTRAINTES[c.id].description} Cette semaine : ${nomGenre(state, c.genre ?? '')}.`
+              : CONTRAINTES[c.id].description,
+        }
+      : null,
     semainesRestantes: Math.max(0, DEFI_SEMAINES - tick),
     termine: defiTermine(state, tick),
     score: r.score,

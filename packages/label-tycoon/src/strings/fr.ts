@@ -289,6 +289,10 @@ export const fr = {
     'deja-resiste': () => 'Tu as déjà tenté de résister à cette renégociation.',
     'niveau-invalide': () => 'Ce niveau de veille est impossible.',
     'scene-introuvable': () => "Cette ville n'a pas de scène connue.",
+    'contrainte-sans-emprunt': () => 'Défi de la semaine : aucun prêt n’est autorisé.',
+    'contrainte-sans-concerts': () => 'Défi de la semaine : les concerts sont interdits.',
+    'contrainte-un-genre': (p: { genre: string }) =>
+      `Défi de la semaine : seuls les artistes du genre « ${(fr.genres as Record<string, string | undefined>)[p.genre] ?? p.genre} » peuvent être signés.`,
     'pays-inconnu': () => "Ce pays n'existe pas.",
     'marche-deja-ouvert': () => 'Tu as déjà un bureau dans ce pays.',
     'marche-ferme': () => "Ouvre d'abord un bureau dans ce pays.",

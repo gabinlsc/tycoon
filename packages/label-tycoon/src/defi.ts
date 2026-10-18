@@ -1,4 +1,5 @@
-import { dateValide, graineDuDefi } from './defi-date';
+import { estDefiHebdo, graineDuDefi, identifiantDefiValide } from './defi-date';
+import { CONTRAINTES, contrainteDeLaSemaine, difficulteDeLaSemaine } from './defi-hebdo';
 import { defaultConfig, newGame, type LabelSession } from './game';
 import type { GameConfig } from './config';
 import type { LabelState } from './state';
@@ -9,8 +10,13 @@ export const DEFI_SEMAINES = 52;
 
 /** Réglages du défi : difficulté normale, la même pour tous, sinon les scores ne se comparent pas. */
 export function configDefi(date: string): GameConfig {
-  if (!dateValide(date)) throw new RangeError(`Date de défi invalide : ${date}`);
-  return { ...defaultConfig('normal', 'defi'), defiDate: date };
+  if (!identifiantDefiValide(date)) throw new RangeError(`Date de défi invalide : ${date}`);
+  const base = defaultConfig('normal', 'defi');
+  // Un défi de la semaine impose une contrainte, identique pour tous ; certaines se règlent dans la difficulté.
+  const difficulty = estDefiHebdo(date)
+    ? difficulteDeLaSemaine(base.difficulty, date)
+    : base.difficulty;
+  return { ...base, difficulty, defiDate: date };
 }
 
 /** Nouvelle partie du défi : la graine ne se choisit pas, elle découle de la date. */
@@ -56,5 +62,8 @@ export function texteResultat(r: ResultatDefi): string {
     ? `Faillite à la semaine ${r.semaines}`
     : `${r.semaines}/${DEFI_SEMAINES} semaines`;
   const disques = r.certifications > 0 ? ` · ${r.certifications} certification(s)` : '';
-  return `Label Tycoon · Défi du ${r.date}\nScore : ${score} €\n${issue}${disques}`;
+  const titre = estDefiHebdo(r.date)
+    ? `Défi de la semaine ${r.date} (${CONTRAINTES[contrainteDeLaSemaine(r.date).id].nom})`
+    : `Défi du ${r.date}`;
+  return `Label Tycoon · ${titre}\nScore : ${score} €\n${issue}${disques}`;
 }

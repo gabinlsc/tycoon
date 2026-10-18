@@ -56,15 +56,27 @@ export function BandeauDefi({
   };
 
   return (
-    <section className="label-screen label-scenario" aria-label={`Défi du ${defi.date}`}>
-      <h2>Défi du jour — {defi.date}</h2>
+    <section
+      className="label-screen label-scenario"
+      aria-label={
+        defi.type === 'semaine' ? `Défi de la semaine ${defi.date}` : `Défi du ${defi.date}`
+      }
+    >
+      <h2>
+        {defi.type === 'semaine' ? 'Défi de la semaine' : 'Défi du jour'} — {defi.date}
+      </h2>
+      {defi.contrainte ? (
+        <p>
+          Contrainte : <strong>{defi.contrainte.nom}</strong>. {defi.contrainte.description}
+        </p>
+      ) : null}
       {termine ? (
         <>
           <p role="status">
             Défi terminé ! Score :{' '}
             <strong className="mono">{score.toLocaleString('fr-FR')} €</strong>
             {meilleur !== null && meilleur > score
-              ? ` (ton meilleur score du jour : ${meilleur.toLocaleString('fr-FR')} €)`
+              ? ` (ton meilleur score ${defi.type === 'semaine' ? 'de la semaine' : 'du jour'} : ${meilleur.toLocaleString('fr-FR')} €)`
               : ''}
             .
           </p>
