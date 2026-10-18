@@ -99,3 +99,4 @@ export { FESTIVALS_MAISON, PLATEFORME, STUDIOS_SYNCHRO } from './conglomerat';
 export { ACADEMIE, FONDATION, INFLUENCE, MUSEE } from './institution';
 export { ERA_SCHEDULE, ERES, ERE_IDS, type EreId, type EreRules } from './eres';
 export { GENERATIONS } from './generations';
+export { HERITAGE, HERITAGE_BONUS_IDS, type HeritageBonusId } from './heritage';

@@ -1,6 +1,12 @@
 export { type LabelAction, type RenameLabelAction, renameLabel } from './actions';
 export * from './balance';
-export type { DifficultyPreset, DifficultySettings, GameConfig, GameMode } from './config';
+export type {
+  DifficultyPreset,
+  DifficultySettings,
+  GameConfig,
+  GameMode,
+  HeritageDepart,
+} from './config';
 export {
   LABEL_STREAMS,
   type LabelSession,
@@ -383,6 +389,7 @@ export {
   type VueConglomerat,
   type VueEre,
   type VueGenerations,
+  type VueHeritage,
   type VueGroupe,
   type VueInstitution,
   type VueLigneFinance,
@@ -515,3 +522,12 @@ export {
   reputationDesLegendes,
   retraiteChance,
 } from './generations';
+
+export {
+  appliquerHeritage,
+  bilanDeRegne,
+  regneClosable,
+  validerHeritage,
+  type BilanRegne,
+  type ProgressionBonus,
+} from './heritage';
