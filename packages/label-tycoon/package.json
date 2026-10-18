@@ -8,7 +8,8 @@
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
     "test": "vitest run --passWithNoTests",
-    "build": "echo \"@tycoon/label-tycoon : rien à construire (consommé par l'application)\""
+    "build": "echo \"@tycoon/label-tycoon : rien à construire (consommé par l'application)\"",
+    "sim:balance": "vite-node scripts/sim-balance.ts"
   },
   "dependencies": {
     "@tycoon/core": "workspace:*"
@@ -16,6 +17,7 @@
   "devDependencies": {
     "@types/node": "^22.0.0",
     "fast-check": "^4.0.0",
+    "vite-node": "2.1.9",
     "vitest": "^2.1.0"
   }
 }
