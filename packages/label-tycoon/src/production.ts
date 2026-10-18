@@ -15,6 +15,7 @@ import { canAfford, earn, spend } from './finance';
 import { fansGained, viralStep } from './viral';
 import { weeklyStreams } from './formulas/streams';
 import { collisionFactor } from './calendar';
+import { repartirStreaming } from './conglomerat';
 import { firstWeekStreams, hitPotential, marketingFactor } from './formulas/streams';
 import { trendMultiplier } from './market';
 import { trackQuality } from './formulas/quality';
@@ -228,7 +229,10 @@ export const streamsPhase: Phase<LabelState, LabelSignal> = {
       );
       if (gross <= 0) continue;
       const contract = state.contrats.find((c) => c.artisteId === p.artisteId);
-      earn(state, 'streaming', contract ? labelShare(contract.clauses, gross) : gross);
+      const part = contract ? labelShare(contract.clauses, gross) : gross;
+      const { externe, plateforme } = repartirStreaming(state, part);
+      if (externe > 0) earn(state, 'streaming', cents(externe));
+      if (plateforme > 0) earn(state, 'plateforme', cents(plateforme));
     }
   },
 };

@@ -20,6 +20,13 @@ import type { DifficultyPreset, DifficultySettings, GameConfig, GameMode } from 
 import { type LabelSignal, buildPipeline } from './pipeline';
 import { artistsPhase } from './dynamics';
 import {
+  buyFestival,
+  buySyncStudio,
+  conglomeratPhase,
+  createPlatform,
+  setPlatform,
+} from './conglomerat';
+import {
   appointExecutive,
   buyRival,
   closeSubLabel,
@@ -115,6 +122,7 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
       run(state, ctx) {
         livePhase.run(state, ctx);
         groupePhase.run(state, ctx);
+        conglomeratPhase.run(state, ctx);
       },
     },
     finances: ledgerPhase,
@@ -172,6 +180,10 @@ export const labelGame = createGame<LabelState, LabelAction, LabelSignal>({
     'regler-enveloppe': setEnvelope,
     'fermer-sous-label': closeSubLabel,
     'racheter-rival': buyRival,
+    'creer-plateforme': createPlatform,
+    'regler-plateforme': setPlatform,
+    'acheter-studio-synchro': buySyncStudio,
+    'acheter-festival': buyFestival,
     embaucher: hire,
     licencier: fire,
     'etude-marche': marketStudy,
@@ -279,10 +291,25 @@ export function initialState(seed: Seed, config: GameConfig): LabelState {
     succes: [],
     objectifs: [],
     records: [],
+    plateforme: null,
+    studiosSynchro: 0,
+    festivalsPossedes: 0,
     sousLabels: [],
     cadres: [],
     nextId: 1,
   };
+}
+
+/**
+ * Complète une partie sauvegardée avec les champs ajoutés depuis : une sauvegarde plus ancienne se
+ * charge et reprend avec des valeurs neutres (sans sous-label, sans plateforme…).
+ */
+export function completerEtat(state: LabelState): void {
+  state.sousLabels ??= [];
+  state.cadres ??= [];
+  state.plateforme ??= null;
+  state.studiosSynchro ??= 0;
+  state.festivalsPossedes ??= 0;
 }
 
 /** Copie des réglages sans référence partagée avec l'appelant. */

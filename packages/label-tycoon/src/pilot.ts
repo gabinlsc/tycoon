@@ -7,7 +7,7 @@ import { type Reaction, evaluateOffer, gaugeOf } from './negotiation';
 import type { GameConfig } from './config';
 import { DEFI_SEMAINES, defiTermine } from './defi';
 import { type SoumissionDefi, soumissionDe } from './defi-validation';
-import { type LabelSession, eventEngine, labelGame, newGame } from './game';
+import { type LabelSession, completerEtat, eventEngine, labelGame, newGame } from './game';
 import { describeRejection } from './strings';
 import type { LabelSignal } from './pipeline';
 import { type VueJeu, type ViewHooks, buildView } from './view';
@@ -115,6 +115,7 @@ export class LabelPilot {
         if (typeof parsed?.engine?.tick !== 'number' || !parsed.engine.data) {
           return { type: 'erreur', message: 'Sauvegarde illisible.' };
         }
+        completerEtat(parsed.engine.data);
         this.session = parsed;
         return this.view();
       }

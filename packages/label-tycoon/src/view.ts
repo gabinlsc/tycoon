@@ -15,7 +15,10 @@ import {
   LOANS,
   PERSONALITIES,
   STAFF,
+  FESTIVALS_MAISON,
   GROUPE,
+  PLATEFORME,
+  STUDIOS_SYNCHRO,
   TAX,
   TOUR,
   UNLOCKS,
@@ -32,6 +35,13 @@ import { SUCCES, familyValue, objectiveProgress } from './achievements';
 import { festivalOffer } from './festivals';
 import { venueCost } from './tours';
 import { DEFI_SEMAINES, defiTermine, resultatDefi, texteResultat } from './defi';
+import {
+  debloque as debloqueConglomerat,
+  portee,
+  revenuFestival,
+  synchroCachet,
+  synchroChance,
+} from './conglomerat';
 import {
   cadreDe,
   fourchetteNiveau,
@@ -528,6 +538,25 @@ export interface VueGroupe {
   rachats: { rivalId: number; nom: string; valorisation: number; prix: number; artistes: number }[];
 }
 
+export interface VueConglomerat {
+  debloque: boolean;
+  plateforme: {
+    abonnes: number;
+    budget: number;
+    exclusivite: number;
+    /** Part des écoutes exclusives qui touche réellement des abonnés (0-100). */
+    portee: number;
+    /** Revenu des abonnements moins coûts, par semaine, au niveau d'abonnés actuel. */
+    margeHebdo: number;
+    cumul: number;
+  } | null;
+  coutPlateforme: number;
+  budgetMax: number;
+  marche: number;
+  studios: { niveau: number; max: number; cout: number; chance: number; cachet: number };
+  festivals: { possedes: number; max: number; cout: number; revenuAnnuel: number };
+}
+
 export interface VueJeu {
   semaine: number;
   date: { annee: number; mois: number; semaineDuMois: number };
@@ -573,6 +602,7 @@ export interface VueJeu {
   scene: VueScene;
   partie: VuePartie;
   groupe: VueGroupe;
+  conglomerat: VueConglomerat;
   scenario: VueScenario | null;
   defi: VueDefi | null;
   rapportsMensuels: VueRapportMensuel[];
@@ -1084,6 +1114,39 @@ function rapportsDe(state: LabelState): VueRapportMensuel[] {
     }));
 }
 
+function conglomeratDe(state: LabelState): VueConglomerat {
+  const p = state.plateforme;
+  return {
+    debloque: debloqueConglomerat(state),
+    plateforme: p
+      ? {
+          abonnes: p.abonnes,
+          budget: p.budget,
+          exclusivite: p.exclusivite,
+          portee: Math.round(portee(p) * 100),
+          margeHebdo: Math.round((p.abonnes * (PLATEFORME.arpuYear - PLATEFORME.costYear)) / 52),
+          cumul: p.cumul,
+        }
+      : null,
+    coutPlateforme: PLATEFORME.creationCost,
+    budgetMax: PLATEFORME.budgetMax,
+    marche: PLATEFORME.market,
+    studios: {
+      niveau: state.studiosSynchro,
+      max: STUDIOS_SYNCHRO.max,
+      cout: STUDIOS_SYNCHRO.cost,
+      chance: synchroChance(state),
+      cachet: synchroCachet(state),
+    },
+    festivals: {
+      possedes: state.festivalsPossedes,
+      max: FESTIVALS_MAISON.max,
+      cout: FESTIVALS_MAISON.cost,
+      revenuAnnuel: revenuFestival(state),
+    },
+  };
+}
+
 const STYLES_CADRE: Record<string, string> = {
   prudent: 'Prudent',
   ambitieux: 'Ambitieux',
@@ -1333,6 +1396,7 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
     batiments: batimentsDe(state),
     scene: sceneDe(state),
     groupe: groupeDe(state, tick),
+    conglomerat: conglomeratDe(state),
     partie: {
       mode: state.config.mode,
       scenarioId: state.config.scenarioId ?? null,

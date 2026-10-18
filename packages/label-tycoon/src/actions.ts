@@ -29,6 +29,12 @@ import type {
   TrialAction,
 } from './scouting';
 import type {
+  BuyFestivalAction,
+  BuySyncStudioAction,
+  CreatePlatformAction,
+  SetPlatformAction,
+} from './conglomerat';
+import type {
   AppointExecutiveAction,
   BuyRivalAction,
   CloseSubLabelAction,
@@ -81,7 +87,11 @@ export type LabelAction =
   | AppointExecutiveAction
   | SetEnvelopeAction
   | CloseSubLabelAction
-  | BuyRivalAction;
+  | BuyRivalAction
+  | CreatePlatformAction
+  | SetPlatformAction
+  | BuySyncStudioAction
+  | BuyFestivalAction;
 
 export const renameLabel: ActionHandler<LabelState, RenameLabelAction, LabelSignal> = {
   validate(_state, action) {

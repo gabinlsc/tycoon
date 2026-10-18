@@ -191,6 +191,7 @@ export const fr = {
     synchro: 'Synchronisation',
     cessions: 'Cessions de contrats',
     filiales: 'Sous-labels',
+    plateforme: 'Plateforme maison',
     autres: 'Autres revenus',
   } satisfies Record<RevenueCategory, string>,
 
@@ -206,6 +207,7 @@ export const fr = {
     interets: 'Intérêts et remboursements',
     impots: 'Impôts',
     filiales: 'Enveloppes des sous-labels',
+    plateforme: 'Plateforme maison (technologie et licences)',
     autres: 'Autres dépenses',
   } satisfies Record<ExpenseCategory, string>,
 
@@ -277,6 +279,9 @@ export const fr = {
     'genre-inconnu': () => "Ce genre n'existe pas.",
     'artiste-introuvable': () => "Cet artiste n'existe pas.",
     'artiste-indisponible': () => 'Cet artiste est déjà sous contrat ailleurs.',
+    'plateforme-existante': () => 'Tu as déjà lancé ta plateforme.',
+    'pas-de-plateforme': () => "Lance d'abord ta plateforme maison.",
+    'exclusivite-invalide': () => "L'exclusivité se règle de 0 à 100 %.",
     'nom-invalide': () => 'Donne un nom (32 caractères au plus).',
     'genre-deja-couvert': () => 'Un sous-label couvre déjà ce genre.',
     'trop-de-sous-labels': (p: { max: number }) =>

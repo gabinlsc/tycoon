@@ -13,6 +13,7 @@ import { Parametres } from './Parametres';
 import { RapportMensuel } from './RapportMensuel';
 import { Succes } from './Succes';
 import { Groupe } from './Groupe';
+import { Conglomerat } from './Conglomerat';
 
 /** Écrans sans état de navigation propre : un composant par identifiant. */
 export const ECRANS_SIMPLES: Partial<Record<EcranId, ComponentType>> = {
@@ -29,4 +30,5 @@ export const ECRANS_SIMPLES: Partial<Record<EcranId, ComponentType>> = {
   rapport: RapportMensuel,
   succes: Succes,
   groupe: Groupe,
+  conglomerat: Conglomerat,
 };

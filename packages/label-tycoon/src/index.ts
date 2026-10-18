@@ -380,6 +380,7 @@ export {
   type VueFinancesDetail,
   type VueBatiment,
   type VueDefi,
+  type VueConglomerat,
   type VueGroupe,
   type VueLigneFinance,
   type VueScenario,
@@ -462,3 +463,17 @@ export {
   sousLabelsMax,
   valorisationRival,
 } from './groupe';
+export {
+  type BuyFestivalAction,
+  type BuySyncStudioAction,
+  type CreatePlatformAction,
+  type Plateforme,
+  type SetPlatformAction,
+  conglomeratPhase,
+  portee,
+  repartirStreaming,
+  revenuFestival,
+  synchroCachet,
+  synchroChance,
+} from './conglomerat';
+export { completerEtat } from './game';

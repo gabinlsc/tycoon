@@ -10,6 +10,7 @@ export const REVENUE_CATEGORIES = [
   'synchro',
   'cessions',
   'filiales',
+  'plateforme',
   'autres',
 ] as const;
 
@@ -25,6 +26,7 @@ export const EXPENSE_CATEGORIES = [
   'interets',
   'impots',
   'filiales',
+  'plateforme',
   'autres',
 ] as const;
 

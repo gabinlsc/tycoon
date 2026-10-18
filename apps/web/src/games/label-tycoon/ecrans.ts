@@ -22,6 +22,7 @@ export const ECRANS = [
   { id: 'rapport', titre: 'Rapport mensuel', description: 'Bilan, réussites et échecs du mois' },
   { id: 'succes', titre: 'Succès', description: 'Succès, objectifs et records' },
   { id: 'groupe', titre: 'Groupe', description: 'Sous-labels, cadres et rachats' },
+  { id: 'conglomerat', titre: 'Conglomérat', description: 'Plateforme, synchro et festivals' },
 ] as const;
 
 export type EcranId = (typeof ECRANS)[number]['id'];
