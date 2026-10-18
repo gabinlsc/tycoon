@@ -7,6 +7,7 @@ import {
   eventEngine,
   fillTemplate,
   labelGame,
+  mitigated,
   newGame,
   scoutTalents,
 } from './index';
@@ -37,6 +38,10 @@ describe('contenu des événements', () => {
 
   it('comptent au moins dix événements de marché', () => {
     expect(LABEL_EVENTS.filter((e) => e.category === 'marche').length).toBeGreaterThanOrEqual(10);
+  });
+
+  it('comptent au moins dix événements médias', () => {
+    expect(LABEL_EVENTS.filter((e) => e.category === 'medias').length).toBeGreaterThanOrEqual(10);
   });
 
   it('remplit les variables des textes', () => {
@@ -141,5 +146,28 @@ describe('événements de marché', () => {
     }
     const market = new Set(LABEL_EVENTS.filter((e) => e.category === 'marche').map((e) => e.id));
     expect(out.session.engine.data.events.history.some((h) => market.has(h.eventId))).toBe(true);
+  });
+});
+
+describe('événements médias', () => {
+  it('surviennent autour du roster, et un attaché de presse atténue les effets négatifs', () => {
+    const d = labelGame.advance(roster(3), 500).session.engine.data;
+    const media = new Set(LABEL_EVENTS.filter((e) => e.category === 'medias').map((e) => e.id));
+    expect(d.events.history.some((h) => media.has(h.eventId))).toBe(true);
+    const plain = newGame('att').engine.data;
+    expect(mitigated(plain, -10)).toBe(-10);
+    plain.personnel.push({
+      id: 1,
+      nom: 'A',
+      role: 'attache',
+      niveau: 100,
+      specialite: null,
+      salaire: 0,
+      moral: 60,
+      trait: 'loyal',
+      experience: 0,
+    });
+    expect(mitigated(plain, -10)).toBe(-5);
+    expect(mitigated(plain, 10)).toBe(10);
   });
 });
