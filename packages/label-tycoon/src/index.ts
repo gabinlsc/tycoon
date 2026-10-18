@@ -47,7 +47,9 @@ export {
   type MarketState,
   genreKeys,
   initialCredibility,
+  cyclicPopularity,
   initialMarket,
+  marketPhase,
   trendMultiplier,
 } from './market';
 export {
