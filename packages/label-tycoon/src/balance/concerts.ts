@@ -26,7 +26,7 @@ export const CONCERTS = {
   /** Délai entre l'organisation et le concert (semaines). */
   leadWeeks: 2,
   /** Part de la billetterie conservée par le label (commission de producteur). */
-  commissionBps: 3500,
+  commissionBps: 2500,
   /** Sensibilité au prix : chaque doublement du prix réduit le remplissage de ce facteur. */
   priceElasticity: 0.6,
   /** Fatigue gagnée par concert. */

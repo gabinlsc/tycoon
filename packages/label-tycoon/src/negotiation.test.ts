@@ -4,6 +4,7 @@ import {
   NEGOTIATION,
   counterOffer,
   evaluateOffer,
+  fairAdvance,
   gaugeOf,
   labelGame,
   newGame,
@@ -65,7 +66,7 @@ describe('action proposer', () => {
     session.engine.data.label.reputation = 60;
     const near = clauses({
       royaltiesArtisteBps: 3500,
-      avance: money.euros(900),
+      avance: cents(Math.round(fairAdvance(artist) * 0.8)),
       exclusivite: false,
       part360Bps: 0,
       dureeAnnees: 3,

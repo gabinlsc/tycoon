@@ -31,12 +31,16 @@ const signed = (part360Bps: number) => {
 describe('part du label sur le live', () => {
   it('sans 360, le label ne garde que sa commission de base', () => {
     const { s, id } = signed(0);
-    expect(liveShare(s.engine.data, id, 10_000, CONCERTS.commissionBps)).toBe(3500);
+    expect(liveShare(s.engine.data, id, 10_000, CONCERTS.commissionBps)).toBe(
+      CONCERTS.commissionBps,
+    );
     expect(s.engine.data.contrats[0]?.recette360).toBe(0);
   });
   it('avec 360, il garde la base plus la part négociée, et cumule l’apport de la clause', () => {
     const { s, id } = signed(2000);
-    expect(liveShare(s.engine.data, id, 10_000, CONCERTS.commissionBps)).toBe(5500);
+    expect(liveShare(s.engine.data, id, 10_000, CONCERTS.commissionBps)).toBe(
+      CONCERTS.commissionBps + 2000,
+    );
     expect(s.engine.data.contrats[0]?.recette360).toBe(2000);
     liveShare(s.engine.data, id, 10_000, SYNC.labelBps);
     expect(s.engine.data.contrats[0]?.recette360).toBe(4000);

@@ -64,17 +64,19 @@ function production(ctx: BotContext, cash: number): LabelAction[] {
   for (const artist of state.artistes.filter((a) => a.employeur === 'joueur')) {
     if (
       active < productionCapacity(state) &&
-      cash > euros(6000) &&
+      cash > euros(2500) &&
       !state.projets.some((p) => p.artisteId === artist.id && p.statut === 'production')
     ) {
+      // Sans marge de manoeuvre, on sort quand même : un single économe vaut mieux qu'un label à l'arrêt.
+      const econome = cash < euros(8000);
       actions.push({
         type: 'lancer-projet',
         artisteId: artist.id,
         sortie: 'single',
         clip: 'aucun',
-        studio: Math.min(40, studioCap(state)),
-        producteur: 40,
-        mixage: euros(600),
+        studio: Math.min(econome ? 20 : 40, studioCap(state)),
+        producteur: econome ? 20 : 40,
+        mixage: euros(econome ? 300 : 600),
       });
       active += 1;
     }
@@ -84,11 +86,32 @@ function production(ctx: BotContext, cash: number): LabelAction[] {
   return actions;
 }
 
-const sign = (ctx: BotContext, generosity: number, genre?: string): LabelAction[] => {
+/** Renouvelle les contrats qui arrivent à terme : un bon label ne laisse pas partir ses artistes sans rien tenter. */
+function renew(ctx: BotContext, generosity: number): LabelAction[] {
+  const { state, tick } = ctx;
+  const actions: LabelAction[] = [];
+  for (const contrat of state.contrats) {
+    if (contrat.echeance - tick > 12 || contrat.echeance <= tick) continue;
+    const artist = state.artistes.find((a) => a.id === contrat.artisteId);
+    if (!artist || artist.employeur !== 'joueur') continue;
+    const clauses = { ...clausesFor(generosity, artist), dureeAnnees: 3 };
+    if (state.label.tresorerie > clauses.avance + euros(2000))
+      actions.push({ type: 'renegocier', artisteId: artist.id, clauses });
+  }
+  return actions;
+}
+
+const sign = (
+  ctx: BotContext,
+  generosity: number,
+  genre?: string,
+  /** Trésorerie à garder en réserve après la signature (le prudent en garde plus que l'agressif). */
+  reserve = euros(4000),
+): LabelAction[] => {
   const best = bestProspect(ctx.state, genre);
   const artist = best && ctx.state.artistes.find((a) => a.id === best.id);
   const cost = artist ? fairAdvance(artist) * generosity : Infinity;
-  return artist && ctx.state.label.tresorerie > cost + euros(4000)
+  return artist && ctx.state.label.tresorerie > cost + reserve
     ? [{ type: 'signer', artisteId: artist.id, clauses: clausesFor(generosity, artist) }]
     : [];
 };
@@ -97,10 +120,12 @@ export const BOTS: Readonly<Record<BotStrategy, Bot>> = {
   prudent(ctx) {
     const { state, tick } = ctx;
     const actions: LabelAction[] = [];
+    // Prudent : mêmes sources que les autres, mais un rythme lent, une grosse réserve et jamais de prêt.
     if (tick % 4 === 0 && state.suivis.length < 8)
-      actions.push({ type: 'reperer', source: 'candidature' });
-    if (tick % 6 === 0) actions.push(...sign(ctx, 1.4));
+      actions.push({ type: 'reperer', source: 'plateforme' });
+    if (tick % 6 === 0) actions.push(...sign(ctx, 1.5, undefined, euros(12_000)));
     actions.push(...production(ctx, state.label.tresorerie));
+    if (tick % 4 === 0) actions.push(...renew(ctx, 1.4));
     return actions;
   },
   agressif(ctx) {
@@ -110,6 +135,7 @@ export const BOTS: Readonly<Record<BotStrategy, Bot>> = {
       actions.push({ type: 'reperer', source: 'plateforme' });
     if (tick % 3 === 0) actions.push(...sign(ctx, 2));
     actions.push(...production(ctx, state.label.tresorerie));
+    if (tick % 4 === 0) actions.push(...renew(ctx, 1.6));
     if (tick % 26 === 0 && state.prets.length === 0)
       actions.push({ type: 'emprunter', montant: euros(20_000), semaines: 104 });
     return actions;
@@ -117,10 +143,11 @@ export const BOTS: Readonly<Record<BotStrategy, Bot>> = {
   specialiste(ctx) {
     const { state, tick } = ctx;
     const actions: LabelAction[] = [];
-    if (tick % 4 === 0 && state.suivis.length < 10)
-      actions.push({ type: 'reperer', source: 'battle' });
-    if (tick % 4 === 0) actions.push(...sign(ctx, 1.6, ctx.genre));
+    if (tick % 3 === 0 && state.suivis.length < 10)
+      actions.push({ type: 'reperer', source: tick % 6 === 0 ? 'plateforme' : 'battle' });
+    if (tick % 4 === 0) actions.push(...sign(ctx, 1.7, ctx.genre, euros(6000)));
     actions.push(...production(ctx, state.label.tresorerie));
+    if (tick % 4 === 0) actions.push(...renew(ctx, 1.5));
     return actions;
   },
   aleatoire(ctx) {

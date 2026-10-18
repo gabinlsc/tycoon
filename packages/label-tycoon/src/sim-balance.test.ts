@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
   BOT_STRATEGIES,
-  CIBLES,
   type GameResult,
   analyser,
   quantile,
@@ -77,28 +76,59 @@ const partie = (extra: Partial<GameResult>): GameResult => ({
 });
 
 describe('analyse des cibles', () => {
-  const equilibre = (): GameResult[] => [
-    partie({ strategie: 'prudent', genreDominant: 'rap' }),
-    partie({ strategie: 'agressif', valorisation10ans: 1200, genreDominant: 'afro' }),
-    partie({ strategie: 'specialiste', valorisation10ans: 1100, genreDominant: 'trap' }),
-    partie({
-      strategie: 'aleatoire',
-      valorisation10ans: 100,
-      premierOr: null,
-      genreDominant: 'rnb',
-    }),
-  ];
+  /** Trois graines, un gagnant différent à chacune : aucune stratégie ne domine. */
+  const equilibre = (): GameResult[] => {
+    const genres = {
+      prudent: 'rap',
+      agressif: 'afro',
+      specialiste: 'trap',
+      aleatoire: 'rnb',
+    } as const;
+    const gagnants = ['agressif', 'prudent', 'specialiste'] as const;
+    return gagnants.flatMap((gagnant, i) =>
+      (['prudent', 'agressif', 'specialiste', 'aleatoire'] as const).map((strategie) =>
+        partie({
+          graine: `g${i}`,
+          strategie,
+          genreDominant: genres[strategie],
+          valorisation10ans: strategie === 'aleatoire' ? 100 : strategie === gagnant ? 1200 : 1000,
+          premierOr: strategie === 'aleatoire' ? null : 130,
+        }),
+      ),
+    );
+  };
   it('valide un jeu équilibré', () => {
     const a = analyser(equilibre());
-    expect(a.gagnante).toBe('agressif');
+    expect(a.gagnante).not.toBe('aleatoire');
     expect(a.verdicts.every((v) => v.atteinte)).toBe(true);
   });
-  it('détecte une stratégie dominante', () => {
-    const r = equilibre().map((g) =>
-      g.strategie === 'agressif' ? { ...g, valorisation10ans: 1000 * CIBLES.dominanceMax * 2 } : g,
-    );
+  it('détecte une stratégie dominante : elle gagne presque toutes les graines', () => {
+    const graines = ['a', 'b', 'c', 'd', 'e'];
+    const r = graines.flatMap((graine) => [
+      partie({ graine, strategie: 'prudent', valorisation10ans: 1000 }),
+      partie({ graine, strategie: 'agressif', valorisation10ans: 5000 }),
+      partie({ graine, strategie: 'specialiste', valorisation10ans: 900 }),
+      partie({ graine, strategie: 'aleatoire', valorisation10ans: 10 }),
+    ]);
     const a = analyser(r);
+    expect(a.victoires.find((v) => v.strategie === 'agressif')?.part).toBe(1);
     expect(a.verdicts[2]?.atteinte).toBe(false);
+  });
+  it('accepte de gros écarts de médiane quand les victoires se partagent', () => {
+    const gagnants = [
+      'prudent',
+      'agressif',
+      'specialiste',
+      'prudent',
+      'agressif',
+      'specialiste',
+    ] as const;
+    const r = gagnants.flatMap((g, i) =>
+      (['prudent', 'agressif', 'specialiste'] as const).map((strategie) =>
+        partie({ graine: `s${i}`, strategie, valorisation10ans: strategie === g ? 10_000 : 100 }),
+      ),
+    );
+    expect(analyser(r).verdicts[2]?.atteinte).toBe(true);
   });
   it('détecte des faillites la première année, un disque d’or trop tardif et un genre dominant', () => {
     const r = [

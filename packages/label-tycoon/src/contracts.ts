@@ -46,10 +46,7 @@ export interface Utility {
 
 /** Avance « juste » pour cet artiste : ce qu'il juge normal de recevoir à la signature. */
 export function fairAdvance(artist: Artist): Cents {
-  return cents(
-    CONTRACTS.advanceFloor +
-      Math.round((notoriety(artist.fanbase) * CONTRACTS.advancePerNotoriety) / 1),
-  );
+  return cents(CONTRACTS.advanceFloor + Math.round(artist.fanbase * CONTRACTS.advancePerFan));
 }
 
 /**
