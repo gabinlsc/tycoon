@@ -3,6 +3,7 @@ import type { Action } from '@tycoon/core';
 import { notoriety } from './artists';
 import { CONCERTS, VENUES, type VenueId } from './balance';
 import { buildingLevel } from './buildings';
+import { afterTourDate } from './tours';
 import { canAfford, earn, spend } from './finance';
 import type { LabelSignal } from './pipeline';
 import type { LabelState } from './state';
@@ -17,6 +18,8 @@ export interface Concert {
   resolu: boolean;
   spectateurs: number;
   recette: number;
+  /** Tournée à laquelle appartient la date, ou `null` pour un concert isolé. */
+  tourneeId: number | null;
 }
 
 /** Taux de remplissage attendu (0-1) : notoriété, hype, prix et salle maison. */
@@ -46,6 +49,7 @@ export const organiseConcert: ActionHandler<LabelState, ConcertAction, LabelSign
     const artist = state.artistes.find((a) => a.id === action.artisteId);
     if (!artist) return reject('artiste-introuvable');
     if (artist.employeur !== 'joueur') return reject('artiste-non-signe');
+    if (artist.repos > 0) return reject('artiste-au-repos', { semaines: artist.repos });
     if (!(action.salle in VENUES)) return reject('salle-inconnue');
     if (!Number.isInteger(action.prix) || action.prix < 1) return reject('prix-invalide');
     const cost = VENUES[action.salle].cout;
@@ -62,6 +66,7 @@ export const organiseConcert: ActionHandler<LabelState, ConcertAction, LabelSign
       resolu: false,
       spectateurs: 0,
       recette: 0,
+      tourneeId: null,
     });
     state.nextId += 1;
   },
@@ -95,6 +100,7 @@ export function concertsWeek(
     artist.fatigue = clamp(artist.fatigue + CONCERTS.fatigue, 0, 100);
     artist.fanbase += Math.round(c.spectateurs * CONCERTS.fansPerSpectator * (artist.scene / 50));
     if (fill > 0.8) artist.hype = Math.min(100, artist.hype + CONCERTS.hypeBoost);
+    afterTourDate(state, c, artist, emit);
     emit({ kind: 'concert', payload: { concertId: c.id, spectateurs: c.spectateurs } });
   }
 }

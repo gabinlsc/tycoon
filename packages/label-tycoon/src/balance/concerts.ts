@@ -38,3 +38,22 @@ export const CONCERTS = {
   /** Bonus de remplissage d'une salle de concert maison par niveau. */
   homeVenueFill: 0.05,
 } as const;
+
+/** Tournées et merch (GDD, 5.10). */
+export const TOUR = {
+  /** Dates par tournée. */
+  dates: { min: 3, max: 20 },
+  /** Fatigue à partir de laquelle l'artiste s'effondre (burnout) et annule le reste de la tournée. */
+  burnoutFatigue: 90,
+  /** Conséquences du burnout : moral perdu et semaines de repos forcé. */
+  burnoutMoral: 30,
+  restWeeks: 8,
+  /** Merch : coût et prix unitaires, part des spectateurs qui achètent. */
+  merchCost: money.euros(8) as Cents,
+  merchPrice: money.euros(25) as Cents,
+  merchRate: 0.15,
+  /** Part du merch gardée par le label (plus la part 360). */
+  merchLabelBps: 4000,
+  /** Chaque niveau du tourneur réduit le coût des salles (part). */
+  tourerDiscountPerLevel: 0.004,
+} as const;

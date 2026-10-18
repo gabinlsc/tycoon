@@ -234,3 +234,4 @@ export {
 } from './pressing';
 export { livePhase } from './live-phase';
 export { type Concert, type ConcertAction, concertsWeek, fillRate } from './concerts';
+export { type TourAction, type Tournee, afterTourDate, launchTour, venueCost } from './tours';

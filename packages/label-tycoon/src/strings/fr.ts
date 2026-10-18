@@ -191,6 +191,12 @@ export const fr = {
       `La quantité doit être comprise entre ${p.min} et ${p.max} exemplaires.`,
     'salle-inconnue': () => "Cette salle n'existe pas.",
     'prix-invalide': () => "Le prix du billet doit être un nombre entier d'euros, au moins 1.",
+    'dates-invalides': (p: { min: number; max: number }) =>
+      `Une tournée compte entre ${p.min} et ${p.max} dates.`,
+    'merch-invalide': () => 'La quantité de merch doit être un nombre entier positif.',
+    'tournee-en-cours': () => 'Cet artiste est déjà en tournée.',
+    'artiste-au-repos': (p: { semaines: number }) =>
+      `Cet artiste est au repos encore ${p.semaines} semaines.`,
     'suivi-introuvable': () => "Ce talent n'est pas dans ta liste de suivi.",
     'essai-deja-fait': () => 'Tu as déjà fait passer un essai à ce talent.',
   },
