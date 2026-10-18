@@ -15,6 +15,7 @@ import {
   LOANS,
   PERSONALITIES,
   STAFF,
+  GROUPE,
   TAX,
   TOUR,
   UNLOCKS,
@@ -31,6 +32,15 @@ import { SUCCES, familyValue, objectiveProgress } from './achievements';
 import { festivalOffer } from './festivals';
 import { venueCost } from './tours';
 import { DEFI_SEMAINES, defiTermine, resultatDefi, texteResultat } from './defi';
+import {
+  cadreDe,
+  fourchetteNiveau,
+  integriteConnue,
+  prixRachatRival,
+  rendementEspere,
+  sousLabelsMax,
+  valorisationRival,
+} from './groupe';
 import { conditionMet, findScenario } from './scenarios/engine';
 import { texteCondition } from './scenarios/textes';
 import { buildingLevel, teamCapacity } from './buildings';
@@ -481,6 +491,43 @@ export interface VueDefi {
   partage: string;
 }
 
+export interface VueGroupe {
+  debloque: boolean;
+  /** Sous-labels simultanés possibles au palier actuel. */
+  max: number;
+  coutCreation: number;
+  enveloppeMax: number;
+  sousLabels: {
+    id: number;
+    nom: string;
+    genre: string;
+    genreNom: string;
+    enveloppe: number;
+    investi: number;
+    rapporte: number;
+    recents: number[];
+    /** Rendement espéré d'un euro d'enveloppe, hasard exclu. */
+    rendementEspere: number;
+    cadre: {
+      id: number;
+      nom: string;
+      style: string;
+      niveau: [number, number];
+      salaire: number;
+      integrite: number | null;
+    } | null;
+  }[];
+  candidats: {
+    id: number;
+    nom: string;
+    style: string;
+    niveau: [number, number];
+    salaire: number;
+  }[];
+  genresLibres: { id: string; nom: string }[];
+  rachats: { rivalId: number; nom: string; valorisation: number; prix: number; artistes: number }[];
+}
+
 export interface VueJeu {
   semaine: number;
   date: { annee: number; mois: number; semaineDuMois: number };
@@ -525,6 +572,7 @@ export interface VueJeu {
   batiments: VueBatiment[];
   scene: VueScene;
   partie: VuePartie;
+  groupe: VueGroupe;
   scenario: VueScenario | null;
   defi: VueDefi | null;
   rapportsMensuels: VueRapportMensuel[];
@@ -1036,6 +1084,68 @@ function rapportsDe(state: LabelState): VueRapportMensuel[] {
     }));
 }
 
+const STYLES_CADRE: Record<string, string> = {
+  prudent: 'Prudent',
+  ambitieux: 'Ambitieux',
+  flambeur: 'Flambeur',
+};
+
+function groupeDe(state: LabelState, tick: number): VueGroupe {
+  const debloque = tierAtLeast(state, UNLOCKS['sous-labels']);
+  const couverts = new Set(state.sousLabels.map((s) => s.genre));
+  return {
+    debloque,
+    max: sousLabelsMax(state),
+    coutCreation: GROUPE.creationCost,
+    enveloppeMax: GROUPE.envelopeMax,
+    sousLabels: state.sousLabels.map((s) => {
+      const c = cadreDe(state, s.cadreId);
+      return {
+        id: s.id,
+        nom: s.nom,
+        genre: s.genre,
+        genreNom: nomGenre(state, s.genre),
+        enveloppe: s.enveloppe,
+        investi: s.investi,
+        rapporte: s.rapporte,
+        recents: [...s.recents],
+        rendementEspere: Math.round(rendementEspere(state, s) * 100) / 100,
+        cadre: c
+          ? {
+              id: c.id,
+              nom: c.nom,
+              style: STYLES_CADRE[c.style] ?? c.style,
+              niveau: fourchetteNiveau(c, tick),
+              salaire: c.salaire,
+              integrite: integriteConnue(c, tick),
+            }
+          : null,
+      };
+    }),
+    candidats: state.cadres
+      .filter((c) => !c.embauche)
+      .map((c) => ({
+        id: c.id,
+        nom: c.nom,
+        style: STYLES_CADRE[c.style] ?? c.style,
+        niveau: fourchetteNiveau(c, tick),
+        salaire: c.salaire,
+      })),
+    genresLibres: genreKeys(state.marche)
+      .filter((g) => !couverts.has(g))
+      .map((id) => ({ id, nom: nomGenre(state, id) })),
+    rachats: debloque
+      ? state.rivaux.map((r) => ({
+          rivalId: r.id,
+          nom: r.nom,
+          valorisation: valorisationRival(state, r.id),
+          prix: prixRachatRival(state, r.id),
+          artistes: state.artistes.filter((a) => a.employeur === `rival:${r.id}`).length,
+        }))
+      : [],
+  };
+}
+
 function defiDe(state: LabelState, tick: number): VueDefi | null {
   const r = resultatDefi(state, tick);
   if (!r) return null;
@@ -1222,6 +1332,7 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
     personnel: personnelDe(state),
     batiments: batimentsDe(state),
     scene: sceneDe(state),
+    groupe: groupeDe(state, tick),
     partie: {
       mode: state.config.mode,
       scenarioId: state.config.scenarioId ?? null,

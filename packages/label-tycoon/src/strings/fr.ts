@@ -21,6 +21,9 @@ export const fr = {
     independant: 'Label indépendant',
     etabli: 'Label établi',
     major: 'Major',
+    groupe: 'Groupe',
+    conglomerat: 'Conglomérat',
+    institution: 'Institution',
   } satisfies Record<TierId, string>,
 
   genres: {
@@ -187,6 +190,7 @@ export const fr = {
     merch: 'Merchandising',
     synchro: 'Synchronisation',
     cessions: 'Cessions de contrats',
+    filiales: 'Sous-labels',
     autres: 'Autres revenus',
   } satisfies Record<RevenueCategory, string>,
 
@@ -201,6 +205,7 @@ export const fr = {
     reperage: 'Repérage',
     interets: 'Intérêts et remboursements',
     impots: 'Impôts',
+    filiales: 'Enveloppes des sous-labels',
     autres: 'Autres dépenses',
   } satisfies Record<ExpenseCategory, string>,
 
@@ -272,6 +277,12 @@ export const fr = {
     'genre-inconnu': () => "Ce genre n'existe pas.",
     'artiste-introuvable': () => "Cet artiste n'existe pas.",
     'artiste-indisponible': () => 'Cet artiste est déjà sous contrat ailleurs.',
+    'nom-invalide': () => 'Donne un nom (32 caractères au plus).',
+    'genre-deja-couvert': () => 'Un sous-label couvre déjà ce genre.',
+    'trop-de-sous-labels': (p: { max: number }) =>
+      `Ton groupe ne peut diriger que ${p.max} sous-labels à son palier.`,
+    'sous-label-introuvable': () => "Ce sous-label n'existe pas.",
+    'cadre-introuvable': () => "Ce cadre n'est pas disponible.",
     'roster-plein': (p: { max: number }) =>
       `Ton label ne peut accompagner que ${p.max} artistes à son palier : monte de palier ou libère une place.`,
     'clauses-invalides': () => 'Ces clauses sortent des limites autorisées.',

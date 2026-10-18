@@ -94,3 +94,4 @@ export {
   type Venue,
   type VenueId,
 } from './concerts';
+export { CADRE_STYLES, GROUPE, type CadreStyle } from './groupe';

@@ -18,6 +18,7 @@ import type { OffreSynchro } from './sync';
 import type { Festival } from './festivals';
 import type { Tournee } from './tours';
 import type { Concert } from './concerts';
+import type { Dirigeant, SousLabel } from './groupe';
 import type { ScenarioState } from './scenarios/types';
 import type { Commande } from './pressing';
 import type { BatimentsState } from './buildings';
@@ -126,6 +127,9 @@ export interface LabelState {
   records: { clef: string; valeur: number; semaine: number }[];
   /** Négociations en cours ou rompues, une par artiste. */
   negociations: Negociation[];
+  /** Palier Groupe : sous-labels et cadres (embauchés ou candidats). */
+  sousLabels: SousLabel[];
+  cadres: Dirigeant[];
   /** Suivi du scénario en cours (mode scénario) ; absent dans les autres modes. */
   scenario?: ScenarioState;
   /** Prochain identifiant libre, partagé par toutes les entités (artistes, sorties, contrats…). */

@@ -12,6 +12,7 @@ import { Fil } from './Fil';
 import { Parametres } from './Parametres';
 import { RapportMensuel } from './RapportMensuel';
 import { Succes } from './Succes';
+import { Groupe } from './Groupe';
 
 /** Écrans sans état de navigation propre : un composant par identifiant. */
 export const ECRANS_SIMPLES: Partial<Record<EcranId, ComponentType>> = {
@@ -27,4 +28,5 @@ export const ECRANS_SIMPLES: Partial<Record<EcranId, ComponentType>> = {
   parametres: Parametres,
   rapport: RapportMensuel,
   succes: Succes,
+  groupe: Groupe,
 };
