@@ -4,6 +4,7 @@ import { CODE_COUNT } from '../../accounts/recoveryCodes';
 import type { SaveInfo } from '../../accounts/types';
 import { SITE } from '../../config/site';
 import { findGame } from '../../data/games';
+import { PURGES } from '../../games/registry';
 import { Button } from '../arcade/ui/Button';
 import { Avatar } from './Avatar';
 
@@ -14,7 +15,7 @@ const dateTimeFormat = new Intl.DateTimeFormat(SITE.locale, {
 });
 
 function SavesList() {
-  const { store } = useAccount();
+  const { store, account } = useAccount();
   const [saves, setSaves] = useState<SaveInfo[] | null>(null);
 
   const load = useCallback(async () => setSaves(await store.listSaves()), [store]);
@@ -39,11 +40,13 @@ function SavesList() {
             <span className="saves__meta">
               Dernière partie : {dateTimeFormat.format(new Date(save.updatedAt))}
             </span>
+            {save.resume ? <span className="saves__meta">{save.resume}</span> : null}
           </div>
           <Button
             type="button"
             tone="ghost"
             onClick={async () => {
+              if (account) await PURGES[save.slug]?.(account.id);
               await store.clearSave(save.slug);
               await load();
             }}
@@ -58,7 +61,7 @@ function SavesList() {
 }
 
 function DeleteAccount({ pseudo }: { pseudo: string }) {
-  const { deleteAccount } = useAccount();
+  const { deleteAccount, account } = useAccount();
   const inputId = useId();
   const [open, setOpen] = useState(false);
   const [typed, setTyped] = useState('');
@@ -90,7 +93,10 @@ function DeleteAccount({ pseudo }: { pseudo: string }) {
           type="button"
           tone="gold"
           disabled={typed.trim().toLowerCase() !== pseudo.toLowerCase()}
-          onClick={() => void deleteAccount()}
+          onClick={async () => {
+            if (account) await Promise.all(Object.values(PURGES).map((purge) => purge(account.id)));
+            await deleteAccount();
+          }}
         >
           Supprimer définitivement
         </Button>

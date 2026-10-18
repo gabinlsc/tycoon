@@ -25,6 +25,8 @@ export interface SaveInfo {
   slug: string;
   updatedAt: string;
   bytes: number;
+  /** Résumé lisible fourni par le jeu (partie la plus récente, nombre d'emplacements…). */
+  resume?: string;
 }
 
 export type AccountErrorCode =

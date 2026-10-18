@@ -204,4 +204,35 @@ describe('sauvegarde de la partie', () => {
     await screen.findByText(/Emplacement 1 est illisible/);
     expect(screen.getByLabelText('Trésorerie')).toBeTruthy();
   });
+
+  it('remonte un résumé dans la liste des sauvegardes du compte', async () => {
+    let lireCompte: () => Promise<{ slug: string; resume?: string }[]> = () => Promise.resolve([]);
+    function Sonde() {
+      const { store } = useAccount();
+      lireCompte = () => store.listSaves();
+      return null;
+    }
+    render(
+      <MemoryRouter>
+        <AccountProvider>
+          <Sonde />
+          <Compte />
+          <LabelProvider fabrique={() => Promise.resolve(creerMoteurLocal())}>
+            <Persistance stockage={creerStockageMemoire()} />
+            <Coquille />
+          </LabelProvider>
+        </AccountProvider>
+      </MemoryRouter>,
+    );
+    await connecter();
+    await demarrer();
+    fireEvent.click(screen.getByText('Sauvegardes'));
+    fireEvent.click(await screen.findByRole('button', { name: /Sauvegarder dans emplacement 3/ }));
+    await waitFor(async () => {
+      const saves = await lireCompte();
+      expect(saves.find((s) => s.slug === 'label-tycoon')?.resume).toMatch(
+        /semaine 0.*1 emplacement/,
+      );
+    });
+  });
 });

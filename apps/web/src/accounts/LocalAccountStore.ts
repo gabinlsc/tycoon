@@ -222,7 +222,15 @@ export class LocalAccountStore implements AccountStore {
       if (!raw) return [];
       try {
         const envelope = JSON.parse(raw) as SaveEnvelope;
-        return [{ slug, updatedAt: envelope.updatedAt, bytes: raw.length }];
+        const resume = (envelope.data as { resume?: unknown } | null)?.resume;
+        return [
+          {
+            slug,
+            updatedAt: envelope.updatedAt,
+            bytes: raw.length,
+            ...(typeof resume === 'string' ? { resume } : {}),
+          },
+        ];
       } catch {
         return [];
       }

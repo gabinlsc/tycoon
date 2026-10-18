@@ -4,7 +4,13 @@ import { useAccount, useGameSave } from '../../accounts/AccountContext';
 import { Button } from '../../components/arcade/ui/Button';
 import { useLabel } from './LabelContext';
 import { exporterFichier, importerFichier, nomFichier, validerPartie } from './sauvegardes/fichier';
-import { LIBELLES_EMPLACEMENT, resumeSauvegarde, sauvegardeAutoDue } from './sauvegardes/regles';
+import {
+  LIBELLES_EMPLACEMENT,
+  type MetadonneesCompte,
+  metadonneesCompte,
+  resumeSauvegarde,
+  sauvegardeAutoDue,
+} from './sauvegardes/regles';
 import {
   EMPLACEMENTS,
   EMPLACEMENTS_MANUELS,
@@ -25,6 +31,9 @@ interface SauvegardeHeritee {
   enregistreLe: string;
 }
 
+const estHeritee = (d: SauvegardeHeritee | MetadonneesCompte | null): d is SauvegardeHeritee =>
+  d !== null && typeof (d as Partial<SauvegardeHeritee>).sauvegarde === 'string';
+
 type Contenu = Partial<Record<Emplacement, SauvegardeLabel>>;
 
 interface Props {
@@ -40,7 +49,7 @@ interface Props {
 export function Persistance({ stockage: injecte }: Props) {
   const { status, account } = useAccount();
   const { vue, envoyer } = useLabel();
-  const heritee = useGameSave<SauvegardeHeritee>('label-tycoon');
+  const heritee = useGameSave<SauvegardeHeritee | MetadonneesCompte>('label-tycoon');
   const [stockage] = useState<StockageParties>(() => injecte ?? choisirStockage().stockage);
   const [contenu, setContenu] = useState<Contenu>({});
   const [message, setMessage] = useState<string | null>(null);
@@ -58,9 +67,17 @@ export function Persistance({ stockage: injecte }: Props) {
   }, [rafraichir]);
 
   // Migration de l'ancienne sauvegarde unique vers l'emplacement automatique.
+  const {
+    state: etatHeritage,
+    data: donneesHeritees,
+    clear: effacerHeritage,
+    save: ecrireCompte,
+  } = heritee;
   useEffect(() => {
-    if (!compte || heritee.state !== 'ready' || !heritee.data) return;
-    const ancienne = heritee.data;
+    if (!compte || etatHeritage !== 'ready' || !donneesHeritees) return;
+    // Le compte ne garde plus ici que des métadonnées : seule l'ancienne forme contient une partie.
+    if (!estHeritee(donneesHeritees)) return;
+    const ancienne = donneesHeritees;
     void (async () => {
       const present = await stockage.lire(compte, 'auto').catch(() => null);
       if (!present)
@@ -73,10 +90,24 @@ export function Persistance({ stockage: injecte }: Props) {
           tresorerie: 0,
           enregistreLe: ancienne.enregistreLe,
         });
-      await heritee.clear();
+      await effacerHeritage();
       await rafraichir();
     })().catch(() => undefined);
-  }, [compte, heritee, stockage, rafraichir]);
+  }, [compte, etatHeritage, donneesHeritees, effacerHeritage, stockage, rafraichir]);
+
+  // Les métadonnées des sauvegardes remontent dans la page de compte.
+  const publiee = useRef<string | null>(null);
+  useEffect(() => {
+    if (!compte || etatHeritage !== 'ready') return;
+    const meta = metadonneesCompte(contenu);
+    const empreinte = JSON.stringify(meta);
+    if (publiee.current === empreinte) return;
+    // Tant que l'ancienne sauvegarde n'est pas migrée, on ne l'écrase pas.
+    if (estHeritee(donneesHeritees)) return;
+    publiee.current = empreinte;
+    if (meta) void ecrireCompte(meta).catch(() => undefined);
+    else if (donneesHeritees) void effacerHeritage().catch(() => undefined);
+  }, [compte, etatHeritage, donneesHeritees, contenu, ecrireCompte, effacerHeritage]);
 
   const ecrire = useCallback(
     async (emplacement: Emplacement): Promise<boolean> => {
