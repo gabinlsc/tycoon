@@ -6,7 +6,7 @@ import { Coquille } from './Coquille';
 import { creerMoteurLocal } from './engine/local';
 import { LabelProvider } from './LabelContext';
 import { texteEffectif } from './Roster';
-import { SANS_FILTRE, alertesArtiste, filtrer, trier } from './roster';
+import { SANS_FILTRE, alertesArtiste, filtrer, trier } from './rosterFiltres';
 
 afterEach(cleanup);
 

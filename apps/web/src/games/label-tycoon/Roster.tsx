@@ -1,7 +1,14 @@
 import { useMemo, useState } from 'react';
 import { Terme } from './Infobulle';
 import { useLabel } from './LabelContext';
-import { type CleTri, type Filtres, SANS_FILTRE, alertesArtiste, filtrer, trier } from './roster';
+import {
+  type CleTri,
+  type Filtres,
+  SANS_FILTRE,
+  alertesArtiste,
+  filtrer,
+  trier,
+} from './rosterFiltres';
 
 const COLONNES: { cle: CleTri; titre: string; terme?: string }[] = [
   { cle: 'nom', titre: 'Artiste' },
