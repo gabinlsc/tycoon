@@ -309,10 +309,16 @@ export const EVENT_TEXTS: Readonly<Record<string, EventText>> = {
   ...TEXTES_SAISONNIERS,
 };
 
-/** Remplace les `{variable}` d'un texte. */
+/** Montant en centimes affiché en euros entiers, par groupes de trois chiffres (« 3 000 »). */
+const euros = (centimes: number): string =>
+  String(Math.round(centimes / 100)).replace(/\B(?=(\d{3})+(?!\d))/g, '\u202f');
+
+/** Remplace les `{variable}` d'un texte ; un montant suivi de « centimes » est converti en euros. */
 export function fillTemplate(
   template: string,
   vars: Readonly<Record<string, string | number>>,
 ): string {
-  return template.replace(/\{(\w+)\}/g, (_, key: string) => String(vars[key] ?? ''));
+  return template
+    .replace(/\{(\w+)\} centimes/g, (_, key: string) => `${euros(Number(vars[key] ?? 0))} €`)
+    .replace(/\{(\w+)\}/g, (_, key: string) => String(vars[key] ?? ''));
 }

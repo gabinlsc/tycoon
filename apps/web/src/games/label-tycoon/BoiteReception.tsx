@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import type { VueActu, VueDecision } from '@tycoon/label-tycoon';
+import { BellRing, Hourglass, Inbox, Mail } from 'lucide-react';
 import { Button } from '../../components/arcade/ui/Button';
 import { useLabel } from './LabelContext';
+import { Panneau } from './Visuels';
 
 /** Semaines restantes avant l'échéance d'une décision (jamais négatif). */
 export const semainesRestantes = (decision: VueDecision, semaine: number): number =>
@@ -27,15 +29,24 @@ function Decision({ decision, semaine }: { decision: VueDecision; semaine: numbe
   };
 
   return (
-    <li className="label-decision">
-      <h4>{decision.titre}</h4>
+    <li className={`label-decision lt-decision${restantes === 0 ? ' is-urgent' : ''}`}>
+      <header className="lt-decision__tete">
+        <span className="lt-decision__icone" aria-hidden="true">
+          <Mail size={22} strokeWidth={2.4} />
+        </span>
+        <h4>{decision.titre}</h4>
+        <span className="lt-chip lt-decision__delai">
+          <Hourglass aria-hidden="true" size={14} />
+          {restantes === 0 ? 'Maintenant' : `${restantes} sem.`}
+        </span>
+      </header>
       <p>{decision.texte}</p>
-      <p className="label-decision__deadline">
-        {restantes === 0
-          ? 'À trancher maintenant.'
-          : `Il reste ${restantes} semaine${restantes > 1 ? 's' : ''}.`}
-        {parDefaut ? <> Si tu ne réponds pas : « {parDefaut.libelle} ».</> : null}
-      </p>
+      {parDefaut ? (
+        <p className="label-decision__deadline">
+          {restantes === 0 ? 'À trancher maintenant. ' : ''}Si tu ne réponds pas : «{' '}
+          {parDefaut.libelle} ».
+        </p>
+      ) : null}
       <div className="label-decision__choices">
         {decision.choix.map((c) => (
           <Button
@@ -69,37 +80,44 @@ export function BoiteReception({
   return (
     <section className="label-screen label-inbox" aria-labelledby="inbox-titre">
       <h2 id="inbox-titre">Boîte de réception</h2>
-      <h3>Décisions</h3>
-      {vue.decisions.length === 0 ? (
-        <p className="label-screen__soon">Aucune décision en attente.</p>
-      ) : (
-        <ul className="label-decisions">
-          {vue.decisions.map((d) => (
-            <Decision key={d.instanceId} decision={d} semaine={vue.semaine} />
-          ))}
-        </ul>
-      )}
-      <h3>
-        Notifications <span className="label-badge">{nouvelles.length}</span>
-      </h3>
-      {vue.fil.length === 0 ? (
-        <p className="label-screen__soon">Rien pour l’instant.</p>
-      ) : (
-        <ul className="label-notifs">
-          {vue.fil.slice(0, 15).map((a) => (
-            <li key={a.id} className={a.id > dernierLu && a.importance >= 2 ? 'is-new' : undefined}>
-              <strong>{a.titre}</strong> <span className="mono">sem. {a.semaine}</span>
-              <br />
-              {a.texte}
-            </li>
-          ))}
-        </ul>
-      )}
-      {nouvelles.length > 0 ? (
-        <Button type="button" tone="ghost" onClick={() => onLu(plusRecent)}>
-          Tout marquer comme lu
-        </Button>
-      ) : null}
+      <Panneau titre="Décisions" Icone={Inbox} ton="gold" id="inbox-decisions">
+        {vue.decisions.length === 0 ? (
+          <p className="lt-rien">Aucune décision en attente.</p>
+        ) : (
+          <ul className="label-decisions lt-decisions">
+            {vue.decisions.map((d) => (
+              <Decision key={d.instanceId} decision={d} semaine={vue.semaine} />
+            ))}
+          </ul>
+        )}
+      </Panneau>
+      <Panneau titre="Messages" Icone={BellRing} ton="blue" id="inbox-notifs">
+        {nouvelles.length > 0 ? (
+          <p>
+            <span className="label-badge">{nouvelles.length}</span> à lire
+          </p>
+        ) : null}
+        {vue.fil.length === 0 ? (
+          <p className="lt-rien">Rien pour l’instant.</p>
+        ) : (
+          <ul className="label-notifs lt-recus">
+            {vue.fil.slice(0, 15).map((a) => (
+              <li
+                key={a.id}
+                className={a.id > dernierLu && a.importance >= 2 ? 'is-new' : undefined}
+              >
+                <strong>{a.titre}</strong> <span className="lt-chip">sem. {a.semaine}</span>
+                <p>{a.texte}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+        {nouvelles.length > 0 ? (
+          <Button type="button" tone="ghost" onClick={() => onLu(plusRecent)}>
+            Tout marquer comme lu
+          </Button>
+        ) : null}
+      </Panneau>
     </section>
   );
 }

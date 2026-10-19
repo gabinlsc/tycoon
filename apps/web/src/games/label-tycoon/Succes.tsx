@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import type { VueRecord, VueSucces } from '@tycoon/label-tycoon';
+import { Award, Crown, Lock, Trophy } from 'lucide-react';
 import { useLabel } from './LabelContext';
+import { Panneau, Tuile, Tuiles } from './Visuels';
 
 const eur = (cents: number): string => `${Math.round(cents / 100).toLocaleString('fr-FR')} €`;
 
@@ -51,68 +53,92 @@ export function Succes() {
   return (
     <section className="label-screen" aria-labelledby="succes-titre">
       <h2 id="succes-titre">Succès</h2>
-      <p>
-        <strong className="mono">
-          {obtenus} / {vue.tousSucces.length}
-        </strong>{' '}
-        succès obtenus.
-      </p>
+      <Tuiles label="Progression">
+        <Tuile
+          Icone={Trophy}
+          valeur={
+            <>
+              {obtenus} / {vue.tousSucces.length}
+            </>
+          }
+          libelle="succès obtenus"
+          ton="gold"
+        />
+        <Tuile
+          Icone={Crown}
+          valeur={`${Math.round((obtenus / Math.max(1, vue.tousSucces.length)) * 100)} %`}
+          libelle="de complétion"
+          ton="purple"
+        />
+      </Tuiles>
 
-      <h3>Records du label</h3>
-      {vue.records.length === 0 ? (
-        <p className="label-screen__soon">Les records s’enregistrent dès la première semaine.</p>
-      ) : (
-        <table className="label-table">
-          <thead>
-            <tr>
-              <th scope="col">Record</th>
-              <th scope="col">Valeur</th>
-              <th scope="col">Établi</th>
-            </tr>
-          </thead>
-          <tbody>
+      <Panneau titre="Records du label" Icone={Crown} ton="orange" id="succes-records">
+        {vue.records.length === 0 ? (
+          <p className="lt-rien">Les records s’enregistrent dès la première semaine.</p>
+        ) : (
+          <ul className="lt-records">
             {vue.records.map((r) => (
-              <tr key={r.clef}>
-                <th scope="row">{r.nom}</th>
-                <td className="mono">{formaterRecord(r)}</td>
-                <td className="mono">semaine {r.semaine}</td>
-              </tr>
+              <li key={r.clef} className="lt-record">
+                <Crown aria-hidden="true" size={20} />
+                <strong className="mono">{formaterRecord(r)}</strong>
+                <span>{r.nom}</span>
+                <small>semaine {r.semaine}</small>
+              </li>
             ))}
-          </tbody>
-        </table>
-      )}
+          </ul>
+        )}
+      </Panneau>
 
-      <h3>Tous les succès</h3>
-      <label className="label-field">
-        Afficher
-        <select value={filtre} onChange={(e) => setFiltre(e.target.value as FiltreSucces)}>
-          <option value="tous">Tous</option>
-          <option value="obtenus">Obtenus</option>
-          <option value="restants">Restants</option>
-        </select>
-      </label>
-      {liste.length === 0 ? (
-        <p className="label-screen__soon">Aucun succès dans cette liste.</p>
-      ) : (
-        <ul className="label-list">
-          {liste.map((s) => (
-            <li key={s.id} data-obtenu={s.obtenu}>
-              <strong>
-                {s.obtenu ? '✔ ' : ''}
-                {s.titre}
-              </strong>{' '}
-              — {s.description}
-              {s.obtenu ? null : (
-                <>
-                  {' '}
-                  <small>Actuellement : {formaterValeur(s)}</small>
-                  <progress max={1} value={avancement(s)} aria-label={`Avancement : ${s.titre}`} />
-                </>
-              )}
-            </li>
+      <Panneau titre="Tous les succès" Icone={Award} ton="purple" id="succes-tous">
+        <div className="lt-fil__filtres" role="group" aria-label="Afficher">
+          {(
+            [
+              ['tous', 'Tous'],
+              ['obtenus', 'Obtenus'],
+              ['restants', 'Restants'],
+            ] as const
+          ).map(([id, nom]) => (
+            <button
+              key={id}
+              type="button"
+              className={`lt-tri__puce${filtre === id ? ' is-actif' : ''}`}
+              aria-pressed={filtre === id}
+              onClick={() => setFiltre(id)}
+            >
+              {nom}
+            </button>
           ))}
-        </ul>
-      )}
+        </div>
+        {liste.length === 0 ? (
+          <p className="lt-rien">Aucun succès dans cette liste.</p>
+        ) : (
+          <ul className="lt-succes-grille">
+            {liste.map((s) => (
+              <li
+                key={s.id}
+                data-obtenu={s.obtenu}
+                className={`lt-succes${s.obtenu ? ' is-obtenu' : ''}`}
+              >
+                <span className="lt-succes__badge" aria-hidden="true">
+                  {s.obtenu ? <Trophy size={26} /> : <Lock size={22} />}
+                </span>
+                <strong>{s.titre}</strong>
+                <small>{s.description}</small>
+                {s.obtenu ? null : (
+                  <>
+                    <small className="lt-succes__actuel">Actuellement : {formaterValeur(s)}</small>
+                    <progress
+                      max={1}
+                      value={avancement(s)}
+                      aria-label={`Avancement : ${s.titre}`}
+                    />
+                  </>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </Panneau>
     </section>
   );
 }

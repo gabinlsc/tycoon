@@ -59,6 +59,6 @@ describe('écran Succès', () => {
     await allerAEcran(/Succès/);
     await screen.findByRole('heading', { name: 'Succès' });
     expect(screen.getByText(/succès obtenus/)).toBeTruthy();
-    expect(document.querySelectorAll('.label-list li').length).toBeGreaterThanOrEqual(50);
+    expect(document.querySelectorAll('.lt-succes').length).toBeGreaterThanOrEqual(50);
   });
 });
