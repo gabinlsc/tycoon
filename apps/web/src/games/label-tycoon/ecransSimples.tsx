@@ -21,6 +21,7 @@ import { International } from './International';
 import { Scenes } from './Scenes';
 import { Regulation } from './Regulation';
 import { Abonnement } from './Abonnement';
+import { Campagne } from './Campagne';
 
 /** Écrans sans état de navigation propre : un composant par identifiant. */
 export const ECRANS_SIMPLES: Partial<Record<EcranId, ComponentType>> = {
@@ -35,6 +36,7 @@ export const ECRANS_SIMPLES: Partial<Record<EcranId, ComponentType>> = {
   fil: Fil,
   parametres: Parametres,
   abonnement: Abonnement,
+  campagne: Campagne,
   rapport: RapportMensuel,
   succes: Succes,
   groupe: Groupe,
