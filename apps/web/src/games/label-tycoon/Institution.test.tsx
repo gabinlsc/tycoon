@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
-import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { allerAEcran } from './testNavigation';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import type { CommandeJeu, ReponseJeu } from '@tycoon/label-tycoon';
 import { Coquille } from './Coquille';
@@ -41,12 +42,7 @@ async function demarrer(tier?: string) {
     });
 }
 
-const ouvrir = () =>
-  fireEvent.click(
-    within(screen.getByRole('navigation', { name: 'Écrans du jeu' })).getByRole('button', {
-      name: /Institution/,
-    }),
-  );
+const ouvrir = () => allerAEcran(/Institution/);
 
 describe('écran Institution', () => {
   it('reste fermé avant le palier', async () => {

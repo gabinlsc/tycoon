@@ -5,6 +5,7 @@ import type { VueSucces } from '@tycoon/label-tycoon';
 import { Coquille } from './Coquille';
 import { creerMoteurLocal } from './engine/local';
 import { LabelProvider } from './LabelContext';
+import { allerAEcran } from './testNavigation';
 import { avancement, filtrerSucces, formaterValeur } from './Succes';
 
 afterEach(cleanup);
@@ -55,7 +56,7 @@ describe('écran Succès', () => {
     const b = await screen.findByRole('button', { name: 'Nouvelle partie' });
     await waitFor(() => expect((b as HTMLButtonElement).disabled).toBe(false));
     fireEvent.click(b);
-    fireEvent.click(await screen.findByRole('button', { name: /Succès/ }));
+    await allerAEcran(/Succès/);
     await screen.findByRole('heading', { name: 'Succès' });
     expect(screen.getByText(/succès obtenus/)).toBeTruthy();
     expect(document.querySelectorAll('.label-list li').length).toBeGreaterThanOrEqual(50);

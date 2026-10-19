@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
-import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { allerAEcran } from './testNavigation';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { CommandeJeu, ReponseJeu } from '@tycoon/label-tycoon';
 import { Coquille } from './Coquille';
@@ -46,12 +47,7 @@ async function demarrer(tier?: string) {
     });
 }
 
-const ouvrir = () =>
-  fireEvent.click(
-    within(screen.getByRole('navigation', { name: 'Écrans du jeu' })).getByRole('button', {
-      name: /Héritage/,
-    }),
-  );
+const ouvrir = () => allerAEcran(/Héritage/);
 
 describe('écran Héritage', () => {
   it('ne permet pas de clore un règne trop jeune', async () => {

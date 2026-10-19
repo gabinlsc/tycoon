@@ -66,7 +66,7 @@ export function Tutoriel({
   const cible = etape?.ecran;
   useEffect(() => {
     if (!cible) return;
-    const elements = document.querySelectorAll<HTMLElement>(`[data-ecran="${cible}"]`);
+    const elements = document.querySelectorAll<HTMLElement>(`[data-ecran~="${cible}"]`);
     elements.forEach((el) => el.classList.add('lt-cible'));
     return () => elements.forEach((el) => el.classList.remove('lt-cible'));
   }, [cible]);

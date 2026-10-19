@@ -6,6 +6,7 @@ import type { VueSuivi } from '@tycoon/label-tycoon';
 import { Coquille } from './Coquille';
 import { creerMoteurLocal } from './engine/local';
 import { LabelProvider } from './LabelContext';
+import { allerAEcran } from './testNavigation';
 import { Fourchette, incertitude } from './Reperage';
 
 afterEach(cleanup);
@@ -31,7 +32,7 @@ async function ouvrir() {
   const b = await screen.findByRole('button', { name: 'Nouvelle partie' });
   await waitFor(() => expect((b as HTMLButtonElement).disabled).toBe(false));
   fireEvent.click(b);
-  fireEvent.click(await screen.findByRole('button', { name: /Repérage/ }));
+  await allerAEcran(/Repérage/);
 }
 
 describe('écran Repérage', () => {

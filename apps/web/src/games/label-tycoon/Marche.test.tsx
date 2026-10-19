@@ -5,6 +5,7 @@ import type { VueGenre, VuePrevision } from '@tycoon/label-tycoon';
 import { Coquille } from './Coquille';
 import { creerMoteurLocal } from './engine/local';
 import { LabelProvider } from './LabelContext';
+import { allerAEcran } from './testNavigation';
 import { fourchettePrevision, parPopularite, texteVariation } from './Marche';
 
 afterEach(cleanup);
@@ -58,7 +59,7 @@ describe('écran Marché', () => {
     const b = await screen.findByRole('button', { name: 'Nouvelle partie' });
     await waitFor(() => expect((b as HTMLButtonElement).disabled).toBe(false));
     fireEvent.click(b);
-    fireEvent.click(await screen.findByRole('button', { name: /Marché/ }));
+    await allerAEcran(/Marché/);
     await screen.findByRole('heading', { name: 'Marché' });
     expect(screen.getByRole('heading', { name: 'Ère du streaming' })).toBeTruthy();
     // Une partie démarre hors saison : rien n’est annoncé.

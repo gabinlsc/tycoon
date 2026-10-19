@@ -507,7 +507,7 @@ html.lt-verrou body {
   .lt-side {
     position: fixed;
     inset: 0 auto 0 0;
-    z-index: 3;
+    z-index: 8;
     width: min(20rem, 86vw);
     border-right: var(--border);
     box-shadow: 8px 0 0 color-mix(in srgb, var(--outline) 35%, transparent);
@@ -520,7 +520,7 @@ html.lt-verrou body {
   .lt-voile {
     position: fixed;
     inset: 0;
-    z-index: 2;
+    z-index: 7;
     display: block;
     border: 0;
     background: color-mix(in srgb, var(--outline) 55%, transparent);
@@ -3200,44 +3200,6 @@ html.lt-verrou body {
   margin: 0;
 }
 
-/* Navigation : groupes secondaires repliables, celui de l'écran actif reste ouvert */
-.lt-app .lt-nav__titre--bouton {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  min-height: 2.75rem;
-  margin: 0;
-  border: 0;
-  border-radius: var(--r-sm);
-  background: transparent;
-  box-shadow: none;
-  cursor: pointer;
-  text-align: left;
-  transform: none;
-}
-.lt-app .lt-nav__titre--bouton:hover {
-  background: rgb(255 255 255 / 0.08);
-}
-.lt-app .lt-nav__titre--bouton:focus-visible {
-  outline: 3px solid var(--gold);
-  outline-offset: -3px;
-}
-.lt-nav__titre--bouton svg {
-  transition: rotate 0.2s;
-}
-.lt-nav__groupe.is-replie .lt-nav__titre--bouton svg {
-  rotate: -90deg;
-}
-.lt-nav__groupe.is-replie .lt-nav__items {
-  display: none;
-}
-@media (prefers-reduced-motion: reduce) {
-  .lt-nav__titre--bouton svg {
-    transition: none;
-  }
-}
-
 /* ======================================================================
  * Scènes : cartes de villes
  * ====================================================================== */
@@ -3453,5 +3415,58 @@ html.lt-verrou body {
 @media (prefers-reduced-motion: reduce) {
   .lt-trouvailles {
     animation: none;
+  }
+}
+
+/* Onglets d'un pôle */
+.lt-onglets-pole {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  gap: var(--sp-2);
+  margin: 0 0 var(--sp-4);
+  padding: var(--sp-2) 0 var(--sp-3);
+  overflow-x: auto;
+  background: linear-gradient(var(--lt-fond) 85%, transparent);
+  scrollbar-width: none;
+}
+.lt-onglet-pole {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 2.75rem;
+  padding: 0 var(--sp-4);
+  border: 3px solid var(--outline);
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: 0 4px 0 var(--outline);
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.12s;
+}
+.lt-onglet-pole:hover {
+  transform: translateY(-2px);
+}
+.lt-onglet-pole[aria-selected='true'] {
+  background: linear-gradient(180deg, #8b66ff, var(--purple));
+  color: #fff;
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 var(--outline);
+}
+.lt-onglet-pole.is-verrouille {
+  opacity: 0.6;
+}
+.lt-onglet-pole:focus-visible {
+  outline: 4px solid var(--gold);
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .lt-onglet-pole {
+    transition: none;
   }
 }

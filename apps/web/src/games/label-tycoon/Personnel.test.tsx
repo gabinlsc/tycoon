@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { Coquille } from './Coquille';
 import { creerMoteurLocal } from './engine/local';
 import { LabelProvider } from './LabelContext';
+import { allerAEcran } from './testNavigation';
 import { parNiveau, progressionNiveau } from './Personnel';
 
 afterEach(cleanup);
@@ -35,7 +36,7 @@ describe('écran Personnel', () => {
     const b = await screen.findByRole('button', { name: 'Nouvelle partie' });
     await waitFor(() => expect((b as HTMLButtonElement).disabled).toBe(false));
     fireEvent.click(b);
-    fireEvent.click(await screen.findByRole('button', { name: /Personnel/ }));
+    await allerAEcran(/Personnel/);
     await screen.findByRole('heading', { name: 'Personnel' });
     expect(screen.getByText('Aucun candidat pour l’instant.')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: /Semaine/ }));

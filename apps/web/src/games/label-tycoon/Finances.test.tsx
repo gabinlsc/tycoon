@@ -5,6 +5,7 @@ import { Coquille } from './Coquille';
 import { creerMoteurLocal } from './engine/local';
 import { remboursementSemaine, totalLignes } from './Finances';
 import { LabelProvider } from './LabelContext';
+import { allerAEcran } from './testNavigation';
 
 afterEach(cleanup);
 
@@ -40,7 +41,7 @@ describe('écran Finances', () => {
     const b = await screen.findByRole('button', { name: 'Nouvelle partie' });
     await waitFor(() => expect((b as HTMLButtonElement).disabled).toBe(false));
     fireEvent.click(b);
-    fireEvent.click(await screen.findByRole('button', { name: /Finances/ }));
+    await allerAEcran(/Finances/);
     await screen.findByRole('heading', { name: 'Finances' });
     expect(screen.getByText('Les prêts s’ouvrent au palier Indépendant.')).toBeTruthy();
     const optimisee = screen.getByRole('radio', { name: /Optimisée/ }) as HTMLInputElement;

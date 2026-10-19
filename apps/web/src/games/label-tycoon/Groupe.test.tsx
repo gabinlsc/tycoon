@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
-import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { allerAEcran } from './testNavigation';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import type { CommandeJeu, ReponseJeu } from '@tycoon/label-tycoon';
 import { Coquille } from './Coquille';
@@ -42,7 +43,7 @@ async function demarrer() {
 describe('écran Groupe', () => {
   it('reste fermé avant le palier Groupe', async () => {
     await demarrer();
-    fireEvent.click(screen.getByRole('button', { name: /Groupe/ }));
+    await allerAEcran(/Groupe/);
     await screen.findByRole('heading', { name: 'Groupe' });
     expect(screen.getByText(/s’ouvrent au palier Groupe/)).toBeTruthy();
   });
@@ -60,11 +61,7 @@ describe('écran Groupe', () => {
       await envoyer?.({ type: 'charger', sauvegarde: JSON.stringify(partie) });
       await envoyer?.({ type: 'avancer', semaines: 1, arretSurSignal: false });
     });
-    fireEvent.click(
-      within(screen.getByRole('navigation', { name: 'Écrans du jeu' })).getByRole('button', {
-        name: /Groupe/,
-      }),
-    );
+    await allerAEcran(/Groupe/);
     await screen.findByText(/Tu diriges 0 sous-label/);
     fireEvent.change(screen.getByLabelText('Nom du sous-label'), { target: { value: 'Rap Nord' } });
     fireEvent.click(screen.getByRole('button', { name: 'Créer le sous-label' }));

@@ -5,6 +5,7 @@ import type { VueScene } from '@tycoon/label-tycoon';
 import { Coquille } from './Coquille';
 import { creerMoteurLocal } from './engine/local';
 import { LabelProvider } from './LabelContext';
+import { allerAEcran } from './testNavigation';
 import { previsionTournee } from './Tournees';
 
 afterEach(cleanup);
@@ -48,7 +49,7 @@ describe('écran Tournées', () => {
     const b = await screen.findByRole('button', { name: 'Nouvelle partie' });
     await waitFor(() => expect((b as HTMLButtonElement).disabled).toBe(false));
     fireEvent.click(b);
-    fireEvent.click(await screen.findByRole('button', { name: /Tournées/ }));
+    await allerAEcran(/Tournées/);
     await screen.findByRole('heading', { name: 'Tournées' });
     expect(screen.getByText('Signe un artiste pour organiser des concerts.')).toBeTruthy();
     expect(screen.getByRole('heading', { name: 'Festivals' })).toBeTruthy();

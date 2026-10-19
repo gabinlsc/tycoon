@@ -35,28 +35,43 @@ describe('coquille plein écran', () => {
     expect(await screen.findByRole('navigation', { name: 'Écrans du jeu' })).toBeTruthy();
   });
 
-  it('range les écrans par familles et signale ceux qui attendent un palier', async () => {
+  it('range les écrans en pôles et signale ceux qui attendent un palier', async () => {
     const nav = await demarrer();
-    for (const titre of ['Mon label', 'Le marché', 'Gestion', 'Empire', 'Suivi'])
-      expect(within(nav).getByText(titre)).toBeTruthy();
-    expect(within(nav).getByRole('button', { name: /Groupe/ }).textContent).toContain('verrouillé');
-    expect(within(nav).getByRole('button', { name: /Roster/ }).textContent).not.toContain(
+    for (const titre of [
+      'QG',
+      'Artistes',
+      'Production',
+      'Boîte',
+      'Marché',
+      'Gestion',
+      'Empire',
+      'Suivi',
+    ])
+      expect(within(nav).getByRole('button', { name: new RegExp(`^${titre}`) })).toBeTruthy();
+    expect(within(nav).getByRole('button', { name: /^Empire/ }).textContent).toContain(
+      'verrouillé',
+    );
+    expect(within(nav).getByRole('button', { name: /^Artistes/ }).textContent).not.toContain(
       'verrouillé',
     );
   });
 
-  it('replie les groupes secondaires, sauf celui de l’écran actif', async () => {
+  it('ouvre les écrans d’un pôle en onglets, et revient au dernier onglet visité', async () => {
     const nav = await demarrer();
-    const marche = within(nav).getByRole('button', { name: /Le marché/ });
-    expect(marche.getAttribute('aria-expanded')).toBe('false');
-    fireEvent.click(marche);
-    expect(marche.getAttribute('aria-expanded')).toBe('true');
-    fireEvent.click(within(nav).getByRole('button', { name: /Calendrier/ }));
-    expect(
-      within(nav)
-        .getByRole('button', { name: /Gestion/ })
-        .getAttribute('aria-expanded'),
-    ).toBe('false');
+    fireEvent.click(within(nav).getByRole('button', { name: /^Marché/ }));
+    expect(screen.getAllByRole('tab').map((t) => t.textContent)).toEqual([
+      'Le Fil',
+      'Classements',
+      'Marché',
+      'Concurrence',
+    ]);
+    fireEvent.click(screen.getByRole('tab', { name: /Classements/ }));
+    fireEvent.click(within(nav).getByRole('button', { name: /^QG/ }));
+    expect(screen.queryAllByRole('tab')).toHaveLength(0);
+    fireEvent.click(within(nav).getByRole('button', { name: /^Marché/ }));
+    expect(screen.getByRole('tab', { name: /Classements/ }).getAttribute('aria-selected')).toBe(
+      'true',
+    );
   });
 
   it('ouvre les sauvegardes depuis la barre latérale', async () => {
@@ -80,10 +95,10 @@ describe('coquille plein écran', () => {
     );
     await demarrer();
     const onglets = screen.getByRole('navigation', { name: 'Accès rapide' });
-    fireEvent.click(within(onglets).getByRole('button', { name: /Studio/ }));
+    fireEvent.click(within(onglets).getByRole('button', { name: /Production/ }));
     expect(
       within(onglets)
-        .getByRole('button', { name: /Studio/ })
+        .getByRole('button', { name: /Production/ })
         .getAttribute('aria-current'),
     ).toBe('page');
     fireEvent.click(within(onglets).getByRole('button', { name: /Menu/ }));

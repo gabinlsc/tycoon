@@ -5,6 +5,7 @@ import { DIFFICULTY_PRESETS } from '@tycoon/label-tycoon';
 import { Coquille } from './Coquille';
 import { creerMoteurLocal } from './engine/local';
 import { LabelProvider } from './LabelContext';
+import { allerAEcran } from './testNavigation';
 import { BAC_A_SABLE_PAR_DEFAUT, configDepart, presetCorrespondant } from './NouvellePartie';
 import { configDepuisPartie } from './partie';
 
@@ -66,7 +67,7 @@ describe('écran de départ', () => {
     const b = await ouvrir();
     fireEvent.click(screen.getByRole('radio', { name: /Difficile/ }));
     fireEvent.click(b);
-    fireEvent.click(await screen.findByRole('button', { name: /Paramètres/ }));
+    await allerAEcran(/Paramètres/);
     await screen.findByRole('heading', { name: 'Ta partie' });
     expect(screen.getByText(/Mode :/).textContent).toContain('Carrière');
     expect(screen.getByText(/Bonus de trésorerie des rivaux/).textContent).toContain('25');
@@ -78,7 +79,7 @@ describe('écran de départ', () => {
     fireEvent.click(b);
     expect(await screen.findByRole('button', { name: '×16' })).toBeTruthy();
     expect(screen.getByRole('button', { name: '×8' })).toBeTruthy();
-    fireEvent.click(screen.getByRole('button', { name: /Paramètres/ }));
+    await allerAEcran(/Paramètres/);
     await screen.findByRole('heading', { name: 'Ta partie' });
     expect(screen.getByText(/Mode :/).textContent).toContain('Bac à sable');
     expect(screen.getByText(/Faillite :/).textContent).toContain('désactivée');

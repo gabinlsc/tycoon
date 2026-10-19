@@ -2,9 +2,10 @@
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { Coquille } from './Coquille';
-import { ECRANS, ecranDeTouche } from './ecrans';
+import { POLES, ecranDeTouche } from './ecrans';
 import { creerMoteurLocal } from './engine/local';
 import { LabelProvider } from './LabelContext';
+import { allerAEcran } from './testNavigation';
 
 afterEach(cleanup);
 
@@ -28,16 +29,17 @@ describe('coquille du jeu', () => {
     expect(screen.getByLabelText('Trésorerie').textContent).toMatch(/€/);
     expect(screen.getByText('Home-studio')).toBeTruthy();
     const nav = screen.getByRole('navigation', { name: 'Écrans du jeu' });
-    for (const e of ECRANS)
-      expect(within(nav).getByRole('button', { name: new RegExp(e.titre) })).toBeTruthy();
+    for (const p of POLES)
+      expect(within(nav).getByRole('button', { name: new RegExp(`^${p.titre}`) })).toBeTruthy();
     expect(screen.getByRole('heading', { name: 'Finances' })).toBeTruthy();
   });
 
   it('change d’écran au clic', async () => {
     await lancer();
-    fireEvent.click(screen.getByRole('button', { name: /Roster/ }));
+    await allerAEcran(/Roster/);
     expect(screen.getByRole('heading', { name: 'Roster' })).toBeTruthy();
-    expect(screen.getByRole('button', { name: /Roster/ }).getAttribute('aria-current')).toBe(
+    expect(screen.getByRole('tab', { name: /Roster/ }).getAttribute('aria-selected')).toBe('true');
+    expect(screen.getByRole('button', { name: /^Artistes/ }).getAttribute('aria-current')).toBe(
       'page',
     );
   });
