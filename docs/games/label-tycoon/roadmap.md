@@ -192,7 +192,7 @@ Objectif : un jeu qu'on regarde, qu'on entend et qu'on a envie de rouvrir demain
 Direction : un seul langage visuel, de la profondeur (ombres, lumière, matières), du mouvement qui a du sens (jamais gratuit), et des personnages qui vivent. Chaque ligne est vérifiée en captures à 1440 et 390 px, et le mouvement est coupé en `prefers-reduced-motion`.
 
 - [x] `feat/label-siege-illustre` : l'immeuble redessiné : façade matérielle, étages en coupe avec décors (studio, bureaux, répétition, pressage, salle de concert), personnages animés selon leur activité, toit avec enseigne
-- [ ] `feat/label-monde-vivant` : la ville : cycle jour-nuit lié au temps du jeu, météo et feuillages par saison, circulation, passants, parallaxe, lampadaires et enseignes allumées
+- [x] `feat/label-monde-vivant` : la ville : cycle jour-nuit lié au temps du jeu, météo et feuillages par saison, circulation, passants, parallaxe, lampadaires et enseignes allumées
 - [ ] `feat/label-systeme-visuel` : système de design : matières, ombres, verre, boutons à relief et rebond, panneaux, focus, barres de défilement, écran de chargement
 - [ ] `feat/label-personnages` : personnages : visages plus variés, expressions selon le moral et la hype, silhouettes en pied pour la scène
 - [ ] `feat/label-bandeaux-poles` : un décor d'en-tête illustré par pôle (console de studio, carte du marché, coffre de la gestion…)
@@ -223,7 +223,7 @@ L'abonnement quitte les jeux pour vivre sur la page d'accueil du portail : **un 
 | 10    | 12    | 12     |
 | 11    | 5     | 5      |
 | 12    | 9     | 9      |
-| 13    | 6     | 1      |
+| 13    | 6     | 2      |
 | 14    | 3     | 0      |
 
 (Mettre ce tableau à jour dans la PR qui coche une case.)
