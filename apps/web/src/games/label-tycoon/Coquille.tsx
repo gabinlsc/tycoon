@@ -7,6 +7,7 @@ import { ECRANS, POLES, poleDe, type EcranId, type PoleId } from './ecrans';
 import { useAudio, useAudioDuJeu } from './audio/useAudio';
 import { ICONES_ECRANS, ICONES_POLES } from './icones';
 import { Ceremonie, useCeremonie } from './Ceremonie';
+import { Effets } from './Effets';
 import { Hud } from './Hud';
 import { Notifications } from './Notifications';
 import { useEcranEtroit } from './useEcranEtroit';
@@ -231,6 +232,7 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
 
       <Hud />
       <Notifications vue={vue} allerA={setEcran} />
+      <Effets vue={vue} />
       {spectacle.ceremonie ? (
         <Ceremonie ceremonie={spectacle.ceremonie} fermer={spectacle.fermer} />
       ) : null}
@@ -274,7 +276,7 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
             {refus}
           </p>
         ) : null}
-        <main className="label-main">
+        <main className="label-main lt-page" key={ecran}>
           {ecran === 'qg' ? (
             <QG allerA={setEcran} revoirCeremonie={spectacle.ouvrir} />
           ) : ecran === 'roster' ? (
