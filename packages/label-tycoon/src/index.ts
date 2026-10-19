@@ -594,3 +594,11 @@ export {
 export { SAISONS, SAISON_IDS, saisonActive, saisonsActives, type SaisonId } from './saisons';
 export { SEASON_EVENTS } from './content/events/saisons';
 export { EVENEMENTS_SAISONNIERS_SPECS } from './content/events/saisons/specs';
+
+export {
+  NOMS_CATEGORIES,
+  ceremonieDe,
+  type VueCategorieCeremonie,
+  type VueCeremonie,
+  type VueNomme,
+} from './vue-ceremonie';

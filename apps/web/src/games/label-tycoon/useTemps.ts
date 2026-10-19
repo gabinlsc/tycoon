@@ -12,6 +12,7 @@ export function useTemps() {
   const reglagesRef = useRef(reglages);
   reglagesRef.current = reglages;
   const enCours = useRef(false);
+  const phaseCeremonie = useRef(vue?.ceremonie?.phase ?? null);
 
   const unePas = useCallback(async (): Promise<boolean> => {
     if (enCours.current) return false;
@@ -22,6 +23,13 @@ export function useTemps() {
       const declenche = pauseDeclenchee(reponse.signaux, reglagesRef.current);
       if (reponse.vue.finances.faillite) {
         setMotif('Faillite : la partie est terminée.');
+        return true;
+      }
+      const phase = reponse.vue.ceremonie?.phase ?? null;
+      const soireeDesPrix = phase === 'resultats' && phaseCeremonie.current === 'nominations';
+      phaseCeremonie.current = phase;
+      if (soireeDesPrix) {
+        setMotif('Pause : c’est le soir des Trophées');
         return true;
       }
       if (declenche) {

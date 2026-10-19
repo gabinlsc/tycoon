@@ -5,6 +5,7 @@ import { TIERS } from '@tycoon/label-tycoon';
 import { Button } from '../../components/arcade/ui/Button';
 import { ECRANS, GROUPES, type EcranId } from './ecrans';
 import { ICONES_ECRANS } from './icones';
+import { Ceremonie, useCeremonie } from './Ceremonie';
 import { Hud } from './Hud';
 import { Notifications } from './Notifications';
 import { useEcranEtroit } from './useEcranEtroit';
@@ -64,6 +65,7 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
     contenu.current?.scrollTo?.({ top: 0 });
   }, []);
   useRaccourcis(setEcran, vue !== null);
+  const spectacle = useCeremonie(vue);
 
   // L'écran actif reste visible dans la navigation (longue liste, tiroir sur mobile).
   useEffect(() => {
@@ -211,6 +213,9 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
 
       <Hud />
       <Notifications vue={vue} allerA={setEcran} />
+      {spectacle.ceremonie ? (
+        <Ceremonie ceremonie={spectacle.ceremonie} fermer={spectacle.fermer} />
+      ) : null}
 
       <div className="lt-contenu" ref={contenu}>
         {sauvegardes ? (
@@ -228,7 +233,7 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
         ) : null}
         <main className="label-main">
           {ecran === 'qg' ? (
-            <QG allerA={setEcran} />
+            <QG allerA={setEcran} revoirCeremonie={spectacle.ouvrir} />
           ) : ecran === 'roster' ? (
             renouvellement !== null ? (
               <Negociation

@@ -52,6 +52,7 @@ import { DEFI_SEMAINES, defiTermine, resultatDefi, texteResultat } from './defi'
 import { ereCourante, prochaineEre } from './eres';
 import { legendes } from './generations';
 import { estEmergente } from './scenes';
+import { type VueCeremonie, ceremonieDe } from './vue-ceremonie';
 import { SAISONS, saisonsActives } from './saisons';
 import {
   active as regulationActive,
@@ -693,6 +694,8 @@ export interface VueJeu {
   /** Saisons de contenu en cours. */
   saisons: { id: string; nom: string; description: string }[];
   heritage: VueHeritage;
+  /** Cérémonie de l'année en cours (nominations puis résultats), ou `null`. */
+  ceremonie: VueCeremonie | null;
   scenario: VueScenario | null;
   defi: VueDefi | null;
   rapportsMensuels: VueRapportMensuel[];
@@ -1817,6 +1820,7 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
     },
     scenario: scenarioDe(state, tick),
     defi: defiDe(state, tick),
+    ceremonie: ceremonieDe(state, tick),
     rapportsMensuels: rapportsDe(state),
     tousSucces: SUCCES.map((s) => ({
       id: s.id,
