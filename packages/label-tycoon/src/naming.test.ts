@@ -2,6 +2,7 @@ import { Rng } from '@tycoon/core';
 import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
 import { ALL_EXCLUSIONS, REAL_ARTISTS, REAL_CITIES, REAL_LABELS } from './content/exclusions';
+import { TOUS_LES_NOMS_DETOURNES } from './content/parodies';
 import { FAMILY_NAMES, GIVEN_NAMES, ORIGINS } from './content/names-data';
 import {
   generateCityName,
@@ -203,5 +204,13 @@ describe('unicité', () => {
       new Set(),
     );
     expect(isExcluded(name)).toBe(false);
+  });
+});
+
+describe('noms détournés', () => {
+  it('piochent des clins d’œil déformés, sans jamais retomber sur un nom exclu', () => {
+    const noms = many(400, (rng) => generateStageName(rng, 'pop'), 'parodies');
+    expect(noms.some((n) => TOUS_LES_NOMS_DETOURNES.includes(n))).toBe(true);
+    for (const n of TOUS_LES_NOMS_DETOURNES) expect(isExcluded(n)).toBe(false);
   });
 });
