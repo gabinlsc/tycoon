@@ -111,7 +111,7 @@ describe('sauvegarde de la partie', () => {
     await demarrer();
     for (let i = 0; i < PERIODE_AUTO; i += 1) {
       await act(async () => {
-        fireEvent.click(screen.getByRole('button', { name: /Semaine ▶/ }));
+        fireEvent.click(screen.getByRole('button', { name: /Semaine/ }));
         await new Promise((r) => setTimeout(r, 150));
       });
     }

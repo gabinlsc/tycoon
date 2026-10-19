@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { Pause, Play, Settings2, StepForward } from 'lucide-react';
 import { useTemps } from './useTemps';
 import { useLabel } from './LabelContext';
 import { CATEGORIES_PAUSE, LIBELLES_PAUSE, type Vitesse, vitessesDisponibles } from './temps';
@@ -46,11 +47,16 @@ export function BarreTemps() {
           <button
             key={v}
             type="button"
-            className="label-time__btn"
+            className={`label-time__btn${v === 0 ? ' label-time__btn--pause' : ''}`}
             aria-pressed={vitesse === v}
             onClick={() => (v === 0 ? pause() : regler(v))}
+            title={v === 0 ? 'Pause (espace)' : `Vitesse ${LIBELLE[v]}`}
           >
-            {LIBELLE[v]}
+            {v === 0 ? <Pause aria-hidden="true" size={18} strokeWidth={3} /> : null}
+            {v === 1 && vitesse === 0 ? (
+              <Play aria-hidden="true" size={16} strokeWidth={3} />
+            ) : null}
+            <span className={v === 0 ? 'visually-hidden' : undefined}>{LIBELLE[v]}</span>
           </button>
         ))}
         <button
@@ -59,14 +65,18 @@ export function BarreTemps() {
           onClick={() => void semaine()}
           title="Avancer d’une semaine (touche N)"
         >
-          Semaine ▶
+          <StepForward aria-hidden="true" size={18} strokeWidth={3} />
+          Semaine
         </button>
       </div>
       <p className="label-time__reason" role="status" aria-live="polite">
         {motif ?? ''}
       </p>
       <details className="label-time__settings">
-        <summary>Auto-pauses</summary>
+        <summary title="Choisir quand le jeu se met en pause tout seul">
+          <Settings2 aria-hidden="true" size={18} />
+          <span>Auto-pauses</span>
+        </summary>
         <fieldset>
           <legend className="visually-hidden">Mettre le jeu en pause quand…</legend>
           {CATEGORIES_PAUSE.map((c) => (

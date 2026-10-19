@@ -49,7 +49,7 @@ describe('écran Rapport mensuel', () => {
     expect(screen.getByText(/Le premier rapport arrive/)).toBeTruthy();
     for (let i = 0; i < 5; i += 1) {
       await act(async () => {
-        fireEvent.click(screen.getByRole('button', { name: /Semaine ▶/ }));
+        fireEvent.click(screen.getByRole('button', { name: /Semaine/ }));
         await new Promise((r) => setTimeout(r, 150));
       });
     }
