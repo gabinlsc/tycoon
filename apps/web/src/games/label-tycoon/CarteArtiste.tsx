@@ -2,7 +2,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import { useAbonnement } from './offres';
 import { couleurDuGenre } from './avatar';
 import { NOMS_RARETE, type Rarete } from './rarete';
-import { Visage } from './Visage';
+import { humeurDuMoral, Visage } from './Visage';
 
 export interface StatCarte {
   libelle: string;
@@ -23,6 +23,7 @@ export function CarteArtiste({
   stats,
   pied,
   dos = false,
+  moral,
 }: {
   nom: string;
   genre: string;
@@ -31,6 +32,8 @@ export function CarteArtiste({
   stats: readonly StatCarte[];
   pied?: ReactNode;
   dos?: boolean;
+  /** Moral de l'artiste : le visage en prend l'expression. */
+  moral?: number;
 }) {
   const ton = couleurDuGenre(genre);
   const { cadre } = useAbonnement();
@@ -50,7 +53,11 @@ export function CarteArtiste({
             <span className="lt-cc__genre">{genreNom}</span>
           </div>
           <div className="lt-cc__portrait">
-            <Visage graine={nom} taille={110} />
+            <Visage
+              graine={nom}
+              taille={110}
+              humeur={moral === undefined ? 'neutre' : humeurDuMoral(moral)}
+            />
           </div>
           <strong className="lt-cc__nom">{nom}</strong>
           <ul className="lt-cc__stats">

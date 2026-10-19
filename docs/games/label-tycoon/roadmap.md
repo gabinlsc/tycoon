@@ -194,7 +194,7 @@ Direction : un seul langage visuel, de la profondeur (ombres, lumière, matière
 - [x] `feat/label-siege-illustre` : l'immeuble redessiné : façade matérielle, étages en coupe avec décors (studio, bureaux, répétition, pressage, salle de concert), personnages animés selon leur activité, toit avec enseigne
 - [x] `feat/label-monde-vivant` : la ville : cycle jour-nuit lié au temps du jeu, météo et feuillages par saison, circulation, passants, parallaxe, lampadaires et enseignes allumées
 - [x] `feat/label-systeme-visuel` : système de design : matières, ombres, verre, boutons à relief et rebond, panneaux, focus, barres de défilement, écran de chargement
-- [ ] `feat/label-personnages` : personnages : visages plus variés, expressions selon le moral et la hype, silhouettes en pied pour la scène
+- [x] `feat/label-personnages` : personnages : visages plus variés, expressions selon le moral et la hype, silhouettes en pied pour la scène
 - [x] `feat/label-bandeaux-poles` : un décor d'en-tête illustré par pôle (console de studio, carte du marché, coffre de la gestion…)
 - [ ] `feat/label-confort-de-jeu` : confort : palette de commandes (Ctrl+K), aide des raccourcis (?), conseiller « Max » qui suggère la prochaine bonne action, indicateur de sauvegarde, réglage de la qualité graphique
 
@@ -223,7 +223,7 @@ L'abonnement quitte les jeux pour vivre sur la page d'accueil du portail : **un 
 | 10    | 12    | 12     |
 | 11    | 5     | 5      |
 | 12    | 9     | 9      |
-| 13    | 6     | 4      |
+| 13    | 6     | 5      |
 | 14    | 3     | 0      |
 
 (Mettre ce tableau à jour dans la PR qui coche une case.)
