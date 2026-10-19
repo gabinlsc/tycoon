@@ -9,6 +9,7 @@ import { enregistrerJour } from './serie';
 import { useAudio, useAudioDuJeu } from './audio/useAudio';
 import { ICONES_ECRANS, ICONES_POLES } from './icones';
 import { Ceremonie, useCeremonie } from './Ceremonie';
+import { BandeauPole } from './BandeauPole';
 import { Chargement } from './Chargement';
 import { Effets } from './Effets';
 import { CourseClassement, useCourseClassement } from './Soirees';
@@ -265,6 +266,9 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
           <div className="lt-sauvegardes" hidden={!panneauSauvegarde}>
             {sauvegardes}
           </div>
+        ) : null}
+        {poleDe(ecran).ecrans.length > 1 ? (
+          <BandeauPole pole={poleDe(ecran).id} titre={poleDe(ecran).titre} />
         ) : null}
         {poleDe(ecran).ecrans.length > 1 ? (
           <div className="lt-onglets-pole" role="tablist" aria-label={poleDe(ecran).titre}>
