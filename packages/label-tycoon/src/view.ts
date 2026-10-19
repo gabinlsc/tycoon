@@ -661,6 +661,7 @@ export interface VueJeu {
     artisteId: number;
     type: string;
     statut: string;
+    debut: number;
     fin: number;
     qualite: number | null;
   }[];
@@ -1762,6 +1763,7 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
       artisteId: p.artisteId,
       type: p.type,
       statut: p.statut,
+      debut: p.debut,
       fin: p.fin,
       qualite: p.statut === 'production' ? null : p.qualite,
     })),

@@ -1,5 +1,7 @@
 import type { VueSortieCalendrier } from '@tycoon/label-tycoon';
 import { RIVAL_RELEASES } from '@tycoon/label-tycoon';
+import { CalendarX, Disc3, Flame, Zap } from 'lucide-react';
+import { Avatar } from './avatar';
 import { useLabel } from './LabelContext';
 
 /** Semaines affichées à partir de la semaine courante. */
@@ -59,10 +61,7 @@ export function Calendrier() {
   return (
     <section className="label-screen" aria-labelledby="cal-titre">
       <h2 id="cal-titre">Calendrier des sorties</h2>
-      <p>
-        Une grosse sortie rivale dans le même genre la même semaine réduit l’exposition de ta sortie
-        de moitié. Les rivaux n’annoncent pas toujours leurs dates.
-      </p>
+      <p className="lt-sous-titre">Évite de sortir en même temps qu’un gros rival du même genre.</p>
       {clashs.length > 0 ? (
         <ul className="label-alerts" aria-label="Collisions">
           {clashs.map((c) => (
@@ -70,40 +69,70 @@ export function Calendrier() {
               key={`${c.semaine}-${c.joueur}-${c.rival}`}
               className="label-alert label-alert--danger"
             >
-              Semaine {c.semaine} : {c.joueur} sort en même temps que {c.rival} ({c.genreNom}).
+              <Zap aria-hidden="true" size={16} /> Semaine {c.semaine} : {c.joueur} sort en même
+              temps que {c.rival} ({c.genreNom}).
             </li>
           ))}
         </ul>
       ) : null}
       {sansSortie ? (
-        <p className="label-screen__soon">Aucune sortie prévue pour le moment.</p>
+        <p className="lt-calendrier__vide">
+          <CalendarX aria-hidden="true" size={22} /> Aucune sortie prévue pour le moment.
+        </p>
       ) : null}
-      <ol className="label-calendar">
-        {[...grille.entries()].map(([semaine, liste]) => (
-          <li key={semaine} className="label-calendar__week">
-            <span className="mono label-calendar__num">sem. {semaine}</span>
-            {liste.length === 0 ? (
-              <span className="label-calendar__empty">—</span>
-            ) : (
-              <ul>
-                {liste.map((e, i) => (
-                  <li
-                    key={`${e.nom}-${i}`}
-                    className={e.origine === 'joueur' ? 'is-mine' : 'is-rival'}
-                  >
-                    <strong>{e.nom}</strong> · {e.genreNom}
-                    {e.origine === 'joueur' ? ' · ton label' : ' · label rival'}
-                    {e.origine === 'joueur'
-                      ? ` · ${e.statut === 'prete' ? 'prête' : 'en production'}`
-                      : e.poids >= RIVAL_RELEASES.bigWeight
-                        ? ' · grosse sortie'
-                        : ''}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
-        ))}
+      <ol className="label-calendar lt-agenda">
+        {[...grille.entries()].map(([semaine, liste]) => {
+          const choc = clashs.some((c) => c.semaine === semaine);
+          return (
+            <li
+              key={semaine}
+              className={`label-calendar__week lt-semaine${semaine === vue.semaine ? ' is-courante' : ''}${choc ? ' is-choc' : ''}`}
+            >
+              <span className="lt-semaine__tete">
+                <span className="lt-semaine__num mono">{semaine}</span>
+                <span className="lt-semaine__lib">
+                  {semaine === vue.semaine ? 'Cette semaine' : `sem. ${semaine}`}
+                </span>
+                {choc ? (
+                  <Zap aria-label="Collision" size={18} className="lt-semaine__choc" />
+                ) : null}
+              </span>
+              {liste.length === 0 ? (
+                <span className="label-calendar__empty lt-semaine__vide">—</span>
+              ) : (
+                <ul className="lt-semaine__sorties">
+                  {liste.map((e, i) => (
+                    <li
+                      key={`${e.nom}-${i}`}
+                      className={`lt-sortie ${e.origine === 'joueur' ? 'is-mine' : 'is-rival'}`}
+                    >
+                      {e.origine === 'joueur' ? (
+                        <Disc3 aria-hidden="true" size={22} />
+                      ) : (
+                        <Avatar nom={e.nom} genre={e.genre} />
+                      )}
+                      <span className="lt-sortie__texte">
+                        <strong>{e.nom}</strong>
+                        <small>
+                          {e.genreNom}
+                          {e.origine === 'joueur'
+                            ? ` · ton label · ${e.statut === 'prete' ? 'prête' : 'en production'}`
+                            : ' · label rival'}
+                        </small>
+                      </span>
+                      {e.origine !== 'joueur' && e.poids >= RIVAL_RELEASES.bigWeight ? (
+                        <span className="lt-sortie__gros">
+                          <Flame aria-hidden="true" size={14} /> Gros
+                          <span className="visually-hidden"> (grosse sortie)</span>
+                        </span>
+                      ) : null}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          );
+        })}
       </ol>
     </section>
   );

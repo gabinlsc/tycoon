@@ -4,7 +4,21 @@ import type { ClipSize, ReleaseType } from '@tycoon/label-tycoon';
 import { Button } from '../../components/arcade/ui/Button';
 import { Terme } from './Infobulle';
 import { useLabel } from './LabelContext';
-import { Disc3 } from 'lucide-react';
+import {
+  Clapperboard,
+  Coins,
+  Disc,
+  Disc3,
+  Film,
+  Hourglass,
+  Layers,
+  Mic2,
+  Music,
+  Rocket,
+  Sparkles,
+  Video,
+} from 'lucide-react';
+import { Avatar } from './avatar';
 import { EtatVide } from './EtatVide';
 import type { EcranId } from './ecrans';
 import { Pochette } from './pochettes/Pochette';
@@ -17,11 +31,43 @@ const NOMS_TYPE: Record<ReleaseType, string> = {
   album: 'Album',
   mixtape: 'Mixtape',
 };
-const CLIPS: { id: ClipSize; nom: string }[] = [
-  { id: 'aucun', nom: 'Sans clip' },
-  { id: 'petit', nom: 'Petit clip' },
-  { id: 'gros', nom: 'Gros clip' },
+const CLIPS: { id: ClipSize; nom: string; Icone: typeof Film }[] = [
+  { id: 'aucun', nom: 'Sans clip', Icone: Music },
+  { id: 'petit', nom: 'Petit clip', Icone: Video },
+  { id: 'gros', nom: 'Gros clip', Icone: Clapperboard },
 ];
+const ICONES_TYPE: Record<ReleaseType, typeof Film> = {
+  single: Disc,
+  ep: Layers,
+  album: Disc3,
+  mixtape: Mic2,
+};
+
+/** Jauge en demi-cercle de la qualité estimée : l'arc coloré est la fourchette, jamais une valeur exacte. */
+function JaugeQualite({ plage }: { plage: readonly [number, number] }) {
+  const [bas, haut] = plage;
+  const pt = (v: number, r: number) => {
+    const a = Math.PI * (1 - Math.max(0, Math.min(100, v)) / 100);
+    return `${100 + r * Math.cos(a)} ${100 - r * Math.sin(a)}`;
+  };
+  return (
+    <svg
+      viewBox="0 0 200 120"
+      className="lt-jauge-q"
+      role="img"
+      aria-label={`Qualité estimée entre ${bas} et ${haut} sur 100`}
+    >
+      <path d={`M ${pt(0, 80)} A 80 80 0 0 1 ${pt(100, 80)}`} className="lt-jauge-q__fond" />
+      <path d={`M ${pt(bas, 80)} A 80 80 0 0 1 ${pt(haut, 80)}`} className="lt-jauge-q__plage" />
+      <text x="100" y="92" textAnchor="middle" className="lt-jauge-q__valeur">
+        {bas}–{haut}
+      </text>
+      <text x="100" y="112" textAnchor="middle" className="lt-jauge-q__legende">
+        qualité estimée
+      </text>
+    </svg>
+  );
+}
 
 /** Console au trait : trois faders qui reflètent les réglages (décoratif, la saisie se fait au-dessous). */
 export function Console({ reglages }: { reglages: { nom: string; valeur: number }[] }) {
@@ -149,8 +195,59 @@ export function Studio({ allerA }: { allerA?: (ecran: EcranId) => void } = {}) {
           { nom: 'Mixage', valeur: Math.min(100, mixage / 15) },
         ]}
       />
+      <ul className="lt-artistes-puces" aria-label="Choisir l’artiste">
+        {roster.map((a) => (
+          <li key={a.id}>
+            <button
+              type="button"
+              className={`lt-artiste-puce${a.id === choisi ? ' is-actif' : ''}`}
+              aria-pressed={a.id === choisi}
+              onClick={() => setArtisteId(a.id)}
+            >
+              <Avatar nom={a.nom} genre={a.genre} />
+              <span>{a.nom}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+      <fieldset className="lt-choix">
+        <legend>Type de sortie</legend>
+        {TYPES.map((t) => {
+          const Icone = ICONES_TYPE[t];
+          return (
+            <button
+              key={t}
+              type="button"
+              className={`lt-choix__carte${t === sortie ? ' is-actif' : ''}`}
+              aria-pressed={t === sortie}
+              onClick={() => setSortie(t)}
+            >
+              <Icone aria-hidden="true" size={30} strokeWidth={2.2} />
+              <strong>{NOMS_TYPE[t]}</strong>
+              <small>
+                {RELEASE_TYPES[t].titres} titre{RELEASE_TYPES[t].titres > 1 ? 's' : ''}
+              </small>
+            </button>
+          );
+        })}
+      </fieldset>
+      <fieldset className="lt-choix lt-choix--clip">
+        <legend>Clip</legend>
+        {CLIPS.map((c) => (
+          <button
+            key={c.id}
+            type="button"
+            className={`lt-choix__carte${c.id === clip ? ' is-actif' : ''}`}
+            aria-pressed={c.id === clip}
+            onClick={() => setClip(c.id)}
+          >
+            <c.Icone aria-hidden="true" size={30} strokeWidth={2.2} />
+            <strong>{c.nom}</strong>
+          </button>
+        ))}
+      </fieldset>
       <div className="label-nego__form">
-        <label className="label-field">
+        <label className="label-field lt-cache">
           Artiste
           <select value={choisi ?? ''} onChange={(e) => setArtisteId(Number(e.target.value))}>
             {roster.map((a) => (
@@ -160,7 +257,7 @@ export function Studio({ allerA }: { allerA?: (ecran: EcranId) => void } = {}) {
             ))}
           </select>
         </label>
-        <label className="label-field">
+        <label className="label-field lt-cache">
           Type de sortie
           <select value={sortie} onChange={(e) => setSortie(e.target.value as ReleaseType)}>
             {TYPES.map((t) => (
@@ -171,7 +268,7 @@ export function Studio({ allerA }: { allerA?: (ecran: EcranId) => void } = {}) {
             ))}
           </select>
         </label>
-        <label className="label-field">
+        <label className="label-field lt-cache">
           Clip
           <select value={clip} onChange={(e) => setClip(e.target.value as ClipSize)}>
             {CLIPS.map((c) => (
@@ -216,17 +313,22 @@ export function Studio({ allerA }: { allerA?: (ecran: EcranId) => void } = {}) {
         </label>
       </div>
       {estimation ? (
-        <div className="label-estimate" aria-live="polite">
-          <p>
-            <Terme id="qualite">Qualité</Terme> estimée :{' '}
-            <strong className="mono">
-              {estimation.qualite[0]} – {estimation.qualite[1]}
-            </strong>{' '}
-            (jamais une valeur exacte : un tirage reste à venir)
+        <div className="label-estimate lt-estimation" aria-live="polite">
+          <JaugeQualite plage={estimation.qualite} />
+          <p className="lt-estimation__note">
+            <Terme id="qualite">Qualité</Terme> : un tirage reste à venir, jamais une valeur exacte.
           </p>
-          <p>
-            Coût : <strong className="mono">{eur(estimation.cout)}</strong> · durée prévue :{' '}
-            {estimation.semaines} sem. · studio {estimation.enCours}/{estimation.capacite} projet(s)
+          <p className="lt-estimation__puces">
+            <span className="lt-chip">
+              <Coins aria-hidden="true" size={14} /> {eur(estimation.cout)}
+            </span>
+            <span className="lt-chip">
+              <Hourglass aria-hidden="true" size={14} /> {estimation.semaines} sem.
+            </span>
+            <span className="lt-chip">
+              <Disc3 aria-hidden="true" size={14} /> studio {estimation.enCours}/
+              {estimation.capacite}
+            </span>
           </p>
           {studio > estimation.studioMax ? (
             <p className="label-warn">
@@ -253,7 +355,7 @@ export function Studio({ allerA }: { allerA?: (ecran: EcranId) => void } = {}) {
               })
             }
           >
-            Lancer la production
+            <Rocket aria-hidden="true" size={20} /> Lancer la production
           </Button>
           {complet ? (
             <p className="label-warn">Studio complet ({PRODUCTION.capacity} projets au départ).</p>
@@ -264,40 +366,56 @@ export function Studio({ allerA }: { allerA?: (ecran: EcranId) => void } = {}) {
       {projets.length === 0 ? (
         <p className="label-screen__soon">Aucun projet pour l’instant.</p>
       ) : (
-        <ul className="label-projects">
-          {projets.map((p) => (
-            <li key={p.id}>
-              <Pochette
-                graine={`projet-${p.id}`}
-                genre={vue.roster.find((a) => a.id === p.artisteId)?.genre ?? ''}
-                titre={NOMS_TYPE[p.type as ReleaseType] ?? p.type}
-                taille={72}
-              />
-              <span>
-                {nomArtiste(p.artisteId)} — {NOMS_TYPE[p.type as ReleaseType] ?? p.type} ·{' '}
-                {p.statut === 'production'
-                  ? `fin prévue semaine ${p.fin}`
-                  : p.statut === 'prete'
-                    ? 'prête à sortir'
-                    : 'sortie'}
-                {p.qualite !== null ? ` · qualité ${p.qualite}` : ''}
-              </span>
-              {p.statut === 'prete' ? (
-                <Button
-                  type="button"
-                  tone="gold"
-                  onClick={() =>
-                    void envoyer({
-                      type: 'action',
-                      action: { type: 'sortir-projet', projetId: p.id },
-                    })
-                  }
-                >
-                  Sortir
-                </Button>
-              ) : null}
-            </li>
-          ))}
+        <ul className="label-projects lt-projets">
+          {projets.map((p) => {
+            const avance =
+              p.statut === 'production' && p.fin > p.debut
+                ? Math.max(0, Math.min(1, (vue.semaine - p.debut) / (p.fin - p.debut)))
+                : 1;
+            return (
+              <li key={p.id} className={`lt-projet lt-projet--${p.statut}`}>
+                <Pochette
+                  graine={`projet-${p.id}`}
+                  genre={vue.roster.find((a) => a.id === p.artisteId)?.genre ?? ''}
+                  titre={NOMS_TYPE[p.type as ReleaseType] ?? p.type}
+                  taille={72}
+                />
+                <span className="lt-projet__texte">
+                  <strong>{nomArtiste(p.artisteId)}</strong>
+                  <small>
+                    {NOMS_TYPE[p.type as ReleaseType] ?? p.type} ·{' '}
+                    {p.statut === 'production'
+                      ? `fin prévue semaine ${p.fin}`
+                      : p.statut === 'prete'
+                        ? 'prête à sortir'
+                        : 'sortie'}
+                    {p.qualite !== null ? ` · qualité ${p.qualite}` : ''}
+                  </small>
+                  {p.statut === 'production' ? (
+                    <progress
+                      max={1}
+                      value={avance}
+                      aria-label={`Avancement de la production de ${nomArtiste(p.artisteId)}`}
+                    />
+                  ) : null}
+                </span>
+                {p.statut === 'prete' ? (
+                  <Button
+                    type="button"
+                    tone="gold"
+                    onClick={() =>
+                      void envoyer({
+                        type: 'action',
+                        action: { type: 'sortir-projet', projetId: p.id },
+                      })
+                    }
+                  >
+                    <Sparkles aria-hidden="true" size={18} /> Sortir
+                  </Button>
+                ) : null}
+              </li>
+            );
+          })}
         </ul>
       )}
     </section>

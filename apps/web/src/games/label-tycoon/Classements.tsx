@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { VueCertification } from '@tycoon/label-tycoon';
 import { Terme } from './Infobulle';
+import { Award, Crown, Disc3 } from 'lucide-react';
 import { useLabel } from './LabelContext';
 import { HitParade } from './graphiques/Graphiques';
 
@@ -9,6 +10,35 @@ const NOMS_NIVEAU: Record<string, string> = {
   platine: 'Disque de platine',
   diamant: 'Disque de diamant',
 };
+
+/** Podium des trois premiers : le rang 1 au centre, plus haut. */
+function Podium({
+  lignes,
+}: {
+  lignes: readonly { rang: number; nom: string; streams: number; joueur: boolean }[];
+}) {
+  const [un, deux, trois] = lignes;
+  if (!un) return null;
+  const ordre = [deux, un, trois].filter((l): l is NonNullable<typeof l> => l !== undefined);
+  return (
+    <ol className="lt-podium" aria-label="Podium">
+      {ordre.map((l) => (
+        <li
+          key={l.rang}
+          className={`lt-podium__marche lt-podium__marche--${l.rang}${l.joueur ? ' is-player' : ''}`}
+        >
+          {l.rang === 1 ? (
+            <Crown aria-hidden="true" size={28} className="lt-podium__couronne" />
+          ) : null}
+          <span className="lt-podium__nom">{l.nom}</span>
+          <span className="lt-podium__bloc" aria-hidden="true">
+            {l.rang}
+          </span>
+        </li>
+      ))}
+    </ol>
+  );
+}
 
 /** Part (0-1) du chemin vers la prochaine certification. */
 export const progressionCertification = (c: VueCertification): number =>
@@ -48,12 +78,15 @@ export function Classements() {
           Le classement s’établira à la fin de la première semaine.
         </p>
       ) : (
-        <HitParade
-          titre={`Top ${lignes.length} ${chart === 'singles' ? 'singles' : 'albums'} (écoutes de la semaine)`}
-          lignes={lignes
-            .slice(0, 20)
-            .map((l) => ({ rang: l.rang, nom: l.nom, valeur: l.streams, joueur: l.joueur }))}
-        />
+        <>
+          <Podium lignes={lignes.slice(0, 3)} />
+          <HitParade
+            titre={`Top ${lignes.length} ${chart === 'singles' ? 'singles' : 'albums'} (écoutes de la semaine)`}
+            lignes={lignes
+              .slice(0, 20)
+              .map((l) => ({ rang: l.rang, nom: l.nom, valeur: l.streams, joueur: l.joueur }))}
+          />
+        </>
       )}
       <h3>Tes sorties classées</h3>
       {mes.length === 0 ? (
@@ -77,23 +110,29 @@ export function Classements() {
       {vue.certifications.length === 0 ? (
         <p className="label-screen__soon">Aucune sortie publiée pour l’instant.</p>
       ) : (
-        <ul className="label-list">
+        <ul className="lt-certifs">
           {vue.certifications.map((c) => (
-            <li key={c.projetId}>
-              {c.nom} — {c.niveau ? NOMS_NIVEAU[c.niveau] : 'pas encore certifié'} ·{' '}
-              {c.ventes.toLocaleString('fr-FR')} ventes équivalentes
-              {c.prochain ? (
-                <>
-                  {' '}
-                  (prochain : {NOMS_NIVEAU[c.prochain.niveau]} à{' '}
-                  {c.prochain.seuil.toLocaleString('fr-FR')})
+            <li key={c.projetId} className={`lt-certif lt-certif--${c.niveau ?? 'aucun'}`}>
+              <span className="lt-certif__disque" aria-hidden="true">
+                {c.niveau ? <Award size={26} /> : <Disc3 size={26} />}
+              </span>
+              <span className="lt-certif__texte">
+                <strong>{c.nom}</strong>
+                <small>
+                  {c.niveau ? NOMS_NIVEAU[c.niveau] : 'pas encore certifié'} ·{' '}
+                  {c.ventes.toLocaleString('fr-FR')} ventes équivalentes
+                  {c.prochain
+                    ? ` (prochain : ${NOMS_NIVEAU[c.prochain.niveau]} à ${c.prochain.seuil.toLocaleString('fr-FR')})`
+                    : ''}
+                </small>
+                {c.prochain ? (
                   <progress
                     max={1}
                     value={progressionCertification(c)}
                     aria-label={`Progression vers ${NOMS_NIVEAU[c.prochain.niveau]}`}
                   />
-                </>
-              ) : null}
+                ) : null}
+              </span>
             </li>
           ))}
         </ul>
