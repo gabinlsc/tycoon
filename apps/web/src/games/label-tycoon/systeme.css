@@ -1,0 +1,284 @@
+/* Système visuel : matières, profondeur et finitions communes à tout le jeu. */
+
+.lt-app {
+  background:
+    radial-gradient(
+      60rem 36rem at 12% -10%,
+      color-mix(in srgb, var(--purple) 16%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      52rem 34rem at 100% 0%,
+      color-mix(in srgb, var(--pink) 14%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      48rem 30rem at 70% 110%,
+      color-mix(in srgb, var(--teal) 14%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+        circle at 1px 1px,
+        color-mix(in srgb, var(--outline) 7%, transparent) 1px,
+        transparent 0
+      )
+      0 0 / 22px 22px,
+    var(--lt-fond);
+  scrollbar-color: color-mix(in srgb, var(--purple) 55%, #fff) transparent;
+}
+.lt-app ::selection {
+  background: color-mix(in srgb, var(--gold) 70%, #fff);
+  color: var(--outline);
+}
+.lt-app .mono,
+.lt-app .lt-stat,
+.lt-app .lt-kpi {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Panneaux : double ombre douce + liseré lumineux */
+.lt-app .label-screen,
+.lt-app .lt-panneau {
+  border-width: 2px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, #fff 70%, var(--surface)) 0, var(--surface) 3.5rem),
+    var(--surface);
+  box-shadow:
+    inset 0 2px 0 #fff,
+    0 4px 0 color-mix(in srgb, var(--outline) 85%, transparent),
+    0 14px 28px -10px color-mix(in srgb, var(--purple-dark) 35%, transparent);
+}
+
+/* Boutons : reflet vitré et ressort à l'appui */
+.lt-app .btn {
+  position: relative;
+  overflow: hidden;
+  text-shadow: 0 1px 0 color-mix(in srgb, #000 25%, transparent);
+  transition:
+    transform 0.14s cubic-bezier(0.3, 1.6, 0.5, 1),
+    box-shadow 0.14s,
+    filter 0.14s;
+}
+.lt-app .btn::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 52% 0;
+  background: linear-gradient(180deg, color-mix(in srgb, #fff 45%, transparent), transparent);
+  pointer-events: none;
+}
+.lt-app .btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -60%;
+  width: 40%;
+  background: linear-gradient(
+    105deg,
+    transparent,
+    color-mix(in srgb, #fff 55%, transparent),
+    transparent
+  );
+  transform: skewX(-18deg);
+  pointer-events: none;
+}
+.lt-app .btn:hover:not(:disabled)::after {
+  animation: lt-reflet 0.7s ease-out;
+}
+.lt-app .btn:hover:not(:disabled) {
+  filter: saturate(1.1) brightness(1.04);
+}
+.lt-app .btn:disabled {
+  filter: grayscale(0.55);
+}
+@keyframes lt-reflet {
+  to {
+    left: 130%;
+  }
+}
+
+/* Champs de saisie */
+.lt-app input[type='text'],
+.lt-app input[type='number'],
+.lt-app input[type='search'],
+.lt-app select,
+.lt-app textarea {
+  border: 2px solid color-mix(in srgb, var(--outline) 80%, transparent);
+  border-radius: var(--r-sm);
+  background: #fff;
+  box-shadow: inset 0 2px 0 color-mix(in srgb, var(--outline) 10%, transparent);
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+.lt-app input:focus-visible,
+.lt-app select:focus-visible,
+.lt-app textarea:focus-visible {
+  border-color: var(--purple);
+  box-shadow:
+    inset 0 2px 0 color-mix(in srgb, var(--outline) 10%, transparent),
+    0 0 0 4px color-mix(in srgb, var(--purple) 28%, transparent);
+  outline: none;
+}
+.lt-app input[type='checkbox'],
+.lt-app input[type='radio'] {
+  accent-color: var(--purple);
+}
+.lt-app input[type='range'] {
+  accent-color: var(--gold-dark);
+  height: 1.4rem;
+}
+.lt-app input[type='range']::-webkit-slider-runnable-track {
+  height: 0.7rem;
+  border: 2px solid var(--outline);
+  border-radius: 99px;
+  background: color-mix(in srgb, var(--purple) 18%, #fff);
+}
+.lt-app input[type='range']::-webkit-slider-thumb {
+  appearance: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-top: -0.55rem;
+  border: 3px solid var(--outline);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff8c9, var(--gold) 55%);
+  box-shadow: 0 3px 0 var(--outline);
+}
+.lt-app input[type='range']::-moz-range-track {
+  height: 0.7rem;
+  border: 2px solid var(--outline);
+  border-radius: 99px;
+  background: color-mix(in srgb, var(--purple) 18%, #fff);
+}
+.lt-app input[type='range']::-moz-range-thumb {
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 3px solid var(--outline);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff8c9, var(--gold) 55%);
+  box-shadow: 0 3px 0 var(--outline);
+}
+
+/* Barres de défilement */
+.lt-app *::-webkit-scrollbar {
+  width: 0.7rem;
+  height: 0.7rem;
+}
+.lt-app *::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 99px;
+  background: color-mix(in srgb, var(--purple) 45%, #fff) padding-box;
+}
+.lt-app *::-webkit-scrollbar-thumb:hover {
+  background: var(--purple) padding-box;
+}
+
+/* Bandeau du haut : verre dépoli, pastilles de stats */
+.lt-app .lt-hud {
+  border-bottom: 2px solid color-mix(in srgb, var(--outline) 80%, transparent);
+  background: linear-gradient(180deg, #fff, color-mix(in srgb, var(--surface-2) 55%, #fff));
+  box-shadow:
+    0 6px 18px -8px color-mix(in srgb, var(--purple-dark) 40%, transparent),
+    inset 0 -3px 0 color-mix(in srgb, var(--gold) 55%, transparent);
+}
+.lt-app .label-time__reason {
+  display: inline-flex;
+  flex-basis: auto;
+  order: 0;
+  align-items: center;
+  max-width: 100%;
+  padding: 0.25rem 0.75rem;
+  border: 2px solid var(--red);
+  border-radius: 99px;
+  background: color-mix(in srgb, var(--red) 10%, #fff);
+  animation: lt-alerte 1.6s ease-in-out infinite;
+}
+@keyframes lt-alerte {
+  50% {
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--red) 18%, transparent);
+  }
+}
+
+/* Barre latérale : l'écran actif brille */
+.lt-app .lt-nav__item {
+  transition:
+    transform 0.16s cubic-bezier(0.3, 1.5, 0.5, 1),
+    background 0.16s;
+}
+.lt-app .lt-nav__item:hover {
+  transform: translateX(3px);
+}
+.lt-app .lt-nav__item[aria-current='page'] {
+  box-shadow:
+    0 0 0 2px var(--outline),
+    0 6px 16px -4px color-mix(in srgb, var(--gold) 80%, transparent);
+}
+
+/* Écran de chargement : un vinyle qui tourne */
+.lt-chargement {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--sp-4);
+  background:
+    radial-gradient(
+      40rem 26rem at 50% 40%,
+      color-mix(in srgb, var(--purple) 45%, transparent),
+      transparent 70%
+    ),
+    var(--lt-violet-fonce, #2b1478);
+  color: #fff;
+  font-family: var(--font-display);
+  text-align: center;
+}
+.lt-chargement__disque {
+  width: 7.5rem;
+  height: 7.5rem;
+  animation: lt-tourne 2.2s linear infinite;
+  filter: drop-shadow(0 12px 18px color-mix(in srgb, #000 45%, transparent));
+}
+.lt-chargement__titre {
+  margin: 0;
+  font-size: var(--fs-h2, 1.75rem);
+  letter-spacing: 0.04em;
+  background: linear-gradient(100deg, #fff 30%, var(--gold) 50%, #fff 70%) 0 0 / 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: lt-brille 2.4s linear infinite;
+}
+.lt-chargement__astuce {
+  margin: 0;
+  max-width: 24rem;
+  padding-inline: var(--gutter);
+  color: color-mix(in srgb, #fff 78%, transparent);
+  font-family: var(--font-text);
+  font-size: var(--fs-small);
+  font-weight: 700;
+}
+@keyframes lt-tourne {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes lt-brille {
+  to {
+    background-position: -250% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lt-app .btn::after,
+  .lt-app .label-time__reason,
+  .lt-chargement__disque,
+  .lt-chargement__titre {
+    animation: none;
+  }
+  .lt-app .lt-nav__item,
+  .lt-app .btn {
+    transition: none;
+  }
+}

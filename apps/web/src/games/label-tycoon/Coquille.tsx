@@ -9,6 +9,7 @@ import { enregistrerJour } from './serie';
 import { useAudio, useAudioDuJeu } from './audio/useAudio';
 import { ICONES_ECRANS, ICONES_POLES } from './icones';
 import { Ceremonie, useCeremonie } from './Ceremonie';
+import { Chargement } from './Chargement';
 import { Effets } from './Effets';
 import { CourseClassement, useCourseClassement } from './Soirees';
 import { Hud } from './Hud';
@@ -98,7 +99,7 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
     return () => document.documentElement.classList.remove('lt-verrou');
   }, [enJeu]);
 
-  if (etat === 'chargement') return <p className="stage__loading">Chargement du moteur…</p>;
+  if (etat === 'chargement') return <Chargement />;
   if (etat === 'erreur')
     return (
       <p role="alert" className="label-error">
