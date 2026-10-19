@@ -1,5 +1,6 @@
 import type { Rng } from '@tycoon/core';
 import { ALL_EXCLUSIONS } from './content/exclusions';
+import { NOMS_DETOURNES, PARODIES, PRENOMS_DETOURNES } from './content/parodies';
 import {
   ADJECTIVES,
   CITY_PARTS,
@@ -54,7 +55,8 @@ export function generateRealName(rng: Rng, origin: Origin = pickOrigin(rng)): Re
   return { prenom: rng.pick(GIVEN_NAMES[origin]), nom: rng.pick(FAMILY_NAMES[origin]), origin };
 }
 
-type StagePattern = 'syllabes' | 'compose' | 'prefixe' | 'initiales' | 'prenom-initiale' | 'prenom';
+type StagePattern =
+  'syllabes' | 'compose' | 'prefixe' | 'initiales' | 'prenom-initiale' | 'prenom' | 'parodie';
 
 /** Poids des façons de fabriquer un nom de scène, par style. */
 const PATTERN_WEIGHTS: Readonly<Record<StageStyle, Readonly<Record<StagePattern, number>>>> = {
@@ -65,10 +67,35 @@ const PATTERN_WEIGHTS: Readonly<Record<StageStyle, Readonly<Record<StagePattern,
     initiales: 14,
     'prenom-initiale': 14,
     prenom: 2,
+    parodie: 30,
   },
-  pop: { syllabes: 34, compose: 26, prefixe: 4, initiales: 4, 'prenom-initiale': 28, prenom: 4 },
-  afro: { syllabes: 56, compose: 10, prefixe: 8, initiales: 6, 'prenom-initiale': 16, prenom: 4 },
-  latino: { syllabes: 50, compose: 12, prefixe: 8, initiales: 6, 'prenom-initiale': 20, prenom: 4 },
+  pop: {
+    syllabes: 34,
+    compose: 26,
+    prefixe: 4,
+    initiales: 4,
+    'prenom-initiale': 28,
+    prenom: 4,
+    parodie: 40,
+  },
+  afro: {
+    syllabes: 56,
+    compose: 10,
+    prefixe: 8,
+    initiales: 6,
+    'prenom-initiale': 16,
+    prenom: 4,
+    parodie: 16,
+  },
+  latino: {
+    syllabes: 50,
+    compose: 12,
+    prefixe: 8,
+    initiales: 6,
+    'prenom-initiale': 20,
+    prenom: 4,
+    parodie: 18,
+  },
 };
 
 const VOWELS = 'aeiouyéèêëïîôöûüàâ';
@@ -137,6 +164,10 @@ function rawStageName(rng: Rng, style: StageStyle, real?: RealName): string {
     }
     case 'prenom':
       return (real ?? generateRealName(rng)).prenom;
+    case 'parodie':
+      return rng.chance(0.5)
+        ? rng.pick(PARODIES[style])
+        : `${rng.pick(PRENOMS_DETOURNES)} ${rng.pick(NOMS_DETOURNES)}`;
   }
 }
 
