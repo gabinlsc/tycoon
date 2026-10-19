@@ -45,6 +45,20 @@ describe('coquille plein écran', () => {
     );
   });
 
+  it('replie les groupes secondaires, sauf celui de l’écran actif', async () => {
+    const nav = await demarrer();
+    const marche = within(nav).getByRole('button', { name: /Le marché/ });
+    expect(marche.getAttribute('aria-expanded')).toBe('false');
+    fireEvent.click(marche);
+    expect(marche.getAttribute('aria-expanded')).toBe('true');
+    fireEvent.click(within(nav).getByRole('button', { name: /Calendrier/ }));
+    expect(
+      within(nav)
+        .getByRole('button', { name: /Gestion/ })
+        .getAttribute('aria-expanded'),
+    ).toBe('false');
+  });
+
   it('ouvre les sauvegardes depuis la barre latérale', async () => {
     await demarrer();
     const panneau = screen.getByText('Panneau des sauvegardes').parentElement as HTMLElement;

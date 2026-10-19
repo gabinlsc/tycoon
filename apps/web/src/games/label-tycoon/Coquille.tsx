@@ -1,6 +1,6 @@
 import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Disc3, Lock, LogOut, Menu, Save, X } from 'lucide-react';
+import { ChevronDown, Disc3, Lock, LogOut, Menu, Save, X } from 'lucide-react';
 import { TIERS } from '@tycoon/label-tycoon';
 import { Button } from '../../components/arcade/ui/Button';
 import { ECRANS, GROUPES, type EcranId } from './ecrans';
@@ -57,6 +57,8 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
   const [pleinEcran, setPleinEcran] = useState(true);
   const [tiroir, setTiroir] = useState(false);
   const [panneauSauvegarde, setPanneauSauvegarde] = useState(false);
+  // Groupes de navigation dépliés par le joueur ; « Mon label » reste toujours ouvert.
+  const [depliesManuel, setDeplies] = useState<readonly string[]>([]);
   const etroit = useEcranEtroit();
   const contenu = useRef<HTMLDivElement>(null);
   const setEcran = useCallback((id: EcranId) => {
@@ -144,47 +146,70 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
           ) : null}
         </div>
         <nav className="label-nav lt-nav" aria-label="Écrans du jeu">
-          {GROUPES.map((g) => (
-            <div key={g.id} className="lt-nav__groupe">
-              <p className="lt-nav__titre" aria-hidden="true">
-                {g.titre}
-              </p>
-              {ECRANS.filter((e) => e.groupe === g.id).map((e) => {
-                const Icone = ICONES_ECRANS[e.id];
-                const index = ECRANS.findIndex((x) => x.id === e.id);
-                const ferme = verrou(e);
-                return (
+          {GROUPES.map((g) => {
+            const replie = g.id !== 'label';
+            const groupeActif = ECRANS.find((x) => x.id === ecran)?.groupe === g.id;
+            const ouvert = !replie || groupeActif || depliesManuel.includes(g.id);
+            return (
+              <div key={g.id} className={`lt-nav__groupe${ouvert ? '' : ' is-replie'}`}>
+                {replie ? (
                   <button
-                    key={e.id}
                     type="button"
-                    className={`label-nav__item lt-nav__item${ferme ? ' is-verrouille' : ''}`}
-                    aria-current={ecran === e.id ? 'page' : undefined}
-                    data-ecran={e.id}
-                    onClick={() => setEcran(e.id)}
-                    title={`${e.description}${index < 9 ? ` (touche ${index + 1})` : ''}`}
+                    className="lt-nav__titre lt-nav__titre--bouton"
+                    aria-expanded={ouvert}
+                    onClick={() =>
+                      setDeplies((d) =>
+                        d.includes(g.id) ? d.filter((x) => x !== g.id) : [...d, g.id],
+                      )
+                    }
                   >
-                    <Icone aria-hidden="true" size={20} strokeWidth={2.4} />
-                    <span className="lt-nav__nom">{e.titre}</span>
-                    {ferme ? (
-                      <span className="lt-nav__verrou">
-                        <Lock aria-hidden="true" size={14} />
-                        <span className="visually-hidden"> (verrouillé)</span>
-                      </span>
-                    ) : null}
-                    {e.id === 'boite' && badges > 0 ? (
-                      <span className="label-badge" aria-label={`${badges} à lire`}>
-                        {badges}
-                      </span>
-                    ) : index < 9 ? (
-                      <kbd className="lt-nav__touche" aria-hidden="true">
-                        {index + 1}
-                      </kbd>
-                    ) : null}
+                    {g.titre}
+                    <ChevronDown aria-hidden="true" size={16} />
                   </button>
-                );
-              })}
-            </div>
-          ))}
+                ) : (
+                  <p className="lt-nav__titre" aria-hidden="true">
+                    {g.titre}
+                  </p>
+                )}
+                <div className="lt-nav__items">
+                  {ECRANS.filter((e) => e.groupe === g.id).map((e) => {
+                    const Icone = ICONES_ECRANS[e.id];
+                    const index = ECRANS.findIndex((x) => x.id === e.id);
+                    const ferme = verrou(e);
+                    return (
+                      <button
+                        key={e.id}
+                        type="button"
+                        className={`label-nav__item lt-nav__item${ferme ? ' is-verrouille' : ''}`}
+                        aria-current={ecran === e.id ? 'page' : undefined}
+                        data-ecran={e.id}
+                        onClick={() => setEcran(e.id)}
+                        title={`${e.description}${index < 9 ? ` (touche ${index + 1})` : ''}`}
+                      >
+                        <Icone aria-hidden="true" size={20} strokeWidth={2.4} />
+                        <span className="lt-nav__nom">{e.titre}</span>
+                        {ferme ? (
+                          <span className="lt-nav__verrou">
+                            <Lock aria-hidden="true" size={14} />
+                            <span className="visually-hidden"> (verrouillé)</span>
+                          </span>
+                        ) : null}
+                        {e.id === 'boite' && badges > 0 ? (
+                          <span className="label-badge" aria-label={`${badges} à lire`}>
+                            {badges}
+                          </span>
+                        ) : index < 9 ? (
+                          <kbd className="lt-nav__touche" aria-hidden="true">
+                            {index + 1}
+                          </kbd>
+                        ) : null}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
         </nav>
         <div className="lt-side__pied">
           {sauvegardes ? (
