@@ -1,9 +1,14 @@
-import { type CSSProperties, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { VueJeu } from '@tycoon/label-tycoon';
 import { Briefcase, Disc3, Flame, Inbox, Radar, X } from 'lucide-react';
 import { calculerSerie, dateDuJour, lireJours } from './serie';
 import { Batiments } from './Batiments';
 import { Immeuble, type CibleMonde } from './Immeuble';
+import { Ciel } from './monde/Ciel';
+import { Meteo } from './monde/Meteo';
+import { Rue } from './monde/Rue';
+import { Horizon, Tour } from './monde/Ville';
+import { periodeDeLaJournee } from './siege/Siege';
 import { Personnel } from './Personnel';
 import { Reperage } from './Reperage';
 import { Roster } from './Roster';
@@ -113,6 +118,7 @@ export function Monde({
   const fermeture = useRef<HTMLButtonElement>(null);
   const tours = toursRivales(vue.concurrence.rivaux);
   const saison = saisonDuMois(vue.date.mois);
+  const periode = periodeDeLaJournee(vue.date.semaineDuMois);
   const { theme } = useAbonnement();
 
   useEffect(() => {
@@ -130,26 +136,22 @@ export function Monde({
 
   return (
     <section
-      className={`lt-monde lt-monde--${saison} lt-monde--theme-${theme}${cible ? ' a-tiroir' : ''}`}
+      className={`lt-monde lt-monde--${saison} lt-monde--${periode} lt-monde--theme-${theme}${cible ? ' a-tiroir' : ''}`}
       aria-label="Le monde du label"
     >
-      <div className="lt-monde__ciel" aria-hidden="true">
-        <span className="lt-nuage lt-nuage--1" />
-        <span className="lt-nuage lt-nuage--2" />
-        <span className="lt-nuage lt-nuage--3" />
-        <ul className="lt-monde__tours">
-          {tours.map((t, i) => (
-            <li key={t.id} style={{ '--h': `${t.hauteur}%`, '--i': i } as CSSProperties}>
-              <span className="lt-tour__nom">{t.nom}</span>
-            </li>
-          ))}
-        </ul>
-        <span className="lt-voiture" />
-      </div>
+      <Ciel periode={periode} />
+      <Horizon />
+      <ul className="lt-tours" aria-hidden="true">
+        {tours.map((t, i) => (
+          <Tour key={t.id} nom={t.nom} hauteur={t.hauteur} rang={i} periode={periode} />
+        ))}
+      </ul>
+      <Meteo saison={saison} />
 
       <div className="lt-monde__scene">
         <Immeuble vue={vue} allerA={allerA} ouvrir={setCible} />
       </div>
+      <Rue saison={saison} periode={periode} />
 
       <div className="lt-monde__enseignes">
         <button
