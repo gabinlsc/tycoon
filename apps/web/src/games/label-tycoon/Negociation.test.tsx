@@ -5,7 +5,7 @@ import { Coquille } from './Coquille';
 import { creerMoteurLocal } from './engine/local';
 import { LabelProvider } from './LabelContext';
 import { JaugeReaction, Tampon } from './Negociation';
-import { OFFRE_DE_DEPART, clausesDepuis, offreDepuis } from './negociation';
+import { OFFRE_DE_DEPART, clausesDepuis, offreDepuis } from './negociationOffre';
 
 afterEach(cleanup);
 

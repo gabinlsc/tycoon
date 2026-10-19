@@ -11,7 +11,7 @@ import {
   type Offre,
   clausesDepuis,
   offreDepuis,
-} from './negociation';
+} from './negociationOffre';
 
 const eur = (cents: number): string => `${Math.round(cents / 100).toLocaleString('fr-FR')} €`;
 
