@@ -2,6 +2,7 @@ import {
   Briefcase,
   Clapperboard,
   Gem,
+  Sparkles,
   Megaphone,
   Building2,
   Bus,
@@ -58,6 +59,7 @@ export const ICONES_ECRANS: Readonly<Record<EcranId, LucideIcon>> = {
   international: Globe,
   heritage: Crown,
   generations: Sprout,
+  abonnement: Sparkles,
 };
 
 /** Icône de chaque pôle de navigation. */

@@ -4,6 +4,7 @@ import { Disc3, Lock, LogOut, Menu, Save, Volume2, VolumeX, X } from 'lucide-rea
 import { TIERS } from '@tycoon/label-tycoon';
 import { Button } from '../../components/arcade/ui/Button';
 import { ECRANS, POLES, poleDe, type EcranId, type PoleId } from './ecrans';
+import { useAbonnement } from './offres';
 import { useAudio, useAudioDuJeu } from './audio/useAudio';
 import { ICONES_ECRANS, ICONES_POLES } from './icones';
 import { Ceremonie, useCeremonie } from './Ceremonie';
@@ -75,6 +76,7 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
   useAudioDuJeu(vue);
   const course = useCourseClassement(vue);
   const audio = useAudio();
+  const abonnement = useAbonnement();
 
   // L'écran actif reste visible dans la navigation (longue liste, tiroir sur mobile).
   useEffect(() => {
@@ -140,6 +142,11 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
           <div>
             <strong className="label-bar__name">{vue.label.nom}</strong>
             <span className="label-bar__tier lt-palier">{vue.label.palier}</span>
+            {abonnement.offre !== 'gratuit' ? (
+              <span className={`lt-badge-abo lt-badge-abo--${abonnement.offre}`}>
+                {abonnement.offre === 'pro' ? 'PRO' : 'LÉGENDE'}
+              </span>
+            ) : null}
           </div>
           {etroit ? (
             <button

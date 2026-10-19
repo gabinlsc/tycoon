@@ -185,7 +185,7 @@ Objectif : un jeu qu'on regarde, qu'on entend et qu'on a envie de rouvrir demain
 - [x] `feat/label-soiree-sortie` : soirée de sortie : compte à rebours, première écoute, compteur d'écoutes en direct, course au classement animée, réaction des fans
 - [ ] `feat/label-campagne` : campagne en chapitres (du garage au conglomérat), rivaux nommés avec visage, objectifs et récompenses de chapitre
 - [ ] `feat/label-defi-du-jour-vitrine` : défi du jour, séries de jours consécutifs, vitrine de label partageable (image)
-- [ ] `feat/label-abonnement-fictif` : abonnement **fictif** (aucun paiement, aucune donnée bancaire) : offres Gratuit, Pro et Légende, activation locale, avantages cosmétiques (thèmes, cadres de cartes, musiques) et packs bonus ; prêt à brancher sur un vrai paiement le jour où l'entité juridique existe
+- [x] `feat/label-abonnement-fictif` : abonnement **fictif** (aucun paiement, aucune donnée bancaire) : offres Gratuit, Pro et Légende, activation locale, avantages cosmétiques (thèmes, cadres de cartes, musiques) et packs bonus ; prêt à brancher sur un vrai paiement le jour où l'entité juridique existe
 
 ## Suivi
 
@@ -203,6 +203,6 @@ Objectif : un jeu qu'on regarde, qu'on entend et qu'on a envie de rouvrir demain
 | 9     | 5     | 5      |
 | 10    | 12    | 12     |
 | 11    | 5     | 5      |
-| 12    | 9     | 6      |
+| 12    | 9     | 7      |
 
 (Mettre ce tableau à jour dans la PR qui coche une case.)
