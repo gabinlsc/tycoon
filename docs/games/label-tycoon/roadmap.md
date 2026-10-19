@@ -182,7 +182,7 @@ Objectif : un jeu qu'on regarde, qu'on entend et qu'on a envie de rouvrir demain
 - [x] `feat/label-qg-monde` : l'immeuble comme écran de jeu : étages animés, artistes qui circulent, rivaux en ville, clic sur un étage pour agir dans un tiroir sans quitter la scène
 - [x] `feat/label-cartes-artistes` : cartes d'artistes à collectionner : visages dessinés, raretés (commun, rare, épique, légendaire), reflet holographique, statistiques en jauges
 - [x] `feat/label-packs-reperage` : le repérage devient une ouverture de packs : révélation carte par carte, tension, mise en avant des talents rares
-- [ ] `feat/label-soiree-sortie` : soirée de sortie : compte à rebours, première écoute, compteur d'écoutes en direct, course au classement animée, réaction des fans
+- [x] `feat/label-soiree-sortie` : soirée de sortie : compte à rebours, première écoute, compteur d'écoutes en direct, course au classement animée, réaction des fans
 - [ ] `feat/label-campagne` : campagne en chapitres (du garage au conglomérat), rivaux nommés avec visage, objectifs et récompenses de chapitre
 - [ ] `feat/label-defi-du-jour-vitrine` : défi du jour, séries de jours consécutifs, vitrine de label partageable (image)
 - [ ] `feat/label-abonnement-fictif` : abonnement **fictif** (aucun paiement, aucune donnée bancaire) : offres Gratuit, Pro et Légende, activation locale, avantages cosmétiques (thèmes, cadres de cartes, musiques) et packs bonus ; prêt à brancher sur un vrai paiement le jour où l'entité juridique existe
@@ -203,6 +203,6 @@ Objectif : un jeu qu'on regarde, qu'on entend et qu'on a envie de rouvrir demain
 | 9     | 5     | 5      |
 | 10    | 12    | 12     |
 | 11    | 5     | 5      |
-| 12    | 9     | 5      |
+| 12    | 9     | 6      |
 
 (Mettre ce tableau à jour dans la PR qui coche une case.)

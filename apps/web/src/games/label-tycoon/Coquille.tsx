@@ -8,6 +8,7 @@ import { useAudio, useAudioDuJeu } from './audio/useAudio';
 import { ICONES_ECRANS, ICONES_POLES } from './icones';
 import { Ceremonie, useCeremonie } from './Ceremonie';
 import { Effets } from './Effets';
+import { CourseClassement, useCourseClassement } from './Soirees';
 import { Hud } from './Hud';
 import { Notifications } from './Notifications';
 import { useEcranEtroit } from './useEcranEtroit';
@@ -72,6 +73,7 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
   useRaccourcis(setEcran, vue !== null);
   const spectacle = useCeremonie(vue);
   useAudioDuJeu(vue);
+  const course = useCourseClassement(vue);
   const audio = useAudio();
 
   // L'écran actif reste visible dans la navigation (longue liste, tiroir sur mobile).
@@ -233,6 +235,14 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
       <Hud />
       <Notifications vue={vue} allerA={setEcran} />
       <Effets vue={vue} />
+      {course.course ? (
+        <CourseClassement
+          nom={course.course.nom}
+          position={course.course.position}
+          lignes={course.course.lignes}
+          fermer={course.fermer}
+        />
+      ) : null}
       {spectacle.ceremonie ? (
         <Ceremonie ceremonie={spectacle.ceremonie} fermer={spectacle.fermer} />
       ) : null}
