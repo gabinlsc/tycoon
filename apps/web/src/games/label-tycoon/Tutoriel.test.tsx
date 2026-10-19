@@ -62,3 +62,24 @@ describe('tutoriel guidé', () => {
     expect(screen.queryByLabelText('Tutoriel')).toBeNull();
   });
 });
+
+describe('coach du tutoriel', () => {
+  it('se réduit en pastille et se rouvre', async () => {
+    await lancerTutoriel();
+    fireEvent.click(screen.getByRole('button', { name: 'Réduire le tutoriel' }));
+    expect(screen.queryByLabelText('Tutoriel')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: /Rouvrir le tutoriel · 1\/7/ }));
+    expect(screen.getByLabelText('Tutoriel')).toBeTruthy();
+  });
+
+  it('fait clignoter l’écran à atteindre, et ne propose pas d’aller là où l’on est', async () => {
+    await lancerTutoriel();
+    expect(screen.queryByRole('button', { name: 'Aller à l’écran QG' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Compris' }));
+    await waitFor(() =>
+      expect(
+        document.querySelector('[data-ecran="reperage"]')?.classList.contains('lt-cible'),
+      ).toBe(true),
+    );
+  });
+});

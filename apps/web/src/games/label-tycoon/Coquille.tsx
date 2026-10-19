@@ -155,6 +155,7 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
                     type="button"
                     className={`label-nav__item lt-nav__item${ferme ? ' is-verrouille' : ''}`}
                     aria-current={ecran === e.id ? 'page' : undefined}
+                    data-ecran={e.id}
                     onClick={() => setEcran(e.id)}
                     title={`${e.description}${index < 9 ? ` (touche ${index + 1})` : ''}`}
                   >
@@ -216,7 +217,7 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
         ) : null}
         {vue.scenario ? <BandeauScenario scenario={vue.scenario} /> : null}
         {vue.defi ? <BandeauDefi defi={vue.defi} /> : null}
-        <Tutoriel allerA={setEcran} />
+        <Tutoriel allerA={setEcran} ecran={ecran} />
         {refus ? (
           <p role="status" className="label-refus">
             {refus}
@@ -257,6 +258,7 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
                 key={id}
                 type="button"
                 className="lt-onglet"
+                data-ecran={id}
                 aria-current={ecran === id ? 'page' : undefined}
                 onClick={() => setEcran(id)}
               >
