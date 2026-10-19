@@ -1,9 +1,11 @@
+import { Gamepad2, Keyboard, PauseCircle, Settings2 } from 'lucide-react';
 import { Button } from '../../components/arcade/ui/Button';
 import { ECRANS } from './ecrans';
 import { useLabel } from './LabelContext';
 import { NOMS_MODES } from './partie';
 import { CATEGORIES_PAUSE, LIBELLES_PAUSE } from './temps';
 import { useReglagesPause } from './useReglagesPause';
+import { Panneau, Tuile, Tuiles } from './Visuels';
 
 /** Raccourcis clavier du jeu, des chiffres de navigation aux touches du temps. */
 export const RACCOURCIS = [
@@ -25,86 +27,88 @@ export function Parametres() {
       <h2 id="parametres-titre">Paramètres</h2>
 
       {vue ? (
-        <>
-          <h3>Ta partie</h3>
-          <p>
-            Mode : <strong>{NOMS_MODES[vue.partie.mode] ?? vue.partie.mode}</strong>
-            {vue.partie.bacASable ? ' (argent illimité, pas de faillite)' : ''}. Ces réglages sont
-            fixés au départ de la partie.
+        <Panneau titre="Ta partie" Icone={Gamepad2} ton="purple" id="param-partie">
+          <p className="lt-puces-info">
+            <span className="lt-chip lt-chip--bon">
+              Mode : {NOMS_MODES[vue.partie.mode] ?? vue.partie.mode}
+            </span>
+            <span className="lt-chip">
+              Faillite : {vue.partie.faillitePossible ? 'possible' : 'désactivée'}
+            </span>
+            {vue.partie.bacASable ? (
+              <span className="lt-chip">argent illimité, pas de faillite</span>
+            ) : null}
+            <span className="lt-chip">Réglages fixés au départ</span>
           </p>
-          <ul className="label-list">
-            <li>
-              Budget de départ : ×{' '}
-              <span className="mono">{vue.partie.difficulte.capitalDepart}</span>
-            </li>
-            <li>
-              Agressivité des rivaux : ×{' '}
-              <span className="mono">{vue.partie.difficulte.agressiviteRivaux}</span>
-            </li>
-            <li>
-              Volatilité du marché : ×{' '}
-              <span className="mono">{vue.partie.difficulte.volatiliteMarche}</span>
-            </li>
-            <li>
-              Bonus de trésorerie des rivaux : +{' '}
-              <span className="mono">
-                {Math.round(vue.partie.difficulte.bonusTresorerieRivaux * 100)} %
-              </span>
-              {vue.partie.difficulte.bonusTresorerieRivaux > 0
-                ? ' (les rivaux ne jouent pas tout à fait avec les mêmes moyens que toi)'
-                : ' (aucun : les rivaux jouent avec les mêmes règles que toi)'}
-            </li>
-            <li>Faillite : {vue.partie.faillitePossible ? 'possible' : 'désactivée'}</li>
-            <li>
-              Fréquence des événements : ×{' '}
-              <span className="mono">{vue.partie.frequenceEvenements}</span>
-            </li>
-          </ul>
-        </>
+          <Tuiles label="Difficulté">
+            <Tuile
+              Icone={Settings2}
+              valeur={`× ${vue.partie.difficulte.capitalDepart}`}
+              libelle="Budget de départ"
+              ton="green"
+            />
+            <Tuile
+              Icone={Settings2}
+              valeur={`× ${vue.partie.difficulte.agressiviteRivaux}`}
+              libelle="Agressivité des rivaux"
+              ton="red"
+            />
+            <Tuile
+              Icone={Settings2}
+              valeur={`× ${vue.partie.difficulte.volatiliteMarche}`}
+              libelle="Volatilité du marché"
+              ton="orange"
+            />
+            <Tuile
+              Icone={Settings2}
+              valeur={`+ ${Math.round(vue.partie.difficulte.bonusTresorerieRivaux * 100)} %`}
+              libelle="Bonus de trésorerie des rivaux"
+              ton="pink"
+            />
+            <Tuile
+              Icone={Settings2}
+              valeur={`× ${vue.partie.frequenceEvenements}`}
+              libelle="Fréquence des événements"
+              ton="teal"
+            />
+          </Tuiles>
+        </Panneau>
       ) : null}
 
-      <h3>Auto-pauses</h3>
-      <p>
-        Le temps s’arrête de lui-même quand l’un de ces événements survient ({actives} sur{' '}
-        {CATEGORIES_PAUSE.length} actifs). Les réglages sont mémorisés dans ce navigateur.
-      </p>
-      <fieldset>
-        <legend className="visually-hidden">Mettre le jeu en pause quand…</legend>
-        {CATEGORIES_PAUSE.map((c) => (
-          <label key={c} className="label-time__check">
-            <input
-              type="checkbox"
-              checked={reglages[c]}
-              onChange={(e) => basculer(c, e.target.checked)}
-            />
-            {LIBELLES_PAUSE[c]}
-          </label>
-        ))}
-      </fieldset>
-      <Button type="button" onClick={reinitialiser}>
-        Rétablir les réglages par défaut
-      </Button>
-
-      <h3>Raccourcis clavier</h3>
-      <p>Les raccourcis sont désactivés pendant la saisie dans un champ.</p>
-      <table className="label-table">
-        <thead>
-          <tr>
-            <th scope="col">Touche</th>
-            <th scope="col">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {RACCOURCIS.map((r) => (
-            <tr key={r.touche}>
-              <th scope="row">
-                <kbd>{r.touche}</kbd>
-              </th>
-              <td>{r.action}</td>
-            </tr>
+      <Panneau titre="Auto-pauses" Icone={PauseCircle} ton="orange" id="param-pauses">
+        <p className="lt-sous-titre">
+          Le temps s’arrête quand l’un de ces événements survient ({actives} sur{' '}
+          {CATEGORIES_PAUSE.length} actifs).
+        </p>
+        <fieldset className="lt-interrupteurs">
+          <legend className="visually-hidden">Mettre le jeu en pause quand…</legend>
+          {CATEGORIES_PAUSE.map((c) => (
+            <label key={c} className={`lt-interrupteur${reglages[c] ? ' is-actif' : ''}`}>
+              <input
+                type="checkbox"
+                checked={reglages[c]}
+                onChange={(e) => basculer(c, e.target.checked)}
+              />
+              <span className="lt-interrupteur__bouton" aria-hidden="true" />
+              {LIBELLES_PAUSE[c]}
+            </label>
           ))}
-        </tbody>
-      </table>
+        </fieldset>
+        <Button type="button" onClick={reinitialiser}>
+          Rétablir les réglages par défaut
+        </Button>
+      </Panneau>
+
+      <Panneau titre="Raccourcis clavier" Icone={Keyboard} ton="teal" id="param-touches">
+        <ul className="lt-touches">
+          {RACCOURCIS.map((r) => (
+            <li key={r.touche}>
+              <kbd>{r.touche}</kbd>
+              <span>{r.action}</span>
+            </li>
+          ))}
+        </ul>
+      </Panneau>
     </section>
   );
 }

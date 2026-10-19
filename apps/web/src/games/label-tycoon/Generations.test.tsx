@@ -64,7 +64,7 @@ describe('écran Générations', () => {
   it('liste les légendes et permet de parrainer un jeune talent', async () => {
     await demarrer();
     await allerAEcran(/Générations/);
-    await screen.findByText(/1 légende\(s\) du label/);
+    await screen.findByText('légende(s) du label');
     fireEvent.click(await screen.findByRole('button', { name: /Faire parrainer par/ }));
     await screen.findByText(/parraine /);
   });

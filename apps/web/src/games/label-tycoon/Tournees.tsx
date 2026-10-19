@@ -1,8 +1,20 @@
 import { useState } from 'react';
 import { fillRate } from '@tycoon/label-tycoon';
 import type { LabelAction, VueScene } from '@tycoon/label-tycoon';
+import {
+  Bus,
+  Coins,
+  Handshake,
+  Mic2,
+  Music,
+  PartyPopper,
+  Percent,
+  Ticket,
+  Users,
+} from 'lucide-react';
 import { Button } from '../../components/arcade/ui/Button';
 import { useLabel } from './LabelContext';
+import { Barre, Panneau, Tuile, Tuiles } from './Visuels';
 
 const eur = (cents: number): string => `${Math.round(cents / 100).toLocaleString('fr-FR')} €`;
 
@@ -51,169 +63,228 @@ export function Tournees() {
     <section className="label-screen" aria-labelledby="tournees-titre">
       <h2 id="tournees-titre">Tournées</h2>
       {!artiste ? (
-        <p className="label-screen__soon">Signe un artiste pour organiser des concerts.</p>
+        <p className="lt-rien">Signe un artiste pour organiser des concerts.</p>
       ) : (
         <>
-          <h3>Organiser</h3>
-          <div className="label-nego__form">
-            <label className="label-field">
-              Artiste
-              <select value={artiste.id} onChange={(e) => setArtisteId(Number(e.target.value))}>
-                {sc.artistes.map((a) => (
-                  <option key={a.id} value={a.id}>
-                    {a.nom}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="label-field">
-              Salle
-              <select
-                value={salleId}
-                onChange={(e) => {
-                  setSalleId(e.target.value);
-                  setPrix(sc.salles.find((s) => s.id === e.target.value)?.prixRef ?? prix);
-                }}
-              >
-                {sc.salles.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.nom} ({s.capacite.toLocaleString('fr-FR')} places, {eur(s.cout)})
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="label-field">
-              Prix du billet (€)
-              <input
-                type="number"
-                min={1}
-                value={prix}
-                onChange={(e) => setPrix(Math.max(1, Math.round(Number(e.target.value))))}
-              />
-            </label>
-            <label className="label-field">
-              Dates de la tournée
-              <input
-                type="number"
-                min={sc.tournee.dates.min}
-                max={sc.tournee.dates.max}
-                value={dates}
-                onChange={(e) => setDates(Math.round(Number(e.target.value)))}
-              />
-            </label>
-            <label className="label-field">
-              Merch (exemplaires, {eur(sc.tournee.coutMerch)} pièce)
-              <input
-                type="number"
-                min={0}
-                step={100}
-                value={merch}
-                onChange={(e) => setMerch(Math.max(0, Math.round(Number(e.target.value))))}
-              />
-            </label>
-          </div>
-          {artiste.repos > 0 ? (
-            <p>
-              {artiste.nom} est au repos encore {artiste.repos} semaine(s).
-            </p>
-          ) : null}
-          <p>
-            Forme : fatigue <span className="mono">{artiste.fatigue}</span>, hype{' '}
-            <span className="mono">{artiste.hype}</span>.
-            {artiste.fatigue >= 70 ? ' Attention au burnout : la tournée serait annulée.' : ''}
-          </p>
-          {prev ? (
-            <p>
-              Remplissage attendu{' '}
-              <strong className="mono">{Math.round(prev.remplissage * 100)} %</strong> (
-              {prev.spectateurs.toLocaleString('fr-FR')} spectateurs par date) · billetterie estimée{' '}
-              {eur(prev.billetterie)} · coût total <span className="mono">{eur(prev.cout)}</span>.
-            </p>
-          ) : null}
-          <Button
-            type="button"
-            tone="gold"
-            disabled={artiste.repos > 0 || (prev?.cout ?? 0) > fonds}
-            onClick={() =>
-              agir({
-                type: 'lancer-tournee',
-                artisteId: artiste.id,
-                salle: salleId as SalleId,
-                prix,
-                dates,
-                merch,
-              })
-            }
-          >
-            Lancer la tournée
-          </Button>
-          <Button
-            type="button"
-            disabled={
-              artiste.repos > 0 || (sc.salles.find((s) => s.id === salleId)?.cout ?? 0) > fonds
-            }
-            onClick={() =>
-              agir({
-                type: 'organiser-concert',
-                artisteId: artiste.id,
-                salle: salleId as SalleId,
-                prix,
-              })
-            }
-          >
-            Organiser un concert isolé
-          </Button>
+          <Panneau titre="Organiser" Icone={Mic2} ton="pink" id="tour-org">
+            <div className="label-nego__form">
+              <label className="label-field">
+                Artiste
+                <select value={artiste.id} onChange={(e) => setArtisteId(Number(e.target.value))}>
+                  {sc.artistes.map((a) => (
+                    <option key={a.id} value={a.id}>
+                      {a.nom}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="label-field">
+                Salle
+                <select
+                  value={salleId}
+                  onChange={(e) => {
+                    setSalleId(e.target.value);
+                    setPrix(sc.salles.find((s) => s.id === e.target.value)?.prixRef ?? prix);
+                  }}
+                >
+                  {sc.salles.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.nom} ({s.capacite.toLocaleString('fr-FR')} places, {eur(s.cout)})
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="label-field">
+                Prix du billet (€)
+                <input
+                  type="number"
+                  min={1}
+                  value={prix}
+                  onChange={(e) => setPrix(Math.max(1, Math.round(Number(e.target.value))))}
+                />
+              </label>
+              <label className="label-field">
+                Dates de la tournée
+                <input
+                  type="number"
+                  min={sc.tournee.dates.min}
+                  max={sc.tournee.dates.max}
+                  value={dates}
+                  onChange={(e) => setDates(Math.round(Number(e.target.value)))}
+                />
+              </label>
+              <label className="label-field">
+                Merch (exemplaires, {eur(sc.tournee.coutMerch)} pièce)
+                <input
+                  type="number"
+                  min={0}
+                  step={100}
+                  value={merch}
+                  onChange={(e) => setMerch(Math.max(0, Math.round(Number(e.target.value))))}
+                />
+              </label>
+            </div>
+            {artiste.repos > 0 ? (
+              <p className="label-warn">
+                {artiste.nom} est au repos encore {artiste.repos} semaine(s).
+              </p>
+            ) : null}
+            <div className="lt-forme">
+              <Barre libelle="Fatigue" valeur={artiste.fatigue} ton="red" />
+              <Barre libelle="Hype" valeur={artiste.hype} ton="pink" />
+            </div>
+            {artiste.fatigue >= 70 ? (
+              <p className="label-warn">Attention au burnout : la tournée serait annulée.</p>
+            ) : null}
+            {prev ? (
+              <Tuiles label="Prévision">
+                <Tuile
+                  Icone={Percent}
+                  valeur={`${Math.round(prev.remplissage * 100)} %`}
+                  libelle="Remplissage attendu"
+                  ton="green"
+                />
+                <Tuile
+                  Icone={Users}
+                  valeur={prev.spectateurs.toLocaleString('fr-FR')}
+                  libelle="Spectateurs par date"
+                  ton="blue"
+                />
+                <Tuile
+                  Icone={Ticket}
+                  valeur={eur(prev.billetterie)}
+                  libelle="Billetterie estimée"
+                  ton="teal"
+                />
+                <Tuile
+                  Icone={Coins}
+                  valeur={eur(prev.cout)}
+                  libelle="Coût total"
+                  ton="orange"
+                  alerte={prev.cout > fonds}
+                />
+              </Tuiles>
+            ) : null}
+            <Button
+              type="button"
+              tone="gold"
+              disabled={artiste.repos > 0 || (prev?.cout ?? 0) > fonds}
+              onClick={() =>
+                agir({
+                  type: 'lancer-tournee',
+                  artisteId: artiste.id,
+                  salle: salleId as SalleId,
+                  prix,
+                  dates,
+                  merch,
+                })
+              }
+            >
+              Lancer la tournée
+            </Button>
+            <Button
+              type="button"
+              disabled={
+                artiste.repos > 0 || (sc.salles.find((s) => s.id === salleId)?.cout ?? 0) > fonds
+              }
+              onClick={() =>
+                agir({
+                  type: 'organiser-concert',
+                  artisteId: artiste.id,
+                  salle: salleId as SalleId,
+                  prix,
+                })
+              }
+            >
+              Organiser un concert isolé
+            </Button>
+          </Panneau>
         </>
       )}
 
-      <h3>Concerts</h3>
-      {sc.concerts.length === 0 ? (
-        <p className="label-screen__soon">Aucun concert pour l’instant.</p>
-      ) : (
-        <ul className="label-list">
-          {sc.concerts.map((c) => (
-            <li key={c.id}>
-              {c.artiste} — {c.salle}, semaine {c.date}
-              {c.tournee ? ' (tournée)' : ''} :{' '}
-              {c.resolu
-                ? `${c.spectateurs.toLocaleString('fr-FR')} spectateurs, ${eur(c.recette)} pour le label`
-                : `billet à ${c.prix} €, à venir`}
-            </li>
-          ))}
-        </ul>
-      )}
+      <Panneau titre="Concerts" Icone={Music} ton="purple" id="tour-concerts">
+        {sc.concerts.length === 0 ? (
+          <p className="lt-rien">Aucun concert pour l’instant.</p>
+        ) : (
+          <ul className="lt-cartes-fin">
+            {sc.concerts.map((c) => (
+              <li key={c.id} className="lt-carte-fin">
+                <strong>{c.artiste}</strong>
+                <span className="lt-chip">{c.salle}</span>
+                <span className="lt-chip">semaine {c.date}</span>
+                {c.tournee ? <span className="lt-chip">tournée</span> : null}
+                {c.resolu ? (
+                  <>
+                    <span className="lt-chip">
+                      <Users aria-hidden="true" size={14} /> {c.spectateurs.toLocaleString('fr-FR')}
+                    </span>
+                    <span className="lt-chip lt-chip--bon">
+                      <Coins aria-hidden="true" size={14} /> {eur(c.recette)} pour le label
+                    </span>
+                  </>
+                ) : (
+                  <span className="lt-chip">billet à {c.prix} €, à venir</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </Panneau>
 
-      <h3>Tournées récentes</h3>
-      {sc.tournees.length === 0 ? (
-        <p className="label-screen__soon">Aucune tournée pour l’instant.</p>
-      ) : (
-        <ul className="label-list">
-          {sc.tournees.map((t) => (
-            <li key={t.id}>
-              {t.artiste} : {t.tenues}/{t.dates} dates
-              {t.annulee ? ' — annulée (burnout)' : ''} · merch {t.merchVendu}/{t.merchStock} vendus
-            </li>
-          ))}
-        </ul>
-      )}
+      <Panneau titre="Tournées récentes" Icone={Bus} ton="blue" id="tour-tournees">
+        {sc.tournees.length === 0 ? (
+          <p className="lt-rien">Aucune tournée pour l’instant.</p>
+        ) : (
+          <ul className="lt-cartes-fin">
+            {sc.tournees.map((t) => (
+              <li key={t.id} className="lt-carte-fin">
+                <strong>{t.artiste}</strong>
+                <span className="lt-chip">
+                  {t.tenues}/{t.dates} dates
+                </span>
+                {t.annulee ? (
+                  <span className="lt-chip lt-chip--mauvais">annulée (burnout)</span>
+                ) : null}
+                <span className="lt-chip">
+                  merch {t.merchVendu}/{t.merchStock} vendus
+                </span>
+                <progress
+                  max={Math.max(1, t.dates)}
+                  value={t.tenues}
+                  aria-label={`Dates tenues : ${t.artiste}`}
+                />
+              </li>
+            ))}
+          </ul>
+        )}
+      </Panneau>
 
-      <h3>Festivals</h3>
-      {sc.festivals.length === 0 ? (
-        <p className="label-screen__soon">Les candidatures s’ouvrent au début de l’année.</p>
-      ) : (
-        <ul className="label-list">
-          {sc.festivals.map((f) => (
-            <li key={f.id}>
-              {f.nom} — semaine {f.semaine}, notoriété minimale {f.notorieteMin}, cachet de base{' '}
-              {eur(f.cachet)}
-              {f.artiste ? ` · retenu : ${f.artiste}${f.tete ? ' (tête d’affiche)' : ''}` : ''}
-              {f.artiste === null
-                ? f.eligibles.map((e) => {
-                    const nom = sc.artistes.find((a) => a.id === e.artisteId)?.nom ?? '';
-                    return (
-                      <span key={e.artisteId}>
-                        {' '}
+      <Panneau titre="Festivals" Icone={PartyPopper} ton="orange" id="tour-fest">
+        {sc.festivals.length === 0 ? (
+          <p className="lt-rien">Les candidatures s’ouvrent au début de l’année.</p>
+        ) : (
+          <ul className="lt-cartes-fin">
+            {sc.festivals.map((f) => (
+              <li key={f.id} className="lt-carte-fin">
+                <strong>{f.nom}</strong>
+                <span className="lt-chip">semaine {f.semaine}</span>
+                <span className="lt-chip">notoriété min. {f.notorieteMin}</span>
+                <span className="lt-chip">
+                  <Coins aria-hidden="true" size={14} /> cachet {eur(f.cachet)}
+                </span>
+                {f.artiste ? (
+                  <span className="lt-chip lt-chip--bon">
+                    retenu : {f.artiste}
+                    {f.tete ? ' (tête d’affiche)' : ''}
+                  </span>
+                ) : null}
+                {f.artiste === null ? (
+                  <span className="lt-carte-fin__actions">
+                    {f.eligibles.map((e) => {
+                      const nom = sc.artistes.find((a) => a.id === e.artisteId)?.nom ?? '';
+                      return (
                         <Button
+                          key={e.artisteId}
                           type="button"
                           onClick={() =>
                             agir({
@@ -226,41 +297,50 @@ export function Tournees() {
                           Candidater : {nom} ({eur(e.cachet)}
                           {e.tete ? ', tête d’affiche' : ''})
                         </Button>
-                      </span>
-                    );
-                  })
-                : null}
-            </li>
-          ))}
-        </ul>
-      )}
+                      );
+                    })}
+                  </span>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        )}
+      </Panneau>
 
-      <h3>Synchronisations</h3>
-      {sc.offresSynchro.length === 0 ? (
-        <p className="label-screen__soon">Aucune offre pour l’instant.</p>
-      ) : (
-        <ul className="label-list">
-          {sc.offresSynchro.map((o) => (
-            <li key={o.id}>
-              {o.marque} ({o.type}) veut un titre de {o.artiste} pour {eur(o.cachet)}, jusqu’à la
-              semaine {o.expire}.{' '}
-              <Button
-                type="button"
-                tone="gold"
-                onClick={() => agir({ type: 'accepter-synchro', offreId: o.id })}
-              >
-                Accepter {o.marque}
-              </Button>{' '}
-              <Button
-                type="button"
-                onClick={() => agir({ type: 'refuser-synchro', offreId: o.id })}
-              >
-                Refuser {o.marque}
-              </Button>
-            </li>
-          ))}
-        </ul>
-      )}
+      <Panneau titre="Synchronisations" Icone={Handshake} ton="teal" id="tour-sync">
+        {sc.offresSynchro.length === 0 ? (
+          <p className="lt-rien">Aucune offre pour l’instant.</p>
+        ) : (
+          <ul className="lt-cartes-fin">
+            {sc.offresSynchro.map((o) => (
+              <li key={o.id} className="lt-carte-fin">
+                <strong>{o.marque}</strong>
+                <span className="lt-chip">{o.type}</span>
+                <span className="lt-chip">titre de {o.artiste}</span>
+                <span className="lt-chip">
+                  <Coins aria-hidden="true" size={14} /> {eur(o.cachet)}
+                </span>
+                <span className="lt-chip">jusqu’à la sem. {o.expire}</span>
+                <span className="lt-carte-fin__actions">
+                  <Button
+                    type="button"
+                    tone="gold"
+                    onClick={() => agir({ type: 'accepter-synchro', offreId: o.id })}
+                  >
+                    Accepter {o.marque}
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={() => agir({ type: 'refuser-synchro', offreId: o.id })}
+                  >
+                    Refuser {o.marque}
+                  </Button>
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Panneau>
     </section>
   );
 }

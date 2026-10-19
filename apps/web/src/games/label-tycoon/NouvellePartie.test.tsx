@@ -70,7 +70,9 @@ describe('écran de départ', () => {
     await allerAEcran(/Paramètres/);
     await screen.findByRole('heading', { name: 'Ta partie' });
     expect(screen.getByText(/Mode :/).textContent).toContain('Carrière');
-    expect(screen.getByText(/Bonus de trésorerie des rivaux/).textContent).toContain('25');
+    expect(
+      screen.getByText('Bonus de trésorerie des rivaux').closest('.lt-kpi')?.textContent,
+    ).toContain('25');
   });
   it('lance un bac à sable : vitesses ×8 et ×16, faillite désactivée', async () => {
     const b = await ouvrir();
