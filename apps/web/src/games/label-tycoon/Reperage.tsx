@@ -13,7 +13,10 @@ import {
   Users,
 } from 'lucide-react';
 import { Button } from '../../components/arcade/ui/Button';
-import { Avatar, couleurDuGenre } from './avatar';
+import { CarteArtiste } from './CarteArtiste';
+import { Pack, genreNomDe, statsDuSuivi } from './Pack';
+import { rareteDe, scoreSuivi } from './rarete';
+import { useState } from 'react';
 import { EtatVide } from './EtatVide';
 import { Terme } from './Infobulle';
 import { useLabel } from './LabelContext';
@@ -25,14 +28,6 @@ const ICONES_SOURCES: Readonly<Record<ScoutSource, LucideIcon>> = {
   plateforme: Smartphone,
   battle: Swords,
   candidature: Mail,
-};
-
-const COMPETENCES: Record<string, string> = {
-  plume: 'Plume',
-  flow: 'Flow',
-  voix: 'Voix',
-  charisme: 'Charisme',
-  scene: 'Scène',
 };
 
 /** Fourchette 0-100 : la barre colorée est la plage connue, jamais la valeur exacte. */
@@ -74,61 +69,57 @@ function Suivi({
   const { envoyer, vue } = useLabel();
   const essaiAbordable = (vue?.finances.tresorerie ?? 0) >= SCOUTING.trialCost;
   return (
-    <li className="label-prospect">
-      <header className="lt-prospect__tete">
-        <Avatar nom={suivi.nom} genre={suivi.genre} />
-        <div>
-          <strong className="lt-prospect__nom">{suivi.nom}</strong>
-          <span className={`lt-puce lt-puce--${couleurDuGenre(suivi.genre)}`}>
-            {fr.genres[suivi.genre as keyof typeof fr.genres] ?? suivi.genre}
-          </span>
-        </div>
+    <li className="label-prospect lt-prospect-carte">
+      <CarteArtiste
+        nom={suivi.nom}
+        genre={suivi.genre}
+        genreNom={genreNomDe(suivi.genre)}
+        rarete={rareteDe(scoreSuivi(suivi))}
+        stats={statsDuSuivi(suivi)}
+      />
+      <div className="lt-prospect-carte__infos">
+        <strong className="lt-prospect__nom">{suivi.nom}</strong>
         <small className="lt-prospect__meta">
           <Eye aria-hidden="true" size={14} /> {suivi.observations} sem. d’observation · incertitude
           ±{Math.round(incertitude(suivi) / 2)}
         </small>
-      </header>
-      <div className="label-prospect__ranges">
-        {Object.entries(suivi.fourchettes).map(([cle, plage]) => (
-          <Fourchette key={cle} libelle={COMPETENCES[cle] ?? cle} plage={plage} />
-        ))}
-      </div>
-      <p className="label-prospect__hidden">
-        {suivi.essai
-          ? 'Attributs cachés révélés (en fourchette).'
-          : 'Potentiel, éthique, ego, loyauté et polyvalence restent cachés.'}
-      </p>
-      <div className="label-prospect__actions">
-        {suivi.essai ? null : (
+        <p className="label-prospect__hidden">
+          {suivi.essai
+            ? 'Attributs cachés révélés (en fourchette).'
+            : 'Potentiel, éthique, ego, loyauté et polyvalence restent cachés.'}
+        </p>
+        <div className="label-prospect__actions">
+          {suivi.essai ? null : (
+            <Button
+              type="button"
+              tone="gold"
+              disabled={!essaiAbordable}
+              onClick={() =>
+                void envoyer({
+                  type: 'action',
+                  action: { type: 'essai-studio', artisteId: suivi.id },
+                })
+              }
+            >
+              Essai en studio ({eur(SCOUTING.trialCost)})
+            </Button>
+          )}
+          <Button type="button" tone="green" onClick={() => onNegocier(suivi.id)}>
+            Négocier
+          </Button>
           <Button
             type="button"
-            tone="gold"
-            disabled={!essaiAbordable}
+            tone="ghost"
             onClick={() =>
               void envoyer({
                 type: 'action',
-                action: { type: 'essai-studio', artisteId: suivi.id },
+                action: { type: 'abandonner-suivi', artisteId: suivi.id },
               })
             }
           >
-            Essai en studio ({eur(SCOUTING.trialCost)})
+            Abandonner
           </Button>
-        )}
-        <Button type="button" tone="green" onClick={() => onNegocier(suivi.id)}>
-          Négocier
-        </Button>
-        <Button
-          type="button"
-          tone="ghost"
-          onClick={() =>
-            void envoyer({
-              type: 'action',
-              action: { type: 'abandonner-suivi', artisteId: suivi.id },
-            })
-          }
-        >
-          Abandonner
-        </Button>
+        </div>
       </div>
     </li>
   );
@@ -137,8 +128,18 @@ function Suivi({
 /** Repérage : lancer des sessions, suivre les talents trouvés, révéler leurs attributs cachés. */
 export function Reperage({ onNegocier }: { onNegocier: (artisteId: number) => void }) {
   const { vue, envoyer } = useLabel();
+  const [pack, setPack] = useState<{ source: string; talents: VueSuivi[] } | null>(null);
   if (!vue) return null;
   const sources = Object.keys(SOURCES) as ScoutSource[];
+  const lancer = async (id: ScoutSource) => {
+    const avant = new Set(vue.suivis.map((x) => x.id));
+    const r = await envoyer({ type: 'action', action: { type: 'reperer', source: id } });
+    if (r.type === 'vue')
+      setPack({
+        source: fr.sourcesDeReperage[id],
+        talents: r.vue.suivis.filter((x) => !avant.has(x.id)),
+      });
+  };
   const plein = vue.suivis.length >= SCOUTING.maxFollowed;
 
   return (
@@ -175,9 +176,7 @@ export function Reperage({ onNegocier }: { onNegocier: (artisteId: number) => vo
                 type="button"
                 tone="gold"
                 disabled={!abordable || plein}
-                onClick={() =>
-                  void envoyer({ type: 'action', action: { type: 'reperer', source: id } })
-                }
+                onClick={() => void lancer(id)}
               >
                 Lancer une session
               </Button>
@@ -206,6 +205,9 @@ export function Reperage({ onNegocier }: { onNegocier: (artisteId: number) => vo
           ))}
         </ul>
       )}
+      {pack ? (
+        <Pack source={pack.source} talents={pack.talents} fermer={() => setPack(null)} />
+      ) : null}
     </section>
   );
 }
