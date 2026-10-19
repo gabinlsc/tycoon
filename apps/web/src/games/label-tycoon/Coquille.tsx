@@ -278,7 +278,18 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
         ) : null}
         <main className="label-main lt-page" key={ecran}>
           {ecran === 'qg' ? (
-            <QG allerA={setEcran} revoirCeremonie={spectacle.ouvrir} />
+            <QG
+              allerA={setEcran}
+              revoirCeremonie={spectacle.ouvrir}
+              ouvrirFiche={(id) => {
+                setFiche(id);
+                setEcran('roster');
+              }}
+              negocier={(id) => {
+                setNegociation(id);
+                setEcran('reperage');
+              }}
+            />
           ) : ecran === 'roster' ? (
             renouvellement !== null ? (
               <Negociation

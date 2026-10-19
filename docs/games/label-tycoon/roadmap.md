@@ -179,7 +179,7 @@ Objectif : un jeu qu'on regarde, qu'on entend et qu'on a envie de rouvrir demain
 
 - [x] `feat/label-audio` : moteur audio Web Audio (musique de fond procédurale, bruitages de contrat, caisse, disque d'or, rideau), bouton son, préférence mémorisée
 - [x] `feat/label-effets` : « jus » visuel : pluies de pièces, chiffres qui s'envolent, tremblements, transitions animées entre écrans, réactions à chaque action importante
-- [ ] `feat/label-qg-monde` : l'immeuble comme écran de jeu : étages animés, artistes qui circulent, rivaux en ville, clic sur un étage pour agir dans un tiroir sans quitter la scène
+- [x] `feat/label-qg-monde` : l'immeuble comme écran de jeu : étages animés, artistes qui circulent, rivaux en ville, clic sur un étage pour agir dans un tiroir sans quitter la scène
 - [ ] `feat/label-cartes-artistes` : cartes d'artistes à collectionner : visages dessinés, raretés (commun, rare, épique, légendaire), reflet holographique, statistiques en jauges
 - [ ] `feat/label-packs-reperage` : le repérage devient une ouverture de packs : révélation carte par carte, tension, mise en avant des talents rares
 - [ ] `feat/label-soiree-sortie` : soirée de sortie : compte à rebours, première écoute, compteur d'écoutes en direct, course au classement animée, réaction des fans
@@ -203,6 +203,6 @@ Objectif : un jeu qu'on regarde, qu'on entend et qu'on a envie de rouvrir demain
 | 9     | 5     | 5      |
 | 10    | 12    | 12     |
 | 11    | 5     | 5      |
-| 12    | 9     | 2      |
+| 12    | 9     | 3      |
 
 (Mettre ce tableau à jour dans la PR qui coche une case.)
