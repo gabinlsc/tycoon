@@ -128,19 +128,57 @@ export function GraphCourbe({
         className="graph__svg"
       >
         <title id={id}>{titre}</title>
+        <defs>
+          {series.map((s, si) => (
+            <linearGradient key={s.nom} id={`${id}-g${si}`} x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stopColor={couleur(si)} stopOpacity="0.55" />
+              <stop offset="1" stopColor={couleur(si)} stopOpacity="0" />
+            </linearGradient>
+          ))}
+        </defs>
         <Repere ticks={ticks} plage={plage} largeur={largeur} hauteur={hauteur} />
         {series.map((s, si) => {
           const pts = s.valeurs.map((v, i) => ({ x: x(i), y: y(v) }));
+          const dernier = pts[pts.length - 1];
+          const derniereValeur = s.valeurs[s.valeurs.length - 1];
           return (
             <g key={s.nom}>
               {aire && si === 0 ? (
                 <path
                   d={cheminAire(pts, base)}
                   className="graph__area"
-                  style={{ fill: couleur(si) }}
+                  style={{ fill: `url(#${id}-g${si})` }}
                 />
               ) : null}
               <path d={cheminLigne(pts)} className="graph__line" style={{ stroke: couleur(si) }} />
+              {dernier && derniereValeur !== undefined ? (
+                <g className="graph__fin" aria-hidden="true">
+                  <circle
+                    cx={dernier.x}
+                    cy={dernier.y}
+                    r={9}
+                    className="graph__halo"
+                    style={{ fill: couleur(si) }}
+                  />
+                  <circle
+                    cx={dernier.x}
+                    cy={dernier.y}
+                    r={4.5}
+                    className="graph__point"
+                    style={{ stroke: couleur(si) }}
+                  />
+                  {si === 0 ? (
+                    <text
+                      x={dernier.x}
+                      y={Math.max(MARGE.haut + 8, dernier.y - 14)}
+                      textAnchor="end"
+                      className="graph__bulle"
+                    >
+                      {abrege(derniereValeur)}
+                    </text>
+                  ) : null}
+                </g>
+              ) : null}
             </g>
           );
         })}
@@ -239,7 +277,9 @@ export function HitParade({ titre, lignes }: { titre: string; lignes: readonly L
       <ol className="hit">
         {lignes.map((l) => (
           <li key={`${l.rang}-${l.nom}`} className={l.joueur ? 'hit__row is-player' : 'hit__row'}>
-            <span className="hit__rank mono">{l.rang}</span>
+            <span className={`hit__rank mono${l.rang <= 3 ? ` hit__rank--${l.rang}` : ''}`}>
+              {l.rang}
+            </span>
             <span className="hit__name">{l.nom}</span>
             <span className="hit__bar" aria-hidden="true">
               <span style={{ width: `${Math.round((l.valeur / max) * 100)}%` }} />
