@@ -61,10 +61,13 @@ export function FicheArtiste({
   artiste,
   retour,
   vers,
+  renouveler,
 }: {
   artiste: VueArtiste;
   retour: () => void;
   vers: (ecran: 'studio') => void;
+  /** Ouvre la prolongation du contrat. */
+  renouveler?: () => void;
 }) {
   const { vue, envoyer } = useLabel();
   if (!vue) return null;
@@ -117,6 +120,18 @@ export function FicheArtiste({
           {artiste.contrat.echeance - vue.semaine} sem. restantes) · l’artiste touche{' '}
           <span className="mono">{Math.round(artiste.contrat.royaltiesBps / 100)} %</span> des{' '}
           <Terme id="royalties">royalties</Terme>.
+          {renouveler ? (
+            <>
+              {' '}
+              <Button
+                type="button"
+                tone={artiste.contrat.echeance - vue.semaine <= 12 ? 'gold' : 'ghost'}
+                onClick={renouveler}
+              >
+                Renouveler le contrat
+              </Button>
+            </>
+          ) : null}
         </p>
       ) : (
         <p className="label-screen__soon">Pas de contrat enregistré.</p>

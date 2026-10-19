@@ -74,3 +74,36 @@ describe('fiche artiste', () => {
     expect(document.querySelectorAll('.label-link').length).toBe(1);
   });
 });
+
+describe('renouvellement de contrat', () => {
+  it('se fait depuis la fiche : offre généreuse, tampon « PROLONGÉ », nouvelle échéance', async () => {
+    render(
+      <LabelProvider fabrique={() => Promise.resolve(moteurAvecRoster())}>
+        <Coquille />
+      </LabelProvider>,
+    );
+    const b = await screen.findByRole('button', { name: /Nouvelle partie/ });
+    await waitFor(() => expect((b as HTMLButtonElement).disabled).toBe(false));
+    fireEvent.click(b);
+    fireEvent.click(await screen.findByRole('button', { name: /Roster/ }));
+    fireEvent.click(document.querySelector('.label-link') as HTMLElement);
+    fireEvent.click(await screen.findByRole('button', { name: 'Renouveler le contrat' }));
+    await screen.findByRole('heading', { name: /Prolonger le contrat de/ });
+    // Offre généreuse : grosse avance, royalties élevées, pas d'exclusivité.
+    const curseurs = document.querySelectorAll<HTMLInputElement>('input[type="range"]');
+    fireEvent.change(curseurs[0] as HTMLInputElement, { target: { value: '15000' } });
+    fireEvent.change(curseurs[1] as HTMLInputElement, { target: { value: '90' } });
+    fireEvent.change(curseurs[2] as HTMLInputElement, { target: { value: '1' } });
+    const exclu = screen.getByRole('checkbox', { name: /Exclusivité/ }) as HTMLInputElement;
+    if (exclu.checked) fireEvent.click(exclu);
+    await waitFor(() =>
+      expect(document.querySelector('.label-gauge')?.getAttribute('aria-label')).toMatch(
+        /Intéressé|Enthousiaste/,
+      ),
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Proposer la prolongation' }));
+    await screen.findByText('PROLONGÉ');
+    fireEvent.click(screen.getByRole('button', { name: /Retour/ }));
+    await waitFor(() => expect(screen.getByText(/Jusqu’à la semaine/).textContent).toContain('52'));
+  });
+});

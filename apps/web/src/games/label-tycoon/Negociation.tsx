@@ -88,9 +88,27 @@ function Curseur({
 }
 
 /** Négociation avec un talent suivi : constructeur de clauses, jauge en direct, contre-propositions, tampon. */
-export function Negociation({ artisteId, retour }: { artisteId: number; retour: () => void }) {
+export function Negociation({
+  artisteId,
+  retour,
+  renouvellement = false,
+}: {
+  artisteId: number;
+  retour: () => void;
+  /** Prolonger le contrat d'un artiste déjà signé plutôt que signer un talent suivi. */
+  renouvellement?: boolean;
+}) {
   const { vue, envoyer } = useLabel();
-  const [offre, setOffre] = useState<Offre>(OFFRE_DE_DEPART);
+  const contratActuel = vue?.roster.find((a) => a.id === artisteId)?.contrat ?? null;
+  const [offre, setOffre] = useState<Offre>(() =>
+    renouvellement && contratActuel
+      ? {
+          ...OFFRE_DE_DEPART,
+          royaltiesPct: Math.round(contratActuel.royaltiesBps / 100),
+          annees: 3,
+        }
+      : OFFRE_DE_DEPART,
+  );
   const [reaction, setReaction] = useState<Reaction | null>(null);
   const [verdict, setVerdict] = useState<keyof typeof LIBELLE_VERDICT | null>(null);
   const [signe, setSigne] = useState(false);
@@ -116,12 +134,21 @@ export function Negociation({ artisteId, retour }: { artisteId: number; retour: 
     setOffre((o) => ({ ...o, [cleOffre]: valeur }));
 
   const proposer = async () => {
+    if (renouvellement) {
+      const r = await envoyer({
+        type: 'action',
+        action: { type: 'renegocier', artisteId, clauses: clausesDepuis(offre) },
+      });
+      if (r.type === 'vue') setSigne(true);
+      return;
+    }
     const r = await envoyer({
       type: 'action',
       action: { type: 'proposer', artisteId, clauses: clausesDepuis(offre) },
     });
     if (r.type === 'vue' && r.vue.roster.some((a) => a.id === artisteId)) setSigne(true);
   };
+  const genre = suivi?.genre ?? vue.roster.find((a) => a.id === artisteId)?.genre;
 
   return (
     <section className="label-screen label-nego" aria-labelledby="nego-titre">
@@ -129,13 +156,19 @@ export function Negociation({ artisteId, retour }: { artisteId: number; retour: 
         <Button type="button" tone="ghost" onClick={retour}>
           ← Retour
         </Button>
-        {suivi ? <Avatar nom={nom} genre={suivi.genre} taille="lg" /> : null}
-        <h2 id="nego-titre">Négocier avec {nom}</h2>
+        {genre ? <Avatar nom={nom} genre={genre} taille="lg" /> : null}
+        <h2 id="nego-titre">
+          {renouvellement ? `Prolonger le contrat de ${nom}` : `Négocier avec ${nom}`}
+        </h2>
       </div>
       {signe ? (
         <>
-          <Tampon />
-          <p>Contrat signé : {nom} rejoint ton roster.</p>
+          <Tampon texte={renouvellement ? 'PROLONGÉ' : 'SIGNÉ'} />
+          <p>
+            {renouvellement
+              ? `Contrat prolongé : ${nom} reste chez toi.`
+              : `Contrat signé : ${nom} rejoint ton roster.`}
+          </p>
           <Button type="button" tone="green" onClick={retour}>
             Continuer
           </Button>
@@ -150,6 +183,14 @@ export function Negociation({ artisteId, retour }: { artisteId: number; retour: 
           <div className="lt-nego__humeur">
             <JaugeReaction reaction={reaction} />
             {verdict ? <p role="status">{LIBELLE_VERDICT[verdict]}</p> : null}
+            {renouvellement && contratActuel ? (
+              <p className="lt-nego__repere">
+                📄 Contrat actuel : fin à la semaine {contratActuel.echeance}, l’artiste touche{' '}
+                {Math.round(contratActuel.royaltiesBps / 100)} % des royalties. Pour rester, un
+                artiste de sa notoriété attend une <Terme id="avance">avance</Terme> autour de{' '}
+                {eur(vue.roster.find((a) => a.id === artisteId)?.avanceIndicative ?? 0)}.
+              </p>
+            ) : null}
             {suivi ? (
               <p className="lt-nego__repere">
                 💡 Repère : un talent de cette notoriété attend une{' '}
@@ -232,9 +273,11 @@ export function Negociation({ artisteId, retour }: { artisteId: number; retour: 
               </Button>
             </div>
           ) : null}
-          <p className="label-screen__soon">
-            {restantes} contre-proposition(s) possible(s) encore.
-          </p>
+          {renouvellement ? null : (
+            <p className="label-screen__soon">
+              {restantes} contre-proposition(s) possible(s) encore.
+            </p>
+          )}
           <Button
             type="button"
             tone="green"
@@ -242,7 +285,7 @@ export function Negociation({ artisteId, retour }: { artisteId: number; retour: 
             className="lt-nego__go"
             onClick={() => void proposer()}
           >
-            Proposer ce contrat
+            {renouvellement ? 'Proposer la prolongation' : 'Proposer ce contrat'}
           </Button>
         </>
       )}

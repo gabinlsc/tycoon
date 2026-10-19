@@ -29,6 +29,7 @@ const a = (id: number, nom: string, over: Partial<VueArtiste> = {}): VueArtiste 
   competences: {},
   contrat: null,
   enProduction: false,
+  avanceIndicative: 0,
   ...over,
 });
 

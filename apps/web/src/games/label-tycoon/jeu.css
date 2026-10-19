@@ -1909,3 +1909,139 @@ html.lt-verrou body {
 .lt-app .lt-coach .label-tuto__actions {
   align-items: center;
 }
+
+/* ======================================================================
+ * Notifications qui surgissent
+ * ====================================================================== */
+
+.lt-notifs {
+  position: fixed;
+  top: 5.2rem;
+  right: var(--sp-4);
+  z-index: 5;
+  display: grid;
+  gap: var(--sp-2);
+  width: min(23rem, calc(100vw - 2rem));
+  pointer-events: none;
+}
+.lt-toast {
+  --c: var(--blue);
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  border: var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow:
+    var(--pop),
+    0 12px 28px color-mix(in srgb, var(--outline) 30%, transparent);
+  pointer-events: auto;
+  animation: lt-toast-entree 420ms var(--ease-bounce);
+}
+.lt-toast--or {
+  --c: var(--gold);
+}
+.lt-toast--succes {
+  --c: var(--green);
+}
+.lt-toast--danger {
+  --c: var(--red);
+}
+@keyframes lt-toast-entree {
+  from {
+    opacity: 0;
+    translate: 110% 0;
+    rotate: 4deg;
+  }
+}
+.lt-toast__corps {
+  display: flex;
+  flex: 1;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  min-width: 0;
+  padding: var(--sp-3);
+  border: 0;
+  background: none;
+  color: var(--text);
+  font-family: var(--font-text);
+  text-align: left;
+  cursor: pointer;
+}
+.lt-toast__corps strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  line-height: 1.15;
+}
+.lt-toast__texte {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--text-soft);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.lt-toast__icone {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border: 3px solid var(--outline);
+  border-radius: 50%;
+  background: var(--c);
+  color: var(--outline);
+}
+.lt-toast--danger .lt-toast__icone {
+  color: #fff;
+}
+.lt-toast--or .lt-toast__icone {
+  animation: lt-brille 1.2s ease-in-out infinite alternate;
+}
+@keyframes lt-brille {
+  to {
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--gold) 45%, transparent);
+  }
+}
+.lt-toast__fermer {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  border: 0;
+  background: none;
+  color: var(--text-soft);
+  cursor: pointer;
+}
+.lt-toast__minuteur {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 5px;
+  width: 100%;
+  background: var(--c);
+  transform-origin: left;
+  animation: lt-minuteur 6500ms linear forwards;
+}
+@keyframes lt-minuteur {
+  to {
+    transform: scaleX(0);
+  }
+}
+@media (max-width: 1023px) {
+  .lt-notifs {
+    top: auto;
+    right: var(--sp-3);
+    bottom: calc(4.6rem + env(safe-area-inset-bottom));
+    left: var(--sp-3);
+    width: auto;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lt-toast,
+  .lt-toast--or .lt-toast__icone {
+    animation: none;
+  }
+}
