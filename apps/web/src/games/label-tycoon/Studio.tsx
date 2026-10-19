@@ -22,6 +22,7 @@ import { Avatar } from './avatar';
 import { EtatVide } from './EtatVide';
 import type { EcranId } from './ecrans';
 import { Pochette } from './pochettes/Pochette';
+import { SoireeSortie } from './Soirees';
 
 const eur = (cents: number): string => `${Math.round(cents / 100).toLocaleString('fr-FR')} €`;
 const TYPES: ReleaseType[] = ['single', 'ep', 'album', 'mixtape'];
@@ -146,6 +147,14 @@ export function Studio({ allerA }: { allerA?: (ecran: EcranId) => void } = {}) {
     enCours: number;
   } | null>(null);
   const numero = useRef(0);
+  const [soiree, setSoiree] = useState<{
+    artiste: string;
+    genre: string;
+    type: string;
+    graine: string;
+    qualite: number;
+    hype: number;
+  } | null>(null);
 
   const roster = vue?.roster ?? [];
   const choisi = artisteId ?? roster[0]?.id ?? null;
@@ -403,12 +412,23 @@ export function Studio({ allerA }: { allerA?: (ecran: EcranId) => void } = {}) {
                   <Button
                     type="button"
                     tone="gold"
-                    onClick={() =>
+                    onClick={() => {
+                      const a = roster.find((x) => x.id === p.artisteId);
                       void envoyer({
                         type: 'action',
                         action: { type: 'sortir-projet', projetId: p.id },
-                      })
-                    }
+                      }).then((r) => {
+                        if (r.type === 'vue' && a)
+                          setSoiree({
+                            artiste: a.nom,
+                            genre: a.genre,
+                            type: NOMS_TYPE[p.type as ReleaseType] ?? p.type,
+                            graine: `projet-${p.id}`,
+                            qualite: p.qualite ?? 50,
+                            hype: a.hype,
+                          });
+                      });
+                    }}
                   >
                     <Sparkles aria-hidden="true" size={18} /> Sortir
                   </Button>
@@ -418,6 +438,20 @@ export function Studio({ allerA }: { allerA?: (ecran: EcranId) => void } = {}) {
           })}
         </ul>
       )}
+      {soiree ? (
+        <SoireeSortie
+          {...soiree}
+          fermer={() => setSoiree(null)}
+          {...(allerA
+            ? {
+                voirClassements: () => {
+                  setSoiree(null);
+                  allerA('classements');
+                },
+              }
+            : {})}
+        />
+      ) : null}
     </section>
   );
 }

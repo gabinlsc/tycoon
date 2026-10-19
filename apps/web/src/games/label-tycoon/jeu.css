@@ -5796,3 +5796,209 @@ button.lt-enseigne {
   width: auto;
   max-width: 100%;
 }
+
+/* ======================================================================
+ * Soirée de sortie et course au classement
+ * ====================================================================== */
+
+.lt-soiree {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  overflow: auto;
+  background: radial-gradient(ellipse at 50% 20%, #5a1a9a, #0d0620 70%);
+  color: #fff;
+  isolation: isolate;
+}
+.lt-soiree__scene {
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-6) var(--gutter);
+  text-align: center;
+}
+.lt-soiree__disque {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding-right: 3.5rem;
+}
+.lt-soiree__disque > *:last-child {
+  position: relative;
+  z-index: 1;
+  border: 4px solid var(--outline);
+  box-shadow:
+    0 8px 0 var(--outline),
+    0 0 40px rgb(255 198 26 / 0.45);
+}
+.lt-soiree__vinyle {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 160px;
+  height: 160px;
+  translate: 0 -50%;
+  border: 4px solid var(--outline);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, var(--gold) 0 18%, var(--outline) 19% 24%, transparent 25%),
+    repeating-radial-gradient(circle, #1b0f3a 0 3px, #2d1a5c 3px 6px);
+  transition: translate 0.8s cubic-bezier(0.3, 1.3, 0.5, 1);
+}
+.lt-soiree__disque.is-sorti .lt-soiree__vinyle {
+  translate: 1.5rem -50%;
+  animation: lt-disque 3s linear infinite;
+}
+.lt-soiree__compte {
+  margin: 0;
+  min-height: 4.5rem;
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 10vw, 5.5rem);
+  line-height: 1;
+  color: var(--gold);
+  text-shadow:
+    0 5px 0 var(--outline),
+    0 0 30px rgb(255 198 26 / 0.7);
+  animation: lt-tampon 0.4s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+.lt-soiree__compte.is-fini {
+  font-size: clamp(1.8rem, 6vw, 3rem);
+  color: #fff;
+}
+.lt-soiree__egaliseur {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 4rem;
+}
+.lt-soiree__egaliseur span {
+  width: 0.5rem;
+  height: 100%;
+  border-radius: 4px 4px 0 0;
+  background: linear-gradient(180deg, var(--pink), var(--purple));
+  transform-origin: bottom;
+  animation: lt-egaliseur 0.7s ease-in-out infinite alternate;
+  animation-delay: calc(var(--i) * -0.09s);
+}
+@keyframes lt-egaliseur {
+  from {
+    transform: scaleY(0.15);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+.lt-soiree__fans {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.lt-soiree__fans svg {
+  position: absolute;
+  bottom: -2rem;
+  left: calc(8% + var(--i) * 7.4%);
+  color: var(--pink);
+  fill: var(--pink);
+  animation: lt-coeur 3s ease-out infinite;
+  animation-delay: calc(var(--i) * 0.23s);
+}
+@keyframes lt-coeur {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(0.7);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-55vh) scale(1.5) rotate(18deg);
+  }
+}
+.lt-soiree__accueil {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  font-size: var(--fs-lead);
+}
+.lt-soiree__accueil strong {
+  font-family: var(--font-display);
+  color: var(--gold);
+}
+
+.lt-course__place {
+  margin: 0;
+  font-size: var(--fs-lead);
+}
+.lt-course__place strong {
+  font-family: var(--font-display);
+  font-size: 3.2rem;
+  color: var(--gold);
+  text-shadow: 0 4px 0 var(--outline);
+}
+.lt-course__lignes {
+  display: grid;
+  gap: 0.35rem;
+  width: min(100%, 34rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+.lt-course__lignes li {
+  display: grid;
+  grid-template-columns: 2rem 8rem 1fr;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.6rem;
+  background: rgb(255 255 255 / 0.07);
+  animation: lt-cer-carte 0.4s ease-out both;
+  animation-delay: calc(var(--i) * 0.07s);
+}
+.lt-course__lignes li.is-moi {
+  background: linear-gradient(90deg, var(--pink), var(--orange));
+  color: var(--outline);
+  font-weight: 900;
+  box-shadow: 0 0 24px rgb(255 111 181 / 0.7);
+}
+.lt-course__nom {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lt-course__barre {
+  display: block;
+  height: 0.7rem;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.35);
+  overflow: hidden;
+}
+.lt-course__barre span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--purple), var(--pink));
+  animation: lt-course-barre 1.1s cubic-bezier(0.3, 1, 0.4, 1) both;
+  animation-delay: calc(var(--i, 0) * 0.07s + 0.3s);
+  width: var(--w);
+}
+.lt-course__lignes li.is-moi .lt-course__barre span {
+  background: var(--outline);
+}
+@keyframes lt-course-barre {
+  from {
+    width: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lt-soiree__egaliseur span,
+  .lt-soiree__fans svg,
+  .lt-soiree__compte,
+  .lt-course__barre span,
+  .lt-course__lignes li,
+  .lt-soiree__disque.is-sorti .lt-soiree__vinyle {
+    animation: none;
+  }
+}
