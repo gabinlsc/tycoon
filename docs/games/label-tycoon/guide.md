@@ -53,6 +53,7 @@ Les chiffres 1 à 9 du clavier ouvrent les neuf premiers écrans (hors champ de 
 - **Paramètres** : auto-pauses et raccourcis.
 - **Rapport mensuel** : le bilan du mois, réussites et échecs.
 - **Succès** : succès, objectifs et records.
+- **Vitrine** : ta série de jours d'affilée et l'affiche de ton label à télécharger en image.
 - **Campagne** : les chapitres du garage à l'institution, un rival nommé et les objectifs du palier suivant.
 - **Abonnement** : offres Gratuit, Pro et Légende (démonstration : aucun paiement), thèmes du monde et cadres de cartes.
 - **Groupe** : sous-labels, cadres et rachats.

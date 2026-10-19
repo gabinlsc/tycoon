@@ -6313,3 +6313,22 @@ button.lt-enseigne {
     animation: none;
   }
 }
+
+/* Vitrine */
+.lt-vitrine {
+  max-width: 38rem;
+  margin: 0 auto var(--sp-3);
+  overflow: hidden;
+  border: 3px solid var(--outline);
+  border-radius: 1.25rem;
+  box-shadow: 0 6px 0 var(--outline);
+}
+.lt-vitrine__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.lt-enseigne--serie {
+  background: linear-gradient(90deg, #ff8a2b, #ffc61a);
+  color: var(--outline);
+}
