@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { Coquille } from './Coquille';
 import type { MoteurLabel } from './engine/protocol';
 import { LabelProvider } from './LabelContext';
+import { allerAEcran } from './testNavigation';
 
 afterEach(cleanup);
 
@@ -61,7 +62,7 @@ describe('fiche artiste', () => {
     const b = await screen.findByRole('button', { name: 'Nouvelle partie' });
     await waitFor(() => expect((b as HTMLButtonElement).disabled).toBe(false));
     fireEvent.click(b);
-    fireEvent.click(await screen.findByRole('button', { name: /Roster/ }));
+    await allerAEcran(/Roster/);
     const liens = document.querySelectorAll('.lt-carte__ouvrir');
     expect(liens.length).toBe(1);
     fireEvent.click(liens[0] as HTMLElement);
@@ -85,7 +86,7 @@ describe('renouvellement de contrat', () => {
     const b = await screen.findByRole('button', { name: /Nouvelle partie/ });
     await waitFor(() => expect((b as HTMLButtonElement).disabled).toBe(false));
     fireEvent.click(b);
-    fireEvent.click(await screen.findByRole('button', { name: /Roster/ }));
+    await allerAEcran(/Roster/);
     fireEvent.click(document.querySelector('.lt-carte__ouvrir') as HTMLElement);
     fireEvent.click(await screen.findByRole('button', { name: 'Renouveler le contrat' }));
     await screen.findByRole('heading', { name: /Prolonger le contrat de/ });

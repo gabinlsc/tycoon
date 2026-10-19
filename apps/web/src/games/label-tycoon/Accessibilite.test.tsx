@@ -1,11 +1,12 @@
 // @vitest-environment jsdom
 import axe from 'axe-core';
-import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { Coquille } from './Coquille';
 import { ECRANS } from './ecrans';
 import { creerMoteurLocal } from './engine/local';
 import { LabelProvider } from './LabelContext';
+import { allerAEcran } from './testNavigation';
 
 afterEach(cleanup);
 
@@ -51,18 +52,12 @@ describe('accessibilité des écrans', () => {
     const b = await screen.findByRole('button', { name: 'Nouvelle partie' });
     await waitFor(() => expect((b as HTMLButtonElement).disabled).toBe(false));
     fireEvent.click(b);
-    const nav = await screen.findByRole('navigation', { name: 'Écrans du jeu' });
     const trouves: string[] = [];
     for (const ecran of ECRANS) {
-      const bouton = within(nav)
-        .getAllByRole('button')
-        .find((x) => x.textContent?.includes(ecran.titre));
-      if (!bouton) {
-        trouves.push(`écran « ${ecran.titre} » absent de la navigation`);
-        continue;
-      }
-      fireEvent.click(bouton);
-      await waitFor(() => expect(bouton.getAttribute('aria-current')).toBe('page'));
+      await allerAEcran(new RegExp(`^${ecran.titre}$`));
+      await waitFor(() =>
+        expect(document.querySelector('.lt-nav [aria-current="page"]')).not.toBeNull(),
+      );
       for (const v of await violations(document.body)) trouves.push(`${ecran.titre} — ${v}`);
     }
     expect(trouves).toEqual([]);

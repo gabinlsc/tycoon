@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { Coquille } from './Coquille';
 import { creerMoteurLocal } from './engine/local';
 import { LabelProvider } from './LabelContext';
+import { allerAEcran } from './testNavigation';
 import { JaugeReaction, Tampon } from './Negociation';
 import { OFFRE_DE_DEPART, clausesDepuis, offreDepuis } from './negociationOffre';
 
@@ -62,7 +63,7 @@ describe('écran de négociation', () => {
     const b = await screen.findByRole('button', { name: 'Nouvelle partie' });
     await waitFor(() => expect((b as HTMLButtonElement).disabled).toBe(false));
     fireEvent.click(b);
-    fireEvent.click(await screen.findByRole('button', { name: /Repérage/ }));
+    await allerAEcran(/Repérage/);
     const gratuit = screen.getByText('Candidatures spontanées').closest('li') as HTMLElement;
     fireEvent.click(gratuit.querySelector('button') as HTMLElement);
     await waitFor(() =>

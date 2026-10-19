@@ -5,6 +5,7 @@ import type { VueArtiste } from '@tycoon/label-tycoon';
 import { Coquille } from './Coquille';
 import { creerMoteurLocal } from './engine/local';
 import { LabelProvider } from './LabelContext';
+import { allerAEcran } from './testNavigation';
 import { texteEffectif } from './Roster';
 import { SANS_FILTRE, alertesArtiste, filtrer, trier } from './rosterFiltres';
 
@@ -89,7 +90,7 @@ describe('écran Roster', () => {
     const b = await screen.findByRole('button', { name: 'Nouvelle partie' });
     await waitFor(() => expect((b as HTMLButtonElement).disabled).toBe(false));
     fireEvent.click(b);
-    fireEvent.click(await screen.findByRole('button', { name: /Roster/ }));
+    await allerAEcran(/Roster/);
     expect(screen.getByText(/Ton roster est vide/)).toBeTruthy();
   });
 });

@@ -1,9 +1,10 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { Coquille } from './Coquille';
 import { creerMoteurLocal } from './engine/local';
 import { LabelProvider } from './LabelContext';
+import { allerAEcran } from './testNavigation';
 import { libelleChaleur } from './Scenes';
 
 afterEach(cleanup);
@@ -25,8 +26,7 @@ describe('écran Scènes', () => {
     const b = await screen.findByRole('button', { name: 'Nouvelle partie' });
     await waitFor(() => expect((b as HTMLButtonElement).disabled).toBe(false));
     fireEvent.click(b);
-    const nav = await screen.findByRole('navigation', { name: 'Écrans du jeu' });
-    fireEvent.click(within(nav).getByRole('button', { name: /Scènes/ }));
+    await allerAEcran(/Scènes/);
     const boutons = await screen.findAllByRole('button', { name: /^Repérer à / });
     expect(boutons.length).toBeGreaterThan(3);
     fireEvent.click(boutons[0] as HTMLElement);

@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
-import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { allerAEcran } from './testNavigation';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import type { CommandeJeu, ReponseJeu } from '@tycoon/label-tycoon';
 import { Coquille } from './Coquille';
@@ -62,11 +63,7 @@ async function demarrer() {
 describe('écran Générations', () => {
   it('liste les légendes et permet de parrainer un jeune talent', async () => {
     await demarrer();
-    fireEvent.click(
-      within(screen.getByRole('navigation', { name: 'Écrans du jeu' })).getByRole('button', {
-        name: /Générations/,
-      }),
-    );
+    await allerAEcran(/Générations/);
     await screen.findByText(/1 légende\(s\) du label/);
     fireEvent.click(await screen.findByRole('button', { name: /Faire parrainer par/ }));
     await screen.findByText(/parraine /);

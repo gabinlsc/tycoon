@@ -1,5 +1,8 @@
 import {
   Briefcase,
+  Clapperboard,
+  Gem,
+  Megaphone,
   Building2,
   Bus,
   CalendarDays,
@@ -26,7 +29,7 @@ import {
   Users,
   Wallet,
 } from 'lucide-react';
-import type { EcranId } from './ecrans';
+import type { EcranId, PoleId } from './ecrans';
 
 /** Icône de chaque écran : la navigation se lit d'un coup d'œil. */
 export const ICONES_ECRANS: Readonly<Record<EcranId, LucideIcon>> = {
@@ -55,4 +58,16 @@ export const ICONES_ECRANS: Readonly<Record<EcranId, LucideIcon>> = {
   international: Globe,
   heritage: Crown,
   generations: Sprout,
+};
+
+/** Icône de chaque pôle de navigation. */
+export const ICONES_POLES: Readonly<Record<PoleId, LucideIcon>> = {
+  qg: LayoutDashboard,
+  artistes: Users,
+  production: Clapperboard,
+  boite: Inbox,
+  marche: Megaphone,
+  gestion: Wallet,
+  empire: Gem,
+  suivi: Trophy,
 };

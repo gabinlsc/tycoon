@@ -32,13 +32,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
     const items = nav.locator('[data-ecran]');
     const noms = await items.allInnerTexts();
     const problems = [];
-    for (let i = 0; i < noms.length; i++) {
-      const menu = p.getByRole('button', { name: /^Menu/ });
-      if (await menu.count()) await menu.click();
-      const replies = nav.locator('button[aria-expanded="false"]');
-      while (await replies.count()) await replies.first().click();
-      await items.nth(i).click();
-      await p.waitForTimeout(500);
+    const mesurer = async (nom) => {
       const r = await p.evaluate(() => {
         const over = document.documentElement.scrollWidth - window.innerWidth;
         const petits = [];
@@ -61,11 +55,36 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
         }
         return { over, petits };
       });
-      if (r.over > 0) problems.push(`${noms[i].split('\n')[0]}: débordement ${r.over}px`);
+      if (r.over > 0) problems.push(`${nom}: débordement ${r.over}px`);
       if (w <= 768 && r.petits.length)
         problems.push(
-          `${noms[i].split('\n')[0]}: ${r.petits.length} cibles <44px: ${r.petits.slice(0, 4).join(' | ')}`,
+          `${nom}: ${r.petits.length} cibles <44px: ${r.petits.slice(0, 4).join(' | ')}`,
         );
+    };
+    for (let i = 0; i < noms.length; i++) {
+      const menu = p.getByRole('button', { name: /^Menu/ });
+      if (await menu.count()) await menu.click();
+      await items.nth(i).click();
+      await p.waitForTimeout(500);
+      const pole = noms[i].split('\n')[0];
+      await mesurer(pole);
+      const onglets = await p.getByRole('tab').count();
+      for (let j = 1; j < onglets; j++) {
+        try {
+          await p.getByRole('tab').nth(j).click({ timeout: 4000 });
+        } catch (e) {
+          const t = await p.evaluate((k) => {
+            const el = document.querySelectorAll('[role=tab]')[k];
+            const r = el.getBoundingClientRect();
+            const top = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
+            return `${w}px tab ${k} rect ${[r.x, r.y, r.width, r.height].map(Math.round)} top=${top && top.outerHTML.slice(0, 120)}`;
+          }, j);
+          console.error(t);
+          throw e;
+        }
+        await p.waitForTimeout(400);
+        await mesurer(`${pole} > ${(await p.getByRole('tab').nth(j).innerText()).trim()}`);
+      }
     }
     out[w] = problems;
     await ctx.close();

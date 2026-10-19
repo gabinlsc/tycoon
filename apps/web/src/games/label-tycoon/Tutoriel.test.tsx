@@ -78,7 +78,7 @@ describe('coach du tutoriel', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Compris' }));
     await waitFor(() =>
       expect(
-        document.querySelector('[data-ecran="reperage"]')?.classList.contains('lt-cible'),
+        document.querySelector('[data-ecran~="reperage"]')?.classList.contains('lt-cible'),
       ).toBe(true),
     );
   });

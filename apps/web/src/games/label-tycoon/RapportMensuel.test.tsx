@@ -5,6 +5,7 @@ import type { VueRapportMensuel } from '@tycoon/label-tycoon';
 import { Coquille } from './Coquille';
 import { creerMoteurLocal } from './engine/local';
 import { LabelProvider } from './LabelContext';
+import { allerAEcran } from './testNavigation';
 import { eurSigne, resume } from './RapportMensuel';
 
 afterEach(cleanup);
@@ -44,7 +45,7 @@ describe('écran Rapport mensuel', () => {
     const b = await screen.findByRole('button', { name: 'Nouvelle partie' });
     await waitFor(() => expect((b as HTMLButtonElement).disabled).toBe(false));
     fireEvent.click(b);
-    fireEvent.click(await screen.findByRole('button', { name: /Rapport mensuel/ }));
+    await allerAEcran(/Rapport mensuel/);
     await screen.findByRole('heading', { name: 'Rapport mensuel' });
     expect(screen.getByText(/Le premier rapport arrive/)).toBeTruthy();
     for (let i = 0; i < 5; i += 1) {

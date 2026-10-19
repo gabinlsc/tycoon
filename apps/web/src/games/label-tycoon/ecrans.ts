@@ -154,3 +154,28 @@ export function ecranDeTouche(touche: string): EcranId | null {
   const index = Number(touche) - 1;
   return Number.isInteger(index) && index >= 0 ? (ECRANS[index]?.id ?? null) : null;
 }
+
+/**
+ * Pôles de navigation : la barre latérale n'en montre que huit ; chacun ouvre ses écrans en onglets.
+ * Les raccourcis clavier (1 à 9) continuent de désigner les écrans, quel que soit leur pôle.
+ */
+export const POLES = [
+  { id: 'qg', titre: 'QG', ecrans: ['qg'] },
+  { id: 'artistes', titre: 'Artistes', ecrans: ['roster', 'reperage', 'scenes'] },
+  { id: 'production', titre: 'Production', ecrans: ['studio', 'tournees', 'calendrier'] },
+  { id: 'boite', titre: 'Boîte', ecrans: ['boite'] },
+  { id: 'marche', titre: 'Marché', ecrans: ['fil', 'classements', 'marche', 'concurrence'] },
+  { id: 'gestion', titre: 'Gestion', ecrans: ['finances', 'personnel', 'batiments', 'rapport'] },
+  {
+    id: 'empire',
+    titre: 'Empire',
+    ecrans: ['groupe', 'conglomerat', 'institution', 'regulation', 'international'],
+  },
+  { id: 'suivi', titre: 'Suivi', ecrans: ['succes', 'generations', 'heritage', 'parametres'] },
+] as const satisfies readonly { id: string; titre: string; ecrans: readonly EcranId[] }[];
+
+export type PoleId = (typeof POLES)[number]['id'];
+
+/** Pôle qui contient un écran. */
+export const poleDe = (ecran: EcranId): (typeof POLES)[number] =>
+  POLES.find((p) => (p.ecrans as readonly EcranId[]).includes(ecran)) ?? POLES[0];

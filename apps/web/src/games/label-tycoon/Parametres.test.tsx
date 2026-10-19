@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { Coquille } from './Coquille';
 import { creerMoteurLocal } from './engine/local';
 import { LabelProvider } from './LabelContext';
+import { allerAEcran } from './testNavigation';
 import { RACCOURCIS } from './Parametres';
 import { CLE_REGLAGES } from './temps';
 
@@ -29,7 +30,7 @@ describe('écran Paramètres', () => {
     const b = await screen.findByRole('button', { name: 'Nouvelle partie' });
     await waitFor(() => expect((b as HTMLButtonElement).disabled).toBe(false));
     fireEvent.click(b);
-    fireEvent.click(await screen.findByRole('button', { name: /Paramètres/ }));
+    await allerAEcran(/Paramètres/);
     await screen.findByRole('heading', { name: 'Paramètres' });
     const cases = screen.getAllByRole('checkbox', { name: 'Décision à prendre' });
     const premiere = cases[cases.length - 1] as HTMLInputElement;

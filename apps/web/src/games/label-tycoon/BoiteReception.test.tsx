@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { allerAEcran } from './testNavigation';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { useState } from 'react';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -101,7 +102,7 @@ describe('boîte de réception', () => {
     const b = await screen.findByRole('button', { name: 'Nouvelle partie' });
     await waitFor(() => expect((b as HTMLButtonElement).disabled).toBe(false));
     fireEvent.click(b);
-    fireEvent.click(await screen.findByRole('button', { name: /Boîte/ }));
+    await allerAEcran(/Boîte/);
     expect(screen.getByRole('heading', { name: 'Boîte de réception' })).toBeTruthy();
   });
 });

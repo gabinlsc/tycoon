@@ -1,10 +1,10 @@
 import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ChevronDown, Disc3, Lock, LogOut, Menu, Save, X } from 'lucide-react';
+import { Disc3, Lock, LogOut, Menu, Save, X } from 'lucide-react';
 import { TIERS } from '@tycoon/label-tycoon';
 import { Button } from '../../components/arcade/ui/Button';
-import { ECRANS, GROUPES, type EcranId } from './ecrans';
-import { ICONES_ECRANS } from './icones';
+import { ECRANS, POLES, poleDe, type EcranId, type PoleId } from './ecrans';
+import { ICONES_ECRANS, ICONES_POLES } from './icones';
 import { Ceremonie, useCeremonie } from './Ceremonie';
 import { Hud } from './Hud';
 import { Notifications } from './Notifications';
@@ -57,12 +57,13 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
   const [pleinEcran, setPleinEcran] = useState(true);
   const [tiroir, setTiroir] = useState(false);
   const [panneauSauvegarde, setPanneauSauvegarde] = useState(false);
-  // Groupes de navigation dépliés par le joueur ; « Mon label » reste toujours ouvert.
-  const [depliesManuel, setDeplies] = useState<readonly string[]>([]);
+  // Dernier onglet visité de chaque pôle : un clic sur le pôle y revient.
+  const [dernierOnglet, setDernierOnglet] = useState<Partial<Record<PoleId, EcranId>>>({});
   const etroit = useEcranEtroit();
   const contenu = useRef<HTMLDivElement>(null);
   const setEcran = useCallback((id: EcranId) => {
     setEcranBrut(id);
+    setDernierOnglet((d) => ({ ...d, [poleDe(id).id]: id }));
     setTiroir(false);
     contenu.current?.scrollTo?.({ top: 0 });
   }, []);
@@ -117,8 +118,8 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
   const ficheArtiste = vue.roster.find((a) => a.id === fiche) ?? null;
   const badges = vue.decisions.length + notificationsNonLues(vue.fil, dernierLu).length;
   const rang = rangPalier(vue.label.palierId);
-  const verrou = (e: (typeof ECRANS)[number]) =>
-    'palier' in e && rangPalier(e.palier) > rang
+  const verrou = (e: (typeof ECRANS)[number] | undefined) =>
+    e && 'palier' in e && rangPalier(e.palier) > rang
       ? (TIERS.find((t) => t.id === e.palier)?.id ?? null)
       : null;
 
@@ -146,68 +147,41 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
           ) : null}
         </div>
         <nav className="label-nav lt-nav" aria-label="Écrans du jeu">
-          {GROUPES.map((g) => {
-            const replie = g.id !== 'label';
-            const groupeActif = ECRANS.find((x) => x.id === ecran)?.groupe === g.id;
-            const ouvert = !replie || groupeActif || depliesManuel.includes(g.id);
+          {POLES.map((pole) => {
+            const Icone = ICONES_POLES[pole.id];
+            const actif = poleDe(ecran).id === pole.id;
+            const ouverts = pole.ecrans.filter((id) => !verrou(ECRANS.find((e) => e.id === id)));
+            const ferme = ouverts.length === 0;
+            const cible = dernierOnglet[pole.id] ?? ouverts[0] ?? pole.ecrans[0];
+            const index = ECRANS.findIndex((x) => x.id === pole.ecrans[0]);
             return (
-              <div key={g.id} className={`lt-nav__groupe${ouvert ? '' : ' is-replie'}`}>
-                {replie ? (
-                  <button
-                    type="button"
-                    className="lt-nav__titre lt-nav__titre--bouton"
-                    aria-expanded={ouvert}
-                    onClick={() =>
-                      setDeplies((d) =>
-                        d.includes(g.id) ? d.filter((x) => x !== g.id) : [...d, g.id],
-                      )
-                    }
-                  >
-                    {g.titre}
-                    <ChevronDown aria-hidden="true" size={16} />
-                  </button>
-                ) : (
-                  <p className="lt-nav__titre" aria-hidden="true">
-                    {g.titre}
-                  </p>
-                )}
-                <div className="lt-nav__items">
-                  {ECRANS.filter((e) => e.groupe === g.id).map((e) => {
-                    const Icone = ICONES_ECRANS[e.id];
-                    const index = ECRANS.findIndex((x) => x.id === e.id);
-                    const ferme = verrou(e);
-                    return (
-                      <button
-                        key={e.id}
-                        type="button"
-                        className={`label-nav__item lt-nav__item${ferme ? ' is-verrouille' : ''}`}
-                        aria-current={ecran === e.id ? 'page' : undefined}
-                        data-ecran={e.id}
-                        onClick={() => setEcran(e.id)}
-                        title={`${e.description}${index < 9 ? ` (touche ${index + 1})` : ''}`}
-                      >
-                        <Icone aria-hidden="true" size={20} strokeWidth={2.4} />
-                        <span className="lt-nav__nom">{e.titre}</span>
-                        {ferme ? (
-                          <span className="lt-nav__verrou">
-                            <Lock aria-hidden="true" size={14} />
-                            <span className="visually-hidden"> (verrouillé)</span>
-                          </span>
-                        ) : null}
-                        {e.id === 'boite' && badges > 0 ? (
-                          <span className="label-badge" aria-label={`${badges} à lire`}>
-                            {badges}
-                          </span>
-                        ) : index < 9 ? (
-                          <kbd className="lt-nav__touche" aria-hidden="true">
-                            {index + 1}
-                          </kbd>
-                        ) : null}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+              <button
+                key={pole.id}
+                type="button"
+                className={`label-nav__item lt-nav__item${ferme ? ' is-verrouille' : ''}`}
+                aria-current={actif ? 'page' : undefined}
+                data-ecran={pole.ecrans.join(' ')}
+                onClick={() => setEcran(cible)}
+                title={pole.ecrans.map((id) => ECRANS.find((e) => e.id === id)?.titre).join(' · ')}
+              >
+                <Icone aria-hidden="true" size={22} strokeWidth={2.4} />
+                <span className="lt-nav__nom">{pole.titre}</span>
+                {ferme ? (
+                  <span className="lt-nav__verrou">
+                    <Lock aria-hidden="true" size={14} />
+                    <span className="visually-hidden"> (verrouillé)</span>
+                  </span>
+                ) : null}
+                {pole.id === 'boite' && badges > 0 ? (
+                  <span className="label-badge" aria-label={`${badges} à lire`}>
+                    {badges}
+                  </span>
+                ) : pole.ecrans.length === 1 && index < 9 ? (
+                  <kbd className="lt-nav__touche" aria-hidden="true">
+                    {index + 1}
+                  </kbd>
+                ) : null}
+              </button>
             );
           })}
         </nav>
@@ -246,6 +220,31 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
         {sauvegardes ? (
           <div className="lt-sauvegardes" hidden={!panneauSauvegarde}>
             {sauvegardes}
+          </div>
+        ) : null}
+        {poleDe(ecran).ecrans.length > 1 ? (
+          <div className="lt-onglets-pole" role="tablist" aria-label={poleDe(ecran).titre}>
+            {poleDe(ecran).ecrans.map((id) => {
+              const e = ECRANS.find((x) => x.id === id);
+              const Icone = ICONES_ECRANS[id];
+              const ferme = verrou(e);
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  role="tab"
+                  aria-selected={ecran === id}
+                  className={`lt-onglet-pole${ferme ? ' is-verrouille' : ''}`}
+                  data-ecran={id}
+                  onClick={() => setEcran(id)}
+                  title={e?.description}
+                >
+                  <Icone aria-hidden="true" size={20} strokeWidth={2.4} />
+                  <span>{e?.titre}</span>
+                  {ferme ? <Lock aria-hidden="true" size={14} /> : null}
+                </button>
+              );
+            })}
           </div>
         ) : null}
         {vue.scenario ? <BandeauScenario scenario={vue.scenario} /> : null}
@@ -294,20 +293,21 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
 
       {etroit ? (
         <nav className="lt-onglets" aria-label="Accès rapide">
-          {(['qg', 'roster', 'reperage', 'studio'] as const).map((id) => {
-            const Icone = ICONES_ECRANS[id];
-            const e = ECRANS.find((x) => x.id === id);
+          {(['qg', 'artistes', 'production', 'boite'] as const).map((id) => {
+            const pole = POLES.find((p) => p.id === id);
+            if (!pole) return null;
+            const Icone = ICONES_POLES[id];
             return (
               <button
                 key={id}
                 type="button"
                 className="lt-onglet"
-                data-ecran={id}
-                aria-current={ecran === id ? 'page' : undefined}
-                onClick={() => setEcran(id)}
+                data-ecran={pole.ecrans.join(' ')}
+                aria-current={poleDe(ecran).id === id ? 'page' : undefined}
+                onClick={() => setEcran(dernierOnglet[id] ?? pole.ecrans[0])}
               >
                 <Icone aria-hidden="true" size={22} />
-                <span>{e?.titre}</span>
+                <span>{pole.titre}</span>
               </button>
             );
           })}

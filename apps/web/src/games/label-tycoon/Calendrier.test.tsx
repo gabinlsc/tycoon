@@ -6,6 +6,7 @@ import { Calendrier, HORIZON, collisions, parSemaine } from './Calendrier';
 import { Coquille } from './Coquille';
 import { creerMoteurLocal } from './engine/local';
 import { LabelProvider } from './LabelContext';
+import { allerAEcran } from './testNavigation';
 
 afterEach(cleanup);
 
@@ -54,7 +55,7 @@ describe('écran Calendrier', () => {
     const b = await screen.findByRole('button', { name: 'Nouvelle partie' });
     await waitFor(() => expect((b as HTMLButtonElement).disabled).toBe(false));
     fireEvent.click(b);
-    fireEvent.click(await screen.findByRole('button', { name: /Calendrier/ }));
+    await allerAEcran(/Calendrier/);
     expect(
       screen.getAllByRole('heading', { name: 'Calendrier des sorties' }).length,
     ).toBeGreaterThan(0);
