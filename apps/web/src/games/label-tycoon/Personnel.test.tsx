@@ -38,7 +38,7 @@ describe('écran Personnel', () => {
     fireEvent.click(await screen.findByRole('button', { name: /Personnel/ }));
     await screen.findByRole('heading', { name: 'Personnel' });
     expect(screen.getByText('Aucun candidat pour l’instant.')).toBeTruthy();
-    fireEvent.click(screen.getByRole('button', { name: /Semaine ▶/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Semaine/ }));
     const embaucher = await screen.findAllByRole(
       'button',
       { name: /^Embaucher / },

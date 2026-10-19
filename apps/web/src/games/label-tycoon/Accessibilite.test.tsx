@@ -43,7 +43,7 @@ describe('accessibilité des écrans', () => {
   });
 
   it('n’a aucune violation détectable sur aucun écran du jeu', async () => {
-    const { container } = render(
+    render(
       <LabelProvider fabrique={() => Promise.resolve(creerMoteurLocal())}>
         <Coquille />
       </LabelProvider>,
@@ -63,7 +63,7 @@ describe('accessibilité des écrans', () => {
       }
       fireEvent.click(bouton);
       await waitFor(() => expect(bouton.getAttribute('aria-current')).toBe('page'));
-      for (const v of await violations(container)) trouves.push(`${ecran.titre} — ${v}`);
+      for (const v of await violations(document.body)) trouves.push(`${ecran.titre} — ${v}`);
     }
     expect(trouves).toEqual([]);
   }, 120_000);

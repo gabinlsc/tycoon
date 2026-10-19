@@ -32,6 +32,8 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
     const noms = await nav.getByRole('button').allInnerTexts();
     const problems = [];
     for (let i = 0; i < noms.length; i++) {
+      const menu = p.getByRole('button', { name: /^Menu/ });
+      if (await menu.count()) await menu.click();
       await nav.getByRole('button').nth(i).click();
       await p.waitForTimeout(500);
       const r = await p.evaluate(() => {

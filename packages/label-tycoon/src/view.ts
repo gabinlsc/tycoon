@@ -32,6 +32,7 @@ import {
   type AchievementFamily,
   type TaxStrategy,
   GENERATIONS,
+  TIERS,
   REGULATION,
   SCENES,
   INTERNATIONAL,
@@ -88,7 +89,8 @@ import { conditionMet, findScenario } from './scenarios/engine';
 import { texteCondition } from './scenarios/textes';
 import { buildingLevel, teamCapacity } from './buildings';
 import { loanCap, loanRate, outstanding } from './loans';
-import { tierAtLeast } from './tiers';
+import { tierAtLeast, tierRank } from './tiers';
+import { annualRevenue } from './finance';
 
 /**
  * Vue du jeu pour l'interface : un instantané sérialisable et plat, calculé à partir de l'état.
@@ -629,7 +631,15 @@ export interface VueEre {
 export interface VueJeu {
   semaine: number;
   date: { annee: number; mois: number; semaineDuMois: number };
-  label: { nom: string; palier: string; reputation: number };
+  label: { nom: string; palier: string; palierId: string; reputation: number };
+  /** Conditions du palier suivant et où en est le label, ou `null` au dernier palier. */
+  prochainPalier: {
+    id: string;
+    nom: string;
+    reputation: { actuelle: number; requise: number };
+    chiffreAffaires: { actuel: number; requis: number };
+    certification: { requise: string | null; atteinte: boolean };
+  } | null;
   finances: {
     tresorerie: number;
     valorisation: number;
@@ -1197,6 +1207,27 @@ function rapportsDe(state: LabelState): VueRapportMensuel[] {
     }));
 }
 
+const RANG_CERTIFICATION: Readonly<Record<string, number>> = { or: 1, platine: 2, diamant: 3 };
+
+function prochainPalierDe(state: LabelState): VueJeu['prochainPalier'] {
+  const suivant = TIERS[tierRank(state.label.tier) + 1];
+  if (!suivant) return null;
+  const cert = bestCertification(state);
+  const requise = suivant.requiredCertification ?? null;
+  return {
+    id: suivant.id,
+    nom: fr.tiers[suivant.id],
+    reputation: { actuelle: Math.round(state.label.reputation), requise: suivant.minReputation },
+    chiffreAffaires: { actuel: annualRevenue(state), requis: suivant.minAnnualRevenue },
+    certification: {
+      requise,
+      atteinte:
+        requise === null ||
+        (cert !== null && (RANG_CERTIFICATION[cert] ?? 0) >= (RANG_CERTIFICATION[requise] ?? 0)),
+    },
+  };
+}
+
 /** Friction de fin de partie : concentration, piratage et tarifs des plateformes. */
 export interface VueRegulation {
   actif: boolean;
@@ -1702,8 +1733,10 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
     label: {
       nom: state.label.nom,
       palier: fr.tiers[state.label.tier],
+      palierId: state.label.tier,
       reputation: Math.round(state.label.reputation),
     },
+    prochainPalier: prochainPalierDe(state),
     finances: {
       tresorerie: state.label.tresorerie,
       valorisation: labelScore(state, tick),
