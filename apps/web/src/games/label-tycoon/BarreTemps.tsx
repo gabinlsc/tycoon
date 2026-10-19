@@ -75,7 +75,7 @@ export function BarreTemps() {
       <details className="label-time__settings">
         <summary title="Choisir quand le jeu se met en pause tout seul">
           <Settings2 aria-hidden="true" size={18} />
-          <span>Auto-pauses</span>
+          <span className="label-time__settings-texte">Auto-pauses</span>
         </summary>
         <fieldset>
           <legend className="visually-hidden">Mettre le jeu en pause quand…</legend>

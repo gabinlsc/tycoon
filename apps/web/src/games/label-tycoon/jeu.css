@@ -418,6 +418,23 @@ html.lt-verrou body {
   box-shadow: var(--pop);
 }
 
+/* L'ouverture des auto-pauses tient dans une icône quand la place manque */
+@media (max-width: 1599px) {
+  .lt-app .label-time__settings-texte {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .lt-app .label-time__settings > summary {
+    width: 2.75rem;
+    justify-content: center;
+    padding: 0;
+  }
+}
+
 /* ---------- Contenu ---------- */
 
 .lt-contenu {
@@ -528,14 +545,8 @@ html.lt-verrou body {
     font-size: var(--fs-small);
   }
   .lt-stat--date,
-  .lt-nav__touche,
-  .lt-app .label-time__settings > summary > span {
+  .lt-nav__touche {
     display: none;
-  }
-  .lt-app .label-time__settings > summary {
-    width: 2.75rem;
-    justify-content: center;
-    padding: 0;
   }
   .lt-app .label-time {
     width: 100%;
@@ -1025,5 +1036,271 @@ html.lt-verrou body {
   .stage--live > .label-screen__soon,
   .stage--live > .label-save {
     margin: var(--sp-3) var(--sp-3) 0;
+  }
+}
+
+/* ======================================================================
+ * QG : mission de départ, tuiles, palier suivant
+ * ====================================================================== */
+
+.lt-app .lt-qg {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+  align-items: start;
+}
+.lt-qg > .lt-mission,
+.lt-qg > .lt-tuiles,
+.lt-qg > .label-qg__alerts {
+  grid-column: 1 / -1;
+}
+
+.lt-mission {
+  display: grid;
+  gap: var(--sp-3);
+  padding: var(--sp-5);
+  border: var(--border);
+  border-radius: var(--r-md);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--gold) 38%, var(--surface)),
+    var(--surface-2)
+  );
+  box-shadow: var(--pop);
+}
+.lt-mission__tete {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.lt-mission__tete h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+}
+.lt-mission__tete p {
+  margin: 0;
+  color: var(--text-soft);
+  font-weight: 800;
+}
+.lt-mission__icone {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 3.2rem;
+  height: 3.2rem;
+  border: 3px solid var(--outline);
+  border-radius: var(--r-sm);
+  background: var(--orange);
+  color: var(--outline);
+  box-shadow: var(--pop-sm);
+}
+.lt-mission__masquer {
+  min-height: 44px;
+  margin-left: auto;
+  padding: 0 var(--sp-3);
+  border: 0;
+  background: none;
+  color: var(--text-soft);
+  font-weight: 800;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.lt-mission__etapes {
+  display: grid;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lt-etape {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  border: 3px solid transparent;
+  border-radius: var(--r-sm);
+}
+.lt-etape > div {
+  flex: 1;
+}
+.lt-etape strong {
+  font-weight: 800;
+}
+.lt-etape p {
+  margin: 2px 0 0;
+  color: var(--text-soft);
+  font-size: var(--fs-small);
+  font-weight: 700;
+}
+.lt-etape > svg {
+  flex: none;
+  color: var(--text-soft);
+}
+.lt-etape.is-faite {
+  opacity: 0.7;
+}
+.lt-etape.is-faite > svg {
+  color: var(--green-text);
+}
+.lt-etape.is-faite strong {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+.lt-etape.is-prochaine {
+  border-color: var(--outline);
+  background: var(--surface);
+  box-shadow: var(--pop-sm);
+}
+.lt-etape.is-prochaine > svg {
+  color: var(--orange);
+}
+
+/* Barre de progression épaisse, réutilisable */
+.lt-barre {
+  display: block;
+  height: 0.9rem;
+  overflow: hidden;
+  border: 3px solid var(--outline);
+  border-radius: 999px;
+  background: var(--surface);
+}
+.lt-barre > span {
+  display: block;
+  height: 100%;
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      color-mix(in srgb, #fff 25%, transparent) 0 8px,
+      transparent 8px 16px
+    ),
+    var(--green);
+  transition: width var(--dur-slow) var(--ease-out);
+}
+
+/* Tuiles d'indicateurs cliquables */
+.lt-tuiles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lt-tuile {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: var(--sp-3);
+  width: 100%;
+  padding: var(--sp-3) var(--sp-4);
+  border: var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--pop-sm);
+  color: var(--text);
+  font-family: var(--font-text);
+  text-align: left;
+  cursor: pointer;
+  transition: translate var(--dur-fast) var(--ease-out);
+}
+.lt-tuile:hover {
+  translate: 0 -2px;
+}
+.lt-tuile > svg {
+  grid-row: 1 / span 2;
+  padding: 0.45rem;
+  border: 3px solid var(--outline);
+  border-radius: var(--r-sm);
+  background: var(--purple);
+  color: #fff;
+  box-sizing: content-box;
+}
+.lt-tuiles li:nth-child(2) .lt-tuile > svg {
+  background: var(--blue);
+  color: var(--outline);
+}
+.lt-tuiles li:nth-child(3) .lt-tuile > svg {
+  background: var(--pink);
+  color: var(--outline);
+}
+.lt-tuiles li:nth-child(4) .lt-tuile > svg {
+  background: var(--gold);
+  color: var(--outline);
+}
+.lt-tuile__valeur {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  line-height: 1;
+}
+.lt-tuile__libelle {
+  color: var(--text-soft);
+  font-size: var(--fs-small);
+  font-weight: 800;
+}
+
+/* Palier suivant */
+.lt-palier-suivant h2 {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.lt-palier-suivant h2 svg {
+  color: var(--gold-dark);
+}
+.lt-conditions {
+  display: grid;
+  gap: var(--sp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lt-conditions li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--sp-1) var(--sp-3);
+  align-items: center;
+}
+.lt-conditions .lt-barre {
+  grid-column: 1 / -1;
+  grid-row: 2;
+}
+.lt-conditions__nom {
+  font-weight: 800;
+}
+.lt-coche {
+  padding: 0 var(--sp-2);
+  border: 2px solid var(--outline);
+  border-radius: 999px;
+  background: var(--surface-2);
+  font-size: var(--fs-small);
+  font-weight: 800;
+}
+.lt-coche.is-ok {
+  background: var(--green);
+}
+
+.lt-objectifs li {
+  display: grid;
+  gap: var(--sp-1);
+  font-weight: 700;
+}
+.lt-objectifs progress {
+  width: 100%;
+  height: 0.8rem;
+  accent-color: var(--green);
+}
+
+@media (max-width: 760px) {
+  .lt-tuiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .lt-mission {
+    padding: var(--sp-4);
+  }
+  .lt-etape {
+    flex-wrap: wrap;
+  }
+  .lt-etape .btn {
+    width: 100%;
   }
 }
