@@ -5,7 +5,7 @@ import type { VueJeu } from '@tycoon/label-tycoon';
 import { Coquille } from './Coquille';
 import { creerMoteurLocal } from './engine/local';
 import { LabelProvider } from './LabelContext';
-import { alertes, progressionObjectif } from './QG';
+import { alertes, premiersPas, progressionObjectif } from './QG';
 
 afterEach(cleanup);
 
@@ -115,5 +115,39 @@ describe('QG dans la coquille', () => {
     expect(screen.getByRole('heading', { name: 'Alertes' })).toBeTruthy();
     expect(screen.getByRole('heading', { name: 'Objectifs' })).toBeTruthy();
     expect(screen.getByText('Tout est calme. Aucune alerte.')).toBeTruthy();
+  });
+});
+
+describe('premiers pas', () => {
+  const base = (over: Partial<VueJeu> = {}): VueJeu =>
+    ({ roster: [], suivis: [], projets: [], semaine: 0, ...over }) as unknown as VueJeu;
+
+  it('suit les cinq gestes de base dans l’ordre', () => {
+    expect(premiersPas(base()).map((e) => e.faite)).toEqual([false, false, false, false, false]);
+    const suivi = premiersPas(base({ suivis: [{}] as VueJeu['suivis'] }));
+    expect(suivi[0]?.faite).toBe(true);
+    const sorti = premiersPas(
+      base({
+        roster: [{}] as VueJeu['roster'],
+        projets: [{ statut: 'sortie' }] as VueJeu['projets'],
+        semaine: 10,
+      }),
+    );
+    expect(sorti.every((e) => e.faite)).toBe(true);
+  });
+
+  it('apparaît au QG d’une nouvelle carrière et mène au repérage', async () => {
+    render(
+      <LabelProvider fabrique={() => Promise.resolve(creerMoteurLocal())}>
+        <Coquille />
+      </LabelProvider>,
+    );
+    const b = await screen.findByRole('button', { name: /Nouvelle partie/ });
+    await waitFor(() => expect((b as HTMLButtonElement).disabled).toBe(false));
+    fireEvent.click(b);
+    await screen.findByRole('heading', { name: 'Premiers pas' });
+    expect(screen.getByRole('progressbar', { name: 'Progression des premiers pas' })).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Aller repérer' }));
+    await screen.findByRole('heading', { name: 'Repérage' });
   });
 });
