@@ -14,6 +14,10 @@ import {
 import { couleurDuGenre, initiales } from './avatar';
 import type { EcranId } from './ecrans';
 
+/** Ce qu'un clic dans la scène peut ouvrir. */
+export type CibleMonde =
+  'studio' | 'bureaux' | 'repetition' | 'pressage' | 'concert' | 'roster' | 'reperage';
+
 /** Étages de l'immeuble, du toit au rez-de-chaussée. */
 const ETAGES: readonly { id: string; nom: string; Icone: LucideIcon; ecran: EcranId }[] = [
   { id: 'concert', nom: 'Salle de concert', Icone: Speaker, ecran: 'batiments' },
@@ -55,13 +59,13 @@ function Etage({
   batiment,
   artistes,
   semaine,
-  allerA,
+  clic,
 }: {
   etage: (typeof ETAGES)[number];
   batiment: VueBatiment | undefined;
   artistes: VueArtiste[];
   semaine: number;
-  allerA: (ecran: EcranId) => void;
+  clic: () => void;
 }) {
   const niveau = batiment?.niveau ?? 0;
   const max = batiment?.niveauMax ?? 1;
@@ -82,7 +86,7 @@ function Etage({
       <button
         type="button"
         className="lt-etage__bouton"
-        onClick={() => allerA(etage.ecran)}
+        onClick={clic}
         style={{ '--niveau': niveau } as CSSProperties}
       >
         <span className="lt-etage__plaque">
@@ -128,7 +132,16 @@ function Etage({
 }
 
 /** Le QG dessiné : l'immeuble du label, un étage par bâtiment, les artistes à leur poste. */
-export function Immeuble({ vue, allerA }: { vue: VueJeu; allerA: (ecran: EcranId) => void }) {
+export function Immeuble({
+  vue,
+  allerA,
+  ouvrir,
+}: {
+  vue: VueJeu;
+  allerA: (ecran: EcranId) => void;
+  /** Si fourni, un clic ouvre la cible dans la scène au lieu de changer d'écran. */
+  ouvrir?: (cible: CibleMonde) => void;
+}) {
   const repetition = (vue.batiments.find((b) => b.id === 'repetition')?.niveau ?? 0) > 0;
   const parEtage = new Map<string, VueArtiste[]>();
   for (const a of vue.roster) {
@@ -158,14 +171,19 @@ export function Immeuble({ vue, allerA }: { vue: VueJeu; allerA: (ecran: EcranId
               batiment={vue.batiments.find((b) => b.id === e.id)}
               artistes={parEtage.get(e.id) ?? []}
               semaine={vue.semaine}
-              allerA={allerA}
+              clic={() => (ouvrir ? ouvrir(e.id as CibleMonde) : allerA(e.ecran))}
             />
           ))}
         </ul>
-        <div className="lt-immeuble__rdc" aria-hidden="true">
-          <span className="lt-immeuble__vitrine" />
-          <span className="lt-immeuble__porte" />
-          <span className="lt-immeuble__vitrine" />
+        <div className="lt-immeuble__rdc">
+          <span className="lt-immeuble__vitrine" aria-hidden="true" />
+          <button
+            type="button"
+            className="lt-immeuble__porte"
+            onClick={() => (ouvrir ? ouvrir('roster') : allerA('roster'))}
+            aria-label="Porte : ton roster"
+          />
+          <span className="lt-immeuble__vitrine" aria-hidden="true" />
         </div>
       </div>
       <div className="lt-immeuble__trottoir" aria-hidden="true" />

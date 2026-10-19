@@ -1,11 +1,11 @@
 import type { VueJeu } from '@tycoon/label-tycoon';
 import { OBJECTIF_TEXTES } from '@tycoon/label-tycoon';
 import { useState } from 'react';
-import { Award, CheckCircle2, Circle, Disc3, Inbox, Radar, Rocket, Users } from 'lucide-react';
+import { Award, CheckCircle2, Circle, Rocket } from 'lucide-react';
 import { Button } from '../../components/arcade/ui/Button';
 import { TapisRouge } from './Ceremonie';
 import { eurCourt } from './Hud';
-import { Immeuble } from './Immeuble';
+import { Monde } from './Monde';
 import type { EcranId } from './ecrans';
 import { GraphCourbe } from './graphiques/Graphiques';
 import { Terme } from './Infobulle';
@@ -251,86 +251,44 @@ function ProchainPalier({ vue }: { vue: VueJeu }) {
 export function QG({
   allerA,
   revoirCeremonie,
+  ouvrirFiche = () => undefined,
+  negocier = () => undefined,
 }: {
   allerA: (ecran: EcranId) => void;
   revoirCeremonie?: () => void;
+  ouvrirFiche?: (id: number) => void;
+  negocier?: (id: number) => void;
 }) {
   const { vue } = useLabel();
   if (!vue) return null;
   const liste = alertes(vue);
   const points = vue.historiqueTresorerie.map((c) => Math.round(c / 100));
-  const tuiles = [
-    {
-      id: 'artistes',
-      Icone: Users,
-      libelle: 'Artistes',
-      valeur: `${vue.roster.length}${vue.plafondRoster !== null ? ` / ${vue.plafondRoster}` : ''}`,
-      ecran: 'roster' as const,
-    },
-    {
-      id: 'suivis',
-      Icone: Radar,
-      libelle: 'Talents suivis',
-      valeur: String(vue.suivis.length),
-      ecran: 'reperage' as const,
-    },
-    {
-      id: 'projets',
-      Icone: Disc3,
-      libelle: 'En studio',
-      valeur: String(vue.projets.filter((p) => p.statut !== 'sortie').length),
-      ecran: 'studio' as const,
-    },
-    {
-      id: 'decisions',
-      Icone: Inbox,
-      libelle: 'À décider',
-      valeur: String(vue.decisions.length),
-      ecran: 'boite' as const,
-    },
-  ];
-
   return (
     <div className="label-qg lt-qg">
       {vue.ceremonie ? (
         <TapisRouge ceremonie={vue.ceremonie} semaine={vue.semaine} revoir={revoirCeremonie} />
       ) : null}
-      <div className="lt-qg__hero">
-        <Immeuble vue={vue} allerA={allerA} />
-        <div className="lt-qg__cote">
-          <ul className="lt-tuiles" aria-label="Indicateurs du label">
-            {tuiles.map((t) => (
-              <li key={t.id}>
-                <button type="button" className="lt-tuile" onClick={() => allerA(t.ecran)}>
-                  <t.Icone aria-hidden="true" size={26} />
-                  <span className="lt-tuile__valeur mono">{t.valeur}</span>
-                  <span className="lt-tuile__libelle">{t.libelle}</span>
-                </button>
+      <Monde vue={vue} allerA={allerA} ouvrirFiche={ouvrirFiche} negocier={negocier} />
+      <section className="label-screen label-qg__alerts" aria-labelledby="qg-alertes">
+        <h2 id="qg-alertes">Alertes</h2>
+        {liste.length === 0 ? (
+          <p className="lt-rien">Tout est calme. Aucune alerte.</p>
+        ) : (
+          <ul className="label-alerts">
+            {liste.map((a) => (
+              <li key={a.id} className={`label-alert label-alert--${a.niveau}`}>
+                <strong>{a.niveau === 'danger' ? '⚠ Urgent : ' : 'ℹ À noter : '}</strong>
+                {a.texte}
+                {a.ecran ? (
+                  <Button type="button" tone="ghost" onClick={() => allerA(a.ecran as EcranId)}>
+                    Voir
+                  </Button>
+                ) : null}
               </li>
             ))}
           </ul>
-          <section className="label-screen label-qg__alerts" aria-labelledby="qg-alertes">
-            <h2 id="qg-alertes">Alertes</h2>
-            {liste.length === 0 ? (
-              <p className="label-screen__soon">Tout est calme. Aucune alerte.</p>
-            ) : (
-              <ul className="label-alerts">
-                {liste.map((a) => (
-                  <li key={a.id} className={`label-alert label-alert--${a.niveau}`}>
-                    <strong>{a.niveau === 'danger' ? '⚠ Urgent : ' : 'ℹ À noter : '}</strong>
-                    {a.texte}
-                    {a.ecran ? (
-                      <Button type="button" tone="ghost" onClick={() => allerA(a.ecran as EcranId)}>
-                        Voir
-                      </Button>
-                    ) : null}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
-        </div>
-      </div>
+        )}
+      </section>
       <PremiersPas vue={vue} allerA={allerA} />
 
       <ProchainPalier vue={vue} />

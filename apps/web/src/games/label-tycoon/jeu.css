@@ -5093,3 +5093,302 @@ html.lt-verrou body {
     animation: none;
   }
 }
+
+/* ======================================================================
+ * Le monde du label : ville, saisons, tours rivales, tiroir
+ * ====================================================================== */
+
+.lt-monde {
+  --ciel-haut: #1b1050;
+  --ciel-bas: #ff8a5c;
+  position: relative;
+  grid-column: 1 / -1;
+  display: grid;
+  min-height: min(64vh, 40rem);
+  overflow: hidden;
+  border: 3px solid var(--outline);
+  border-radius: 1.5rem;
+  background: linear-gradient(180deg, var(--ciel-haut) 0%, #4a2a9c 50%, var(--ciel-bas) 100%);
+  box-shadow: 0 6px 0 var(--outline);
+  isolation: isolate;
+}
+.lt-monde--hiver {
+  --ciel-haut: #0e1b3d;
+  --ciel-bas: #8fb4e8;
+}
+.lt-monde--printemps {
+  --ciel-haut: #3a2a7a;
+  --ciel-bas: #ffb3d4;
+}
+.lt-monde--automne {
+  --ciel-haut: #2a1450;
+  --ciel-bas: #e0803d;
+}
+.lt-monde__ciel {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+.lt-nuage {
+  position: absolute;
+  height: 1.6rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.22);
+  box-shadow:
+    1.2rem -0.6rem 0 -0.2rem rgb(255 255 255 / 0.22),
+    -1rem -0.4rem 0 -0.3rem rgb(255 255 255 / 0.22);
+  animation: lt-derive linear infinite;
+}
+.lt-nuage--1 {
+  top: 8%;
+  width: 7rem;
+  animation-duration: 60s;
+}
+.lt-nuage--2 {
+  top: 20%;
+  width: 5rem;
+  animation-duration: 85s;
+  animation-delay: -30s;
+}
+.lt-nuage--3 {
+  top: 34%;
+  width: 9rem;
+  animation-duration: 110s;
+  animation-delay: -70s;
+}
+@keyframes lt-derive {
+  from {
+    left: -12rem;
+  }
+  to {
+    left: 105%;
+  }
+}
+.lt-monde__tours {
+  position: absolute;
+  inset: auto 0 2.2rem;
+  display: flex;
+  justify-content: space-between;
+  height: 75%;
+  margin: 0;
+  padding: 0 4%;
+  list-style: none;
+  pointer-events: none;
+}
+.lt-monde__tours li {
+  position: relative;
+  align-self: flex-end;
+  width: clamp(3.5rem, 9vw, 6.5rem);
+  height: var(--h);
+  border: 3px solid var(--outline);
+  border-bottom: 0;
+  border-radius: 0.4rem 0.4rem 0 0;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 1rem, rgb(255 226 138 / 0.5) 1rem 1.5rem) 20% 0 /
+      20% 100% no-repeat,
+    repeating-linear-gradient(0deg, transparent 0 1.3rem, rgb(255 226 138 / 0.4) 1.3rem 1.8rem) 60%
+      0 / 20% 100% no-repeat,
+    #2a1a5e;
+}
+.lt-monde__tours li:nth-child(n + 3) {
+  order: 3;
+}
+.lt-monde__tours li:nth-child(even) {
+  align-self: flex-end;
+  margin-top: auto;
+}
+.lt-tour__nom {
+  position: absolute;
+  top: -1.6rem;
+  left: 50%;
+  translate: -50% 0;
+  max-width: 9rem;
+  overflow: hidden;
+  padding: 0.1rem 0.5rem;
+  border: 2px solid #5ad1ff;
+  border-radius: 0.4rem;
+  color: #d8f4ff;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-shadow: 0 0 6px #5ad1ff;
+  box-shadow: 0 0 8px #5ad1ff;
+  background: rgb(10 20 50 / 0.6);
+}
+.lt-voiture {
+  position: absolute;
+  bottom: 0.5rem;
+  width: 3rem;
+  height: 1rem;
+  border: 2px solid var(--outline);
+  border-radius: 0.5rem 0.9rem 0.3rem 0.3rem;
+  background: var(--red);
+  box-shadow: inset 0 -3px 0 rgb(0 0 0 / 0.25);
+  animation: lt-voiture 14s linear infinite;
+}
+@keyframes lt-voiture {
+  from {
+    left: -4rem;
+  }
+  to {
+    left: 105%;
+  }
+}
+.lt-monde__scene {
+  align-self: end;
+  justify-self: center;
+  width: min(100%, 34rem);
+  transition: translate 0.4s;
+}
+.lt-monde.a-tiroir .lt-monde__scene {
+  translate: -22% 0;
+}
+.lt-monde .lt-immeuble {
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  padding-top: var(--sp-8);
+  overflow: visible;
+}
+.lt-monde .lt-immeuble__ciel {
+  display: none;
+}
+.lt-monde__enseignes {
+  position: absolute;
+  top: var(--sp-3);
+  left: var(--sp-3);
+  display: grid;
+  gap: var(--sp-2);
+  justify-items: start;
+}
+.lt-enseigne {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 2.75rem;
+  padding: 0.3rem var(--sp-3);
+  border: 3px solid var(--outline);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-weight: 800;
+}
+.lt-enseigne small {
+  color: var(--text-soft);
+}
+button.lt-enseigne {
+  cursor: pointer;
+  box-shadow: 0 4px 0 var(--outline);
+}
+.lt-enseigne--reperer {
+  background: var(--gold);
+}
+.lt-enseigne--boite.is-alerte {
+  background: var(--red);
+  color: #fff;
+  animation: lt-pulse 1.4s ease-in-out infinite;
+}
+.lt-enseigne:focus-visible {
+  outline: 4px solid var(--gold);
+  outline-offset: 3px;
+}
+.lt-tiroir-monde {
+  position: absolute;
+  inset: 0 0 0 auto;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 36rem);
+  border-left: 4px solid var(--outline);
+  background: var(--lt-fond);
+  box-shadow: -10px 0 0 rgb(0 0 0 / 0.25);
+  animation: lt-tiroir 0.3s ease-out;
+}
+@keyframes lt-tiroir {
+  from {
+    translate: 100% 0;
+  }
+}
+.lt-tiroir-monde header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: 3px solid var(--outline);
+  background: var(--purple);
+  color: #fff;
+}
+.lt-tiroir-monde__titre {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+}
+.lt-tiroir-monde__fermer {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 3px solid var(--outline);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--outline);
+  cursor: pointer;
+}
+.lt-tiroir-monde__corps {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--sp-3);
+}
+.lt-immeuble__porte {
+  cursor: pointer;
+  padding: 0;
+}
+.lt-immeuble__porte:hover {
+  filter: brightness(1.2);
+}
+.lt-immeuble__porte:focus-visible {
+  outline: 4px solid var(--gold);
+  outline-offset: 3px;
+}
+@media (max-width: 60rem) {
+  .lt-monde__enseignes {
+    position: static;
+    grid-auto-flow: column;
+    justify-content: start;
+    overflow-x: auto;
+    padding: var(--sp-3);
+  }
+  .lt-monde {
+    grid-template-rows: auto 1fr;
+  }
+  .lt-monde.a-tiroir .lt-monde__scene {
+    translate: 0;
+  }
+  .lt-tiroir-monde {
+    position: fixed;
+    inset: 0;
+    z-index: 65;
+    width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lt-nuage,
+  .lt-voiture,
+  .lt-tiroir-monde {
+    animation: none;
+  }
+  .lt-monde__scene {
+    transition: none;
+  }
+}
+
+@media (min-width: 60rem) {
+  .lt-monde__tours {
+    padding-left: 15rem;
+  }
+}
