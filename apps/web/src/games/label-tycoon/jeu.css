@@ -3237,3 +3237,221 @@ html.lt-verrou body {
     transition: none;
   }
 }
+
+/* ======================================================================
+ * Scènes : cartes de villes
+ * ====================================================================== */
+
+.lt-sous-titre {
+  margin: 0 0 var(--sp-3);
+  color: var(--text-soft);
+}
+.lt-villes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: var(--sp-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lt-ville {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  overflow: hidden;
+  border: 3px solid var(--outline);
+  border-radius: 1.25rem;
+  background:
+    radial-gradient(
+      circle at 100% 0,
+      color-mix(in srgb, var(--c) 35%, transparent),
+      transparent 60%
+    ),
+    linear-gradient(180deg, var(--surface), var(--surface-2));
+  box-shadow: 0 5px 0 var(--outline);
+}
+.lt-ville--purple {
+  --c: var(--purple);
+}
+.lt-ville--blue {
+  --c: var(--blue);
+}
+.lt-ville--pink {
+  --c: var(--pink);
+}
+.lt-ville--orange {
+  --c: var(--orange);
+}
+.lt-ville--teal {
+  --c: var(--teal);
+}
+.lt-ville--green {
+  --c: var(--green);
+}
+.lt-ville--red {
+  --c: var(--red);
+}
+.lt-ville--gold {
+  --c: var(--gold);
+}
+.lt-ville.is-emergente {
+  border-color: var(--pink-dark);
+  box-shadow:
+    0 5px 0 var(--pink-dark),
+    0 0 24px color-mix(in srgb, var(--pink) 50%, transparent);
+}
+.lt-ville__tete {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.lt-ville__tete h3 {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  line-height: 1.1;
+}
+.lt-ville__pin {
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 3px solid var(--outline);
+  border-radius: 50% 50% 50% 0;
+  rotate: -45deg;
+  background: var(--c);
+  color: var(--outline);
+}
+.lt-ville__pin svg {
+  rotate: 45deg;
+}
+.lt-ville__ruban {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.1rem 0.55rem;
+  border: 2px solid var(--outline);
+  border-radius: 999px;
+  background: var(--pink);
+  color: var(--outline);
+  font-size: var(--fs-micro);
+  font-weight: 900;
+}
+.lt-ville__genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin: 0;
+}
+.lt-puce--secondaire {
+  --c: color-mix(in srgb, var(--outline) 12%, var(--surface));
+  --c-texte: var(--text);
+}
+.lt-ville__chaleur {
+  display: grid;
+  gap: var(--sp-1);
+}
+.lt-flammes {
+  display: flex;
+  gap: 0.15rem;
+}
+.lt-flammes svg {
+  color: color-mix(in srgb, var(--outline) 25%, transparent);
+}
+.lt-flammes svg.is-allumee {
+  color: var(--orange);
+  fill: var(--gold);
+  filter: drop-shadow(0 0 5px var(--orange));
+}
+.lt-ville__thermo {
+  display: block;
+  height: 0.7rem;
+  overflow: hidden;
+  border: 2px solid var(--outline);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--outline) 10%, var(--surface));
+}
+.lt-ville__thermo span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--orange), var(--red));
+}
+.lt-ville__pied {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin: 0;
+}
+.lt-ville__go {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  min-height: 2.75rem;
+  margin-top: auto;
+  border: 3px solid var(--outline);
+  border-radius: 999px;
+  background: var(--gold);
+  box-shadow: 0 4px 0 var(--outline);
+  color: var(--outline);
+  font-family: var(--font-display);
+  cursor: pointer;
+}
+.lt-ville__go:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.lt-ville__go:focus-visible {
+  outline: 4px solid var(--purple);
+  outline-offset: 3px;
+}
+.lt-trouvailles {
+  margin-bottom: var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  border: 3px solid var(--outline);
+  border-radius: 1rem;
+  background: linear-gradient(90deg, var(--green), var(--teal));
+  color: var(--outline);
+  animation: lt-cer-entree 0.4s ease-out both;
+}
+.lt-trouvailles header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.lt-trouvailles header strong {
+  flex: 1;
+}
+.lt-trouvailles__fermer {
+  border: 2px solid var(--outline);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--outline);
+  font: inherit;
+  font-weight: 800;
+  padding: 0.2rem 0.8rem;
+  cursor: pointer;
+}
+.lt-trouvailles ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  margin: var(--sp-2) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.lt-trouvailles li {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-weight: 800;
+}
+@media (prefers-reduced-motion: reduce) {
+  .lt-trouvailles {
+    animation: none;
+  }
+}
