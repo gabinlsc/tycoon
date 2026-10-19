@@ -1,9 +1,10 @@
-import { Gamepad2, Keyboard, PauseCircle, Settings2 } from 'lucide-react';
+import { Gamepad2, Keyboard, PauseCircle, Settings2, Volume2 } from 'lucide-react';
 import { Button } from '../../components/arcade/ui/Button';
 import { ECRANS } from './ecrans';
 import { useLabel } from './LabelContext';
 import { NOMS_MODES } from './partie';
 import { CATEGORIES_PAUSE, LIBELLES_PAUSE } from './temps';
+import { useAudio } from './audio/useAudio';
 import { useReglagesPause } from './useReglagesPause';
 import { Panneau, Tuile, Tuiles } from './Visuels';
 
@@ -21,6 +22,7 @@ export const RACCOURCIS = [
 export function Parametres() {
   const { reglages, basculer, reinitialiser } = useReglagesPause();
   const { vue } = useLabel();
+  const audio = useAudio();
   const actives = CATEGORIES_PAUSE.filter((c) => reglages[c]).length;
   return (
     <section className="label-screen" aria-labelledby="parametres-titre">
@@ -74,6 +76,28 @@ export function Parametres() {
           </Tuiles>
         </Panneau>
       ) : null}
+
+      <Panneau titre="Son et musique" Icone={Volume2} ton="pink" id="param-son">
+        <fieldset className="lt-interrupteurs">
+          <legend className="visually-hidden">Son du jeu</legend>
+          {(
+            [
+              ['sons', 'Bruitages'],
+              ['musique', 'Musique de fond'],
+            ] as const
+          ).map(([cle, nom]) => (
+            <label key={cle} className={`lt-interrupteur${audio.prefs[cle] ? ' is-actif' : ''}`}>
+              <input
+                type="checkbox"
+                checked={audio.prefs[cle]}
+                onChange={(e) => audio.regler({ ...audio.prefs, [cle]: e.target.checked })}
+              />
+              <span className="lt-interrupteur__bouton" aria-hidden="true" />
+              {nom}
+            </label>
+          ))}
+        </fieldset>
+      </Panneau>
 
       <Panneau titre="Auto-pauses" Icone={PauseCircle} ton="orange" id="param-pauses">
         <p className="lt-sous-titre">

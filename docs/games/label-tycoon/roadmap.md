@@ -177,7 +177,7 @@ Cette liste est **la mémoire du projet entre les sessions**. Règles :
 
 Objectif : un jeu qu'on regarde, qu'on entend et qu'on a envie de rouvrir demain. L'interface en tableaux et panneaux (phases 6 à 11) devient le **plan B** : l'écran principal est le label vivant, les actions se font dans le monde. Tout est généré par code (SVG, CSS, Web Audio) ; les fichiers d'un illustrateur ou d'un sound designer pourront les remplacer sans toucher aux règles.
 
-- [ ] `feat/label-audio` : moteur audio Web Audio (musique de fond procédurale, bruitages de contrat, caisse, disque d'or, rideau), bouton son, préférence mémorisée
+- [x] `feat/label-audio` : moteur audio Web Audio (musique de fond procédurale, bruitages de contrat, caisse, disque d'or, rideau), bouton son, préférence mémorisée
 - [ ] `feat/label-effets` : « jus » visuel : pluies de pièces, chiffres qui s'envolent, tremblements, transitions animées entre écrans, réactions à chaque action importante
 - [ ] `feat/label-qg-monde` : l'immeuble comme écran de jeu : étages animés, artistes qui circulent, rivaux en ville, clic sur un étage pour agir dans un tiroir sans quitter la scène
 - [ ] `feat/label-cartes-artistes` : cartes d'artistes à collectionner : visages dessinés, raretés (commun, rare, épique, légendaire), reflet holographique, statistiques en jauges
@@ -203,6 +203,6 @@ Objectif : un jeu qu'on regarde, qu'on entend et qu'on a envie de rouvrir demain
 | 9     | 5     | 5      |
 | 10    | 12    | 12     |
 | 11    | 5     | 5      |
-| 12    | 9     | 0      |
+| 12    | 9     | 1      |
 
 (Mettre ce tableau à jour dans la PR qui coche une case.)

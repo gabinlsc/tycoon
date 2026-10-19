@@ -1,9 +1,10 @@
 import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Disc3, Lock, LogOut, Menu, Save, X } from 'lucide-react';
+import { Disc3, Lock, LogOut, Menu, Save, Volume2, VolumeX, X } from 'lucide-react';
 import { TIERS } from '@tycoon/label-tycoon';
 import { Button } from '../../components/arcade/ui/Button';
 import { ECRANS, POLES, poleDe, type EcranId, type PoleId } from './ecrans';
+import { useAudio, useAudioDuJeu } from './audio/useAudio';
 import { ICONES_ECRANS, ICONES_POLES } from './icones';
 import { Ceremonie, useCeremonie } from './Ceremonie';
 import { Hud } from './Hud';
@@ -69,6 +70,8 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
   }, []);
   useRaccourcis(setEcran, vue !== null);
   const spectacle = useCeremonie(vue);
+  useAudioDuJeu(vue);
+  const audio = useAudio();
 
   // L'écran actif reste visible dans la navigation (longue liste, tiroir sur mobile).
   useEffect(() => {
@@ -196,6 +199,22 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
               <Save aria-hidden="true" size={18} /> Sauvegardes
             </button>
           ) : null}
+          <button
+            type="button"
+            className="lt-side__action"
+            aria-pressed={audio.prefs.sons || audio.prefs.musique}
+            onClick={() => {
+              const actif = audio.prefs.sons || audio.prefs.musique;
+              audio.regler({ sons: !actif, musique: !actif });
+            }}
+          >
+            {audio.prefs.sons || audio.prefs.musique ? (
+              <Volume2 aria-hidden="true" size={18} />
+            ) : (
+              <VolumeX aria-hidden="true" size={18} />
+            )}{' '}
+            {audio.prefs.sons || audio.prefs.musique ? 'Son activé' : 'Son coupé'}
+          </button>
           <button type="button" className="lt-side__action" onClick={() => setPleinEcran(false)}>
             <LogOut aria-hidden="true" size={18} /> Quitter le jeu
           </button>

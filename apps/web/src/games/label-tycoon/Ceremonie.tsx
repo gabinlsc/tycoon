@@ -1,6 +1,7 @@
 import { type CSSProperties, useCallback, useEffect, useRef, useState } from 'react';
 import type { VueCategorieCeremonie, VueCeremonie, VueJeu } from '@tycoon/label-tycoon';
 import { Crown, Mail, Sparkles, X } from 'lucide-react';
+import { jouer } from './audio/useAudio';
 import { Avatar } from './avatar';
 
 const CLE = 'tycoon:label:ceremonies-vues';
@@ -149,6 +150,10 @@ export function Ceremonie({ ceremonie, fermer }: { ceremonie: VueCeremonie; ferm
   }, [etape, revele]);
 
   useEffect(() => {
+    jouer('rideau');
+  }, []);
+
+  useEffect(() => {
     const touche = (e: KeyboardEvent) => {
       if (e.key === 'Escape') fermer();
     };
@@ -237,7 +242,14 @@ export function Ceremonie({ ceremonie, fermer }: { ceremonie: VueCeremonie; ferm
                   ref={principal}
                   type="button"
                   className="lt-cer__go lt-cer__go--enveloppe"
-                  onClick={() => setRevele(true)}
+                  onClick={() => {
+                    setRevele(true);
+                    jouer(
+                      categorie.nommes.some((n) => n.joueur && n.gagnant)
+                        ? 'trophee'
+                        : 'revelation',
+                    );
+                  }}
                 >
                   <Mail aria-hidden="true" size={22} /> Ouvrir l’enveloppe
                 </button>
