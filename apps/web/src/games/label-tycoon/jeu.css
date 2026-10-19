@@ -3199,3 +3199,41 @@ html.lt-verrou body {
   gap: var(--sp-2);
   margin: 0;
 }
+
+/* Navigation : groupes secondaires repliables, celui de l'écran actif reste ouvert */
+.lt-app .lt-nav__titre--bouton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 2.75rem;
+  margin: 0;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+  text-align: left;
+  transform: none;
+}
+.lt-app .lt-nav__titre--bouton:hover {
+  background: rgb(255 255 255 / 0.08);
+}
+.lt-app .lt-nav__titre--bouton:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: -3px;
+}
+.lt-nav__titre--bouton svg {
+  transition: rotate 0.2s;
+}
+.lt-nav__groupe.is-replie .lt-nav__titre--bouton svg {
+  rotate: -90deg;
+}
+.lt-nav__groupe.is-replie .lt-nav__items {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .lt-nav__titre--bouton svg {
+    transition: none;
+  }
+}

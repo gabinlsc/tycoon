@@ -29,12 +29,15 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
     await p.getByRole('button', { name: 'Nouvelle partie' }).click();
     const nav = p.getByRole('navigation', { name: 'Écrans du jeu' });
     await nav.waitFor();
-    const noms = await nav.getByRole('button').allInnerTexts();
+    const items = nav.locator('[data-ecran]');
+    const noms = await items.allInnerTexts();
     const problems = [];
     for (let i = 0; i < noms.length; i++) {
       const menu = p.getByRole('button', { name: /^Menu/ });
       if (await menu.count()) await menu.click();
-      await nav.getByRole('button').nth(i).click();
+      const replies = nav.locator('button[aria-expanded="false"]');
+      while (await replies.count()) await replies.first().click();
+      await items.nth(i).click();
       await p.waitForTimeout(500);
       const r = await p.evaluate(() => {
         const over = document.documentElement.scrollWidth - window.innerWidth;
