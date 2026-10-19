@@ -43,7 +43,7 @@ describe('écran Concurrence', () => {
     fireEvent.click(b);
     await allerAEcran(/Concurrence/);
     await screen.findByRole('heading', { name: 'Concurrence' });
-    expect(document.querySelectorAll('article.label-card').length).toBeGreaterThanOrEqual(1);
+    expect(document.querySelectorAll('.lt-rival').length).toBeGreaterThanOrEqual(1);
     expect(screen.getByRole('heading', { name: 'Parts de marché par genre' })).toBeTruthy();
     expect(screen.getByRole('heading', { name: 'Affrontements récents' })).toBeTruthy();
   });

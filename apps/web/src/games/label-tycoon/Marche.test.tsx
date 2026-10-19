@@ -64,7 +64,7 @@ describe('écran Marché', () => {
     expect(screen.getByRole('heading', { name: 'Ère du streaming' })).toBeTruthy();
     // Une partie démarre hors saison : rien n’est annoncé.
     expect(screen.queryByRole('heading', { name: 'Saisons en cours' })).toBeNull();
-    expect(document.querySelectorAll('.label-table tbody tr').length).toBeGreaterThanOrEqual(10);
+    expect(document.querySelectorAll('.lt-genre').length).toBeGreaterThanOrEqual(10);
     expect(screen.getByText('Aucune étude pour l’instant.')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: /Commander une étude/ }));
     await waitFor(() => expect(screen.getByText(/étude de la semaine 0/)).toBeTruthy());
