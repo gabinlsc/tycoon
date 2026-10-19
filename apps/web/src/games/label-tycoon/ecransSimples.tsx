@@ -20,6 +20,7 @@ import { Heritage } from './Heritage';
 import { International } from './International';
 import { Scenes } from './Scenes';
 import { Regulation } from './Regulation';
+import { Abonnement } from './Abonnement';
 
 /** Écrans sans état de navigation propre : un composant par identifiant. */
 export const ECRANS_SIMPLES: Partial<Record<EcranId, ComponentType>> = {
@@ -33,6 +34,7 @@ export const ECRANS_SIMPLES: Partial<Record<EcranId, ComponentType>> = {
   tournees: Tournees,
   fil: Fil,
   parametres: Parametres,
+  abonnement: Abonnement,
   rapport: RapportMensuel,
   succes: Succes,
   groupe: Groupe,

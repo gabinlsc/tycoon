@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
+import { useAbonnement } from './offres';
 import { couleurDuGenre } from './avatar';
 import { NOMS_RARETE, type Rarete } from './rarete';
 import { Visage } from './Visage';
@@ -32,9 +33,10 @@ export function CarteArtiste({
   dos?: boolean;
 }) {
   const ton = couleurDuGenre(genre);
+  const { cadre } = useAbonnement();
   return (
     <div
-      className={`lt-cc lt-cc--${rarete} lt-cc--${ton}${dos ? ' is-dos' : ''}`}
+      className={`lt-cc lt-cc--${rarete} lt-cc--${ton} lt-cc--cadre-${cadre}${dos ? ' is-dos' : ''}`}
       style={{ '--n': nom.length } as CSSProperties}
     >
       {dos ? (

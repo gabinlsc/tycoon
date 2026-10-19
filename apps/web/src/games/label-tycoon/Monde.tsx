@@ -9,6 +9,7 @@ import { Roster } from './Roster';
 import { Studio } from './Studio';
 import { Tournees } from './Tournees';
 import type { EcranId } from './ecrans';
+import { useAbonnement } from './offres';
 
 /** Palette du ciel selon la saison (mois 1 à 12) : le monde change au fil de l'année. */
 export function saisonDuMois(mois: number): 'hiver' | 'printemps' | 'ete' | 'automne' {
@@ -111,6 +112,7 @@ export function Monde({
   const fermeture = useRef<HTMLButtonElement>(null);
   const tours = toursRivales(vue.concurrence.rivaux);
   const saison = saisonDuMois(vue.date.mois);
+  const { theme } = useAbonnement();
 
   useEffect(() => {
     if (!cible) return;
@@ -126,7 +128,7 @@ export function Monde({
 
   return (
     <section
-      className={`lt-monde lt-monde--${saison}${cible ? ' a-tiroir' : ''}`}
+      className={`lt-monde lt-monde--${saison} lt-monde--theme-${theme}${cible ? ' a-tiroir' : ''}`}
       aria-label="Le monde du label"
     >
       <div className="lt-monde__ciel" aria-hidden="true">

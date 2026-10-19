@@ -6002,3 +6002,164 @@ button.lt-enseigne {
     animation: none;
   }
 }
+
+/* ======================================================================
+ * Abonnement fictif : offres, thèmes du monde, cadres de cartes
+ * ====================================================================== */
+
+.lt-offres {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--sp-4);
+  margin: var(--sp-3) 0 var(--sp-4);
+  padding: 0;
+  list-style: none;
+}
+.lt-offre {
+  position: relative;
+  display: grid;
+  gap: var(--sp-2);
+  align-content: start;
+  padding: var(--sp-4);
+  border: 3px solid var(--outline);
+  border-radius: 1.25rem;
+  background: linear-gradient(180deg, var(--surface), var(--surface-2));
+  box-shadow: 0 5px 0 var(--outline);
+}
+.lt-offre h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+}
+.lt-offre ul {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0 0 var(--sp-2);
+  padding: 0;
+  list-style: none;
+}
+.lt-offre li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+}
+.lt-offre li svg {
+  flex: none;
+  margin-top: 0.2rem;
+  color: var(--green-text);
+}
+.lt-offre__icone {
+  display: grid;
+  place-items: center;
+  width: 3.4rem;
+  height: 3.4rem;
+  border: 3px solid var(--outline);
+  border-radius: 1rem;
+  background: var(--blue);
+}
+.lt-offre--pro .lt-offre__icone {
+  background: linear-gradient(135deg, #ff6fb5, var(--purple));
+  color: #fff;
+}
+.lt-offre--legende {
+  background: linear-gradient(180deg, #fff3b0, var(--surface) 60%);
+  border-color: var(--gold-dark);
+  box-shadow:
+    0 5px 0 var(--gold-dark),
+    0 0 26px rgb(255 198 26 / 0.5);
+}
+.lt-offre--legende .lt-offre__icone {
+  background: radial-gradient(circle at 30% 30%, #fff3b0, #ffc61a 60%, #d98a00);
+}
+.lt-offre.is-actuelle {
+  outline: 4px solid var(--green);
+  outline-offset: 3px;
+}
+.lt-offre__prix {
+  margin: 0;
+}
+.lt-offre__prix strong {
+  font-family: var(--font-display);
+  font-size: 2rem;
+}
+.lt-offre__accroche {
+  margin: 0;
+  color: var(--text-soft);
+  font-weight: 700;
+}
+.lt-offre__ruban {
+  position: absolute;
+  top: -0.9rem;
+  right: 1rem;
+  padding: 0.15rem 0.8rem;
+  border: 3px solid var(--outline);
+  border-radius: 999px;
+  background: var(--gold);
+  font-size: var(--fs-micro);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.lt-badge-abo {
+  margin-left: 0.4rem;
+  padding: 0.05rem 0.5rem;
+  border: 2px solid var(--outline);
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--outline);
+}
+.lt-badge-abo--pro {
+  background: linear-gradient(90deg, #ff6fb5, #b79cff);
+}
+.lt-badge-abo--legende {
+  background: linear-gradient(90deg, #fff3b0, #ffc61a, #fff3b0);
+  background-size: 200% 100%;
+  animation: lt-brillance 2.4s linear infinite;
+}
+
+/* Thèmes du monde */
+.lt-monde--theme-aube {
+  --ciel-haut: #4a6fd8;
+  --ciel-bas: #ffd9a0;
+}
+.lt-monde--theme-neon {
+  --ciel-haut: #05021a;
+  --ciel-bas: #ff2d95;
+}
+.lt-monde--theme-neon .lt-immeuble__facade {
+  box-shadow: 0 0 40px rgb(255 45 149 / 0.55);
+}
+
+/* Cadres de cartes */
+.lt-cc--cadre-chrome {
+  box-shadow:
+    0 0 0 3px #e8eef8,
+    0 0 0 6px #8d96aa,
+    0 6px 0 var(--outline),
+    0 0 22px var(--r-lueur);
+}
+.lt-cc--cadre-diamant {
+  box-shadow:
+    0 0 0 3px #fff,
+    0 0 0 6px #7fe0ff,
+    0 0 0 8px var(--outline),
+    0 0 30px rgb(127 224 255 / 0.8);
+}
+.lt-cc--cadre-diamant::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 40%, rgb(255 255 255 / 0.55) 50%, transparent 60%)
+    0 0 / 250% 100%;
+  animation: lt-holo 2.8s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .lt-badge-abo--legende,
+  .lt-cc--cadre-diamant::before {
+    animation: none;
+  }
+}

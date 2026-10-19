@@ -140,6 +140,12 @@ export const ECRANS = [
     groupe: 'suivi' as const,
   },
   {
+    id: 'abonnement',
+    titre: 'Abonnement',
+    description: 'Offres, thèmes et cadres de cartes (démonstration)',
+    groupe: 'suivi' as const,
+  },
+  {
     id: 'generations',
     titre: 'Générations',
     description: 'Légendes, mentors et relève',
@@ -171,7 +177,11 @@ export const POLES = [
     titre: 'Empire',
     ecrans: ['groupe', 'conglomerat', 'institution', 'regulation', 'international'],
   },
-  { id: 'suivi', titre: 'Suivi', ecrans: ['succes', 'generations', 'heritage', 'parametres'] },
+  {
+    id: 'suivi',
+    titre: 'Suivi',
+    ecrans: ['succes', 'generations', 'heritage', 'abonnement', 'parametres'],
+  },
 ] as const satisfies readonly { id: string; titre: string; ecrans: readonly EcranId[] }[];
 
 export type PoleId = (typeof POLES)[number]['id'];
