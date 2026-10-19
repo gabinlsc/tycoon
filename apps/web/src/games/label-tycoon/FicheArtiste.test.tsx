@@ -62,7 +62,7 @@ describe('fiche artiste', () => {
     await waitFor(() => expect((b as HTMLButtonElement).disabled).toBe(false));
     fireEvent.click(b);
     fireEvent.click(await screen.findByRole('button', { name: /Roster/ }));
-    const liens = document.querySelectorAll('.label-link');
+    const liens = document.querySelectorAll('.lt-carte__ouvrir');
     expect(liens.length).toBe(1);
     fireEvent.click(liens[0] as HTMLElement);
     expect(await screen.findByRole('heading', { name: /./, level: 2 })).toBeTruthy();
@@ -71,7 +71,7 @@ describe('fiche artiste', () => {
     expect(screen.getAllByRole('meter').length).toBe(9);
     expect(screen.getByText('Aucune sortie pour l’instant.')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: /Retour au roster/ }));
-    expect(document.querySelectorAll('.label-link').length).toBe(1);
+    expect(document.querySelectorAll('.lt-carte__ouvrir').length).toBe(1);
   });
 });
 
@@ -86,7 +86,7 @@ describe('renouvellement de contrat', () => {
     await waitFor(() => expect((b as HTMLButtonElement).disabled).toBe(false));
     fireEvent.click(b);
     fireEvent.click(await screen.findByRole('button', { name: /Roster/ }));
-    fireEvent.click(document.querySelector('.label-link') as HTMLElement);
+    fireEvent.click(document.querySelector('.lt-carte__ouvrir') as HTMLElement);
     fireEvent.click(await screen.findByRole('button', { name: 'Renouveler le contrat' }));
     await screen.findByRole('heading', { name: /Prolonger le contrat de/ });
     // Offre généreuse : grosse avance, royalties élevées, pas d'exclusivité.

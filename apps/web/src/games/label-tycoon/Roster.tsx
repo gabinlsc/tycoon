@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
-import { Terme } from './Infobulle';
 import { useLabel } from './LabelContext';
-import { Users } from 'lucide-react';
+import { AlertTriangle, Disc3, FileText, Users } from 'lucide-react';
+import { Avatar } from './avatar';
 import { EtatVide } from './EtatVide';
 import type { EcranId } from './ecrans';
 import {
@@ -27,6 +27,30 @@ export const texteEffectif = (n: number, plafond: number | null): string =>
   plafond === null
     ? `${n} artiste${n > 1 ? 's' : ''} sous contrat.`
     : `${n} artiste${n > 1 ? 's' : ''} sous contrat sur ${plafond} possibles à ton palier${n >= plafond ? ' : le roster est plein, monte de palier pour signer davantage' : ''}.`;
+
+/** Jauge 0-100 colorée, lisible par un lecteur d'écran. */
+function Jauge({
+  libelle,
+  valeur,
+  ton,
+}: {
+  libelle: string;
+  valeur: number;
+  ton: 'gold' | 'pink' | 'green' | 'red';
+}) {
+  return (
+    <span className={`lt-jauge-carte lt-jauge-carte--${ton}`}>
+      <span className="lt-jauge-carte__libelle">{libelle}</span>
+      <span
+        className="lt-jauge-carte__piste"
+        role="img"
+        aria-label={`${libelle} : ${valeur} sur 100`}
+      >
+        <span style={{ width: `${Math.max(0, Math.min(100, valeur))}%` }} />
+      </span>
+    </span>
+  );
+}
 
 /** Roster : les artistes du label, triables et filtrables, avec leurs alertes. */
 export function Roster({
@@ -120,49 +144,62 @@ export function Roster({
           </select>
         </label>
       </div>
-      <table className="label-table">
-        <thead>
-          <tr>
-            {COLONNES.map((c) => (
-              <th
-                key={c.cle}
-                scope="col"
-                aria-sort={c.cle === cle ? (decroissant ? 'descending' : 'ascending') : 'none'}
-              >
-                <button type="button" onClick={() => trierPar(c.cle)}>
-                  {c.terme ? <Terme id={c.terme}>{c.titre}</Terme> : c.titre}
-                </button>
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {affiches.map((a) => {
-            const alertes = alertesArtiste(a, vue.semaine);
-            return (
-              <tr key={a.id}>
-                <th scope="row">
-                  <button type="button" className="label-link" onClick={() => ouvrir(a.id)}>
-                    {a.nom}
-                  </button>
-                  <small>
-                    {a.genreNom} · {a.phaseNom}
-                    {a.enProduction ? ' · en studio' : ''}
-                  </small>
-                  {alertes.length > 0 ? (
-                    <small className="label-warn"> ⚠ {alertes.join(', ')}</small>
+      <div className="lt-tri" role="group" aria-label="Trier les artistes">
+        {COLONNES.map((c) => (
+          <button
+            key={c.cle}
+            type="button"
+            className={`lt-tri__puce${c.cle === cle ? ' is-actif' : ''}`}
+            aria-pressed={c.cle === cle}
+            onClick={() => trierPar(c.cle)}
+          >
+            {c.titre}
+            {c.cle === cle ? <span aria-hidden="true">{decroissant ? ' ↓' : ' ↑'}</span> : null}
+          </button>
+        ))}
+      </div>
+      <ul className="lt-cartes">
+        {affiches.map((a) => {
+          const alertes = alertesArtiste(a, vue.semaine);
+          return (
+            <li key={a.id} className={`lt-carte${alertes.length > 0 ? ' a-alerte' : ''}`}>
+              <button type="button" className="lt-carte__ouvrir" onClick={() => ouvrir(a.id)}>
+                <span className="lt-carte__tete">
+                  <Avatar nom={a.nom} genre={a.genre} taille="lg" />
+                  <span>
+                    <strong className="lt-carte__nom">{a.nom}</strong>
+                    <small>
+                      {a.genreNom} · {a.phaseNom}
+                    </small>
+                  </span>
+                </span>
+                <span className="lt-carte__jauges">
+                  <Jauge libelle="Notoriété" valeur={a.notoriete} ton="gold" />
+                  <Jauge libelle="Hype" valeur={a.hype} ton="pink" />
+                  <Jauge libelle="Moral" valeur={a.moral} ton="green" />
+                  <Jauge libelle="Fatigue" valeur={a.fatigue} ton="red" />
+                </span>
+                <span className="lt-carte__pied">
+                  {a.enProduction ? (
+                    <span className="lt-chip">
+                      <Disc3 aria-hidden="true" size={14} /> En studio
+                    </span>
                   ) : null}
-                </th>
-                <td className="mono">{a.notoriete}</td>
-                <td className="mono">{a.hype}</td>
-                <td className="mono">{a.moral}</td>
-                <td className="mono">{a.fatigue}</td>
-                <td className="mono">{a.contrat ? `sem. ${a.contrat.echeance}` : '—'}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+                  <span className="lt-chip">
+                    <FileText aria-hidden="true" size={14} />{' '}
+                    {a.contrat ? `Jusqu’à la sem. ${a.contrat.echeance}` : 'Sans contrat'}
+                  </span>
+                  {alertes.length > 0 ? (
+                    <span className="lt-chip lt-chip--alerte">
+                      <AlertTriangle aria-hidden="true" size={14} /> {alertes.join(', ')}
+                    </span>
+                  ) : null}
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
       {affiches.length === 0 ? (
         <p className="label-screen__soon">Aucun artiste ne correspond aux filtres.</p>
       ) : null}

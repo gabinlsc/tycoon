@@ -3010,3 +3010,192 @@ html.lt-verrou body {
     transition: none;
   }
 }
+
+/* ======================================================================
+ * Roster en cartes de personnages
+ * ====================================================================== */
+
+.lt-tri {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin: var(--sp-3) 0;
+}
+.lt-tri__puce {
+  min-height: 2.75rem;
+  padding: 0 var(--sp-4);
+  border: 2px solid var(--outline);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.lt-tri__puce.is-actif {
+  background: var(--purple);
+  color: #fff;
+  box-shadow: 0 3px 0 var(--outline);
+}
+
+.lt-cartes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: var(--sp-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lt-carte__ouvrir {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  width: 100%;
+  height: 100%;
+  padding: var(--sp-4);
+  border: 3px solid var(--outline);
+  border-radius: 1.25rem;
+  background: linear-gradient(180deg, var(--surface), var(--surface-2));
+  box-shadow: 0 5px 0 var(--outline);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.12s;
+}
+.lt-carte__ouvrir:hover {
+  transform: translateY(-3px);
+}
+.lt-carte__ouvrir:focus-visible {
+  outline: 4px solid var(--purple);
+  outline-offset: 3px;
+}
+.lt-carte.a-alerte .lt-carte__ouvrir {
+  border-color: var(--red);
+  box-shadow: 0 5px 0 var(--red-dark);
+}
+.lt-carte__tete {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.lt-carte__tete small {
+  display: block;
+  color: var(--text-soft);
+}
+.lt-carte__nom {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1.1;
+}
+.lt-carte__jauges {
+  display: grid;
+  gap: var(--sp-2);
+}
+.lt-jauge-carte {
+  display: grid;
+  grid-template-columns: 5.2rem 1fr;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-small);
+  font-weight: 700;
+}
+.lt-jauge-carte__piste {
+  display: block;
+  height: 0.8rem;
+  overflow: hidden;
+  border: 2px solid var(--outline);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--outline) 12%, var(--surface));
+}
+.lt-jauge-carte__piste span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--g);
+  transition: width 0.4s;
+}
+.lt-jauge-carte--gold {
+  --g: var(--gold);
+}
+.lt-jauge-carte--pink {
+  --g: var(--pink);
+}
+.lt-jauge-carte--green {
+  --g: var(--green);
+}
+.lt-jauge-carte--red {
+  --g: var(--red);
+}
+.lt-carte__pied {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-top: auto;
+}
+.lt-chip--alerte {
+  background: var(--red);
+  color: #fff;
+}
+
+/* Bâtiments illustrés */
+.lt-bat {
+  --b: var(--purple);
+}
+.lt-bat--studio {
+  --b: var(--pink);
+}
+.lt-bat--repetition {
+  --b: var(--green);
+}
+.lt-bat--bureaux {
+  --b: var(--blue);
+}
+.lt-bat--pressage {
+  --b: var(--gold);
+}
+.lt-bat--concert {
+  --b: var(--orange);
+}
+.lt-bat__tete {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.lt-bat__tete h3 {
+  margin: 0;
+}
+.lt-bat__icone {
+  display: grid;
+  place-items: center;
+  width: 3.4rem;
+  height: 3.4rem;
+  border: 3px solid var(--outline);
+  border-radius: 1rem;
+  background: var(--b);
+  color: var(--outline);
+  box-shadow: 0 3px 0 var(--outline);
+}
+.lt-bat__niveaux {
+  display: flex;
+  gap: 0.3rem;
+}
+.lt-bat__niveaux span {
+  flex: 1;
+  height: 0.9rem;
+  border: 2px solid var(--outline);
+  border-radius: 0.3rem;
+  background: color-mix(in srgb, var(--outline) 10%, var(--surface));
+}
+.lt-bat__niveaux span.is-acquis {
+  background: var(--b);
+}
+.lt-bat__niveaux span.is-travaux {
+  background: repeating-linear-gradient(-45deg, var(--gold) 0 0.4rem, var(--outline) 0.4rem 0.8rem);
+}
+.lt-bat__prochain {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin: 0;
+}
