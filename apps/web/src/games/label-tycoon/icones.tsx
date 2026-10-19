@@ -13,6 +13,7 @@ import {
   Flag,
   FileText,
   Globe,
+  Image as ImageIcon,
   Inbox,
   Landmark,
   LayoutDashboard,
@@ -62,6 +63,7 @@ export const ICONES_ECRANS: Readonly<Record<EcranId, LucideIcon>> = {
   generations: Sprout,
   abonnement: Sparkles,
   campagne: Flag,
+  vitrine: ImageIcon,
 };
 
 /** Icône de chaque pôle de navigation. */

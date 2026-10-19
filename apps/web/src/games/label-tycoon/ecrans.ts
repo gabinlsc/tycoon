@@ -140,6 +140,12 @@ export const ECRANS = [
     groupe: 'suivi' as const,
   },
   {
+    id: 'vitrine',
+    titre: 'Vitrine',
+    description: 'Série de jours et affiche de ton label',
+    groupe: 'suivi' as const,
+  },
+  {
     id: 'campagne',
     titre: 'Campagne',
     description: 'Les chapitres du garage à l’institution',
@@ -186,7 +192,15 @@ export const POLES = [
   {
     id: 'suivi',
     titre: 'Suivi',
-    ecrans: ['campagne', 'succes', 'generations', 'heritage', 'abonnement', 'parametres'],
+    ecrans: [
+      'campagne',
+      'vitrine',
+      'succes',
+      'generations',
+      'heritage',
+      'abonnement',
+      'parametres',
+    ],
   },
 ] as const satisfies readonly { id: string; titre: string; ecrans: readonly EcranId[] }[];
 

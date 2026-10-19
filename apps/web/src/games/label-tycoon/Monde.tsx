@@ -1,6 +1,7 @@
 import { type CSSProperties, useEffect, useRef, useState } from 'react';
 import type { VueJeu } from '@tycoon/label-tycoon';
-import { Briefcase, Disc3, Inbox, Radar, X } from 'lucide-react';
+import { Briefcase, Disc3, Flame, Inbox, Radar, X } from 'lucide-react';
+import { calculerSerie, dateDuJour, lireJours } from './serie';
 import { Batiments } from './Batiments';
 import { Immeuble, type CibleMonde } from './Immeuble';
 import { Personnel } from './Personnel';
@@ -125,6 +126,7 @@ export function Monde({
   }, [cible]);
 
   const decisions = vue.decisions.length;
+  const serie = calculerSerie(lireJours(), dateDuJour());
 
   return (
     <section
@@ -171,6 +173,12 @@ export function Monde({
           <Disc3 aria-hidden="true" size={22} />
           <span>{vue.projets.filter((p) => p.statut !== 'sortie').length} en studio</span>
         </span>
+        {serie >= 2 ? (
+          <span className="lt-enseigne lt-enseigne--serie" role="status">
+            <Flame aria-hidden="true" size={22} />
+            <span>Série : {serie} jours</span>
+          </span>
+        ) : null}
         <span className="lt-enseigne lt-enseigne--equipe" role="status">
           <Briefcase aria-hidden="true" size={22} />
           <span>{vue.roster.length} artiste(s)</span>

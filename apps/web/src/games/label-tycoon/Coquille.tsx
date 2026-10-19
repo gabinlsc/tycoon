@@ -5,6 +5,7 @@ import { TIERS } from '@tycoon/label-tycoon';
 import { Button } from '../../components/arcade/ui/Button';
 import { ECRANS, POLES, poleDe, type EcranId, type PoleId } from './ecrans';
 import { useAbonnement } from './offres';
+import { enregistrerJour } from './serie';
 import { useAudio, useAudioDuJeu } from './audio/useAudio';
 import { ICONES_ECRANS, ICONES_POLES } from './icones';
 import { Ceremonie, useCeremonie } from './Ceremonie';
@@ -77,6 +78,10 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
   const course = useCourseClassement(vue);
   const audio = useAudio();
   const abonnement = useAbonnement();
+  const enJeuVue = vue !== null;
+  useEffect(() => {
+    if (enJeuVue) enregistrerJour();
+  }, [enJeuVue]);
 
   // L'écran actif reste visible dans la navigation (longue liste, tiroir sur mobile).
   useEffect(() => {
