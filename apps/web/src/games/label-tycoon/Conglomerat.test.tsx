@@ -61,7 +61,7 @@ describe('écran Conglomérat', () => {
     await demarrer('conglomerat');
     ouvrir();
     fireEvent.click(await screen.findByRole('button', { name: /Lancer la plateforme/ }));
-    await screen.findByText(/abonnés · marge/);
+    await screen.findByText('abonnés');
     fireEvent.change(screen.getByLabelText('Catalogue exclusif (%)'), { target: { value: '60' } });
     fireEvent.click(screen.getByRole('button', { name: 'Régler la plateforme' }));
     await screen.findByText(/Réglage actuel : 60 % d’exclusivité/);

@@ -63,6 +63,8 @@ describe('écran Institution', () => {
     fireEvent.click(screen.getByRole('button', { name: /Agrandir le musée/ }));
     await screen.findByText(/Niveau 1 \/ 3 · revenu annuel/);
     fireEvent.click(screen.getByRole('button', { name: /Exercer : Soutenir la scène/ }));
-    await waitFor(() => expect(screen.getByText(/Influence :/).textContent).toContain('55'));
+    await waitFor(() =>
+      expect(screen.getAllByText('Influence')[0]?.closest('.lt-kpi')?.textContent).toContain('55'),
+    );
   });
 });

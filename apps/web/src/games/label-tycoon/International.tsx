@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import type { LabelAction, VuePays } from '@tycoon/label-tycoon';
+import { Coins, Globe, Megaphone, Percent, Trophy } from 'lucide-react';
 import { Button } from '../../components/arcade/ui/Button';
 import { useLabel } from './LabelContext';
+import { Tuile, Tuiles } from './Visuels';
 
 const eur = (cents: number): string => `${Math.round(cents / 100).toLocaleString('fr-FR')} €`;
 
@@ -10,23 +12,53 @@ function Pays({ p, fonds }: { p: VuePays; fonds: number }) {
   const [budget, setBudget] = useState(Math.round(p.budget / 100));
   const agir = (action: LabelAction) => void envoyer({ type: 'action', action });
   return (
-    <article className="label-card" aria-labelledby={`pays-${p.id}`}>
-      <h3 id={`pays-${p.id}`}>{p.nom}</h3>
-      <p>
-        Marché {Math.round(p.poids * 100)} % de ton marché d’origine · tes artistes y plaisent à{' '}
-        <strong className="mono">×{p.affiniteRoster.toFixed(2)}</strong>.
+    <article className="lt-article" aria-labelledby={`pays-${p.id}`}>
+      <header className="lt-article__tete">
+        <span className="lt-article__icone" aria-hidden="true">
+          <Globe size={26} strokeWidth={2.4} />
+        </span>
+        <h3 id={`pays-${p.id}`}>{p.nom}</h3>
+        <span className={`lt-chip${p.ouvert ? ' lt-chip--bon' : ''}`}>
+          {p.ouvert ? 'bureau ouvert' : 'pas de bureau'}
+        </span>
+      </header>
+      <p className="lt-puces-info">
+        <span className="lt-chip">
+          marché {Math.round(p.poids * 100)} % de ton marché d’origine
+        </span>
+        <span className="lt-chip">
+          tes artistes y plaisent à <strong className="mono">×{p.affiniteRoster.toFixed(2)}</strong>
+        </span>
       </p>
-      <p>
-        Genres plébiscités :{' '}
-        {p.genres.map((g) => `${g.nom} (×${g.affinite.toFixed(2)})`).join(', ')}.
+      <p className="lt-puces-info" aria-label="Genres plébiscités">
+        {p.genres.map((g) => (
+          <span key={g.nom} className="lt-chip lt-chip--bon">
+            {g.nom} ×{g.affinite.toFixed(2)}
+          </span>
+        ))}
       </p>
       {p.ouvert ? (
         <>
-          <p>
-            Pénétration <strong className="mono">{p.penetration} %</strong> · revenu de la semaine{' '}
-            {eur(p.revenuHebdo)} · bilan cumulé {eur(p.cumul)} · frais du bureau{' '}
-            {eur(p.fraisAnnuels)} par an.
-          </p>
+          <Tuiles label={`Résultats à ${p.nom}`}>
+            <Tuile
+              Icone={Percent}
+              valeur={`${p.penetration} %`}
+              libelle="Pénétration"
+              ton="purple"
+            />
+            <Tuile
+              Icone={Coins}
+              valeur={eur(p.revenuHebdo)}
+              libelle="revenu de la semaine"
+              ton="green"
+            />
+            <Tuile
+              Icone={Trophy}
+              valeur={eur(p.cumul)}
+              libelle={`bilan cumulé · frais ${eur(p.fraisAnnuels)}/an`}
+              ton="gold"
+            />
+          </Tuiles>
           <label className="label-field">
             Budget de campagne à {p.nom} (€ par semaine)
             <input
@@ -37,13 +69,13 @@ function Pays({ p, fonds }: { p: VuePays; fonds: number }) {
               value={budget}
               onChange={(e) => setBudget(Math.max(0, Math.round(Number(e.target.value))))}
             />
-          </label>{' '}
+          </label>
           <Button
             type="button"
             tone="gold"
             onClick={() => agir({ type: 'regler-campagne', pays: p.id, budget: budget * 100 })}
           >
-            Régler la campagne à {p.nom}
+            <Megaphone aria-hidden="true" size={18} /> Régler la campagne à {p.nom}
           </Button>
         </>
       ) : (
@@ -57,13 +89,19 @@ function Pays({ p, fonds }: { p: VuePays; fonds: number }) {
       )}
       <h4>Classement local</h4>
       {p.classement.length === 0 ? (
-        <p>Aucun artiste n’est encore connu ici.</p>
+        <p className="lt-rien">Aucun artiste n’est encore connu ici.</p>
       ) : (
-        <ol className="label-list" aria-label={`Classement de ${p.nom}`}>
-          {p.classement.map((l) => (
-            <li key={l.artisteId}>
-              {l.joueur ? <strong>{l.nom} (ton label)</strong> : l.nom} · {l.genreNom} ·{' '}
-              {l.score.toLocaleString('fr-FR')} points
+        <ol className="lt-classement-local" aria-label={`Classement de ${p.nom}`}>
+          {p.classement.map((l, i) => (
+            <li key={l.artisteId} className={l.joueur ? 'is-joueur' : undefined}>
+              <span className={`hit__rank mono${i < 3 ? ` hit__rank--${i + 1}` : ''}`}>
+                {i + 1}
+              </span>
+              <span>
+                {l.joueur ? <strong>{l.nom} (ton label)</strong> : l.nom}
+                <small>{l.genreNom}</small>
+              </span>
+              <span className="mono">{l.score.toLocaleString('fr-FR')} pts</span>
             </li>
           ))}
         </ol>
@@ -81,7 +119,7 @@ export function International() {
     return (
       <section className="label-screen" aria-labelledby="intl-titre">
         <h2 id="intl-titre">International</h2>
-        <p className="label-screen__soon">
+        <p className="lt-rien">
           L’export s’ouvre au palier Major. Tu es actuellement un {vue.label.palier}.
         </p>
       </section>
@@ -89,9 +127,9 @@ export function International() {
   return (
     <section className="label-screen" aria-labelledby="intl-titre">
       <h2 id="intl-titre">International</h2>
-      <p>
-        Chaque pays a ses goûts : un bureau local et une campagne font monter ta pénétration, qui
-        multiplie tes revenus d’écoute à l’étranger. Sans campagne, le public oublie.
+      <p className="lt-sous-titre">
+        Un bureau local et une campagne font monter ta pénétration ; sans campagne, le public
+        oublie.
       </p>
       {i.pays.map((p) => (
         <Pays key={p.id} p={p} fonds={vue.finances.tresorerie} />
