@@ -2,6 +2,7 @@ import { CalendarDays, Star, TrendingUp, Wallet } from 'lucide-react';
 import { BarreTemps } from './BarreTemps';
 import { InfobulleCalcul, Terme } from './Infobulle';
 import { useLabel } from './LabelContext';
+import { useCompteur } from './useCompteur';
 
 const eur = (cents: number): string => `${Math.round(cents / 100).toLocaleString('fr-FR')} €`;
 
@@ -18,6 +19,7 @@ export function eurCourt(cents: number): string {
 /** Bandeau de jeu : date, trésorerie, valeur, réputation et commandes du temps. */
 export function Hud() {
   const { vue } = useLabel();
+  const tresorerie = useCompteur(vue?.finances.tresorerie ?? 0);
   if (!vue) return null;
   const negatif = vue.finances.tresorerie < 0;
   return (
@@ -35,7 +37,7 @@ export function Hud() {
         >
           <Wallet aria-hidden="true" size={18} />
           <span className="label-bar__cash mono">
-            <Terme id="tresorerie">{eur(vue.finances.tresorerie)}</Terme>
+            <Terme id="tresorerie">{eur(tresorerie)}</Terme>
           </span>
         </span>
         <span className="lt-stat lt-stat--valeur">

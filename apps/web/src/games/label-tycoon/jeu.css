@@ -4917,3 +4917,179 @@ html.lt-verrou body {
   width: 1.9rem;
   height: 1.9rem;
 }
+
+/* ======================================================================
+ * Effets : chiffres flottants, tampon plein écran, bandeaux d'exploit, transitions
+ * ====================================================================== */
+
+.lt-effets {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  overflow: hidden;
+}
+.lt-flottant {
+  position: fixed;
+  translate: -50% 0;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  paint-order: stroke;
+  -webkit-text-stroke: 4px var(--outline);
+  animation: lt-flottant 1.8s ease-out forwards;
+}
+.lt-flottant--gain {
+  color: var(--green);
+}
+.lt-flottant--perte {
+  color: var(--red);
+}
+@keyframes lt-flottant {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.6);
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(0.5rem) scale(1.25);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(4rem) scale(1);
+  }
+}
+.lt-tampon-ecran {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--sp-2);
+  background: radial-gradient(circle, rgb(0 0 0 / 0.35), transparent 65%);
+  animation: lt-fondu 1.7s ease-out forwards;
+}
+.lt-tampon-ecran span {
+  padding: 0.2em 0.6em;
+  border: 0.18em solid var(--red);
+  border-radius: 0.2em;
+  color: var(--red);
+  background: rgb(255 255 255 / 0.92);
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 12vw, 8rem);
+  letter-spacing: 0.06em;
+  rotate: -8deg;
+  animation: lt-tampon 0.5s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+.lt-tampon-ecran small {
+  padding: 0.3rem 1rem;
+  border: 3px solid var(--outline);
+  border-radius: 999px;
+  background: var(--gold);
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--outline);
+}
+@keyframes lt-tampon {
+  from {
+    opacity: 0;
+    scale: 3.2;
+  }
+}
+@keyframes lt-fondu {
+  0%,
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.lt-bandeau-exploit {
+  position: absolute;
+  top: 5rem;
+  left: 50%;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: var(--sp-3);
+  align-items: center;
+  width: min(92vw, 30rem);
+  padding: var(--sp-3) var(--sp-4);
+  border: 4px solid var(--outline);
+  border-radius: 1.25rem;
+  background: linear-gradient(120deg, #fff3b0, #ffc61a 60%, #ff9a5c);
+  box-shadow:
+    0 6px 0 var(--outline),
+    0 0 40px rgb(255 198 26 / 0.7);
+  color: var(--outline);
+  translate: -50% 0;
+  animation: lt-bandeau 3.2s cubic-bezier(0.2, 1.2, 0.4, 1) forwards;
+}
+.lt-bandeau-exploit__icone {
+  grid-row: 1 / 3;
+  display: grid;
+  place-items: center;
+  width: 3.6rem;
+  height: 3.6rem;
+  border: 3px solid var(--outline);
+  border-radius: 50%;
+  background: #fff;
+}
+.lt-bandeau-exploit strong {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1.1;
+}
+.lt-bandeau-exploit small {
+  font-weight: 700;
+}
+@keyframes lt-bandeau {
+  0% {
+    opacity: 0;
+    transform: translateY(-5rem) scale(0.8);
+  }
+  12%,
+  85% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-2rem);
+  }
+}
+
+.lt-page {
+  animation: lt-page 0.32s ease-out both;
+}
+@keyframes lt-page {
+  from {
+    opacity: 0;
+    transform: translateY(0.8rem);
+  }
+}
+.lt-app.is-secousse {
+  animation: lt-secousse 0.45s linear;
+}
+@keyframes lt-secousse {
+  10%,
+  50%,
+  90% {
+    translate: -5px 2px;
+  }
+  30%,
+  70% {
+    translate: 5px -2px;
+  }
+}
+.lt-stat--cash {
+  transition: transform 0.2s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .lt-effets {
+    display: none;
+  }
+  .lt-page,
+  .lt-app.is-secousse {
+    animation: none;
+  }
+}
