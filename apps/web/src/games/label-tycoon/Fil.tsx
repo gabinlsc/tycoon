@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { VueActu } from '@tycoon/label-tycoon';
+import { Disc3, Newspaper, Swords, TrendingUp, Users, Star, type LucideIcon } from 'lucide-react';
 import { useLabel } from './LabelContext';
 
 export const CATEGORIES = [
@@ -57,6 +58,14 @@ export function filtrer(
   );
 }
 
+const ICONES_CATEGORIE: Record<CategorieId, LucideIcon> = {
+  tout: Newspaper,
+  label: Disc3,
+  artistes: Users,
+  rivaux: Swords,
+  marche: TrendingUp,
+};
+
 const LIBELLE_IMPORTANCE = { 1: 'Anecdote', 2: 'Actu', 3: 'À la une' } as const;
 
 /** Le Fil du label : actus filtrables par catégorie et par importance. */
@@ -70,46 +79,56 @@ export function Fil() {
   return (
     <section className="label-screen" aria-labelledby="fil-titre">
       <h2 id="fil-titre">Le Fil</h2>
-      <div className="label-nego__form">
-        <label className="label-field">
-          Catégorie
-          <select value={categorie} onChange={(e) => setCategorie(e.target.value as CategorieId)}>
-            {CATEGORIES.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.nom}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="label-field">
-          Importance minimale
-          <select
-            value={importance}
-            onChange={(e) => setImportance(Number(e.target.value) as 1 | 2 | 3)}
-          >
-            <option value={1}>Tout, anecdotes comprises</option>
-            <option value={2}>Actus et à la une</option>
-            <option value={3}>À la une seulement</option>
-          </select>
+      <div className="lt-fil__filtres" role="group" aria-label="Catégorie">
+        {CATEGORIES.map((c) => {
+          const Icone = ICONES_CATEGORIE[c.id];
+          return (
+            <button
+              key={c.id}
+              type="button"
+              className={`lt-tri__puce${c.id === categorie ? ' is-actif' : ''}`}
+              aria-pressed={c.id === categorie}
+              onClick={() => setCategorie(c.id)}
+            >
+              <Icone aria-hidden="true" size={16} /> {c.nom}
+            </button>
+          );
+        })}
+        <span className="lt-fil__sep" aria-hidden="true" />
+        <label className="lt-fil__important">
+          <input
+            type="checkbox"
+            checked={importance > 1}
+            onChange={(e) => setImportance(e.target.checked ? 2 : 1)}
+          />
+          <Star aria-hidden="true" size={16} /> Actus importantes seulement
         </label>
       </div>
       {actus.length === 0 ? (
-        <p className="label-screen__soon">
+        <p className="lt-rien">
           {vue.fil.length === 0
             ? 'Le Fil se remplira au fil des semaines.'
             : 'Aucune actu ne correspond à ce filtre.'}
         </p>
       ) : (
-        <ul className="label-list">
-          {actus.map((a) => (
-            <li key={a.id} data-importance={a.importance}>
-              <small>
-                Semaine {a.semaine} · {LIBELLE_IMPORTANCE[a.importance]}
-              </small>
-              <strong> {a.titre}</strong>
-              <p>{a.texte}</p>
-            </li>
-          ))}
+        <ul className="lt-fil">
+          {actus.map((a) => {
+            const Icone = ICONES_CATEGORIE[categorieDe(a)];
+            return (
+              <li key={a.id} data-importance={a.importance} className="lt-actu">
+                <span className="lt-actu__icone" aria-hidden="true">
+                  <Icone size={22} strokeWidth={2.4} />
+                </span>
+                <div>
+                  <strong>{a.titre}</strong>
+                  <p>{a.texte}</p>
+                  <small>
+                    Semaine {a.semaine} · {LIBELLE_IMPORTANCE[a.importance]}
+                  </small>
+                </div>
+              </li>
+            );
+          })}
         </ul>
       )}
     </section>
