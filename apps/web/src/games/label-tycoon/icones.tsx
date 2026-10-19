@@ -10,6 +10,7 @@ import {
   Crown,
   Disc3,
   Factory,
+  Flag,
   FileText,
   Globe,
   Inbox,
@@ -60,6 +61,7 @@ export const ICONES_ECRANS: Readonly<Record<EcranId, LucideIcon>> = {
   heritage: Crown,
   generations: Sprout,
   abonnement: Sparkles,
+  campagne: Flag,
 };
 
 /** Icône de chaque pôle de navigation. */

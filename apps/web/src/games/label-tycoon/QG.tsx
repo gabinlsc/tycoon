@@ -5,6 +5,8 @@ import { Award, CheckCircle2, Circle, Rocket } from 'lucide-react';
 import { Button } from '../../components/arcade/ui/Button';
 import { TapisRouge } from './Ceremonie';
 import { eurCourt } from './Hud';
+import { CheminCampagne } from './Campagne';
+import { progression } from './chapitres';
 import { Monde } from './Monde';
 import type { EcranId } from './ecrans';
 import { GraphCourbe } from './graphiques/Graphiques';
@@ -269,6 +271,14 @@ export function QG({
         <TapisRouge ceremonie={vue.ceremonie} semaine={vue.semaine} revoir={revoirCeremonie} />
       ) : null}
       <Monde vue={vue} allerA={allerA} ouvrirFiche={ouvrirFiche} negocier={negocier} />
+      <button
+        type="button"
+        className="lt-chemin-bouton"
+        onClick={() => allerA('campagne')}
+        aria-label="Ouvrir la campagne"
+      >
+        <CheminCampagne index={progression(vue).index} />
+      </button>
       <section className="label-screen label-qg__alerts" aria-labelledby="qg-alertes">
         <h2 id="qg-alertes">Alertes</h2>
         {liste.length === 0 ? (
