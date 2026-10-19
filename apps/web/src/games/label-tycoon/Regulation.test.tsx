@@ -68,7 +68,7 @@ describe('écran Régulation', () => {
   it('permet de plaider, de régler la veille et de résister aux plateformes', async () => {
     await demarrer('groupe');
     ouvrir();
-    await screen.findByText(/Surveillance :/);
+    await screen.findByText('Surveillance');
     fireEvent.click(screen.getByRole('button', { name: /Plaider auprès des autorités/ }));
     await screen.findByText(/Tu as déjà plaidé récemment/);
     fireEvent.click(screen.getByRole('button', { name: 'Veille niveau 2' }));

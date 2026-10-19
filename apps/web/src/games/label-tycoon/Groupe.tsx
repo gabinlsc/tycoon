@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import type { LabelAction, VueGroupe } from '@tycoon/label-tycoon';
+import { Briefcase, Building2, Coins, ShoppingCart, Sparkles, Target, UserCog } from 'lucide-react';
 import { Button } from '../../components/arcade/ui/Button';
+import { Avatar } from './avatar';
 import { useLabel } from './LabelContext';
+import { Panneau, Tuile, Tuiles } from './Visuels';
 
 const eur = (cents: number): string => `${Math.round(cents / 100).toLocaleString('fr-FR')} €`;
 
@@ -26,27 +29,52 @@ function SousLabel({
   const [candidat, setCandidat] = useState(0);
   const choisi = candidat || candidats[0]?.id || 0;
   return (
-    <article className="label-card" aria-label={s.nom}>
-      <h3>
-        {s.nom} <small>({s.genreNom})</small>
-      </h3>
+    <article className="lt-article" aria-label={s.nom}>
+      <header className="lt-article__tete">
+        <span className="lt-article__icone" aria-hidden="true">
+          <Building2 size={26} strokeWidth={2.4} />
+        </span>
+        <h3>
+          {s.nom} <small>({s.genreNom})</small>
+        </h3>
+      </header>
       {s.cadre ? (
-        <p>
-          Dirigé par <strong>{s.cadre.nom}</strong> ({s.cadre.style}) · niveau{' '}
-          <span className="mono">{texteNiveau(s.cadre.niveau)}</span> · {eur(s.cadre.salaire)} par
-          semaine ·{' '}
-          {s.cadre.integrite === null
-            ? 'fiabilité encore inconnue'
-            : `fiabilité ${s.cadre.integrite}`}
-        </p>
+        <div className="lt-cadre">
+          <Avatar nom={s.cadre.nom} genre={s.cadre.style} taille="lg" />
+          <p>
+            Dirigé par <strong>{s.cadre.nom}</strong>
+            <small>
+              {s.cadre.style} · niveau <span className="mono">{texteNiveau(s.cadre.niveau)}</span> ·{' '}
+              {eur(s.cadre.salaire)} par semaine ·{' '}
+              {s.cadre.integrite === null
+                ? 'fiabilité encore inconnue'
+                : `fiabilité ${s.cadre.integrite}`}
+            </small>
+          </p>
+        </div>
       ) : (
-        <p className="label-screen__soon">Aucun cadre : le sous-label tourne au ralenti.</p>
+        <p className="lt-rien">Aucun cadre : le sous-label tourne au ralenti.</p>
       )}
-      <p>
-        Rendement espéré : <span className="mono">{s.rendementEspere}</span> € rapporté par euro
-        investi. Dernières semaines : net <span className="mono">{eur(netRecent(s.recents))}</span>.
-        Depuis la création : investi {eur(s.investi)}, rapporté {eur(s.rapporte)}.
-      </p>
+      <Tuiles label={`Résultats de ${s.nom}`}>
+        <Tuile
+          Icone={Target}
+          valeur={s.rendementEspere}
+          libelle="€ rapporté par € investi"
+          ton="gold"
+        />
+        <Tuile
+          Icone={Coins}
+          valeur={eur(netRecent(s.recents))}
+          libelle="net des dernières semaines"
+          ton={netRecent(s.recents) >= 0 ? 'green' : 'red'}
+        />
+        <Tuile
+          Icone={Briefcase}
+          valeur={`${eur(s.rapporte)} / ${eur(s.investi)}`}
+          libelle="rapporté / investi"
+          ton="purple"
+        />
+      </Tuiles>
       <div className="label-nego__form">
         <label className="label-field">
           Enveloppe hebdomadaire de {s.nom} (€)
@@ -79,7 +107,7 @@ function SousLabel({
         }
       >
         Régler l’enveloppe de {s.nom}
-      </Button>{' '}
+      </Button>
       {candidats.length > 0 ? (
         <Button
           type="button"
@@ -87,7 +115,7 @@ function SousLabel({
         >
           Nommer le cadre de {s.nom}
         </Button>
-      ) : null}{' '}
+      ) : null}
       <Button
         type="button"
         tone="ghost"
@@ -112,7 +140,7 @@ export function Groupe() {
     return (
       <section className="label-screen" aria-labelledby="groupe-titre">
         <h2 id="groupe-titre">Groupe</h2>
-        <p className="label-screen__soon">
+        <p className="lt-rien">
           Les sous-labels s’ouvrent au palier Groupe. Tu es actuellement un {vue.label.palier}.
         </p>
       </section>
@@ -123,18 +151,21 @@ export function Groupe() {
   return (
     <section className="label-screen" aria-labelledby="groupe-titre">
       <h2 id="groupe-titre">Groupe</h2>
-      <p>
-        Tu diriges {g.sousLabels.length} sous-label(s) sur {g.max} possibles. Chaque cadre a un
-        niveau que tu ne connais d’abord qu’à peu près : la fourchette se resserre avec le temps, et
-        sa fiabilité se révèle plus tard. Un cadre peu fiable peut détourner des fonds.
+      <p className="lt-sous-titre">
+        Tu diriges {g.sousLabels.length} sous-label(s) sur {g.max} possibles. Le niveau d’un cadre
+        se précise avec le temps ; un cadre peu fiable peut détourner des fonds.
       </p>
       {g.sousLabels.map((s) => (
         <SousLabel key={s.id} s={s} candidats={g.candidats} agir={agir} />
       ))}
 
       {g.sousLabels.length < g.max && g.genresLibres.length > 0 ? (
-        <>
-          <h3>Créer un sous-label ({eur(g.coutCreation)})</h3>
+        <Panneau
+          titre={`Créer un sous-label (${eur(g.coutCreation)})`}
+          Icone={Sparkles}
+          ton="pink"
+          id="grp-creer"
+        >
           <div className="label-nego__form">
             <label className="label-field">
               Genre
@@ -162,45 +193,51 @@ export function Groupe() {
           >
             Créer le sous-label
           </Button>
-        </>
+        </Panneau>
       ) : null}
 
-      <h3>Cadres disponibles</h3>
-      {g.candidats.length === 0 ? (
-        <p className="label-screen__soon">
-          Aucun candidat pour l’instant : le vivier se renouvelle.
-        </p>
-      ) : (
-        <ul className="label-list">
-          {g.candidats.map((c) => (
-            <li key={c.id}>
-              {c.nom} — {c.style}, niveau estimé {texteNiveau(c.niveau)}, {eur(c.salaire)} par
-              semaine
-            </li>
-          ))}
-        </ul>
-      )}
+      <Panneau titre="Cadres disponibles" Icone={UserCog} ton="teal" id="grp-cadres">
+        {g.candidats.length === 0 ? (
+          <p className="lt-rien">Aucun candidat pour l’instant : le vivier se renouvelle.</p>
+        ) : (
+          <ul className="lt-cartes-fin">
+            {g.candidats.map((c) => (
+              <li key={c.id} className="lt-carte-fin">
+                <Avatar nom={c.nom} genre={c.style} />
+                <strong>{c.nom}</strong>
+                <span className="lt-chip">{c.style}</span>
+                <span className="lt-chip">niveau {texteNiveau(c.niveau)}</span>
+                <span className="lt-chip">{eur(c.salaire)} par semaine</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Panneau>
 
-      <h3>Racheter un rival</h3>
-      {g.rachats.length === 0 ? (
-        <p className="label-screen__soon">Plus aucun rival à racheter.</p>
-      ) : (
-        <ul className="label-list">
-          {g.rachats.map((r) => (
-            <li key={r.rivalId}>
-              {r.nom} — {r.artistes} artiste(s), valorisation {eur(r.valorisation)}, rachat{' '}
-              <strong className="mono">{eur(r.prix)}</strong>{' '}
-              <Button
-                type="button"
-                disabled={vue.finances.tresorerie < r.prix}
-                onClick={() => agir({ type: 'racheter-rival', rivalId: r.rivalId })}
-              >
-                Racheter {r.nom}
-              </Button>
-            </li>
-          ))}
-        </ul>
-      )}
+      <Panneau titre="Racheter un rival" Icone={ShoppingCart} ton="red" id="grp-rachats">
+        {g.rachats.length === 0 ? (
+          <p className="lt-rien">Plus aucun rival à racheter.</p>
+        ) : (
+          <ul className="lt-cartes-fin">
+            {g.rachats.map((r) => (
+              <li key={r.rivalId} className="lt-carte-fin">
+                <Avatar nom={r.nom} genre={r.nom} />
+                <strong>{r.nom}</strong>
+                <span className="lt-chip">{r.artistes} artiste(s)</span>
+                <span className="lt-chip">valorisation {eur(r.valorisation)}</span>
+                <span className="lt-chip lt-chip--bon">rachat {eur(r.prix)}</span>
+                <Button
+                  type="button"
+                  disabled={vue.finances.tresorerie < r.prix}
+                  onClick={() => agir({ type: 'racheter-rival', rivalId: r.rivalId })}
+                >
+                  Racheter {r.nom}
+                </Button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Panneau>
     </section>
   );
 }
