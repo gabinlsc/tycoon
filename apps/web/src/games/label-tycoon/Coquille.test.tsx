@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { Coquille } from './Coquille';
 import { ECRANS, ecranDeTouche } from './ecrans';
@@ -27,8 +27,9 @@ describe('coquille du jeu', () => {
     await lancer();
     expect(screen.getByLabelText('Trésorerie').textContent).toMatch(/€/);
     expect(screen.getByText('Home-studio')).toBeTruthy();
+    const nav = screen.getByRole('navigation', { name: 'Écrans du jeu' });
     for (const e of ECRANS)
-      expect(screen.getByRole('button', { name: new RegExp(e.titre) })).toBeTruthy();
+      expect(within(nav).getByRole('button', { name: new RegExp(e.titre) })).toBeTruthy();
     expect(screen.getByRole('heading', { name: 'Finances' })).toBeTruthy();
   });
 

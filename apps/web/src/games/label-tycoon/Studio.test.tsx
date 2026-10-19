@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { LabelPilot } from '@tycoon/label-tycoon';
 import { afterEach, describe, expect, it } from 'vitest';
 import { Coquille } from './Coquille';
@@ -69,7 +69,11 @@ describe('écran Studio', () => {
     const b = await screen.findByRole('button', { name: 'Nouvelle partie' });
     await waitFor(() => expect((b as HTMLButtonElement).disabled).toBe(false));
     fireEvent.click(b);
-    fireEvent.click(await screen.findByRole('button', { name: /Studio/ }));
+    fireEvent.click(
+      within(await screen.findByRole('navigation', { name: 'Écrans du jeu' })).getByRole('button', {
+        name: /Studio/,
+      }),
+    );
     expect(screen.getByText(/Signe d’abord un artiste/)).toBeTruthy();
   });
 
@@ -82,7 +86,11 @@ describe('écran Studio', () => {
     const b = await screen.findByRole('button', { name: 'Nouvelle partie' });
     await waitFor(() => expect((b as HTMLButtonElement).disabled).toBe(false));
     fireEvent.click(b);
-    fireEvent.click(await screen.findByRole('button', { name: /Studio/ }));
+    fireEvent.click(
+      within(await screen.findByRole('navigation', { name: 'Écrans du jeu' })).getByRole('button', {
+        name: /Studio/,
+      }),
+    );
     await screen.findByText(/jamais une valeur exacte/);
     expect(screen.getByText(/Aucun projet pour l’instant/)).toBeTruthy();
     const lancer = screen.getByRole('button', {
