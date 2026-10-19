@@ -1,6 +1,6 @@
 import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Disc3, Lock, LogOut, Menu, Save, Volume2, VolumeX, X } from 'lucide-react';
+import { Disc3, Lock, LogOut, Menu, Save, Search, Volume2, VolumeX, X } from 'lucide-react';
 import { TIERS } from '@tycoon/label-tycoon';
 import { Button } from '../../components/arcade/ui/Button';
 import { ECRANS, POLES, poleDe, type EcranId, type PoleId } from './ecrans';
@@ -11,6 +11,7 @@ import { ICONES_ECRANS, ICONES_POLES } from './icones';
 import { Ceremonie, useCeremonie } from './Ceremonie';
 import { BandeauPole } from './BandeauPole';
 import { Chargement } from './Chargement';
+import { AideRaccourcis, Palette, useOuverturePalette } from './Palette';
 import { Effets } from './Effets';
 import { CourseClassement, useCourseClassement } from './Soirees';
 import { Hud } from './Hud';
@@ -63,6 +64,7 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
   const [renouvellement, setRenouvellement] = useState<number | null>(null);
   const [pleinEcran, setPleinEcran] = useState(true);
   const [tiroir, setTiroir] = useState(false);
+  const [palette, setPalette] = useState<'palette' | 'aide' | null>(null);
   const [panneauSauvegarde, setPanneauSauvegarde] = useState(false);
   // Dernier onglet visité de chaque pôle : un clic sur le pôle y revient.
   const [dernierOnglet, setDernierOnglet] = useState<Partial<Record<PoleId, EcranId>>>({});
@@ -74,7 +76,13 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
     setTiroir(false);
     contenu.current?.scrollTo?.({ top: 0 });
   }, []);
-  useRaccourcis(setEcran, vue !== null);
+  const fermerPalette = useCallback(() => setPalette(null), []);
+  useRaccourcis(setEcran, vue !== null && palette === null);
+  useOuverturePalette(
+    vue !== null,
+    useCallback(() => setPalette('palette'), []),
+    useCallback(() => setPalette('aide'), []),
+  );
   const spectacle = useCeremonie(vue);
   useAudioDuJeu(vue);
   const course = useCourseClassement(vue);
@@ -232,6 +240,10 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
             )}{' '}
             {audio.prefs.sons || audio.prefs.musique ? 'Son activé' : 'Son coupé'}
           </button>
+          <button type="button" className="lt-side__action" onClick={() => setPalette('palette')}>
+            <Search aria-hidden="true" size={18} /> Rechercher{' '}
+            <kbd className="lt-side__kbd">Ctrl K</kbd>
+          </button>
           <button type="button" className="lt-side__action" onClick={() => setPleinEcran(false)}>
             <LogOut aria-hidden="true" size={18} /> Quitter le jeu
           </button>
@@ -246,6 +258,14 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
         />
       ) : null}
 
+      {palette === 'palette' ? (
+        <Palette
+          fermer={fermerPalette}
+          ouvrir={setEcran}
+          estFerme={(id) => verrou(ECRANS.find((e) => e.id === id)) !== null}
+        />
+      ) : null}
+      {palette === 'aide' ? <AideRaccourcis fermer={fermerPalette} /> : null}
       <Hud />
       <Notifications vue={vue} allerA={setEcran} />
       <Effets vue={vue} />
