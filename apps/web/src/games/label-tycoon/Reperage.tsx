@@ -1,10 +1,31 @@
 import { SCOUTING, SOURCES, fr } from '@tycoon/label-tycoon';
 import type { ScoutSource, VueSuivi } from '@tycoon/label-tycoon';
+import {
+  Coins,
+  Crosshair,
+  Eye,
+  Mail,
+  Mic2,
+  Radar,
+  Smartphone,
+  Swords,
+  type LucideIcon,
+  Users,
+} from 'lucide-react';
 import { Button } from '../../components/arcade/ui/Button';
+import { Avatar, couleurDuGenre } from './avatar';
+import { EtatVide } from './EtatVide';
 import { Terme } from './Infobulle';
 import { useLabel } from './LabelContext';
 
 const eur = (cents: number): string => `${Math.round(cents / 100).toLocaleString('fr-FR')} €`;
+
+const ICONES_SOURCES: Readonly<Record<ScoutSource, LucideIcon>> = {
+  'open-mic': Mic2,
+  plateforme: Smartphone,
+  battle: Swords,
+  candidature: Mail,
+};
 
 const COMPETENCES: Record<string, string> = {
   plume: 'Plume',
@@ -54,13 +75,17 @@ function Suivi({
   const essaiAbordable = (vue?.finances.tresorerie ?? 0) >= SCOUTING.trialCost;
   return (
     <li className="label-prospect">
-      <header>
-        <strong>{suivi.nom}</strong>{' '}
-        <span>{fr.genres[suivi.genre as keyof typeof fr.genres] ?? suivi.genre}</span>
-        <small>
-          {' '}
-          · {suivi.observations} sem. d’observation · incertitude moyenne ±
-          {Math.round(incertitude(suivi) / 2)}
+      <header className="lt-prospect__tete">
+        <Avatar nom={suivi.nom} genre={suivi.genre} />
+        <div>
+          <strong className="lt-prospect__nom">{suivi.nom}</strong>
+          <span className={`lt-puce lt-puce--${couleurDuGenre(suivi.genre)}`}>
+            {fr.genres[suivi.genre as keyof typeof fr.genres] ?? suivi.genre}
+          </span>
+        </div>
+        <small className="lt-prospect__meta">
+          <Eye aria-hidden="true" size={14} /> {suivi.observations} sem. d’observation · incertitude
+          ±{Math.round(incertitude(suivi) / 2)}
         </small>
       </header>
       <div className="label-prospect__ranges">
@@ -124,16 +149,28 @@ export function Reperage({ onNegocier }: { onNegocier: (artisteId: number) => vo
         <Terme id="fourchette">fourchette</Terme> qui se resserre avec le temps.
       </p>
       <h3>Sources</h3>
-      <ul className="label-sources">
+      <ul className="label-sources lt-sources">
         {sources.map((id) => {
           const s = SOURCES[id];
           const abordable = vue.finances.tresorerie >= s.cost;
+          const Icone = ICONES_SOURCES[id];
           return (
-            <li key={id}>
+            <li key={id} className="lt-source">
+              <span className="lt-source__icone" aria-hidden="true">
+                <Icone size={26} strokeWidth={2.4} />
+              </span>
               <strong>{fr.sourcesDeReperage[id]}</strong>
-              <small>
-                {s.count} talents · {s.cost === 0 ? 'gratuit' : eur(s.cost)} · précision ±{s.width}
-              </small>
+              <span className="lt-source__chips">
+                <span className="lt-chip">
+                  <Users aria-hidden="true" size={14} /> {s.count} talents
+                </span>
+                <span className="lt-chip">
+                  <Coins aria-hidden="true" size={14} /> {s.cost === 0 ? 'gratuit' : eur(s.cost)}
+                </span>
+                <span className="lt-chip">
+                  <Crosshair aria-hidden="true" size={14} /> ±{s.width}
+                </span>
+              </span>
               <Button
                 type="button"
                 tone="gold"
@@ -157,7 +194,11 @@ export function Reperage({ onNegocier }: { onNegocier: (artisteId: number) => vo
         Talents suivis <span className="label-badge">{vue.suivis.length}</span>
       </h3>
       {vue.suivis.length === 0 ? (
-        <p className="label-screen__soon">Aucun talent suivi. Lance une session de repérage.</p>
+        <EtatVide
+          Icone={Radar}
+          titre="Ton carnet d’adresses est vide"
+          texte="Aucun talent suivi. Lance une session de repérage."
+        />
       ) : (
         <ul className="label-prospects">
           {vue.suivis.map((s) => (

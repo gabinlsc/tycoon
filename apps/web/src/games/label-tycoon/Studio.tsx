@@ -4,6 +4,9 @@ import type { ClipSize, ReleaseType } from '@tycoon/label-tycoon';
 import { Button } from '../../components/arcade/ui/Button';
 import { Terme } from './Infobulle';
 import { useLabel } from './LabelContext';
+import { Disc3 } from 'lucide-react';
+import { EtatVide } from './EtatVide';
+import type { EcranId } from './ecrans';
 import { Pochette } from './pochettes/Pochette';
 
 const eur = (cents: number): string => `${Math.round(cents / 100).toLocaleString('fr-FR')} €`;
@@ -80,7 +83,7 @@ export function Console({ reglages }: { reglages: { nom: string; valeur: number 
 }
 
 /** Studio : lancer des sorties avec une estimation de qualité, suivre la production, publier. */
-export function Studio() {
+export function Studio({ allerA }: { allerA?: (ecran: EcranId) => void } = {}) {
   const { vue, envoyer } = useLabel();
   const [artisteId, setArtisteId] = useState<number | null>(null);
   const [sortie, setSortie] = useState<ReleaseType>('single');
@@ -122,9 +125,13 @@ export function Studio() {
     return (
       <section className="label-screen" aria-labelledby="studio-titre">
         <h2 id="studio-titre">Studio</h2>
-        <p className="label-screen__soon">
-          Signe d’abord un artiste : le studio produit les sorties de ton roster.
-        </p>
+        <EtatVide
+          Icone={Disc3}
+          titre="Le studio attend sa première voix"
+          texte="Signe d’abord un artiste : le studio produit les sorties de ton roster."
+          action="Trouver un talent"
+          {...(allerA ? { onAction: () => allerA('reperage') } : {})}
+        />
       </section>
     );
 

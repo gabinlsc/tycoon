@@ -1304,3 +1304,393 @@ html.lt-verrou body {
     width: 100%;
   }
 }
+
+/* ======================================================================
+ * Cœur de jeu : états vides, repérage, avatars, négociation
+ * ====================================================================== */
+
+/* Pastilles de couleur réutilisables (avatars, genres) */
+.lt-avatar,
+.lt-puce {
+  --c: var(--purple);
+}
+.lt-avatar--purple,
+.lt-puce--purple {
+  --c: var(--purple);
+  --c-texte: #fff;
+}
+.lt-avatar--blue,
+.lt-puce--blue {
+  --c: var(--blue);
+  --c-texte: var(--outline);
+}
+.lt-avatar--pink,
+.lt-puce--pink {
+  --c: var(--pink);
+  --c-texte: var(--outline);
+}
+.lt-avatar--orange,
+.lt-puce--orange {
+  --c: var(--orange);
+  --c-texte: var(--outline);
+}
+.lt-avatar--teal,
+.lt-puce--teal {
+  --c: var(--teal);
+  --c-texte: var(--outline);
+}
+.lt-avatar--green,
+.lt-puce--green {
+  --c: var(--green);
+  --c-texte: var(--outline);
+}
+.lt-avatar--red,
+.lt-puce--red {
+  --c: var(--red);
+  --c-texte: #fff;
+}
+.lt-avatar--gold,
+.lt-puce--gold {
+  --c: var(--gold);
+  --c-texte: var(--outline);
+}
+
+.lt-avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border: 3px solid var(--outline);
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow: var(--pop-sm);
+  color: var(--c-texte, #fff);
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+}
+.lt-avatar--lg {
+  width: 4rem;
+  height: 4rem;
+  font-size: 1.5rem;
+}
+.lt-puce {
+  display: inline-block;
+  padding: 0 var(--sp-2);
+  border: 2px solid var(--outline);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--c) 30%, var(--surface));
+  font-size: var(--fs-micro);
+  font-weight: 800;
+}
+.lt-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.1rem var(--sp-2);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--outline) 8%, var(--surface));
+  font-size: var(--fs-micro);
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* États vides */
+.lt-vide {
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-6) var(--sp-4);
+  border: 3px dashed color-mix(in srgb, var(--outline) 35%, transparent);
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--surface-2) 60%, var(--surface));
+  text-align: center;
+}
+.lt-vide__icone {
+  display: grid;
+  place-items: center;
+  width: 5.5rem;
+  height: 5.5rem;
+  margin-bottom: var(--sp-2);
+  border: 4px solid var(--outline);
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: var(--pop);
+  color: var(--purple);
+}
+.lt-vide__titre {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+}
+.lt-vide__texte {
+  max-width: 34rem;
+  margin: 0 0 var(--sp-2);
+}
+
+/* Sources de repérage en cartes */
+.lt-app .lt-sources {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: var(--sp-3);
+}
+.lt-app .lt-sources > .lt-source {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto auto;
+  align-items: center;
+  gap: var(--sp-2) var(--sp-3);
+  padding: var(--sp-4);
+  border: var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--pop-sm);
+}
+.lt-source__icone {
+  grid-row: 1 / span 2;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border: 3px solid var(--outline);
+  border-radius: var(--r-sm);
+  background: var(--gold);
+  color: var(--outline);
+}
+.lt-source:nth-child(2) .lt-source__icone {
+  background: var(--blue);
+}
+.lt-source:nth-child(3) .lt-source__icone {
+  background: var(--pink);
+}
+.lt-source:nth-child(4) .lt-source__icone {
+  background: var(--teal);
+}
+.lt-source > strong {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  line-height: 1.15;
+}
+.lt-source__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+.lt-app .lt-source > .btn {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+/* Fiches de talents */
+.lt-app .label-prospects {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 24rem), 1fr));
+  gap: var(--sp-3);
+}
+.lt-app .label-prospect {
+  display: grid;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  border: var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--pop-sm);
+}
+.lt-prospect__tete {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-3);
+}
+.lt-prospect__tete > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.lt-prospect__nom {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+}
+.lt-prospect__meta {
+  grid-column: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--text-soft);
+  font-weight: 700;
+}
+.lt-app .label-range {
+  grid-template-columns: 5.5rem 1fr 3.4rem;
+  font-weight: 800;
+}
+.lt-app .label-range__track {
+  height: 0.85rem;
+  border-width: 3px;
+}
+.lt-app .label-range__track > span {
+  background: linear-gradient(90deg, var(--purple), var(--blue));
+}
+.lt-app .label-prospect__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+/* Négociation */
+.lt-nego__tete {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.lt-nego__tete h2 {
+  margin: 0;
+}
+.lt-nego__humeur {
+  display: grid;
+  gap: var(--sp-2);
+  margin: var(--sp-4) 0;
+  padding: var(--sp-4);
+  border: 3px solid var(--outline);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+}
+.lt-nego__humeur > p {
+  margin: 0;
+  font-weight: 800;
+}
+.lt-nego__repere {
+  color: var(--text-soft);
+}
+.lt-app .label-gauge {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  padding: 4px;
+  border: 3px solid var(--outline);
+  border-radius: 999px;
+  background: var(--surface);
+}
+.lt-app .label-gauge__seg {
+  padding: var(--sp-1) 0;
+  border-radius: 999px;
+  color: var(--text-soft);
+  font-family: var(--font-display);
+  font-size: var(--fs-small);
+  text-align: center;
+}
+.lt-app .label-gauge__seg[data-on] {
+  color: var(--outline);
+}
+.lt-app .label-gauge__seg--mecontent[data-on] {
+  background: var(--red);
+  color: #fff;
+}
+.lt-app .label-gauge__seg--hesitant[data-on] {
+  background: var(--orange);
+}
+.lt-app .label-gauge__seg--interesse[data-on] {
+  background: var(--gold);
+}
+.lt-app .label-gauge__seg--enthousiaste[data-on] {
+  background: var(--green);
+}
+.lt-app .label-nego__form {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+  gap: var(--sp-4) var(--sp-5);
+}
+.lt-app .label-nego__form .label-field {
+  display: grid;
+  gap: var(--sp-2);
+  font-weight: 800;
+}
+.lt-app input[type='range'] {
+  width: 100%;
+  height: 2rem;
+  margin: 0;
+  background: transparent;
+  accent-color: var(--purple);
+  cursor: pointer;
+  appearance: none;
+}
+.lt-app input[type='range']::-webkit-slider-runnable-track {
+  height: 0.9rem;
+  border: 3px solid var(--outline);
+  border-radius: 999px;
+  background: var(--surface-2);
+}
+.lt-app input[type='range']::-webkit-slider-thumb {
+  width: 1.7rem;
+  height: 1.7rem;
+  margin-top: -0.55rem;
+  border: 3px solid var(--outline);
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 3px 0 var(--outline);
+  appearance: none;
+}
+.lt-app input[type='range']::-moz-range-track {
+  height: 0.9rem;
+  border: 3px solid var(--outline);
+  border-radius: 999px;
+  background: var(--surface-2);
+}
+.lt-app input[type='range']::-moz-range-thumb {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 3px solid var(--outline);
+  border-radius: 50%;
+  background: var(--gold);
+}
+.lt-app input[type='range']:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 4px;
+  border-radius: 999px;
+}
+.lt-app .lt-nego__go {
+  width: 100%;
+  margin-top: var(--sp-2);
+}
+
+.lt-app .lt-source > .btn {
+  white-space: nowrap;
+  font-size: 1rem;
+}
+.lt-app .label-screen h3 {
+  margin: var(--sp-5) 0 var(--sp-3);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+}
+.lt-app .label-prospect__actions .btn--ghost {
+  margin-left: auto;
+}
+.lt-app .label-prospect__actions .btn {
+  font-size: 0.95rem;
+}
+.lt-app .label-nego__form .label-field--check {
+  display: flex;
+  align-items: center;
+  align-self: end;
+  gap: var(--sp-2);
+  min-height: 44px;
+}
+.lt-app .label-nego__form input[type='checkbox'] {
+  width: 1.5rem;
+  height: 1.5rem;
+  accent-color: var(--purple);
+}
+
+@media (max-width: 600px) {
+  .lt-app .label-prospect__actions .btn--green {
+    order: -1;
+    flex: 1 1 100%;
+  }
+  .lt-app .label-prospect__actions .btn {
+    flex: 1 1 auto;
+  }
+  .lt-app .label-prospect__actions .btn--ghost {
+    margin-left: 0;
+  }
+}
