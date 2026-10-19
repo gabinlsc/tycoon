@@ -5,6 +5,7 @@ import { Award, CheckCircle2, Circle, Disc3, Inbox, Radar, Rocket, Users } from 
 import { Button } from '../../components/arcade/ui/Button';
 import { TapisRouge } from './Ceremonie';
 import { eurCourt } from './Hud';
+import { Immeuble } from './Immeuble';
 import type { EcranId } from './ecrans';
 import { GraphCourbe } from './graphiques/Graphiques';
 import { Terme } from './Infobulle';
@@ -294,40 +295,43 @@ export function QG({
       {vue.ceremonie ? (
         <TapisRouge ceremonie={vue.ceremonie} semaine={vue.semaine} revoir={revoirCeremonie} />
       ) : null}
-      <PremiersPas vue={vue} allerA={allerA} />
-
-      <ul className="lt-tuiles" aria-label="Indicateurs du label">
-        {tuiles.map((t) => (
-          <li key={t.id}>
-            <button type="button" className="lt-tuile" onClick={() => allerA(t.ecran)}>
-              <t.Icone aria-hidden="true" size={26} />
-              <span className="lt-tuile__valeur mono">{t.valeur}</span>
-              <span className="lt-tuile__libelle">{t.libelle}</span>
-            </button>
-          </li>
-        ))}
-      </ul>
-
-      <section className="label-screen label-qg__alerts" aria-labelledby="qg-alertes">
-        <h2 id="qg-alertes">Alertes</h2>
-        {liste.length === 0 ? (
-          <p className="label-screen__soon">Tout est calme. Aucune alerte.</p>
-        ) : (
-          <ul className="label-alerts">
-            {liste.map((a) => (
-              <li key={a.id} className={`label-alert label-alert--${a.niveau}`}>
-                <strong>{a.niveau === 'danger' ? '⚠ Urgent : ' : 'ℹ À noter : '}</strong>
-                {a.texte}
-                {a.ecran ? (
-                  <Button type="button" tone="ghost" onClick={() => allerA(a.ecran as EcranId)}>
-                    Voir
-                  </Button>
-                ) : null}
+      <div className="lt-qg__hero">
+        <Immeuble vue={vue} allerA={allerA} />
+        <div className="lt-qg__cote">
+          <ul className="lt-tuiles" aria-label="Indicateurs du label">
+            {tuiles.map((t) => (
+              <li key={t.id}>
+                <button type="button" className="lt-tuile" onClick={() => allerA(t.ecran)}>
+                  <t.Icone aria-hidden="true" size={26} />
+                  <span className="lt-tuile__valeur mono">{t.valeur}</span>
+                  <span className="lt-tuile__libelle">{t.libelle}</span>
+                </button>
               </li>
             ))}
           </ul>
-        )}
-      </section>
+          <section className="label-screen label-qg__alerts" aria-labelledby="qg-alertes">
+            <h2 id="qg-alertes">Alertes</h2>
+            {liste.length === 0 ? (
+              <p className="label-screen__soon">Tout est calme. Aucune alerte.</p>
+            ) : (
+              <ul className="label-alerts">
+                {liste.map((a) => (
+                  <li key={a.id} className={`label-alert label-alert--${a.niveau}`}>
+                    <strong>{a.niveau === 'danger' ? '⚠ Urgent : ' : 'ℹ À noter : '}</strong>
+                    {a.texte}
+                    {a.ecran ? (
+                      <Button type="button" tone="ghost" onClick={() => allerA(a.ecran as EcranId)}>
+                        Voir
+                      </Button>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        </div>
+      </div>
+      <PremiersPas vue={vue} allerA={allerA} />
 
       <ProchainPalier vue={vue} />
 

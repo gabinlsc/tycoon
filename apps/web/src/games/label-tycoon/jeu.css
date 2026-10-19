@@ -1048,6 +1048,7 @@ html.lt-verrou body {
   align-items: start;
 }
 .lt-qg > .lt-mission,
+.lt-qg > .lt-qg__hero,
 .lt-qg > .lt-tuiles,
 .lt-qg > .label-qg__alerts {
   grid-column: 1 / -1;
@@ -2560,6 +2561,452 @@ html.lt-verrou body {
     animation: none;
   }
   .lt-cer__nomme {
+    transition: none;
+  }
+}
+
+/* ======================================================================
+ * QG dessiné : l'immeuble du label
+ * ====================================================================== */
+
+.lt-qg__hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(14rem, 1fr);
+  gap: var(--sp-4);
+  align-items: start;
+}
+.lt-qg__cote {
+  display: grid;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+.lt-qg__cote > .label-screen {
+  margin: 0;
+}
+.lt-qg__cote > .lt-tuiles {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (max-width: 60rem) {
+  .lt-qg__hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.lt-immeuble {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--sp-6) var(--sp-4) 0;
+  overflow: hidden;
+  border: 3px solid var(--outline);
+  border-radius: 1.5rem;
+  background: linear-gradient(180deg, #1b1050 0%, #4a2a9c 45%, #ff8a5c 100%);
+  box-shadow: 0 6px 0 var(--outline);
+  isolation: isolate;
+}
+.lt-immeuble__ciel {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(1.5px 1.5px at 12% 14%, #fff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 30% 6%, #fff 50%, transparent 51%),
+    radial-gradient(2px 2px at 78% 10%, #fff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 90% 24%, #fff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 55% 4%, #fff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 6% 34%, #fff 50%, transparent 51%);
+}
+.lt-immeuble__lune {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.6rem;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 50%;
+  background: #fff6c9;
+  box-shadow:
+    inset -0.6rem -0.2rem 0 #f2d77a,
+    0 0 30px rgb(255 246 201 / 0.6);
+}
+.lt-immeuble__ville {
+  position: absolute;
+  inset: auto 0 1.4rem;
+  height: 55%;
+  background: #2a1660;
+  opacity: 0.85;
+  clip-path: polygon(
+    0 60%,
+    6% 60%,
+    6% 30%,
+    13% 30%,
+    13% 50%,
+    18% 50%,
+    18% 15%,
+    24% 15%,
+    24% 45%,
+    30% 45%,
+    30% 65%,
+    70% 65%,
+    70% 25%,
+    76% 25%,
+    76% 40%,
+    82% 40%,
+    82% 10%,
+    88% 10%,
+    88% 50%,
+    94% 50%,
+    94% 35%,
+    100% 35%,
+    100% 100%,
+    0 100%
+  );
+}
+
+.lt-immeuble__facade {
+  position: relative;
+  width: min(100%, 30rem);
+  padding: 0 var(--sp-3);
+  border: 3px solid var(--outline);
+  border-bottom: 0;
+  border-radius: 0.6rem 0.6rem 0 0;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 0.9rem, rgb(0 0 0 / 0.08) 0.9rem 1rem),
+    repeating-linear-gradient(90deg, transparent 0 1.9rem, rgb(0 0 0 / 0.06) 1.9rem 2rem), #c8553d;
+}
+.lt-immeuble__toit {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin: 0 calc(-1 * var(--sp-3) - 3px);
+  padding: var(--sp-3) var(--sp-3) var(--sp-2);
+  border: 3px solid var(--outline);
+  border-radius: 0.6rem 0.6rem 0 0;
+  translate: 0 -3px;
+  background: #3b2470;
+}
+.lt-immeuble__antenne {
+  position: absolute;
+  bottom: 100%;
+  left: 18%;
+  width: 4px;
+  height: 2.2rem;
+  background: var(--outline);
+}
+.lt-immeuble__antenne::after {
+  content: '';
+  position: absolute;
+  top: -0.35rem;
+  left: -0.3rem;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 10px var(--red);
+  animation: lt-pulse 1.6s ease-in-out infinite;
+}
+.lt-immeuble__neon {
+  max-width: 100%;
+  overflow: hidden;
+  padding: 0.1rem var(--sp-3);
+  border: 2px solid #ff6fb5;
+  border-radius: 0.5rem;
+  color: #ffe1f0;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  letter-spacing: 0.04em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-shadow:
+    0 0 6px #ff6fb5,
+    0 0 16px #ff2d95;
+  box-shadow:
+    0 0 12px #ff6fb5,
+    inset 0 0 10px rgb(255 111 181 / 0.5);
+  animation: lt-neon 5s linear infinite;
+}
+@keyframes lt-neon {
+  0%,
+  92%,
+  96%,
+  100% {
+    opacity: 1;
+  }
+  94% {
+    opacity: 0.55;
+  }
+}
+
+.lt-immeuble__etages {
+  display: grid;
+  gap: var(--sp-2);
+  margin: var(--sp-2) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.lt-etage__bouton {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto 1fr;
+  width: 100%;
+  min-height: 5.4rem;
+  padding: 0;
+  overflow: hidden;
+  border: 3px solid var(--outline);
+  border-radius: 0.5rem;
+  background: #2c1a52;
+  color: #fff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s;
+}
+.lt-etage__bouton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 0 var(--outline);
+}
+.lt-etage__bouton:focus-visible {
+  outline: 4px solid var(--gold);
+  outline-offset: 2px;
+}
+/* Salle éclairée : plus le niveau est haut, plus la lumière est chaude */
+.lt-etage.is-ouvert .lt-etage__bouton {
+  background:
+    radial-gradient(
+      ellipse 70% 90% at 40% 100%,
+      color-mix(in srgb, var(--salle) calc(30% + var(--niveau) * 12%), transparent),
+      transparent 75%
+    ),
+    linear-gradient(180deg, #3a2470, #24154a);
+}
+.lt-etage--studio {
+  --salle: #ff6fb5;
+}
+.lt-etage--repetition {
+  --salle: #35d36b;
+}
+.lt-etage--bureaux {
+  --salle: #34a4ff;
+}
+.lt-etage--pressage {
+  --salle: #ffc61a;
+}
+.lt-etage--concert {
+  --salle: #ff8a2b;
+}
+.lt-etage.is-verrouille .lt-etage__bouton,
+.lt-etage.is-libre .lt-etage__bouton {
+  background: repeating-linear-gradient(-45deg, #2a2340 0 0.8rem, #241d38 0.8rem 1.6rem);
+  color: rgb(255 255 255 / 0.65);
+}
+.lt-etage.is-travaux .lt-etage__bouton {
+  background:
+    repeating-linear-gradient(-45deg, rgb(255 198 26 / 0.9) 0 0.7rem, #1f1547 0.7rem 1.4rem) top /
+      100% 0.5rem no-repeat,
+    linear-gradient(180deg, #3a2a50, #2a1d3f);
+}
+
+.lt-etage__plaque {
+  grid-column: 1;
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: var(--sp-2) 0 0 var(--sp-2);
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.4);
+  font-size: var(--fs-micro);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+.lt-etage__salle {
+  position: relative;
+  grid-column: 1;
+  display: flex;
+  align-items: flex-end;
+  min-height: 3rem;
+  padding: 0 var(--sp-2) var(--sp-1);
+}
+.lt-etage__decor {
+  position: absolute;
+  right: var(--sp-3);
+  bottom: 0.3rem;
+  color: var(--salle, #fff);
+  opacity: 0.55;
+}
+.lt-etage:not(.is-ouvert) .lt-etage__decor {
+  color: #fff;
+  opacity: 0.12;
+}
+.lt-etage__statut {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  font-weight: 900;
+}
+.lt-etage__statut--travaux {
+  color: var(--gold);
+}
+.lt-etage__pions {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 0.35rem;
+}
+
+.lt-etage__fenetres {
+  grid-column: 2;
+  grid-row: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, 0.9rem);
+  align-content: center;
+  gap: 0.3rem;
+  padding: var(--sp-2);
+  background: rgb(0 0 0 / 0.25);
+}
+.lt-etage__fenetres span {
+  width: 0.9rem;
+  height: 1.1rem;
+  border: 2px solid var(--outline);
+  border-radius: 0.2rem;
+  background: #1a1233;
+}
+.lt-etage__fenetres span.is-allumee {
+  background: linear-gradient(180deg, #fff6c9, #ffc61a);
+  box-shadow: 0 0 8px rgb(255 198 26 / 0.8);
+}
+
+/* Personnages */
+.lt-pion {
+  --c: var(--purple);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: lt-pion 1.8s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -0.37s);
+}
+.lt-pion.is-las {
+  animation-duration: 4s;
+  opacity: 0.75;
+  filter: saturate(0.5);
+}
+.lt-pion--purple {
+  --c: var(--purple);
+}
+.lt-pion--blue {
+  --c: var(--blue);
+}
+.lt-pion--pink {
+  --c: var(--pink);
+}
+.lt-pion--orange {
+  --c: var(--orange);
+}
+.lt-pion--teal {
+  --c: var(--teal);
+}
+.lt-pion--green {
+  --c: var(--green);
+}
+.lt-pion--red {
+  --c: var(--red);
+}
+.lt-pion--gold {
+  --c: var(--gold);
+}
+.lt-pion__tete {
+  display: grid;
+  place-items: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  border: 2px solid var(--outline);
+  border-radius: 50%;
+  background: #ffd9b8;
+  color: var(--outline);
+  font-family: var(--font-display);
+  font-size: 0.62rem;
+  line-height: 1;
+}
+.lt-pion__corps {
+  width: 1.9rem;
+  height: 1.2rem;
+  margin-top: -2px;
+  border: 2px solid var(--outline);
+  border-radius: 0.8rem 0.8rem 0.2rem 0.2rem;
+  background: var(--c);
+}
+.lt-pion-plus {
+  align-self: center;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  background: var(--gold);
+  color: var(--outline);
+  font-size: var(--fs-micro);
+  font-weight: 900;
+}
+@keyframes lt-pion {
+  50% {
+    transform: translateY(-3px);
+  }
+}
+.lt-etage--studio.is-ouvert .lt-pion {
+  animation-name: lt-pion-chante;
+  animation-duration: 0.9s;
+}
+@keyframes lt-pion-chante {
+  50% {
+    transform: translateY(-4px) rotate(-4deg);
+  }
+}
+
+.lt-immeuble__rdc {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  gap: var(--sp-3);
+  margin-top: var(--sp-2);
+  padding: 0 var(--sp-2);
+}
+.lt-immeuble__porte {
+  width: 3.4rem;
+  height: 4rem;
+  border: 3px solid var(--outline);
+  border-bottom: 0;
+  border-radius: 1.7rem 1.7rem 0 0;
+  background: linear-gradient(90deg, #4a2a10 49%, var(--outline) 49% 51%, #4a2a10 51%);
+  box-shadow: inset 0 0 0 4px #7a4a20;
+}
+.lt-immeuble__vitrine {
+  width: 5rem;
+  height: 2.6rem;
+  margin-bottom: var(--sp-2);
+  border: 3px solid var(--outline);
+  border-radius: 0.3rem;
+  background: linear-gradient(135deg, #fff6c9 0 20%, #ffc61a 20% 60%, #ffe58a 60%);
+  box-shadow: 0 0 14px rgb(255 198 26 / 0.6);
+}
+.lt-immeuble__trottoir {
+  align-self: stretch;
+  height: 1.4rem;
+  margin: 0 calc(-1 * var(--sp-4));
+  border-top: 3px solid var(--outline);
+  background: repeating-linear-gradient(90deg, #5d5470 0 3rem, #514862 3rem 3.15rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lt-pion,
+  .lt-immeuble__neon,
+  .lt-immeuble__antenne::after {
+    animation: none;
+  }
+  .lt-etage__bouton {
     transition: none;
   }
 }
