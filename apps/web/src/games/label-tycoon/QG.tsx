@@ -3,6 +3,7 @@ import { OBJECTIF_TEXTES } from '@tycoon/label-tycoon';
 import { useState } from 'react';
 import { Award, CheckCircle2, Circle, Disc3, Inbox, Radar, Rocket, Users } from 'lucide-react';
 import { Button } from '../../components/arcade/ui/Button';
+import { TapisRouge } from './Ceremonie';
 import { eurCourt } from './Hud';
 import type { EcranId } from './ecrans';
 import { GraphCourbe } from './graphiques/Graphiques';
@@ -246,7 +247,13 @@ function ProchainPalier({ vue }: { vue: VueJeu }) {
 }
 
 /** Tableau de bord : mission de départ, indicateurs, palier suivant, alertes, finances, actus. */
-export function QG({ allerA }: { allerA: (ecran: EcranId) => void }) {
+export function QG({
+  allerA,
+  revoirCeremonie,
+}: {
+  allerA: (ecran: EcranId) => void;
+  revoirCeremonie?: () => void;
+}) {
   const { vue } = useLabel();
   if (!vue) return null;
   const liste = alertes(vue);
@@ -284,6 +291,9 @@ export function QG({ allerA }: { allerA: (ecran: EcranId) => void }) {
 
   return (
     <div className="label-qg lt-qg">
+      {vue.ceremonie ? (
+        <TapisRouge ceremonie={vue.ceremonie} semaine={vue.semaine} revoir={revoirCeremonie} />
+      ) : null}
       <PremiersPas vue={vue} allerA={allerA} />
 
       <ul className="lt-tuiles" aria-label="Indicateurs du label">
