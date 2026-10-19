@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { NEGOTIATION, type Reaction } from '@tycoon/label-tycoon';
 import { Button } from '../../components/arcade/ui/Button';
+import { Avatar } from './avatar';
 import { Terme } from './Infobulle';
 import { useLabel } from './LabelContext';
 import {
@@ -124,10 +125,13 @@ export function Negociation({ artisteId, retour }: { artisteId: number; retour: 
 
   return (
     <section className="label-screen label-nego" aria-labelledby="nego-titre">
-      <Button type="button" tone="ghost" onClick={retour}>
-        ← Retour
-      </Button>
-      <h2 id="nego-titre">Négocier avec {nom}</h2>
+      <div className="lt-nego__tete">
+        <Button type="button" tone="ghost" onClick={retour}>
+          ← Retour
+        </Button>
+        {suivi ? <Avatar nom={nom} genre={suivi.genre} taille="lg" /> : null}
+        <h2 id="nego-titre">Négocier avec {nom}</h2>
+      </div>
       {signe ? (
         <>
           <Tampon />
@@ -143,14 +147,16 @@ export function Negociation({ artisteId, retour }: { artisteId: number; retour: 
         </p>
       ) : (
         <>
-          <JaugeReaction reaction={reaction} />
-          {verdict ? <p role="status">{LIBELLE_VERDICT[verdict]}</p> : null}
-          {suivi ? (
-            <p>
-              Repère : un talent de cette notoriété attend une <Terme id="avance">avance</Terme>{' '}
-              autour de {eur(suivi.avanceIndicative)}.
-            </p>
-          ) : null}
+          <div className="lt-nego__humeur">
+            <JaugeReaction reaction={reaction} />
+            {verdict ? <p role="status">{LIBELLE_VERDICT[verdict]}</p> : null}
+            {suivi ? (
+              <p className="lt-nego__repere">
+                💡 Repère : un talent de cette notoriété attend une{' '}
+                <Terme id="avance">avance</Terme> autour de {eur(suivi.avanceIndicative)}.
+              </p>
+            ) : null}
+          </div>
           <div className="label-nego__form">
             <Curseur
               libelle="Avance"
@@ -229,7 +235,13 @@ export function Negociation({ artisteId, retour }: { artisteId: number; retour: 
           <p className="label-screen__soon">
             {restantes} contre-proposition(s) possible(s) encore.
           </p>
-          <Button type="button" tone="green" size="lg" onClick={() => void proposer()}>
+          <Button
+            type="button"
+            tone="green"
+            size="lg"
+            className="lt-nego__go"
+            onClick={() => void proposer()}
+          >
             Proposer ce contrat
           </Button>
         </>

@@ -229,10 +229,10 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
             ficheArtiste ? (
               <FicheArtiste artiste={ficheArtiste} retour={() => setFiche(null)} vers={setEcran} />
             ) : (
-              <Roster ouvrir={setFiche} />
+              <Roster ouvrir={setFiche} allerA={setEcran} />
             )
           ) : ecran === 'studio' ? (
-            <Studio />
+            <Studio allerA={setEcran} />
           ) : ecran === 'reperage' ? (
             negociation !== null ? (
               <Negociation artisteId={negociation} retour={() => setNegociation(null)} />

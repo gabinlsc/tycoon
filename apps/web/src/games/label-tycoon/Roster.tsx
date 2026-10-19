@@ -1,6 +1,9 @@
 import { useMemo, useState } from 'react';
 import { Terme } from './Infobulle';
 import { useLabel } from './LabelContext';
+import { Users } from 'lucide-react';
+import { EtatVide } from './EtatVide';
+import type { EcranId } from './ecrans';
 import {
   type CleTri,
   type Filtres,
@@ -26,7 +29,13 @@ export const texteEffectif = (n: number, plafond: number | null): string =>
     : `${n} artiste${n > 1 ? 's' : ''} sous contrat sur ${plafond} possibles à ton palier${n >= plafond ? ' : le roster est plein, monte de palier pour signer davantage' : ''}.`;
 
 /** Roster : les artistes du label, triables et filtrables, avec leurs alertes. */
-export function Roster({ ouvrir }: { ouvrir: (artisteId: number) => void }) {
+export function Roster({
+  ouvrir,
+  allerA,
+}: {
+  ouvrir: (artisteId: number) => void;
+  allerA?: (ecran: EcranId) => void;
+}) {
   const { vue } = useLabel();
   const [cle, setCle] = useState<CleTri>('notoriete');
   const [decroissant, setDecroissant] = useState(true);
@@ -59,9 +68,13 @@ export function Roster({ ouvrir }: { ouvrir: (artisteId: number) => void }) {
       <section className="label-screen" aria-labelledby="roster-titre">
         <h2 id="roster-titre">Roster</h2>
         <p>{texteEffectif(roster.length, vue.plafondRoster)}</p>
-        <p className="label-screen__soon">
-          Ton roster est vide. Repère des talents (touche 3) et signe-les pour bâtir ton label.
-        </p>
+        <EtatVide
+          Icone={Users}
+          titre="Personne sous contrat pour l’instant"
+          texte="Ton roster est vide. Repère des talents et signe-les pour bâtir ton label."
+          action="Repérer des talents"
+          {...(allerA ? { onAction: () => allerA('reperage') } : {})}
+        />
       </section>
     );
 
