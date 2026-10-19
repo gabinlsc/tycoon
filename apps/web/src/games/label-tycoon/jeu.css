@@ -1694,3 +1694,218 @@ html.lt-verrou body {
     margin-left: 0;
   }
 }
+
+/* ======================================================================
+ * Tutoriel : coach flottant, bulle de dialogue, cible qui pulse
+ * ====================================================================== */
+
+.lt-app .lt-coach {
+  position: fixed;
+  right: var(--sp-5);
+  bottom: var(--sp-5);
+  z-index: 4;
+  display: grid;
+  gap: var(--sp-3);
+  width: min(27rem, calc(100vw - 2rem));
+  max-width: none;
+  margin: 0;
+  padding: var(--sp-4);
+  border: var(--border);
+  border-radius: var(--r-lg);
+  background: linear-gradient(160deg, #6a3df0, #2b1478);
+  box-shadow:
+    var(--pop),
+    0 18px 40px color-mix(in srgb, var(--outline) 35%, transparent);
+  color: #fff;
+  animation: lt-coach-entree var(--dur-base) var(--ease-bounce);
+}
+@keyframes lt-coach-entree {
+  from {
+    opacity: 0;
+    translate: 0 30px;
+    scale: 0.95;
+  }
+}
+.lt-coach__tete {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.lt-coach__mascotte {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 3.4rem;
+  height: 3.4rem;
+  border: 3px solid var(--outline);
+  border-radius: 50%;
+  background: var(--gold);
+  color: var(--outline);
+  box-shadow: var(--pop-sm);
+  animation: lt-hoche 2.4s var(--ease-out) infinite;
+}
+@keyframes lt-hoche {
+  0%,
+  100% {
+    rotate: 0deg;
+  }
+  50% {
+    rotate: -8deg;
+  }
+}
+.lt-coach__nom {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+}
+.lt-app .lt-coach .label-tuto__etape {
+  margin: 0;
+  color: color-mix(in srgb, #fff 75%, transparent);
+  font-size: var(--fs-small);
+  font-weight: 800;
+}
+.lt-coach__reduire {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-left: auto;
+  border: 0;
+  border-radius: 50%;
+  background: color-mix(in srgb, #fff 16%, transparent);
+  color: #fff;
+  cursor: pointer;
+}
+.lt-coach__points {
+  display: flex;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lt-coach__points li {
+  flex: 1;
+  height: 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, #fff 22%, transparent);
+}
+.lt-coach__points li.is-fait {
+  background: var(--green);
+}
+.lt-coach__points li.is-courant {
+  background: var(--gold);
+}
+.lt-coach__bulle {
+  position: relative;
+  padding: var(--sp-3) var(--sp-4);
+  border: 3px solid var(--outline);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  color: var(--text);
+}
+.lt-coach__bulle::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 1.4rem;
+  width: 18px;
+  height: 18px;
+  border-top: 3px solid var(--outline);
+  border-left: 3px solid var(--outline);
+  background: var(--surface);
+  rotate: 45deg;
+}
+.lt-coach__bulle h2 {
+  margin: 0 0 var(--sp-1);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+}
+.lt-coach__bulle p {
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.45;
+}
+.lt-app .lt-coach .label-tuto__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+.lt-app .lt-coach .btn--ghost {
+  background: transparent;
+  border-color: color-mix(in srgb, #fff 60%, transparent);
+  box-shadow: none;
+  color: #fff;
+}
+
+.lt-coach-pastille {
+  position: fixed;
+  right: var(--sp-5);
+  bottom: var(--sp-5);
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 3rem;
+  padding: 0 var(--sp-4);
+  border: var(--border);
+  border-radius: 999px;
+  background: var(--purple);
+  box-shadow: var(--pop);
+  color: #fff;
+  font-family: var(--font-display);
+  cursor: pointer;
+}
+
+/* L'entrée de menu à atteindre pulse doucement */
+.lt-app .lt-cible:not([aria-current='page']) {
+  position: relative;
+  background: color-mix(in srgb, var(--gold) 35%, transparent);
+  animation: lt-pulse 1.4s var(--ease-out) infinite;
+}
+.lt-onglet.lt-cible:not([aria-current='page']) {
+  color: var(--text);
+}
+@keyframes lt-pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--gold) 80%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 12px transparent;
+  }
+}
+
+@media (max-width: 1023px) {
+  .lt-app .lt-coach,
+  .lt-coach-pastille {
+    right: var(--sp-3);
+    bottom: calc(4.2rem + env(safe-area-inset-bottom));
+    left: var(--sp-3);
+    width: auto;
+  }
+  .lt-coach-pastille {
+    left: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lt-app .lt-coach,
+  .lt-coach__mascotte,
+  .lt-app .lt-cible:not([aria-current='page']) {
+    animation: none;
+  }
+}
+
+.lt-coach__passer {
+  min-height: 44px;
+  margin-left: auto;
+  padding: 0 var(--sp-2);
+  border: 0;
+  background: none;
+  color: color-mix(in srgb, #fff 80%, transparent);
+  font-weight: 800;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.lt-app .lt-coach .label-tuto__actions {
+  align-items: center;
+}
