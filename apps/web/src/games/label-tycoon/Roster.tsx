@@ -145,6 +145,7 @@ export function Roster({
                   nom={a.nom}
                   genre={a.genre}
                   genreNom={a.genreNom}
+                  moral={a.moral}
                   rarete={rareteDe(scoreArtiste(a))}
                   stats={[
                     { libelle: 'Notoriété', valeur: a.notoriete },

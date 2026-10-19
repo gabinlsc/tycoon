@@ -51,7 +51,21 @@ export function traitsDuVisage(graine: string) {
   };
 }
 
-export function Visage({ graine, taille = 120 }: { graine: string; taille?: number }) {
+export type Humeur = 'ravi' | 'neutre' | 'triste' | 'furieux';
+
+/** Humeur affichée sur le visage d'après le moral (0-100). */
+export const humeurDuMoral = (moral: number): Humeur =>
+  moral >= 70 ? 'ravi' : moral >= 40 ? 'neutre' : moral >= 20 ? 'triste' : 'furieux';
+
+export function Visage({
+  graine,
+  taille = 120,
+  humeur = 'neutre',
+}: {
+  graine: string;
+  taille?: number;
+  humeur?: Humeur;
+}) {
   const t = traitsDuVisage(graine);
   const contour = { stroke: 'var(--outline)', strokeWidth: 3, strokeLinejoin: 'round' as const };
   return (
@@ -148,7 +162,21 @@ export function Visage({ graine, taille = 120 }: { graine: string; taille?: numb
           <circle cx="62" cy="50" r="2" fill="#1b0f3a" />
         </>
       )}
-      <path d="M33 42h12M55 42h12" stroke={t.cheveux} strokeWidth="3" strokeLinecap="round" />
+      <path
+        d={
+          humeur === 'ravi'
+            ? 'M33 41q6-4 12 0M55 41q6-4 12 0'
+            : humeur === 'triste'
+              ? 'M33 44l12-3M55 41l12 3'
+              : humeur === 'furieux'
+                ? 'M33 39l12 5M55 44l12-5'
+                : 'M33 42h12M55 42h12'
+        }
+        fill="none"
+        stroke={t.cheveux}
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
       {t.lunettes ? (
         <g fill="rgb(120 200 255 / 0.25)" {...contour} strokeWidth={2.5}>
           <circle cx="39" cy="50" r="8.5" />
@@ -157,7 +185,26 @@ export function Visage({ graine, taille = 120 }: { graine: string; taille?: numb
         </g>
       ) : null}
       {/* bouche */}
-      {t.bouche === 0 ? (
+      {humeur === 'ravi' ? (
+        <path d="M38 62q12 15 24 0z" fill="#fff" {...contour} strokeWidth={2.5} />
+      ) : humeur === 'triste' ? (
+        <path
+          d="M41 69q9-8 18 0"
+          fill="none"
+          stroke="#1b0f3a"
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
+      ) : humeur === 'furieux' ? (
+        <path
+          d="M40 68l5-3 5 3 5-3 5 3"
+          fill="none"
+          stroke="#1b0f3a"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      ) : t.bouche === 0 ? (
         <path
           d="M40 64q10 9 20 0"
           fill="#fff"
