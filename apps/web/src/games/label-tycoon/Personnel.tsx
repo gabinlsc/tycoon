@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import type { LabelAction, VuePersonnel } from '@tycoon/label-tycoon';
+import { Binoculars, Briefcase, Coins, Heart, UserMinus, UserPlus, Users } from 'lucide-react';
 import { Button } from '../../components/arcade/ui/Button';
+import { Avatar } from './avatar';
 import { useLabel } from './LabelContext';
+import { Barre, Panneau, Tuile, Tuiles } from './Visuels';
 
 const eur = (cents: number): string => `${Math.round(cents / 100).toLocaleString('fr-FR')} €`;
 
@@ -41,15 +44,11 @@ function Delegation({
     void envoyer({ type: 'action', action });
   };
   return (
-    <>
-      <h3>Délégation du repérage</h3>
+    <Panneau titre="Délégation du repérage" Icone={Binoculars} ton="teal" id="pers-deleg">
       {d.denicheurs === 0 ? (
-        <p className="label-screen__soon">Il faut au moins un dénicheur pour déléguer.</p>
+        <p className="lt-rien">Il faut au moins un dénicheur pour déléguer.</p>
       ) : null}
-      <p>
-        Tes dénicheurs repèrent des talents à ta place, dans le cadre fixé ici : jamais plus que le
-        budget par décision, seulement dans les genres cochés, et plus rien sous le seuil d’alerte.
-      </p>
+      <p className="lt-sous-titre">Tes dénicheurs repèrent à ta place, dans le cadre ci-dessous.</p>
       <label className="label-field">
         <input type="checkbox" checked={actif} onChange={(e) => setActif(e.target.checked)} />{' '}
         Délégation active
@@ -93,18 +92,23 @@ function Delegation({
       </Button>
       <h4>Rapports de délégation</h4>
       {d.rapports.length === 0 ? (
-        <p className="label-screen__soon">Aucune décision déléguée pour l’instant.</p>
+        <p className="lt-rien">Aucune décision déléguée pour l’instant.</p>
       ) : (
-        <ul className="label-list">
+        <ul className="lt-cartes-fin">
           {d.rapports.map((r, i) => (
-            <li key={`${r.semaine}-${i}`}>
-              Sem. {r.semaine} — {r.decision ? `source « ${r.decision} »` : 'aucune décision'}, coût{' '}
-              {eur(r.cout)}, {r.retenus} retenu(s), {r.ecartes} écarté(s).
+            <li key={`${r.semaine}-${i}`} className="lt-carte-fin">
+              <strong>Sem. {r.semaine}</strong>
+              <span className="lt-chip">
+                {r.decision ? `source « ${r.decision} »` : 'aucune décision'}
+              </span>
+              <span className="lt-chip">coût {eur(r.cout)}</span>
+              <span className="lt-chip">{r.retenus} retenu(s)</span>
+              <span className="lt-chip">{r.ecartes} écarté(s)</span>
             </li>
           ))}
         </ul>
       )}
-    </>
+    </Panneau>
   );
 }
 
@@ -116,81 +120,125 @@ export function Personnel() {
   const pleine = p.equipe.length >= p.capacite;
   const agir = (action: LabelAction) => void envoyer({ type: 'action', action });
 
+  const moralMoyen =
+    p.equipe.length > 0
+      ? Math.round(p.equipe.reduce((somme, m) => somme + m.moral, 0) / p.equipe.length)
+      : 0;
+
   return (
     <section className="label-screen" aria-labelledby="personnel-titre">
       <h2 id="personnel-titre">Personnel</h2>
-      <p>
-        Équipe : <strong className="mono">{p.equipe.length}</strong> / {p.capacite} · masse
-        salariale <span className="mono">{eur(p.masseSalariale)}</span> par semaine. Agrandis les
-        bureaux pour accueillir plus de monde.
-      </p>
-      {p.equipe.length === 0 ? (
-        <p className="label-screen__soon">Personne dans l’équipe pour l’instant.</p>
-      ) : (
-        <table className="label-table">
-          <caption>Équipe</caption>
-          <thead>
-            <tr>
-              <th scope="col">Nom</th>
-              <th scope="col">Rôle</th>
-              <th scope="col">Niveau</th>
-              <th scope="col">Moral</th>
-              <th scope="col">Progression</th>
-              <th scope="col">Salaire</th>
-              <th scope="col">Action</th>
-            </tr>
-          </thead>
-          <tbody>
+      <Tuiles label="Équipe">
+        <Tuile
+          Icone={Users}
+          valeur={`${p.equipe.length} / ${p.capacite}`}
+          libelle="Places aux bureaux"
+          ton="purple"
+          alerte={pleine}
+        />
+        <Tuile
+          Icone={Coins}
+          valeur={eur(p.masseSalariale)}
+          libelle="Masse salariale par semaine"
+          ton="orange"
+        />
+        <Tuile
+          Icone={Heart}
+          valeur={p.equipe.length > 0 ? `${moralMoyen}` : '—'}
+          libelle="Moral moyen"
+          ton="pink"
+        />
+      </Tuiles>
+      <Panneau titre="Équipe" Icone={Briefcase} ton="purple" id="pers-equipe">
+        {p.equipe.length === 0 ? (
+          <p className="lt-rien">Personne dans l’équipe pour l’instant.</p>
+        ) : (
+          <ul className="lt-cartes">
             {parNiveau(p.equipe).map((m) => (
-              <tr key={m.id}>
-                <th scope="row">
-                  {m.nom}
-                  <small>
-                    {m.trait}
-                    {m.specialite ? ` · ${m.specialite}` : ''}
-                  </small>
-                </th>
-                <td>{m.role}</td>
-                <td className="mono">{m.niveau}</td>
-                <td className="mono">{m.moral}</td>
-                <td className="mono">
-                  {progressionNiveau(m.experience, p.experiencePourNiveau)} %
-                </td>
-                <td className="mono">{eur(m.salaire)}</td>
-                <td>
-                  <Button type="button" onClick={() => agir({ type: 'licencier', membreId: m.id })}>
-                    Licencier {m.nom}
-                  </Button>
-                </td>
-              </tr>
+              <li key={m.id} className="lt-carte">
+                <div className="lt-carte__ouvrir lt-membre">
+                  <span className="lt-carte__tete">
+                    <Avatar nom={m.nom} genre={m.role} taille="lg" />
+                    <span>
+                      <strong className="lt-carte__nom">{m.nom}</strong>
+                      <small>
+                        {m.role}
+                        {m.specialite ? ` · ${m.specialite}` : ''}
+                      </small>
+                    </span>
+                  </span>
+                  <span className="lt-carte__jauges">
+                    <Barre libelle="Niveau" valeur={m.niveau} ton="gold" />
+                    <Barre libelle="Moral" valeur={m.moral} ton="green" />
+                    <Barre
+                      libelle="Progression"
+                      valeur={progressionNiveau(m.experience, p.experiencePourNiveau)}
+                      ton="blue"
+                    />
+                  </span>
+                  <span className="lt-carte__pied">
+                    <span className="lt-chip">{m.trait}</span>
+                    <span className="lt-chip">
+                      <Coins aria-hidden="true" size={14} /> {eur(m.salaire)}
+                    </span>
+                    <Button
+                      type="button"
+                      onClick={() => agir({ type: 'licencier', membreId: m.id })}
+                    >
+                      <UserMinus aria-hidden="true" size={16} /> Licencier {m.nom}
+                    </Button>
+                  </span>
+                </div>
+              </li>
             ))}
-          </tbody>
-        </table>
-      )}
+          </ul>
+        )}
+      </Panneau>
 
-      <h3>Marché de l’emploi</h3>
-      {p.candidats.length === 0 ? (
-        <p className="label-screen__soon">Aucun candidat pour l’instant.</p>
-      ) : (
-        <ul className="label-list">
-          {parNiveau(p.candidats).map((c) => (
-            <li key={c.id}>
-              {c.nom} — {c.role}
-              {c.specialite ? ` (${c.specialite})` : ''}, niveau{' '}
-              <span className="mono">{c.niveau}</span>, {c.trait}, {eur(c.salaire)} par semaine{' '}
-              <Button
-                type="button"
-                tone="gold"
-                disabled={pleine}
-                onClick={() => agir({ type: 'embaucher', membreId: c.id })}
-              >
-                Embaucher {c.nom}
-              </Button>
-            </li>
-          ))}
-        </ul>
-      )}
-      {pleine ? <p>L’équipe est pleine : licencie ou agrandis les bureaux.</p> : null}
+      <Panneau titre="Marché de l’emploi" Icone={UserPlus} ton="gold" id="pers-emploi">
+        {p.candidats.length === 0 ? (
+          <p className="lt-rien">Aucun candidat pour l’instant.</p>
+        ) : (
+          <ul className="lt-cartes">
+            {parNiveau(p.candidats).map((c) => (
+              <li key={c.id} className="lt-carte">
+                <div className="lt-carte__ouvrir lt-membre">
+                  <span className="lt-carte__tete">
+                    <Avatar nom={c.nom} genre={c.role} taille="lg" />
+                    <span>
+                      <strong className="lt-carte__nom">{c.nom}</strong>
+                      <small>
+                        {c.role}
+                        {c.specialite ? ` · ${c.specialite}` : ''}
+                      </small>
+                    </span>
+                  </span>
+                  <span className="lt-carte__jauges">
+                    <Barre libelle="Niveau" valeur={c.niveau} ton="gold" />
+                  </span>
+                  <span className="lt-carte__pied">
+                    <span className="lt-chip">{c.trait}</span>
+                    <span className="lt-chip">
+                      <Coins aria-hidden="true" size={14} /> {eur(c.salaire)}
+                    </span>
+                    <Button
+                      type="button"
+                      tone="gold"
+                      disabled={pleine}
+                      onClick={() => agir({ type: 'embaucher', membreId: c.id })}
+                    >
+                      <UserPlus aria-hidden="true" size={16} /> Embaucher {c.nom}
+                    </Button>
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+        {pleine ? (
+          <p className="label-warn">L’équipe est pleine : licencie ou agrandis les bureaux.</p>
+        ) : null}
+      </Panneau>
 
       <Delegation d={p.delegation} genres={p.genres} />
     </section>
