@@ -120,6 +120,8 @@ export interface VueArtiste {
   contrat: { echeance: number; royaltiesBps: number } | null;
   /** Vrai si un projet est en production pour cet artiste. */
   enProduction: boolean;
+  /** Avance qu'un artiste de cette notoriété juge normale (centimes, arrondie), pour renouveler son contrat. */
+  avanceIndicative: number;
 }
 
 export interface VueSuivi {
@@ -1682,6 +1684,7 @@ export function buildView(state: LabelState, tick: number, hooks?: ViewHooks): V
       },
       contrat: contratDe(state, a.id),
       enProduction: state.projets.some((p) => p.artisteId === a.id && p.statut === 'production'),
+      avanceIndicative: Math.round(fairAdvance(a) / 50_000) * 50_000,
     }));
   const suivis = state.suivis.flatMap<VueSuivi>((p) => {
     const a = state.artistes.find((x) => x.id === p.artisteId);

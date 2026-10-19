@@ -6,6 +6,7 @@ import { Button } from '../../components/arcade/ui/Button';
 import { ECRANS, GROUPES, type EcranId } from './ecrans';
 import { ICONES_ECRANS } from './icones';
 import { Hud } from './Hud';
+import { Notifications } from './Notifications';
 import { useEcranEtroit } from './useEcranEtroit';
 import { useLabel } from './LabelContext';
 import { ECRANS_SIMPLES } from './ecransSimples';
@@ -51,6 +52,7 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
   const [dernierLu, setDernierLu] = useState(0);
   const [fiche, setFiche] = useState<number | null>(null);
   const [negociation, setNegociation] = useState<number | null>(null);
+  const [renouvellement, setRenouvellement] = useState<number | null>(null);
   const [pleinEcran, setPleinEcran] = useState(true);
   const [tiroir, setTiroir] = useState(false);
   const [panneauSauvegarde, setPanneauSauvegarde] = useState(false);
@@ -208,6 +210,7 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
       ) : null}
 
       <Hud />
+      <Notifications vue={vue} allerA={setEcran} />
 
       <div className="lt-contenu" ref={contenu}>
         {sauvegardes ? (
@@ -227,8 +230,19 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
           {ecran === 'qg' ? (
             <QG allerA={setEcran} />
           ) : ecran === 'roster' ? (
-            ficheArtiste ? (
-              <FicheArtiste artiste={ficheArtiste} retour={() => setFiche(null)} vers={setEcran} />
+            renouvellement !== null ? (
+              <Negociation
+                artisteId={renouvellement}
+                renouvellement
+                retour={() => setRenouvellement(null)}
+              />
+            ) : ficheArtiste ? (
+              <FicheArtiste
+                artiste={ficheArtiste}
+                retour={() => setFiche(null)}
+                vers={setEcran}
+                renouveler={() => setRenouvellement(ficheArtiste.id)}
+              />
             ) : (
               <Roster ouvrir={setFiche} allerA={setEcran} />
             )
