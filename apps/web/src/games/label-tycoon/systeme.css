@@ -765,3 +765,88 @@
   width: 1.25rem;
   height: 1.25rem;
 }
+
+/* Boutique de pièces */
+.lt-boutique__solde {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0 0 var(--sp-4);
+  font-size: var(--fs-lead);
+}
+.lt-boutique__solde strong {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+}
+.lt-boutique {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  gap: var(--sp-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lt-boutique__objet {
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-4) var(--sp-3);
+  border: 3px solid var(--outline);
+  border-radius: 1.25rem;
+  background: var(--surface-2);
+  box-shadow: 0 4px 0 var(--outline);
+  text-align: center;
+}
+.lt-boutique__objet small {
+  color: var(--text-soft);
+  font-weight: 700;
+}
+.lt-boutique__vignette {
+  display: grid;
+  width: 4.5rem;
+  height: 4.5rem;
+  place-items: center;
+  border: 3px solid var(--outline);
+  border-radius: 1.1rem;
+  background: var(--purple);
+  color: #fff;
+  box-shadow: 0 3px 0 var(--outline);
+}
+.lt-boutique__objet--aube .lt-boutique__vignette {
+  background: linear-gradient(160deg, #3a2a7a, #ff9ac8);
+}
+.lt-boutique__objet--neon .lt-boutique__vignette {
+  background: linear-gradient(160deg, #04011a, #ff2d95);
+}
+.lt-boutique__objet--chrome .lt-boutique__vignette {
+  background: linear-gradient(160deg, #e8eef8, #8d96aa);
+  color: var(--outline);
+}
+.lt-boutique__objet--diamant .lt-boutique__vignette {
+  background: linear-gradient(160deg, #fff, #7fe0ff);
+  color: var(--outline);
+}
+.lt-boutique__bouton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  min-width: 7rem;
+  min-height: 2.75rem;
+  padding: 0.4rem 1rem;
+  border: 3px solid var(--outline);
+  border-radius: 99px;
+  background: var(--green);
+  box-shadow: 0 3px 0 var(--outline);
+  color: var(--outline);
+  font: 800 1rem var(--font-display);
+  cursor: pointer;
+}
+.lt-boutique__bouton--achat {
+  background: var(--gold);
+}
+.lt-boutique__bouton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}

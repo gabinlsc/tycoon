@@ -204,7 +204,7 @@ L'abonnement quitte les jeux pour vivre sur la page d'accueil du portail : **un 
 
 - [x] `feat/portail-abonnement` : offres d'abonnement sur l'accueil de tycoon.glsc.fr, partagées entre tous les jeux
 - [x] `feat/portail-recompenses` : récompenses quotidiennes, bonus mensuels, calendrier de connexion
-- [ ] `feat/label-boutique-pieces` : boutique de pièces propre à chaque jeu (cosmétiques, bonus de confort), monnaie fictive
+- [x] `feat/label-boutique-pieces` : boutique de pièces propre à chaque jeu (cosmétiques, bonus de confort), monnaie fictive
 
 ## Suivi
 
@@ -224,6 +224,6 @@ L'abonnement quitte les jeux pour vivre sur la page d'accueil du portail : **un 
 | 11    | 5     | 5      |
 | 12    | 9     | 9      |
 | 13    | 6     | 6      |
-| 14    | 3     | 2      |
+| 14    | 3     | 3      |
 
 (Mettre ce tableau à jour dans la PR qui coche une case.)
