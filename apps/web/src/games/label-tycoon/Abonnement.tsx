@@ -9,10 +9,13 @@ import {
   type ThemeMonde,
   choisirOffre,
   definirAbonnement,
+  JEU_BOUTIQUE,
+  droitsDe,
   offreDe,
   prixTexte,
   useAbonnement,
 } from '../../lib/pass';
+import { useAchats } from '../../lib/boutique';
 import { Panneau } from './Visuels';
 
 const ICONES: Record<OffreId, typeof Crown> = { gratuit: Sparkles, pro: Gem, legende: Crown };
@@ -76,7 +79,7 @@ function CarteOffre({
 /** Abonnement fictif : offres, activation locale sans paiement, réglage des avantages débloqués. */
 export function Abonnement() {
   const etat = useAbonnement();
-  const droits = offreDe(etat.offre);
+  const droits = droitsDe(etat.offre, useAchats(JEU_BOUTIQUE));
   const [confirmation, setConfirmation] = useState<OffreId | null>(null);
 
   const demander = (id: OffreId) => {

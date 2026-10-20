@@ -152,6 +152,12 @@ export const ECRANS = [
     groupe: 'suivi' as const,
   },
   {
+    id: 'boutique',
+    titre: 'Boutique',
+    description: 'Cosmétiques achetés avec tes pièces (fictif)',
+    groupe: 'suivi' as const,
+  },
+  {
     id: 'abonnement',
     titre: 'Abonnement',
     description: 'Offres, thèmes et cadres de cartes (démonstration)',
@@ -198,6 +204,7 @@ export const POLES = [
       'succes',
       'generations',
       'heritage',
+      'boutique',
       'abonnement',
       'parametres',
     ],

@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from 'react';
+import { achatsDe } from './boutique';
 
 /**
  * Pass Tycoon **fictif** : un abonnement pour les six jeux du portail. Aucune donnée bancaire,
@@ -79,10 +80,28 @@ const CLE = 'tycoon:pass';
 const ANCIENNE_CLE = 'tycoon:label:abonnement';
 const PAR_DEFAUT: EtatAbonnement = { offre: 'gratuit', theme: 'saison', cadre: 'classique' };
 
-/** Remet un état lu du navigateur dans ce que l'offre autorise. */
+/** Jeu dont la boutique peut débloquer des thèmes et des cadres. */
+export const JEU_BOUTIQUE = 'label-tycoon';
+
+/** Ce que l'offre autorise, plus ce qui a été acheté en pièces. */
+export function droitsDe(offre: OffreId, achats: readonly string[] = achatsDe(JEU_BOUTIQUE)) {
+  const base = offreDe(offre);
+  return {
+    themes: [
+      ...base.themes,
+      ...achats.filter((a) => a.startsWith('theme:')).map((a) => a.slice(6)),
+    ] as ThemeMonde[],
+    cadres: [
+      ...base.cadres,
+      ...achats.filter((a) => a.startsWith('cadre:')).map((a) => a.slice(6)),
+    ] as CadreCarte[],
+  };
+}
+
+/** Remet un état lu du navigateur dans ce que l'offre et les achats autorisent. */
 export function normaliser(brut: Partial<EtatAbonnement>): EtatAbonnement {
   const offre = OFFRES.some((o) => o.id === brut.offre) ? (brut.offre as OffreId) : 'gratuit';
-  const droits = offreDe(offre);
+  const droits = droitsDe(offre);
   return {
     offre,
     theme: droits.themes.includes(brut.theme as ThemeMonde) ? (brut.theme as ThemeMonde) : 'saison',

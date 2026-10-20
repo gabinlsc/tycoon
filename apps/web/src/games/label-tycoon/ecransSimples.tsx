@@ -21,6 +21,7 @@ import { International } from './International';
 import { Scenes } from './Scenes';
 import { Regulation } from './Regulation';
 import { Abonnement } from './Abonnement';
+import { Boutique } from './Boutique';
 import { Campagne } from './Campagne';
 import { Vitrine } from './Vitrine';
 
@@ -36,6 +37,7 @@ export const ECRANS_SIMPLES: Partial<Record<EcranId, ComponentType>> = {
   tournees: Tournees,
   fil: Fil,
   parametres: Parametres,
+  boutique: Boutique,
   abonnement: Abonnement,
   campagne: Campagne,
   vitrine: Vitrine,
