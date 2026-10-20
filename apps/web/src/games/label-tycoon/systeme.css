@@ -604,3 +604,83 @@
   background: var(--purple);
   color: #fff;
 }
+
+/* Max, l'assistant */
+.lt-max {
+  position: fixed;
+  right: var(--gutter);
+  bottom: var(--gutter);
+  z-index: 55;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  max-width: min(26rem, calc(100vw - 2 * var(--gutter)));
+  padding: var(--sp-2) var(--sp-3);
+  border: 3px solid var(--outline);
+  border-radius: 1.25rem;
+  background: #fff;
+  box-shadow:
+    0 5px 0 var(--outline),
+    0 18px 30px -12px color-mix(in srgb, #000 40%, transparent);
+  animation: lt-max-entree 0.4s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.lt-max--alerte {
+  background: color-mix(in srgb, var(--red) 8%, #fff);
+}
+.lt-max__avatar {
+  flex: none;
+  overflow: hidden;
+  width: 3rem;
+  height: 3rem;
+  border: 3px solid var(--outline);
+  border-radius: 50%;
+  background: var(--gold);
+}
+.lt-max__texte {
+  flex: 1;
+  margin: 0;
+  font-weight: 800;
+  line-height: 1.25;
+}
+.lt-max__go {
+  flex: none;
+  min-height: 2.75rem;
+  padding: 0.4rem 0.9rem;
+  border: 3px solid var(--outline);
+  border-radius: 99px;
+  background: var(--green);
+  box-shadow: 0 3px 0 var(--outline);
+  color: var(--outline);
+  font: 800 0.9rem var(--font-display);
+  cursor: pointer;
+}
+.lt-max__x {
+  flex: none;
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--text-soft);
+  cursor: pointer;
+}
+@keyframes lt-max-entree {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.9);
+  }
+}
+@media (max-width: 40rem) {
+  .lt-max {
+    bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* Effets réduits : aucun mouvement décoratif */
+.lt-sobre *,
+.lt-sobre *::before,
+.lt-sobre *::after {
+  animation: none !important;
+  transition: none !important;
+}

@@ -1,6 +1,17 @@
 import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Disc3, Lock, LogOut, Menu, Save, Search, Volume2, VolumeX, X } from 'lucide-react';
+import {
+  Disc3,
+  Lock,
+  LogOut,
+  Menu,
+  Save,
+  Search,
+  Sparkles,
+  Volume2,
+  VolumeX,
+  X,
+} from 'lucide-react';
 import { TIERS } from '@tycoon/label-tycoon';
 import { Button } from '../../components/arcade/ui/Button';
 import { ECRANS, POLES, poleDe, type EcranId, type PoleId } from './ecrans';
@@ -11,6 +22,7 @@ import { ICONES_ECRANS, ICONES_POLES } from './icones';
 import { Ceremonie, useCeremonie } from './Ceremonie';
 import { BandeauPole } from './BandeauPole';
 import { Chargement } from './Chargement';
+import { MaxConseil } from './MaxConseil';
 import { AideRaccourcis, Palette, useOuverturePalette } from './Palette';
 import { Effets } from './Effets';
 import { CourseClassement, useCourseClassement } from './Soirees';
@@ -64,6 +76,13 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
   const [renouvellement, setRenouvellement] = useState<number | null>(null);
   const [pleinEcran, setPleinEcran] = useState(true);
   const [tiroir, setTiroir] = useState(false);
+  const [sobre, setSobre] = useState(() => {
+    try {
+      return localStorage.getItem('lt-sobre') === '1';
+    } catch {
+      return false;
+    }
+  });
   const [palette, setPalette] = useState<'palette' | 'aide' | null>(null);
   const [panneauSauvegarde, setPanneauSauvegarde] = useState(false);
   // Dernier onglet visité de chaque pôle : un clic sur le pôle y revient.
@@ -148,7 +167,7 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
 
   // Rendu dans <body> : un ancêtre transformé (animations de la page) casserait `position: fixed`.
   return createPortal(
-    <div className={`lt-app${tiroir ? ' is-tiroir-ouvert' : ''}`}>
+    <div className={`lt-app${tiroir ? ' is-tiroir-ouvert' : ''}${sobre ? ' lt-sobre' : ''}`}>
       <aside className="lt-side" id="lt-menu">
         <div className="lt-side__marque">
           <span className="lt-logo" aria-hidden="true">
@@ -240,6 +259,22 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
             )}{' '}
             {audio.prefs.sons || audio.prefs.musique ? 'Son activé' : 'Son coupé'}
           </button>
+          <button
+            type="button"
+            className="lt-side__action"
+            aria-pressed={sobre}
+            onClick={() => {
+              const suite = !sobre;
+              setSobre(suite);
+              try {
+                localStorage.setItem('lt-sobre', suite ? '1' : '0');
+              } catch {
+                /* préférence non conservée */
+              }
+            }}
+          >
+            <Sparkles aria-hidden="true" size={18} /> {sobre ? 'Effets réduits' : 'Effets complets'}
+          </button>
           <button type="button" className="lt-side__action" onClick={() => setPalette('palette')}>
             <Search aria-hidden="true" size={18} /> Rechercher{' '}
             <kbd className="lt-side__kbd">Ctrl K</kbd>
@@ -267,6 +302,7 @@ export function Coquille({ sauvegardes }: { sauvegardes?: ReactNode } = {}) {
       ) : null}
       {palette === 'aide' ? <AideRaccourcis fermer={fermerPalette} /> : null}
       <Hud />
+      <MaxConseil vue={vue} allerA={setEcran} />
       <Notifications vue={vue} allerA={setEcran} />
       <Effets vue={vue} />
       {course.course ? (
