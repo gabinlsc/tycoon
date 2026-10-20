@@ -203,7 +203,7 @@ Direction : un seul langage visuel, de la profondeur (ombres, lumière, matière
 L'abonnement quitte les jeux pour vivre sur la page d'accueil du portail : **un abonnement donne accès à six jeux à venir**, avec de vrais avantages en jeu. Tout reste fictif tant qu'il n'y a pas d'entité juridique (aucun paiement, aucune donnée bancaire).
 
 - [x] `feat/portail-abonnement` : offres d'abonnement sur l'accueil de tycoon.glsc.fr, partagées entre tous les jeux
-- [ ] `feat/portail-recompenses` : récompenses quotidiennes, bonus mensuels, calendrier de connexion
+- [x] `feat/portail-recompenses` : récompenses quotidiennes, bonus mensuels, calendrier de connexion
 - [ ] `feat/label-boutique-pieces` : boutique de pièces propre à chaque jeu (cosmétiques, bonus de confort), monnaie fictive
 
 ## Suivi
@@ -224,6 +224,6 @@ L'abonnement quitte les jeux pour vivre sur la page d'accueil du portail : **un 
 | 11    | 5     | 5      |
 | 12    | 9     | 9      |
 | 13    | 6     | 6      |
-| 14    | 3     | 1      |
+| 14    | 3     | 2      |
 
 (Mettre ce tableau à jour dans la PR qui coche une case.)
