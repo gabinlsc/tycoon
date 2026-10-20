@@ -15,7 +15,7 @@ import { Roster } from './Roster';
 import { Studio } from './Studio';
 import { Tournees } from './Tournees';
 import type { EcranId } from './ecrans';
-import { useAbonnement } from './offres';
+import { useAbonnement } from '../../lib/pass';
 
 /** Palette du ciel selon la saison (mois 1 à 12) : le monde change au fil de l'année. */
 export function saisonDuMois(mois: number): 'hiver' | 'printemps' | 'ete' | 'automne' {

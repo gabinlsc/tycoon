@@ -1,9 +1,9 @@
 import { useSyncExternalStore } from 'react';
 
 /**
- * Abonnement **fictif** : aucune donnée bancaire, aucun paiement, aucun serveur. Le choix est gardé
- * dans ce navigateur pour montrer ce que serait l'offre ; il se branchera sur un vrai paiement
- * le jour où l'entité juridique existera.
+ * Pass Tycoon **fictif** : un abonnement pour les six jeux du portail. Aucune donnée bancaire,
+ * aucun paiement, aucun serveur : le choix est gardé dans ce navigateur pour montrer ce que serait
+ * l'offre ; il se branchera sur un vrai paiement le jour où l'entité juridique existera.
  */
 export type OffreId = 'gratuit' | 'pro' | 'legende';
 export type ThemeMonde = 'saison' | 'aube' | 'neon';
@@ -74,7 +74,9 @@ export interface EtatAbonnement {
   cadre: CadreCarte;
 }
 
-const CLE = 'tycoon:label:abonnement';
+const CLE = 'tycoon:pass';
+/** Ancienne clé (abonnement propre à Label Tycoon) : lue une fois pour ne rien perdre. */
+const ANCIENNE_CLE = 'tycoon:label:abonnement';
 const PAR_DEFAUT: EtatAbonnement = { offre: 'gratuit', theme: 'saison', cadre: 'classique' };
 
 /** Remet un état lu du navigateur dans ce que l'offre autorise. */
@@ -92,7 +94,7 @@ export function normaliser(brut: Partial<EtatAbonnement>): EtatAbonnement {
 
 function lire(): EtatAbonnement {
   try {
-    const brut = window.localStorage.getItem(CLE);
+    const brut = window.localStorage.getItem(CLE) ?? window.localStorage.getItem(ANCIENNE_CLE);
     return brut ? normaliser(JSON.parse(brut) as Partial<EtatAbonnement>) : PAR_DEFAUT;
   } catch {
     return PAR_DEFAUT;

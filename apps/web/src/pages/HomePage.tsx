@@ -1,6 +1,7 @@
 import { GameGrid } from '../components/arcade/GameGrid';
 import { Hero } from '../components/arcade/Hero';
 import { HowToPlay } from '../components/arcade/HowToPlay';
+import { PassTycoon } from '../components/arcade/PassTycoon';
 import { SubscribeBox } from '../components/arcade/SubscribeBox';
 import { usePageTitle } from '../lib/usePageTitle';
 
@@ -11,6 +12,7 @@ export function HomePage() {
       <Hero />
       <GameGrid />
       <HowToPlay />
+      <PassTycoon />
       <SubscribeBox />
     </>
   );

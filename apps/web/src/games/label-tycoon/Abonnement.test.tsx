@@ -2,7 +2,14 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { Abonnement } from './Abonnement';
-import { OFFRES, choisirOffre, definirAbonnement, normaliser, offreDe, prixTexte } from './offres';
+import {
+  OFFRES,
+  choisirOffre,
+  definirAbonnement,
+  normaliser,
+  offreDe,
+  prixTexte,
+} from '../../lib/pass';
 
 afterEach(() => {
   cleanup();
