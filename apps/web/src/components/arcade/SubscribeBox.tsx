@@ -31,7 +31,7 @@ export function SubscribeBox() {
   return (
     <section id="abonnement" className="subscribe page" aria-labelledby="abonnement-titre">
       <SectionTitle
-        level="6"
+        level="7"
         id="abonnement-titre"
         title="Sois prévenu au lancement"
         kicker="Un message par sortie de jeu, pas un de plus. Désabonnement en un clic."
