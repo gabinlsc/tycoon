@@ -1,0 +1,187 @@
+/* Pass Tycoon : un abonnement pour six jeux (démonstration). */
+
+.pass__demo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  margin: 0 0 var(--sp-5);
+  color: var(--green-text);
+  font-size: var(--fs-small);
+  font-weight: 800;
+}
+.pass__jeux {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  gap: var(--sp-3);
+  margin: 0 0 var(--sp-6);
+  padding: 0;
+  list-style: none;
+}
+.pass__jeu {
+  --c: var(--purple);
+  display: grid;
+  justify-items: center;
+  gap: 0.15rem;
+  padding: var(--sp-3);
+  border: 3px solid var(--outline);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--pop-sm);
+  text-align: center;
+}
+.pass__jeu--orange {
+  --c: var(--orange);
+}
+.pass__jeu--blue {
+  --c: var(--blue);
+}
+.pass__jeu--pink {
+  --c: var(--pink);
+}
+.pass__jeu--green {
+  --c: var(--green);
+}
+.pass__jeu--red {
+  --c: var(--red);
+}
+.pass__sigle {
+  display: grid;
+  width: 3.4rem;
+  height: 3.4rem;
+  place-items: center;
+  border: 3px solid var(--outline);
+  border-radius: 50%;
+  background: var(--c);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  text-shadow: 0 2px 0 var(--outline);
+}
+.pass__nom {
+  font-weight: 800;
+  font-size: var(--fs-small);
+}
+.pass__jeu small {
+  color: var(--text-soft);
+  font-weight: 800;
+}
+.pass__offres {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--sp-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pass__offre {
+  position: relative;
+  display: grid;
+  gap: var(--sp-3);
+  height: 100%;
+  padding: var(--sp-5);
+  border: 4px solid var(--outline);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  box-shadow: var(--pop);
+}
+.pass__offre--pro {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--blue) 22%, var(--surface)),
+    var(--surface) 55%
+  );
+}
+.pass__offre--legende {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--gold) 40%, var(--surface)),
+    var(--surface) 60%
+  );
+}
+.pass__offre.is-active {
+  outline: 4px solid var(--green);
+  outline-offset: 4px;
+}
+.pass__ruban {
+  position: absolute;
+  top: -0.9rem;
+  right: var(--sp-4);
+  padding: 0.2rem 0.8rem;
+  border: 3px solid var(--outline);
+  border-radius: 99px;
+  background: var(--gold);
+  font-family: var(--font-display);
+  font-size: var(--fs-small);
+}
+.pass__icone {
+  display: grid;
+  width: 4rem;
+  height: 4rem;
+  place-items: center;
+  border: 3px solid var(--outline);
+  border-radius: 1.1rem;
+  background: var(--surface-2);
+  box-shadow: var(--pop-sm);
+}
+.pass__offre h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+}
+.pass__prix {
+  margin: 0;
+}
+.pass__prix strong {
+  font-family: var(--font-display);
+  font-size: 2rem;
+}
+.pass__accroche {
+  margin: 0;
+  color: var(--text-soft);
+  font-weight: 700;
+}
+.pass__avantages {
+  display: grid;
+  align-content: start;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-weight: 700;
+}
+.pass__avantages li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+}
+.pass__avantages svg {
+  flex: none;
+  margin-top: 0.15rem;
+  color: var(--green-text);
+}
+.pass__voile {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: var(--gutter);
+  background: color-mix(in srgb, var(--outline) 65%, transparent);
+}
+.pass__modale {
+  display: grid;
+  gap: var(--sp-3);
+  width: min(100%, 26rem);
+  padding: var(--sp-5);
+}
+.pass__modale h3,
+.pass__modale p {
+  margin: 0;
+}
+.pass__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--sp-3);
+}

@@ -12,7 +12,7 @@ import {
   offreDe,
   prixTexte,
   useAbonnement,
-} from './offres';
+} from '../../lib/pass';
 import { Panneau } from './Visuels';
 
 const ICONES: Record<OffreId, typeof Crown> = { gratuit: Sparkles, pro: Gem, legende: Crown };
@@ -92,6 +92,9 @@ export function Abonnement() {
           <ShieldCheck aria-hidden="true" size={14} /> Démonstration : aucun paiement, aucune carte
           demandée
         </span>
+        <a className="lt-chip" href="/#pass">
+          Pass Tycoon : valable dans les six jeux
+        </a>
       </p>
       <ul className="lt-offres">
         {OFFRES.map((o) => (

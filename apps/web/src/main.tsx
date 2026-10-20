@@ -8,6 +8,7 @@ import './styles/arcade/navbar.css';
 import './styles/arcade/hero.css';
 import './styles/arcade/games.css';
 import './styles/arcade/sections.css';
+import './styles/arcade/pass.css';
 import './styles/arcade/pages.css';
 import './styles/arcade/account.css';
 import './styles/arcade/game.css';

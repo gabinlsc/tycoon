@@ -15,7 +15,7 @@ import {
 import { TIERS } from '@tycoon/label-tycoon';
 import { Button } from '../../components/arcade/ui/Button';
 import { ECRANS, POLES, poleDe, type EcranId, type PoleId } from './ecrans';
-import { useAbonnement } from './offres';
+import { useAbonnement } from '../../lib/pass';
 import { enregistrerJour } from './serie';
 import { useAudio, useAudioDuJeu } from './audio/useAudio';
 import { ICONES_ECRANS, ICONES_POLES } from './icones';

@@ -48,6 +48,9 @@ export function Navbar() {
               <Link to="/#comment-jouer">Comment jouer</Link>
             </li>
             <li>
+              <Link to="/#pass">Pass</Link>
+            </li>
+            <li>
               <Link to="/#abonnement">Être prévenu</Link>
             </li>
           </ul>

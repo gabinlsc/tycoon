@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
-import { useAbonnement } from './offres';
+import { useAbonnement } from '../../lib/pass';
 import { couleurDuGenre } from './avatar';
 import { NOMS_RARETE, type Rarete } from './rarete';
 import { humeurDuMoral, Visage } from './Visage';
