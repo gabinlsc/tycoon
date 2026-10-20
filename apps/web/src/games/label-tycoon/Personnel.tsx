@@ -49,7 +49,7 @@ function Delegation({
         <p className="lt-rien">Il faut au moins un dénicheur pour déléguer.</p>
       ) : null}
       <p className="lt-sous-titre">Tes dénicheurs repèrent à ta place, dans le cadre ci-dessous.</p>
-      <label className="label-field">
+      <label className="label-field label-field--check">
         <input type="checkbox" checked={actif} onChange={(e) => setActif(e.target.checked)} />{' '}
         Délégation active
       </label>
