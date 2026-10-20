@@ -684,3 +684,23 @@
   animation: none !important;
   transition: none !important;
 }
+
+/* Les polices du jeu n'ont qu'un ou deux graisses : pas de gras artificiel, qui empâte les lettres. */
+.lt-app,
+.lt-app * {
+  font-synthesis: none;
+}
+.lt-app h1,
+.lt-app h2,
+.lt-app h3,
+.lt-app h4,
+.lt-app strong,
+.lt-app b,
+.lt-app th {
+  font-weight: 800;
+}
+.lt-app :is(h1, h2, h3, h4, strong, b)[style*='display'],
+.lt-app [class*='__titre'],
+.lt-app .btn {
+  letter-spacing: 0.01em;
+}
